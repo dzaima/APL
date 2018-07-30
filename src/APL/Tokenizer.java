@@ -100,7 +100,7 @@ class Tokenizer {
         i++;
         while (i < len && s.charAt(i) != '\n') i++;
       } else if (c == ' ') {i++;} else {
-        Main.colorprint("warning: unknown token `"+c+"`", 206);
+        APL.colorprint("warning: unknown token `"+c+"`", 206);
         i++;
       }
       //if (c != ' ') {

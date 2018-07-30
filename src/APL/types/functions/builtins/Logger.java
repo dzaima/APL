@@ -1,6 +1,6 @@
 package APL.types.functions.builtins;
 
-import APL.Main;
+import APL.APL;
 import APL.types.*;
 
 public class Logger extends Value {
@@ -9,7 +9,7 @@ public class Logger extends Value {
     setter = true;
   }
   public Obj set(Obj v) {
-    Main.println((Main.debug? "[log] " : "")+v);
+    APL.println((APL.debug? "[log] " : "")+v);
     return v;
   }
   public String toString() {

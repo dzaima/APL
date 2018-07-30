@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import static APL.Main.up;
+import static APL.APL.up;
 
 public class CatBuiltin extends Builtin {
   public CatBuiltin() {

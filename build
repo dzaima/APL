@@ -1,0 +1,7 @@
+#!/bin/bash
+cd src
+shopt -s globstar
+javac -d ./build APL/**/*.java
+cd build
+jar cvfe APL.jar APL.APL *
+mv APL.jar ../../APL.jar

@@ -4,7 +4,7 @@ import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import static APL.Main.toAPL;
+import static APL.APL.toAPL;
 
 public class RhoBuiltin extends Builtin {
   public RhoBuiltin() {

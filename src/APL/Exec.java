@@ -10,7 +10,7 @@ import APL.types.functions.builtins.mops.*;
 import APL.types.functions.builtins.dops.*;
 import APL.types.functions.userDefined.UserDefined;
 
-import static APL.Main.*;
+import static APL.APL.*;
 
 class Exec {
   private Scope sc;
@@ -23,30 +23,30 @@ class Exec {
   }
 
   private void printlvl(Object... args) {
-    if (!Main.debug) return;
-    for (int i = 0; i < Main.printlvl; i++) print("  ");
-    Main.printdbg(args);
+    if (!APL.debug) return;
+    for (int i = 0; i < APL.printlvl; i++) print("  ");
+    APL.printdbg(args);
   }
 
   Obj exec() {
     if (sc.alphaDefined && ps.size() >= 2 && ps.get(0).repr.equals("⍺") && ps.get(1).type == TType.set) {
-      if (Main.debug) printlvl("skipping cuz it's ⍺←");
+      if (APL.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
     var o = new Stack<Token>();
     o.addAll(ps);
     StringBuilder repr = new StringBuilder();
     for (Token t : ps) repr.append(t.toRepr()).append(" ");
-    if (Main.debug) printlvl("NEW:");
-    Main.printlvl++;
-    if (Main.debug) printlvl("code:", repr);
-    if (Main.debug) printlvl();
+    if (APL.debug) printlvl("NEW:");
+    APL.printlvl++;
+    if (APL.debug) printlvl("code:", repr);
+    if (APL.debug) printlvl();
     var done = new LinkedList<Obj>();
     ArrayList<Value> arr = null;
     while (o.size() > 0) {
       Token t = o.pop();
       Obj c = valueOf(t);
-      // if (Main.debug) printlvl("token", t.toRepr(), "-> object", c);
+      // if (APL.debug) printlvl("token", t.toRepr(), "-> object", c);
       if (c.isObj()) {
         if (arr != null) {
           arr.add((Value) c);
@@ -75,8 +75,8 @@ class Exec {
       else done.add(new Arr(arr, true));
     }
     update(done, true);
-    Main.printlvl--;
-    if (Main.debug) printlvl("END:", rev(done));
+    APL.printlvl--;
+    if (APL.debug) printlvl("END:", rev(done));
     if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression");
     return done.get(0);
   }
@@ -94,11 +94,11 @@ class Exec {
   private void update(LinkedList<Obj> done, boolean end) {
     boolean run = true;
     while (run) {
-      if (Main.debug) printlvl("UPDATE", rev(done));
+      if (APL.debug) printlvl("UPDATE", rev(done));
       run = false;
       if (is(done, "D!|NFN", end, false)) {
-        if (Main.debug) printlvl("NFN");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("NFN");
+        if (APL.debug) printlvl("before:", rev(done));
         Value w = (Value) done.poll();
         Fun f = (Fun) done.poll();
         Value a = (Value) done.poll();
@@ -107,8 +107,8 @@ class Exec {
         run = true;
       }
       if (is(done, "[FM←]|FN", end, false)) {
-        if (Main.debug) printlvl("FN");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("FN");
+        if (APL.debug) printlvl("before:", rev(done));
         Value w = (Value) done.poll();
         Fun f = (Fun) done.poll();
         assert f != null;
@@ -116,8 +116,8 @@ class Exec {
         run = true;
       }
       if (is(done, "D!|N←.", end, false)) {
-        if (Main.debug) printlvl("N←.");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("N←.");
+        if (APL.debug) printlvl("before:", rev(done));
         Obj w = done.poll();
         SetBuiltin s = (SetBuiltin) done.poll(); // ←
         Value a = (Value) done.poll();
@@ -126,8 +126,8 @@ class Exec {
         run = true;
       }
       if (is(done, "D!|NF←N", end, false)) {
-        if (Main.debug) printlvl("NF←.");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("NF←.");
+        if (APL.debug) printlvl("before:", rev(done));
         Value w = (Value) done.poll();
         SetBuiltin s = (SetBuiltin) done.poll(); // ←
         Fun f = (Fun) done.poll(); // ←
@@ -137,16 +137,16 @@ class Exec {
         run = true;
       }
       if (is(done, "!D|[FN]M", end, true)) {
-        if (Main.debug) printlvl("FM");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("FM");
+        if (APL.debug) printlvl("before:", rev(done));
         Mop o = (Mop) done.remove(lastPtr);
         Fun f = (Fun) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
         run = true;
       }
       if (is(done, "[FN]D[FN]", end, true)) {
-        if (Main.debug) printlvl("FDF");
-        if (Main.debug) printlvl("before:", rev(done));
+        if (APL.debug) printlvl("FDF");
+        if (APL.debug) printlvl("before:", rev(done));
         Obj aa = done.removeLast();
         Dop o = (Dop) done.removeLast();
         Obj ww = done.removeLast();
@@ -154,7 +154,7 @@ class Exec {
         run = true;
       }
       if (run) {
-        if (Main.debug) printlvl("after:", rev(done));
+        if (APL.debug) printlvl("after:", rev(done));
       }
     }
   }
@@ -303,7 +303,7 @@ class Exec {
     else if (t.type == TType.str) return t.repr.length() == 1 ? new Char(t.repr) : string(t.repr);
     else if (t.type == TType.set) return new SetBuiltin();
     else if (t.type == TType.name) return sc.getVar(t.repr);
-    else if (t.type == TType.expr) return Main.execTok(t, sc);
+    else if (t.type == TType.expr) return APL.execTok(t, sc);
     else if (t.type == TType.usr) return UserDefined.of(t, sc);
     else throw new Error("Unknown type: " + t.type);
   }

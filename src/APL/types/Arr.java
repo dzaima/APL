@@ -65,7 +65,7 @@ public class Arr extends Value {
       if (all != null) return "'"+all+"'";
     }
     if (rank == 0) return "⊂"+toString(new int[0]);
-    if (Main.debug&&setter) return varName+":"+toString(new int[0]);
+    if (APL.debug&&setter) return varName+":"+toString(new int[0]);
     return toString(new int[0]);
   }
   private String toString(int[] cpos) {

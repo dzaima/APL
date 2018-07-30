@@ -3,7 +3,7 @@ package APL.types.functions.userDefined;
 import APL.*;
 import APL.types.*;
 
-import static APL.Main.*;
+import static APL.APL.*;
 
 public class UserDefined {
   public static Obj of(Token ts, Scope sc) {

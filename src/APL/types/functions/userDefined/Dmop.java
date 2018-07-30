@@ -4,7 +4,7 @@ import APL.*;
 import APL.types.*;
 import APL.types.functions.*;
 
-import static APL.Main.*;
+import static APL.APL.*;
 
 
 public class Dmop extends Mop {
