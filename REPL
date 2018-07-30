@@ -1,18 +1,2 @@
-#!/usr/bin/env python3
-import readline
-from subprocess import Popen, PIPE, STDOUT
-p = Popen("/usr/bin/java -jar out/artifacts/APL_jar/APL.jar rp", shell=True, stdin = PIPE, stdout = PIPE, stderr = PIPE, bufsize = 1)
-while (True):
-  print("> ", end="");
-  inp = (input()+"\n").encode('utf-8')
-  p.stdin.write(inp)
-  p.stdin.flush()
-  res = p.stdout.readline().decode();
-  if (len(res) == 0):
-    break;
-  if (res[-2] == 'e'):
-    print(eval(res[:-2]));
-    break;
-  else:
-    print(eval(res), end="")
-
+#!/bin/bash
+rlwrap java -jar out/artifacts/APL_jar/APL.jar

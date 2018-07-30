@@ -13,8 +13,6 @@ public class Main {
   static int printlvl = 0;
   public static Error up = new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
-  private static boolean escape = false;
-  private static String buffer = "";
   
   public static void main(String[] args) {
     try {
@@ -25,7 +23,7 @@ public class Main {
           int rest = args[0].contains("e") ? 2 : 1;
           for (int i = rest; i < args.length; i++) {
             String s = readFile(args[i]);
-            if (s == null) colorprint("File " + s + " not found", 246);
+            if (s == null) colorprint("File " + args[i] + " not found", 246);
             else exec(s, global);
           }
           if (args[0].contains("e")) {
@@ -34,12 +32,11 @@ public class Main {
           }
         }
       }
-      if (args.length >= 1 && args[0].contains("p")) escape = true;
       if (args.length == 0 || args[0].contains("r")) { // REPL
         Scanner console = new Scanner(System.in);
         
         while (true) {
-          //        print("> ");
+                  print("> ");
           try {
             String cr = console.nextLine();
             if (cr.equals("exit")) break;
@@ -66,36 +63,20 @@ public class Main {
           } catch (java.util.NoSuchElementException e) {
             break; // REPL ended
           }
-          flush(false);
         }
       }
     } catch (Throwable e) {
       colorprint(e + ": " + e.getMessage(), 246);
     }
-    flush(true);
   }
   
-  private static void flush(boolean stop) {
-    if (escape) {
-      String res = "\"" + buffer
-        .replace("\\", "\\\\")
-        .replace("\n", "\\n")
-        .replace("\"", "\"") + "\"";
-      if (stop) res+= "e";
-      System.out.println(res);
-      buffer = "";
-    }
-    System.out.flush();
-  }
   
   static void print(String s) {
-    if (escape) buffer += s;
-    else System.out.print(s);
+    System.out.print(s);
   }
   
   public static void println(String s) {
-    if (escape) print(s + "\n");
-    else System.out.println(s);
+    System.out.println(s);
   }
   
   private static String readFile(String path) {
