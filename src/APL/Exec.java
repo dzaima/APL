@@ -24,7 +24,7 @@ class Exec {
 
   private void printlvl(Object... args) {
     if (!Main.debug) return;
-    for (int i = 0; i < Main.printlvl; i++) System.out.print("  ");
+    for (int i = 0; i < Main.printlvl; i++) print("  ");
     Main.printdbg(args);
   }
 

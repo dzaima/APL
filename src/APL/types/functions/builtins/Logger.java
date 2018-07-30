@@ -9,7 +9,7 @@ public class Logger extends Value {
     setter = true;
   }
   public Obj set(Obj v) {
-    System.out.println((Main.debug? "[log] " : "")+v);
+    Main.println((Main.debug? "[log] " : "")+v);
     return v;
   }
   public String toString() {
