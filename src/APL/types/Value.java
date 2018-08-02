@@ -12,7 +12,7 @@ abstract public class Value extends Obj {
   public int ia; // item amount
   public Value[] arr;
   public Value prototype = Num.ZERO;
-  final ArrType valtype;
+  public final ArrType valtype;
   protected Value(ArrType type) {
     super(Type.array);
     valtype = type;

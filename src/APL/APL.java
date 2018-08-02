@@ -154,4 +154,14 @@ public class APL {
     a.prototype = Char.SPACE;
     return a;
   }
+  public static int compare(Value a, Value w) {
+    if (a.valtype == ArrType.num && w.valtype == ArrType.num) return ((Num)a).compareTo((Num)w);
+    throw new DomainError("comparing non-numbers"); // TODO not do that
+  }
+  public static Num compareObj(Value a, Value w) {
+    int c = compare(a, w);
+    if (c > 0) return Num.ONE;
+    if (c < 0) return Num.MINUS_ONE;
+    return Num.ZERO;
+  }
 }

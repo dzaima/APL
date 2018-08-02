@@ -4,9 +4,9 @@ import APL.*;
 import APL.types.*;
 
 public class Builtin extends Fun {
-  protected Builtin(String name) {
-    super(name.equals("←")? Type.set : Type.fn); // inline bc bad java
-    repr = name;
+  protected Builtin(String repr) {
+    super(repr.equals("←")? Type.set : Type.fn); // inline bc bad java
+    this.repr = repr;
   }
   public String toString() {
     return repr;

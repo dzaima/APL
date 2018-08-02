@@ -27,9 +27,9 @@ class Exec {
     for (int i = 0; i < APL.printlvl; i++) print("  ");
     APL.printdbg(args);
   }
-  Stack remaining;
+  private Stack remaining;
   Obj exec() {
-    if (sc.alphaDefined && ps.size() >= 2 && ps.get(0).repr.equals("⍺") && ps.get(1).type == TType.set) {
+    if (sc.alphaDefined && ps.size() >= 2 && "⍺".equals(ps.get(0).repr) && ps.get(1).type == TType.set) {
       if (APL.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
@@ -282,6 +282,17 @@ class Exec {
           return new DepthBuiltin();
         case '⊢':
           return new RTackBuiltin();
+        // comparisons
+        case '<':
+          return new LTBuiltin();
+        case '≤':
+          return new LEBuiltin();
+        case '=':
+          return new EQBuiltin();
+        case '≥':
+          return new GEBuiltin();
+        case '>':
+          return new GTBuiltin();
 
         // mops
         case '/':

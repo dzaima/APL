@@ -53,10 +53,11 @@ public class Num extends Value {
     return new Num(-num);
   }
 
-  public Num compareTo(Num n) {
-    if (num > n.num) return ONE;
-    if (num < n.num) return MINUS_ONE;
-    return ZERO;
+  public int compareTo(Num n) {
+    return Double.compare(num, n.num);
+//    if (num > n.num) return 1;
+//    if (num < n.num) return -1;
+//    return 0;
   }
 
   public int intValue() {
