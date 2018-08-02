@@ -34,7 +34,7 @@ public class Scope {
   public Obj get (String name) {
     if (name.startsWith("⎕")) {
       switch (name) {
-        case "⎕MILLIS": return new Num(System.currentTimeMillis() - APL.startingMillis);
+        case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
       }
     }
     Obj f = vars.get(name);

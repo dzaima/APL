@@ -64,7 +64,7 @@ public class Arr extends Value {
         }
       }
       if (all != null) {
-        if (APL.quotestrings || APL.prettyprint)
+        if (Main.quotestrings || Main.prettyprint)
           return "'" + all + "'";
         else return all.toString();
       }
@@ -75,9 +75,9 @@ public class Arr extends Value {
     if (ia == 0) return prototype == Num.ZERO? "⍬" : "''";
     String qs = quotedString();
     if (qs != null) return qs;
-    if (APL.prettyprint) {
+    if (Main.prettyprint) {
       if (rank == 0) return "⊂" + oneliner(new int[0]);
-      if (APL.debug && setter) return varName + ":" + oneliner(new int[0]);
+      if (Main.debug && setter) return varName + ":" + oneliner(new int[0]);
       return oneliner(new int[0]);
     } else {
       if (rank == 0 && !primitive()) return "⊂"+first().toString();

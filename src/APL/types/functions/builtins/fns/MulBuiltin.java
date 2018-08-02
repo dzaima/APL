@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.APL;
+import APL.Main;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
@@ -15,7 +15,7 @@ public class MulBuiltin extends Builtin {
 
   protected Value scall(Value w) {
     Num n = (Num) w;
-    return APL.compareObj(w, Num.ZERO);
+    return Main.compareObj(w, Num.ZERO);
   }
   protected Value scall(Value a, Value w) {
     return ((Num)a).times((Num)w);

@@ -1,6 +1,6 @@
 package APL.types;
 
-import static APL.APL.quotestrings;
+import static APL.Main.quotestrings;
 
 public class Char extends Value {
   public static final Char SPACE = new Char(' ');

@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import static APL.APL.up;
+import static APL.Main.up;
 
 public class TallyBuiltin extends Builtin {
   public TallyBuiltin() {

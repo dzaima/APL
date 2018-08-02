@@ -4,7 +4,7 @@ import APL.Scope;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import static APL.APL.up;
+import static APL.Main.up;
 
 public class IotaBuiltin extends Builtin {
   private Scope sc;

@@ -1,6 +1,6 @@
 package APL.types;
 
-import APL.APL;
+import APL.Main;
 import APL.Type;
 import APL.errors.DomainError;
 import APL.errors.RankError;
@@ -32,7 +32,7 @@ abstract public class Value extends Obj {
     return res;
   }
   public int toInt() {
-    if (valtype != ArrType.num) throw new DomainError("Expected number, got "+APL.human(valtype));
+    if (valtype != ArrType.num) throw new DomainError("Expected number, got "+ Main.human(valtype));
     Num n = (Num)this;
     return n.intValue();
   }
@@ -46,6 +46,6 @@ abstract public class Value extends Obj {
     return ia==0? prototype : arr[0];
   }
   protected String oneliner(int[] where) {
-    throw APL.up;
+    throw Main.up;
   }
 }

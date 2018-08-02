@@ -3,5 +3,5 @@ cd src
 shopt -s globstar
 javac -d ./build APL/**/*.java
 cd build
-jar cvfe APL.jar APL.APL * > /dev/null
+jar cvfe APL.jar APL.Main * > /dev/null
 mv APL.jar ../../APL.jar

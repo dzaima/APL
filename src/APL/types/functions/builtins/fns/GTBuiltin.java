@@ -5,7 +5,7 @@ import APL.types.Obj;
 import APL.types.Value;
 import APL.types.functions.Builtin;
 
-import static APL.APL.compare;
+import static APL.Main.compare;
 
 public class GTBuiltin extends Builtin {
   public GTBuiltin() {

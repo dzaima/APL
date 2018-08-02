@@ -10,7 +10,7 @@ import APL.types.functions.builtins.mops.*;
 import APL.types.functions.builtins.dops.*;
 import APL.types.functions.userDefined.UserDefined;
 
-import static APL.APL.*;
+import static APL.Main.*;
 
 class Exec {
   private Scope sc;
@@ -23,14 +23,14 @@ class Exec {
   }
 
   private void printlvl(Object... args) {
-    if (!APL.debug) return;
-    for (int i = 0; i < APL.printlvl; i++) print("  ");
-    APL.printdbg(args);
+    if (!Main.debug) return;
+    for (int i = 0; i < Main.printlvl; i++) print("  ");
+    Main.printdbg(args);
   }
   private Stack remaining;
   Obj exec() {
     if (sc.alphaDefined && ps.size() >= 2 && "⍺".equals(ps.get(0).repr) && ps.get(1).type == TType.set) {
-      if (APL.debug) printlvl("skipping cuz it's ⍺←");
+      if (Main.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
     var o = new Stack<Token>();
@@ -38,16 +38,16 @@ class Exec {
     o.addAll(ps);
     StringBuilder repr = new StringBuilder();
     for (Token t : ps) repr.append(t.toRepr()).append(" ");
-    if (APL.debug) printlvl("NEW:");
-    APL.printlvl++;
-    if (APL.debug) printlvl("code:", repr);
-    if (APL.debug) printlvl();
+    if (Main.debug) printlvl("NEW:");
+    Main.printlvl++;
+    if (Main.debug) printlvl("code:", repr);
+    if (Main.debug) printlvl();
     var done = new LinkedList<Obj>();
     ArrayList<Value> arr = null;
     while (o.size() > 0) {
       Token t = o.pop();
       Obj c = valueOf(t);
-      // if (APL.debug) printlvl("token", t.toRepr(), "-> object", c);
+      // if (Main.debug) printlvl("token", t.toRepr(), "-> object", c);
       if (c.isObj()) {
         if (arr != null) {
           arr.add((Value) c);
@@ -76,8 +76,8 @@ class Exec {
       else done.add(new Arr(arr, true));
     }
     update(done, true);
-    APL.printlvl--;
-    if (APL.debug) printlvl("END:", rev(done));
+    Main.printlvl--;
+    if (Main.debug) printlvl("END:", rev(done));
     if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression");
     return done.get(0);
   }
@@ -102,11 +102,11 @@ class Exec {
         var fn = (Fun)done.removeLast();
         done.addLast(new TableBuiltin().derive(fn));
       }
-      if (APL.debug) printlvl("UPDATE", rev(done));
+      if (Main.debug) printlvl("UPDATE", rev(done));
       run = false;
       if (is(done, "D!|NFN", end, false)) {
-        if (APL.debug) printlvl("NFN");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("NFN");
+        if (Main.debug) printlvl("before:", rev(done));
         var w = (Value) done.poll();
         var f = (Fun) done.poll();
         var a = (Value) done.poll();
@@ -118,8 +118,8 @@ class Exec {
         run = true;
       }
       if (is(done, "[FM←]|FN", end, false)) {
-        if (APL.debug) printlvl("FN");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("FN");
+        if (Main.debug) printlvl("before:", rev(done));
         var w = (Value) done.poll();
         var f = (Fun) done.poll();
         assert f != null;
@@ -130,8 +130,8 @@ class Exec {
         run = true;
       }
       if (is(done, "D!|N←.", end, false)) {
-        if (APL.debug) printlvl("N←.");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("N←.");
+        if (Main.debug) printlvl("before:", rev(done));
         var w = done.poll();
         var s = (SetBuiltin) done.poll(); // ←
         var a = (Value) done.poll();
@@ -140,8 +140,8 @@ class Exec {
         run = true;
       }
       if (is(done, "D!|NF←N", end, false)) {
-        if (APL.debug) printlvl("NF←.");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("NF←.");
+        if (Main.debug) printlvl("before:", rev(done));
         var w = (Value) done.poll();
         var s = (SetBuiltin) done.poll(); // ←
         var f = (Fun) done.poll(); // ←
@@ -151,16 +151,16 @@ class Exec {
         run = true;
       }
       if (is(done, "!D|[FN]M", end, true)) {
-        if (APL.debug) printlvl("FM");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("FM");
+        if (Main.debug) printlvl("before:", rev(done));
         var o = (Mop) done.remove(lastPtr);
         var f = (Fun) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
         run = true;
       }
       if (is(done, "[FN]D[FN]", end, true)) {
-        if (APL.debug) printlvl("FDF");
-        if (APL.debug) printlvl("before:", rev(done));
+        if (Main.debug) printlvl("FDF");
+        if (Main.debug) printlvl("before:", rev(done));
         var aa = done.removeLast();
         var o = (Dop) done.removeLast();
         var ww = done.removeLast();
@@ -168,7 +168,7 @@ class Exec {
         run = true;
       }
       if (run) {
-        if (APL.debug) printlvl("after:", rev(done));
+        if (Main.debug) printlvl("after:", rev(done));
       }
     }
   }
@@ -326,14 +326,14 @@ class Exec {
         case '⍹':
           return sc.get("⍹");
         default:
-          throw new Error("no built-in " + t.repr + " defined in exec");
+          throw new NYIError("no built-in " + t.repr + " defined in exec");
       }
     } else if (t.type == TType.number) return new Num(t.repr);
     else if (t.type == TType.str) return t.repr.length() == 1 ? new Char(t.repr) : string(t.repr);
     else if (t.type == TType.set) return new SetBuiltin();
     else if (t.type == TType.name) return sc.getVar(t.repr);
-    else if (t.type == TType.expr) return APL.execTok(t, sc);
+    else if (t.type == TType.expr) return Main.execTok(t, sc);
     else if (t.type == TType.usr) return UserDefined.of(t, sc);
-    else throw new Error("Unknown type: " + t.type);
+    else throw new NYIError("Unknown type: " + t.type);
   }
 }

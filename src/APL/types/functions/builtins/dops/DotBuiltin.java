@@ -3,7 +3,7 @@ package APL.types.functions.builtins.dops;
 import APL.types.*;
 import APL.types.functions.Dop;
 
-import static APL.APL.up;
+import static APL.Main.up;
 
 public class DotBuiltin extends Dop {
   public DotBuiltin() {

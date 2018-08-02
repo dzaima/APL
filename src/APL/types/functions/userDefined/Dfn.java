@@ -13,19 +13,19 @@ public class Dfn extends Fun {
     valid = 0x011;
   }
   public Obj call(Value w) {
-    APL.printdbg("dfn call", w);
+    Main.printdbg("dfn call", w);
     Scope sc = new Scope(psc);
     sc.set("⍺", new PlainVar("⍺", sc));
     sc.set("⍵", w);
-    return APL.execLines(token, sc);
+    return Main.execLines(token, sc);
   }
   public Obj call(Value a, Value w) {
-    APL.printdbg("dfn call", a, w);
+    Main.printdbg("dfn call", a, w);
     Scope sc = new Scope(psc);
     sc.set("⍺", a);
     sc.set("⍵", w);
     sc.alphaDefined = true;
-    return APL.execLines(token, sc);
+    return Main.execLines(token, sc);
   }
   public String toString() {
     return token.toRepr();

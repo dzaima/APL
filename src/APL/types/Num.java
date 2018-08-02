@@ -3,7 +3,6 @@ package APL.types;
 public class Num extends Value {
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
-  @SuppressWarnings("WeakerAccess")
   public static final Num MINUS_ONE = new Num("-1"); // dammit this should be public for later use
   private double num;
   public Num(String val) {

@@ -8,12 +8,12 @@ import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
-public class APL {
+public class Main {
   public static boolean debug = false;
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
   static int printlvl = 0;
-  public static Error up = new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
+  public static Error up = new Error("A problem has been detected and Main has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
   
   public static void main(String[] args) {
@@ -68,7 +68,7 @@ public class APL {
               Obj r = exec(cr, global);
               if (!r.shy) println(r.toString());
             }
-          } catch (APLError e) {
+          } catch (APLError | NYIError e) {
             String[] ns = e.getClass().getName().split("[$.]");
             colorprint(ns[ns.length - 1] + ": " + e.getMessage(), 246);
           } catch (java.util.NoSuchElementException e) {
