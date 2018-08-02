@@ -8,7 +8,8 @@ public abstract class Obj {
   public Obj (Type t) {
     type = t;
   }
-  protected String repr;
+  
+  public String repr;
   public boolean isObj() {
     return type==Type.array || type == Type.var;
   }

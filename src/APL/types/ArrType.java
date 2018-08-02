@@ -1,5 +1,5 @@
 package APL.types;
 
 public enum ArrType {
-  array, num, chr
+  array, num, chr, nothing
 }

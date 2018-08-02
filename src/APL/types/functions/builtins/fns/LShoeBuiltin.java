@@ -10,6 +10,7 @@ public class LShoeBuiltin extends Builtin {
   }
 
   public Obj call(Value w) {
+    if (w.primitive()) return w;
     return new Arr(new Value[]{w}, new int[0]);
   }
 }

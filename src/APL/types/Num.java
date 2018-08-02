@@ -46,8 +46,7 @@ public class Num extends Value {
     return new Num(num - w.num);
   }
   
-  @SuppressWarnings("unused")
-  Num conjugate() {
+  public Num conjugate() {
     return new Num(num); // no complex numbers :p
   }
   public Num negate() {
@@ -65,6 +64,10 @@ public class Num extends Value {
   }
 
   public String toString() {
+    if (num == (int)num) return Integer.toString((int)num);
+    return Double.toString(num);
+  }
+  protected String oneliner(int[] ignored) {
     if (num == (int)num) return Integer.toString((int)num);
     return Double.toString(num);
   }

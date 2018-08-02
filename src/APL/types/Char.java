@@ -1,5 +1,7 @@
 package APL.types;
 
+import static APL.APL.quotestrings;
+
 public class Char extends Value {
   public static final Char SPACE = new Char(' ');
   char chr;
@@ -15,6 +17,10 @@ public class Char extends Value {
   }
 
   public String toString() {
+    if (quotestrings) return "'"+chr+"'";
+    else return String.valueOf(chr);
+  }
+  protected String oneliner(int[] ignored) {
     return "'"+chr+"'";
   }
 }

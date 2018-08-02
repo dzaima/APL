@@ -11,6 +11,7 @@ import java.nio.file.*;
 public class APL {
   public static boolean debug = false;
   public static boolean prettyprint = false;
+  public static boolean quotestrings = false;
   static int printlvl = 0;
   public static Error up = new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
@@ -19,8 +20,9 @@ public class APL {
     try {
       Scope global = new Scope();
       if (args.length > 0) {
-        if (args[0].contains("d")) debug = true;
-        if (args[0].contains("p")) prettyprint = true;
+        debug = args[0].contains("d");
+        prettyprint = args[0].contains("p");
+        quotestrings = args[0].contains("q");
         if (args.length > 1) {
           int rest = args[0].contains("e") ? 2 : 1;
           for (int i = rest; i < args.length; i++) {
@@ -36,9 +38,8 @@ public class APL {
       }
       if (args.length == 0 || args[0].contains("r")) { // REPL
         Scanner console = new Scanner(System.in);
-        
-        while (true) {
-                  print("> ");
+        REPL: while (true) {
+          print("> ");
           try {
             String cr = console.nextLine();
             if (cr.equals("exit")) break;
@@ -52,6 +53,14 @@ public class APL {
                 case ")DEBUG":
                   debug = !debug;
                   break;
+                case ")QUOTE":
+                  quotestrings = !quotestrings;
+                  break;
+                case ")ONELINE":
+                  prettyprint = !prettyprint;
+                  break;
+                case ")OFF": case ")EXIT": case ")STOP":
+                  break REPL;
                 default:
                   throw new SyntaxError("Undefined user command");
               }
@@ -68,6 +77,7 @@ public class APL {
         }
       }
     } catch (Throwable e) {
+      e.printStackTrace();
       colorprint(e + ": " + e.getMessage(), 246);
     }
   }
@@ -80,7 +90,14 @@ public class APL {
   public static void println(String s) {
     System.out.println(s);
   }
-  
+  public static String human(ArrType t) {
+    switch (t) {
+      case array: return "array";
+      case chr: return "character";
+      case num: return "number";
+      default: throw new IllegalStateException();
+    }
+  }
   private static String readFile(String path) {
     try {
       byte[] encoded = Files.readAllBytes(Paths.get(path));

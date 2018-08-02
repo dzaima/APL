@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.errors.DomainError;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
@@ -13,8 +14,8 @@ public class PlusBuiltin extends Builtin {
   public Obj call(Value a, Value w) { return vec(a, w); }
 
   protected Value scall(Value w) {
-    // if (!(w instanceof Num)) throw up; TODO decide whether this should exist
-    return w;
+     if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number"); // TODO decide whether this should exist
+    return ((Num)w).conjugate();
   }
   protected Value scall(Value a, Value w) {
     return ((Num)a).plus((Num)w);

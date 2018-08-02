@@ -8,7 +8,7 @@ public class RTackBuiltin extends Builtin {
     super("⊢");
     valid = 0x011;
   }
-
-  public Obj call(Value w) { return w; }
+  
+  public Obj call(Value w) { w.shy = false; return w; }
   public Obj call(Value a, Value w) { return w; }
 }

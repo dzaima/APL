@@ -4,10 +4,11 @@ import java.util.*;
 import APL.errors.*;
 
 class Tokenizer {
-  private static final String validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
   private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢∆⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
-  private static boolean validName(String s) {
-    return validNames.contains(s);
+  private static boolean validName(char i) {
+    for (char c : validNames) if (c == i) return true;
+    return false;
   }
   static class Line {
     ArrayList<ArrayList<Token>> a;
@@ -63,10 +64,12 @@ class Tokenizer {
         tokens = lines.get(lines.size()-1);
         tokens.add(t);
         i++;
-      } else if (validName(cS)  ||  c=='⎕' && i+1<len && validName(s.charAt(i+1)+"")) {
+      } else if (validName(c)  ||  c=='⎕' && i+1<len && validName(s.charAt(i+1))) {
         i++;
-        while (i < len && validName(String.valueOf(s.charAt(i)))) i++; // TODO not lazy
-        tokens.add(new Token(TType.name, s.substring(si, i)));
+        while (i < len && validName(s.charAt(i))) i++;
+        var name = s.substring(si, i);
+        if (c == '⎕') name = name.toUpperCase();
+        tokens.add(new Token(TType.name, name));
       } else if (c >= '0' && c <= '9') {
         while (i < len && (c = s.charAt(i)) >= '0' && c <= '9') i++;
         tokens.add(new Token(TType.number, s.substring(si, i)));

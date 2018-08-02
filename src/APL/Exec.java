@@ -27,13 +27,14 @@ class Exec {
     for (int i = 0; i < APL.printlvl; i++) print("  ");
     APL.printdbg(args);
   }
-
+  Stack remaining;
   Obj exec() {
     if (sc.alphaDefined && ps.size() >= 2 && ps.get(0).repr.equals("⍺") && ps.get(1).type == TType.set) {
       if (APL.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
     var o = new Stack<Token>();
+    remaining = o;
     o.addAll(ps);
     StringBuilder repr = new StringBuilder();
     for (Token t : ps) repr.append(t.toRepr()).append(" ");
@@ -93,34 +94,47 @@ class Exec {
 
   private void update(LinkedList<Obj> done, boolean end) {
     boolean run = true;
+    if (done.size() == 1 && done.get(0) == null) return;
     while (run) {
+      if (done.size() >= 3 && "∘".equals(done.getLast().repr) && ".".equals(done.get(done.size() - 2).repr)) {
+        done.removeLast();
+        done.removeLast();
+        var fn = (Fun)done.removeLast();
+        done.addLast(new TableBuiltin().derive(fn));
+      }
       if (APL.debug) printlvl("UPDATE", rev(done));
       run = false;
       if (is(done, "D!|NFN", end, false)) {
         if (APL.debug) printlvl("NFN");
         if (APL.debug) printlvl("before:", rev(done));
-        Value w = (Value) done.poll();
-        Fun f = (Fun) done.poll();
-        Value a = (Value) done.poll();
+        var w = (Value) done.poll();
+        var f = (Fun) done.poll();
+        var a = (Value) done.poll();
         assert f != null;
-        done.addFirst(f.call(a, w));
+        var res = f.call(a, w);
+        if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
+        done.addFirst(res);
+        if (res == null) return;
         run = true;
       }
       if (is(done, "[FM←]|FN", end, false)) {
         if (APL.debug) printlvl("FN");
         if (APL.debug) printlvl("before:", rev(done));
-        Value w = (Value) done.poll();
-        Fun f = (Fun) done.poll();
+        var w = (Value) done.poll();
+        var f = (Fun) done.poll();
         assert f != null;
-        done.addFirst(f.call(w));
+        var res = f.call(w);
+        if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
+        done.addFirst(res);
+        if (res == null) return;
         run = true;
       }
       if (is(done, "D!|N←.", end, false)) {
         if (APL.debug) printlvl("N←.");
         if (APL.debug) printlvl("before:", rev(done));
-        Obj w = done.poll();
-        SetBuiltin s = (SetBuiltin) done.poll(); // ←
-        Value a = (Value) done.poll();
+        var w = done.poll();
+        var s = (SetBuiltin) done.poll(); // ←
+        var a = (Value) done.poll();
         assert s != null;
         done.addFirst(s.call(a, w));
         run = true;
@@ -128,9 +142,9 @@ class Exec {
       if (is(done, "D!|NF←N", end, false)) {
         if (APL.debug) printlvl("NF←.");
         if (APL.debug) printlvl("before:", rev(done));
-        Value w = (Value) done.poll();
-        SetBuiltin s = (SetBuiltin) done.poll(); // ←
-        Fun f = (Fun) done.poll(); // ←
+        var w = (Value) done.poll();
+        var s = (SetBuiltin) done.poll(); // ←
+        var f = (Fun) done.poll(); // ←
         Value a = (Value) done.poll();
         assert s != null;
         done.addFirst(s.call(f, a, w));
@@ -139,17 +153,17 @@ class Exec {
       if (is(done, "!D|[FN]M", end, true)) {
         if (APL.debug) printlvl("FM");
         if (APL.debug) printlvl("before:", rev(done));
-        Mop o = (Mop) done.remove(lastPtr);
-        Fun f = (Fun) done.remove(lastPtr);
+        var o = (Mop) done.remove(lastPtr);
+        var f = (Fun) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
         run = true;
       }
       if (is(done, "[FN]D[FN]", end, true)) {
         if (APL.debug) printlvl("FDF");
         if (APL.debug) printlvl("before:", rev(done));
-        Obj aa = done.removeLast();
-        Dop o = (Dop) done.removeLast();
-        Obj ww = done.removeLast();
+        var aa = done.removeLast();
+        var o = (Dop) done.removeLast();
+        var ww = done.removeLast();
         done.addLast(o.derive(aa, ww));
         run = true;
       }
@@ -249,7 +263,7 @@ class Exec {
         case '⊂':
           return new LShoeBuiltin();
         case '⊃':
-          return new RShoeBuiltin();
+          return new RShoeBuiltin(sc);
         case '-':
           return new MinusBuiltin();
         case '÷':
@@ -276,10 +290,14 @@ class Exec {
           return new EachBuiltin();
         case '⍨':
           return new SelfieBuiltin();
+        case '⌾':
+          return new TableBuiltin();
 
         // dops
         case '∘':
           return new JotBuiltin();
+        case '.':
+          return new DotBuiltin();
         case '⍣':
           return new RepeatBuiltin();
 
