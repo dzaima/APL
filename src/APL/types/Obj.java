@@ -35,4 +35,8 @@ public abstract class Obj {
     setter = true;
     return this;
   }
+  public boolean equals (Obj o) {
+    if (Main.debug) Main.printdbg("non-overriden equals called");
+    return false;
+  }
 }

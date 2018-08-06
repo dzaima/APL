@@ -258,65 +258,40 @@ class Exec {
       switch (t.repr.charAt(0)) {
 
         // fns
-        case '+':
-          return new PlusBuiltin();
-        case '⊂':
-          return new LShoeBuiltin();
-        case '⊃':
-          return new RShoeBuiltin(sc);
-        case '-':
-          return new MinusBuiltin();
-        case '÷':
-          return new DivBuiltin();
-        case '×':
-          return new MulBuiltin();
-        case '⍳':
-          return new IotaBuiltin(sc);
-        case '⍴':
-          return new RhoBuiltin();
-        case ',':
-          return new CatBuiltin();
-        case '≢':
-          return new TallyBuiltin();
-        case '≡':
-          return new DepthBuiltin();
-        case '⊢':
-          return new RTackBuiltin();
+        case '+': return new PlusBuiltin();
+        case '⊂': return new LShoeBuiltin();
+        case '⊃': return new RShoeBuiltin(sc);
+        case '-': return new MinusBuiltin();
+        case '÷': return new DivBuiltin();
+        case '×': return new MulBuiltin();
+        case '⍳': return new IotaBuiltin(sc);
+        case '⍴': return new RhoBuiltin();
+        case ',': return new CatBuiltin();
+        case '≢': return new TallyBuiltin();
+        case '≡': return new DepthBuiltin();
+        case '⊢': return new RTackBuiltin();
         // comparisons
-        case '<':
-          return new LTBuiltin();
-        case '≤':
-          return new LEBuiltin();
-        case '=':
-          return new EQBuiltin();
-        case '≥':
-          return new GEBuiltin();
-        case '>':
-          return new GTBuiltin();
+        case '<': return new LTBuiltin();
+        case '≤': return new LEBuiltin();
+        case '=': return new EQBuiltin();
+        case '≥': return new GEBuiltin();
+        case '>': return new GTBuiltin();
+        case '≠': return new NEBuiltin();
 
         // mops
-        case '/':
-          return new ReduceBuiltin();
-        case '¨':
-          return new EachBuiltin();
-        case '⍨':
-          return new SelfieBuiltin();
-        case '⌾':
-          return new TableBuiltin();
+        case '/': return new ReduceBuiltin();
+        case '¨': return new EachBuiltin();
+        case '⍨': return new SelfieBuiltin();
+        case '⌾': return new TableBuiltin();
 
         // dops
-        case '∘':
-          return new JotBuiltin();
-        case '.':
-          return new DotBuiltin();
-        case '⍣':
-          return new RepeatBuiltin();
+        case '∘': return new JotBuiltin();
+        case '.': return new DotBuiltin();
+        case '⍣': return new RepeatBuiltin();
 
 
-        case '⍬':
-          return new Arr();
-        case '⎕':
-          return new Logger();
+        case '⍬': return new Arr();
+        case '⎕': return new Logger();
         case '⍺':
           return sc.get("⍺");
         case '⍵':

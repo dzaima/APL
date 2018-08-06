@@ -1,4 +1,5 @@
 #!/bin/bash
+rm APL.jar
 cd src
 shopt -s globstar
 javac -d ./build APL/**/*.java

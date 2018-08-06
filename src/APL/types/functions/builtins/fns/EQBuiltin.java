@@ -9,7 +9,7 @@ import static APL.Main.compare;
 
 public class EQBuiltin extends Builtin {
   public EQBuiltin() {
-    super("");
+    super("=");
     valid = 0x010;
   }
   

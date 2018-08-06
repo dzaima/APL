@@ -49,31 +49,25 @@ public class Arr extends Value {
     ia = tia;
     arr = new Value[ia];
   }
-  private String quotedString() {
+  public String string(boolean quote) {
     if (rank == 1 && shape[0] != 1) { // strings
       StringBuilder all = new StringBuilder();
       for (Value v : arr) {
         if (v.valtype == ArrType.chr) {
           char c = ((Char)v).chr;
-          if (c == '\'') all.append("''");
+          if (quote && c == '\'') all.append("''");
           else all.append(c);
-        }
-        else {
-          all = null;
-          break;
-        }
+        } else return null;
       }
-      if (all != null) {
-        if (Main.quotestrings || Main.prettyprint)
-          return "'" + all + "'";
-        else return all.toString();
-      }
+      if (quote)
+        return "'" + all + "'";
+      else return all.toString();
     }
     return null;
   }
   public String toString() {
     if (ia == 0) return prototype == Num.ZERO? "⍬" : "''";
-    String qs = quotedString();
+    String qs = string(Main.quotestrings || Main.prettyprint);
     if (qs != null) return qs;
     if (Main.prettyprint) {
       if (rank == 0) return "⊂" + oneliner(new int[0]);
@@ -175,7 +169,7 @@ public class Arr extends Value {
     }
   }
   protected String oneliner(int[] where) {
-    var qs = quotedString();
+    var qs = string(true);
     if (qs != null) return qs;
     StringBuilder res = new StringBuilder(where.length == 0 ? "{" : "[");
     if (rank == 0) {

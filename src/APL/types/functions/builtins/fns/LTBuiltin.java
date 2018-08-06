@@ -8,7 +8,7 @@ import static APL.Main.compare;
 
 public class LTBuiltin extends Builtin {
   public LTBuiltin() {
-    super("");
+    super("<");
     valid = 0x010;
   }
   

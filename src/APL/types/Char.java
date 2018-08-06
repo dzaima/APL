@@ -4,7 +4,7 @@ import static APL.Main.quotestrings;
 
 public class Char extends Value {
   public static final Char SPACE = new Char(' ');
-  char chr;
+  public char chr;
   public Char(char c) {
     super(ArrType.chr);
     prototype = SPACE;

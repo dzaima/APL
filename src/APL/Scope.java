@@ -1,5 +1,6 @@
 package APL;
 
+import APL.errors.DomainError;
 import APL.types.*;
 
 import java.util.HashMap;
@@ -8,8 +9,9 @@ public class Scope {
   private HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
   public boolean alphaDefined;
-  Scope() {
+  public Scope() {
     vars.put("⎕IO", new Num("1"));
+    vars.put("⎕COND", Main.string("01"));
   }
   public Scope(Scope p) {
     parent = p;
@@ -27,6 +29,16 @@ public class Scope {
     return val;
   }
   public Obj set (String name, Obj val) { // sets in current scope
+    if (name.equals("⎕COND")) {
+      if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type));
+      String s = ((Arr)val).string(false);
+      if (s == null) throw new DomainError("⎕COND must be set to a character vector");
+      String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
+      
+      if (!m.equals("01") && !m.equals(">0") && !m.equals("≠0")) {
+        throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
+      }
+    }
     vars.put(name, val);
     return val;
   }

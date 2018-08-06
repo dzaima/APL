@@ -25,8 +25,12 @@ class Tokenizer {
     var levels = new ArrayList<Line>();
     levels.add(new Line(new ArrayList<>(), '⋄'));
     levels.get(0).a.add(new ArrayList<>());
-    int li = -1;
+    int li = 0;
     int len = s.length();
+    String[] rlines = s.split("\n", -1);
+    String crline = rlines[0];
+    int crlinei = 0;
+    int reprpos = 0;
     for (int i = 0; i < len; li = i) {
       var lines = levels.get(levels.size()-1).a;
       var tokens = lines.get(lines.size()-1);
@@ -79,6 +83,12 @@ class Tokenizer {
       } else if (c == '←') {
         tokens.add(new Token(TType.set));
         i++;
+      } else if (c == ':') {
+        if (s.charAt(i+1) == ':') {
+          tokens.add(new Token(TType.errGuard));
+          i++;
+        } else tokens.add(new Token(TType.guard));
+        i++;
       } else if (c == '\'') {
         StringBuilder str = new StringBuilder();
         i++;
@@ -98,6 +108,10 @@ class Tokenizer {
         if (tokens.size() > 0) {
           lines.add(new ArrayList<>());
         }
+        if (c == '\n') {
+          reprpos-= 1;
+          crline = rlines[++crlinei];
+        }
         i++;
       } else if (c == '⍝') {
         i++;
@@ -110,7 +124,8 @@ class Tokenizer {
       //  printdbg("> "+(c+"").replace("\n","\\n"));
       //  printdbg("curr: "+join(levels, "|"));
       //}
-      assert(li < i); // nothing changed!
+      assert li < i; // nothing changed!
+      reprpos+= i-li;
     }
     if (levels.size() != 1) throw new SyntaxError("error matching parentheses"); // or too many
     var lines = levels.get(0).a;

@@ -9,7 +9,7 @@ import static APL.Main.compare;
 
 public class GEBuiltin extends Builtin {
   public GEBuiltin() {
-    super("");
+    super("≥");
     valid = 0x010;
   }
   

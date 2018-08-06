@@ -4,16 +4,15 @@ import APL.types.Num;
 import APL.types.Obj;
 import APL.types.Value;
 import APL.types.functions.Builtin;
-
 import static APL.Main.compare;
 
-public class LEBuiltin extends Builtin {
-  public LEBuiltin() {
-    super("≤");
+public class NEBuiltin extends Builtin {
+  public NEBuiltin() {
+    super("≠");
     valid = 0x010;
   }
   
   public Obj call(Value a, Value w) {
-    return compare(a, w)<=0? Num.ONE : Num.ZERO;
+    return compare(a, w)!=0? Num.ONE : Num.ZERO;
   }
 }

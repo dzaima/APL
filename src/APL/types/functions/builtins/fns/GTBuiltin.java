@@ -9,7 +9,7 @@ import static APL.Main.compare;
 
 public class GTBuiltin extends Builtin {
   public GTBuiltin() {
-    super("");
+    super(">");
     valid = 0x010;
   }
   

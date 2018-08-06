@@ -58,6 +58,12 @@ public class Num extends Value {
 //    if (num < n.num) return -1;
 //    return 0;
   }
+  public boolean equals(Obj n) {
+    if (n instanceof Num) {
+      return ((Num)n).num == num;
+    }
+    return false;
+  }
 
   public int intValue() {
     return (int)num;

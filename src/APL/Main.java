@@ -13,7 +13,7 @@ public class Main {
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
   static int printlvl = 0;
-  public static Error up = new Error("A problem has been detected and Main has been shut down to prevent damage to your computer.");
+  public static Error up = new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
   
   public static void main(String[] args) {
@@ -61,6 +61,9 @@ public class Main {
                   break;
                 case ")OFF": case ")EXIT": case ")STOP":
                   break REPL;
+                case ")TOKENIZE": println(Tokenizer.tokenize(cr.substring(t.length())).toTree(""));
+                case ")TOKENIZEREPR": println(Tokenizer.tokenize(cr.substring(t.length())).toRepr());
+                  break ;
                 default:
                   throw new SyntaxError("Undefined user command");
               }
@@ -98,6 +101,16 @@ public class Main {
       default: throw new IllegalStateException();
     }
   }
+  static String human(Type t) {
+    switch (t) {
+      case array: return "array";
+      case var: return "variable";
+      case  fn: case  bfn: return "function";
+      case mop: case bmop: return "monadic operator";
+      case dop: case bdop: return "dyadic operator";
+      default: throw new IllegalStateException();
+    }
+  }
   private static String readFile(String path) {
     try {
       byte[] encoded = Files.readAllBytes(Paths.get(path));
@@ -107,7 +120,8 @@ public class Main {
     }
   }
   
-  private static Obj exec(String s, Scope sc) {
+  @SuppressWarnings("WeakerAccess")
+  public static Obj exec(String s, Scope sc) {
     Token t = Tokenizer.tokenize(s);
     printdbg(t);
     return execLines(t, sc);
@@ -163,5 +177,28 @@ public class Main {
     if (c > 0) return Num.ONE;
     if (c < 0) return Num.MINUS_ONE;
     return Num.ZERO;
+  }
+  public static boolean bool(Value v, Scope sc) {
+    String cond = ((Arr)sc.get("⎕COND")).string(false);
+    assert cond != null;
+    if (cond.endsWith(" ")) {
+      if (v instanceof Char) {
+        return ((Char) v).chr != ' ';
+      }
+      cond = cond.substring(0, cond.length()-2);
+    }
+    if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type));
+    Num n = (Num) v;
+    switch (cond) {
+      case "01":
+        if (n.equals(Num.ZERO)) return false;
+        if (n.equals(Num.ONE)) return true;
+        throw new DomainError("⎕COND='01' expected 0 or 1, got "+n.toInt());
+      case ">0":
+        return n.compareTo(Num.ZERO)>0;
+      case "≠0":
+        return n.compareTo(Num.ZERO)!=0;
+      default: throw new IllegalStateException("unknown ⎕COND "+cond);
+    }
   }
 }
