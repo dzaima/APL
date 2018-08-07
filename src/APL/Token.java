@@ -2,25 +2,34 @@ package APL;
 
 import java.util.*;
 
+import static APL.Main.up;
+
 public class Token {
   public TType type;
   public String repr;
   public ArrayList<Token> tokens;
   public String line;
   public int pos;
-  Token (TType t, String s) {
+  Token (TType t, String s, int pos, String line) {
     type = t;
     repr = s;
+    this.line = line;
+    this.pos = pos;
   }
   Token (TType t, ArrayList<Token> s) {
     assert(t==TType.expr||t==TType.lines||t==TType.pick||t==TType.usr);
     type = t;
     tokens = s;
+    if (s.size() == 0) throw up;
+    this.line = s.get(0).line;
+    this.pos = s.get(0).pos;
   }
-  Token (TType t) {
+  Token (TType t, int pos, String line) {
     type = t;
     if (type == TType.set) repr = "←";
     if (type == TType.lines) tokens = new ArrayList<>();
+    this.line = line;
+    this.pos = pos;
   }
   public String toString() {
     return toRepr();

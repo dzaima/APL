@@ -18,7 +18,7 @@ public class Dmop extends Mop {
   }
   public Obj call(Obj aa, Value w) {
     printdbg("dmop call", w);
-    Scope sc = new Scope(psc);
+    sc = new Scope(psc);
     sc.set("⍶", aa);
     sc.set("⍺", new PlainVar("⍺", sc));
     sc.set("⍵", w);
@@ -26,7 +26,7 @@ public class Dmop extends Mop {
   }
   public Obj call(Obj aa, Value a, Value w) {
     printdbg("dmop call", a, w);
-    Scope sc = new Scope(psc);
+    sc = new Scope(psc);
     sc.set("⍶", aa);
     sc.set("⍺", a);
     sc.set("⍵", w);

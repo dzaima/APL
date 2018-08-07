@@ -8,7 +8,9 @@ public class Num extends Value {
   public Num(String val) {
     super(ArrType.num);
     repr = val;
-    num = Double.parseDouble(val);
+    if (val.startsWith("¯")) {
+      num = -Double.parseDouble(val.substring(1));
+    } else num = Double.parseDouble(val);
   }
 
   public Num (Num num) {

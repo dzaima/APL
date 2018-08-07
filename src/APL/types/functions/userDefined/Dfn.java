@@ -14,14 +14,14 @@ public class Dfn extends Fun {
   }
   public Obj call(Value w) {
     Main.printdbg("dfn call", w);
-    Scope sc = new Scope(psc);
+    sc = new Scope(psc);
     sc.set("⍺", new PlainVar("⍺", sc));
     sc.set("⍵", w);
     return Main.execLines(token, sc);
   }
   public Obj call(Value a, Value w) {
     Main.printdbg("dfn call", a, w);
-    Scope sc = new Scope(psc);
+    sc = new Scope(psc);
     sc.set("⍺", a);
     sc.set("⍵", w);
     sc.alphaDefined = true;

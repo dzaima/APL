@@ -19,6 +19,7 @@ public class Main {
   public static void main(String[] args) {
     try {
       Scope global = new Scope();
+      Throwable lastError = null;
       if (args.length > 0) {
         debug = args[0].contains("d");
         prettyprint = args[0].contains("p");
@@ -28,11 +29,19 @@ public class Main {
           for (int i = rest; i < args.length; i++) {
             String s = readFile(args[i]);
             if (s == null) colorprint("File " + args[i] + " not found", 246);
-            else exec(s, global);
+            else try {
+            exec(s, global);
+            } catch (APLError e) {
+              e.print();
+            }
           }
           if (args[0].contains("e")) {
-            Obj r = exec(args[1], global);
-            if (!r.shy) println(r.toString());
+            try {
+              Obj r = exec(args[1], global);
+              if (!r.shy) println(r.toString());
+            } catch (APLError e) {
+              e.print();
+            }
           }
         }
       }
@@ -46,6 +55,7 @@ public class Main {
             if (cr.startsWith(")")) {
               String[] parts = cr.split(" ");
               String t = parts[0].toUpperCase();
+              String rest = cr.substring(t.length());
               switch (t) {
                 case ")EX":
                   exec(readFile(parts[1]), global);
@@ -61,9 +71,15 @@ public class Main {
                   break;
                 case ")OFF": case ")EXIT": case ")STOP":
                   break REPL;
-                case ")TOKENIZE": println(Tokenizer.tokenize(cr.substring(t.length())).toTree(""));
-                case ")TOKENIZEREPR": println(Tokenizer.tokenize(cr.substring(t.length())).toRepr());
-                  break ;
+                case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
+                case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
+                case ")TYPE": println( exec(rest, global).type.toString() ); break;
+                case ")ATYPE": println( ((Value) exec(rest, global)).valtype.toString() ); break;
+                case ")STACK":
+                  if (lastError != null) {
+                    lastError.printStackTrace();
+                  }
+                  break;
                 default:
                   throw new SyntaxError("Undefined user command");
               }
@@ -71,9 +87,9 @@ public class Main {
               Obj r = exec(cr, global);
               if (!r.shy) println(r.toString());
             }
-          } catch (APLError | NYIError e) {
-            String[] ns = e.getClass().getName().split("[$.]");
-            colorprint(ns[ns.length - 1] + ": " + e.getMessage(), 246);
+          } catch (APLError e) {
+            e.print();
+            lastError = e;
           } catch (java.util.NoSuchElementException e) {
             break; // REPL ended
           }
@@ -93,15 +109,16 @@ public class Main {
   public static void println(String s) {
     System.out.println(s);
   }
-  public static String human(ArrType t) {
+  public static String human(ArrType t, boolean article) {
     switch (t) {
-      case array: return "array";
-      case chr: return "character";
-      case num: return "number";
+      case array:  return article? "an array"    : "array";
+      case chr:    return article? "a character" : "character";
+      case num:    return article? "a number"    : "number";
+      case nothing:return "nothing";
       default: throw new IllegalStateException();
     }
   }
-  static String human(Type t) {
+  public static String human(Type t) {
     switch (t) {
       case array: return "array";
       case var: return "variable";
@@ -150,7 +167,7 @@ public class Main {
     return new Exec(ln, sc).exec();
   }
   
-  static void colorprint(String s, int col) {
+  public static void colorprint(String s, int col) {
     println("\u001b[38;5;" + col + "m" + s + "\u001b[0m");
     //println("\u001b["+col+"m"+s+"\u001b[0m");
   }
@@ -161,10 +178,15 @@ public class Main {
     return new Arr(va);
   }
   
-  public static Arr string(String s) {
+  public static Arr toAPL(String s, Token t) {
     var vs = new ArrayList<Value>();
-    for (char c : s.toCharArray()) vs.add(new Char(c));
+    for (char c : s.toCharArray()) {
+      Char chr = new Char(c);
+      chr.token = t;
+      vs.add(chr);
+    }
     Arr a = new Arr(vs);
+    a.token = t;
     a.prototype = Char.SPACE;
     return a;
   }
@@ -193,7 +215,7 @@ public class Main {
       case "01":
         if (n.equals(Num.ZERO)) return false;
         if (n.equals(Num.ONE)) return true;
-        throw new DomainError("⎕COND='01' expected 0 or 1, got "+n.toInt());
+        throw new DomainError("⎕COND='01' expected 0 or 1, got "+n.toInt(null));
       case ">0":
         return n.compareTo(Num.ZERO)>0;
       case "≠0":

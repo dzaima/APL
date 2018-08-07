@@ -8,6 +8,7 @@ public abstract class Obj {
   public Obj (Type t) {
     type = t;
   }
+  public Token token;
   
   public String repr;
   public boolean isObj() {

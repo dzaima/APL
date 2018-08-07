@@ -5,6 +5,7 @@ import APL.*;
 import APL.errors.*;
 
 public abstract class Fun extends Obj {
+  public Scope sc;
   public Fun(Type t) {
     super(t);
   }
@@ -15,7 +16,7 @@ public abstract class Fun extends Obj {
     for (int i = 0; i < 3; i++) {
       if (1 == (0xf & (valid >> 4*(2-i)))) {
         if (sb.length() > 0) sb.append("/");
-        sb.append(new String[]{"niladic", "monadic", "dyadic"}[i]);
+        sb.append(new String[]{"niladic", "dyadic", "monadic"}[i]);
       }
     }
     return sb.toString();
@@ -33,11 +34,11 @@ public abstract class Fun extends Obj {
   protected Value vec(Value w) {
     if (!w.primitive()) {
       Arr o = ((Arr)w);
-      Arr n = new Arr(o.shape);
+      Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        n.arr[i] = vec(o.arr[i]);
+        arr[i] = vec(o.arr[i]);
       }
-      return n;
+      return new Arr(arr, o.shape);
     } else return scall(w);
   }
   protected Value vec(Value a, Value w) {
@@ -47,29 +48,29 @@ public abstract class Fun extends Obj {
         return scall(a, w);
       } else {
         Arr ow = ((Arr)w);
-        Arr n = new Arr(ow.shape);
+        Value[] arr = new Value[ow.ia];
         for (int i = 0; i < ow.ia; i++) {
-          n.arr[i] = vec(a, ow.arr[i]);
+          arr[i] = vec(a, ow.arr[i]);
         }
-        return n;
+        return new Arr(arr, ow.shape);
       }
     } else {
       if (w.primitive()) {
         Arr oa = ((Arr)a);
-        Arr n = new Arr(oa.shape);
+        Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          n.arr[i] = vec(oa.arr[i], w);
+          arr[i] = vec(oa.arr[i], w);
         }
-        return n;
+        return new Arr(arr, oa.shape);
       } else {
         Arr oa = ((Arr)a);
         Arr ow = ((Arr)w);
         if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes not equal");
-        Arr n = new Arr(oa.shape);
+        Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          n.arr[i] = vec(oa.arr[i], ow.arr[i]);
+          arr[i] = vec(oa.arr[i], ow.arr[i]);
         }
-        return n;
+        return new Arr(arr, oa.shape);
       }
     }
   }

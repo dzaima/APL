@@ -4,6 +4,7 @@ import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
+import static APL.Main.human;
 import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
@@ -20,20 +21,29 @@ public class RhoBuiltin extends Builtin {
     //}
     return toAPL(sh);
   }
-  public Obj call(Value a, Value w) {
-    if (a.rank > 1) throw new DomainError("multidimensional shape");
+  public Obj call(Value a, Value w) { // TODO ⍬ 2 ⍴ ⍳6
+    if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
     int[] sh = new int[a.arr.length];
     int ia = 1;
     for (int i = 0; i < sh.length; i++) {
-      int c = ((Num)a.arr[i]).intValue();
+      Value v = a.arr[i];
+      if (! (v instanceof Num)) throw new DomainError("shape for ⍴ contained "+human(v.valtype, true), this, v);
+      int c = ((Num) v).intValue();
       sh[i] = c;
       ia*= c;
     }
     Value[] arr = new Value[ia];
-    int index = 0;
-    for (int i = 0; i < ia; i++) {
-      arr[i] = w.arr[index++];
-      if (index == w.ia) index = 0;
+    if (w.ia == 0) {
+      var prototype = w.prototype;
+      for (int i = 0; i < ia; i++) {
+        arr[i] = prototype;
+      }
+    } else {
+      int index = 0;
+      for (int i = 0; i < ia; i++) {
+        arr[i] = w.arr[index++];
+        if (index == w.ia) index = 0;
+      }
     }
     return new Arr(arr, sh);
   }

@@ -14,10 +14,12 @@ public class PlusBuiltin extends Builtin {
   public Obj call(Value a, Value w) { return vec(a, w); }
 
   protected Value scall(Value w) {
-     if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number"); // TODO decide whether this should exist
+     if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
     return ((Num)w).conjugate();
   }
   protected Value scall(Value a, Value w) {
+    if (!(w instanceof Num)) throw new DomainError("+ on non-number ⍵", this, w);
+    if (!(a instanceof Num)) throw new DomainError("+ on non-number ⍺", this, a);
     return ((Num)a).plus((Num)w);
   }
 }

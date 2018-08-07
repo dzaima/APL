@@ -73,21 +73,22 @@ class Tokenizer {
         while (i < len && validName(s.charAt(i))) i++;
         var name = s.substring(si, i);
         if (c == '⎕') name = name.toUpperCase();
-        tokens.add(new Token(TType.name, name));
-      } else if (c >= '0' && c <= '9') {
+        tokens.add(new Token(TType.name, name, reprpos, crline));
+      } else if (c >= '0' && c <= '9' || c == '¯') {
+        i++;
         while (i < len && (c = s.charAt(i)) >= '0' && c <= '9') i++;
-        tokens.add(new Token(TType.number, s.substring(si, i)));
+        tokens.add(new Token(TType.number, s.substring(si, i), reprpos, crline));
       } else if (ops.contains(cS)) {
-        tokens.add(new Token(TType.op, cS));
+        tokens.add(new Token(TType.op, cS, reprpos, crline));
         i++;
       } else if (c == '←') {
-        tokens.add(new Token(TType.set));
+        tokens.add(new Token(TType.set, reprpos, crline));
         i++;
       } else if (c == ':') {
         if (s.charAt(i+1) == ':') {
-          tokens.add(new Token(TType.errGuard));
+          tokens.add(new Token(TType.errGuard, reprpos, crline));
           i++;
-        } else tokens.add(new Token(TType.guard));
+        } else tokens.add(new Token(TType.guard, reprpos, crline));
         i++;
       } else if (c == '\'') {
         StringBuilder str = new StringBuilder();
@@ -103,7 +104,7 @@ class Tokenizer {
           if (i >= len) throw new SyntaxError("unfinished string");
         }
         i++;
-        tokens.add(new Token(TType.str, str.toString()));
+        tokens.add(new Token(TType.str, str.toString(), reprpos, crline));
       } else if (c == '\n' || c == '⋄' || c == '\r') {
         if (tokens.size() > 0) {
           lines.add(new ArrayList<>());

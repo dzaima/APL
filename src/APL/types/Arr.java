@@ -37,18 +37,18 @@ public class Arr extends Value {
       }
     } else arr = v;
   }
-  public Arr (int[] ps) {
-    super(ArrType.array);
-    rank = ps.length;
-    shape = new int[rank];
-    int tia = 1;
-    for (int i = 0; i < ps.length; i++) {
-      tia*= ps[i];
-      shape[i] = ps[i];
-    }
-    ia = tia;
-    arr = new Value[ia];
-  }
+//  public Arr (int[] ps) {
+//    super(ArrType.array);
+//    rank = ps.length;
+//    shape = new int[rank];
+//    int tia = 1;
+//    for (int i = 0; i < ps.length; i++) {
+//      tia*= ps[i];
+//      shape[i] = ps[i];
+//    }
+//    ia = tia;
+//    arr = new Value[ia];
+//  }
   public String string(boolean quote) {
     if (rank == 1 && shape[0] != 1) { // strings
       StringBuilder all = new StringBuilder();
@@ -77,14 +77,17 @@ public class Arr extends Value {
       if (rank == 0 && !primitive()) return "⊂"+first().toString();
       if (rank == 1) {
         StringBuilder res = new StringBuilder();
+        var simple = true;
         for (Value v : arr) {
+          simple &= v.primitive();
           if (res.length() > 0) res.append(" ");
           res.append(v.toString());
         }
-        return res.toString();
-      } else if (rank == 2) {
-        int w = shape[1];
-        int h = shape[0];
+        if (simple) return res.toString();
+      }
+      if (rank < 3) {
+        int w = rank==1? shape[0] : shape[1];
+        int h = rank==1? 1 : shape[0];
         String[][][] stringified = new String[w][h][];
         int[][] itemWidths = new int[w][h];
         int[] widths = new int[w];
@@ -103,7 +106,7 @@ public class Arr extends Value {
           heights[y] = Math.max(heights[y], c.length);
           stringified[x][y] = c;
           x++;
-          if (x==shape[1]) {
+          if (x==w) {
             x = 0;
             y++;
           }
@@ -197,17 +200,6 @@ public class Arr extends Value {
     int x = 0;
     for (int i = 0; i < rank; i++) {
       x+= pos[i];
-      if (i != rank-1) x*= shape[i+1];
-    }
-    return arr[x];
-  }
-  public Value at(int[] pos, int IO) {
-    if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length);
-    int x = 0;
-    for (int i = 0; i < rank; i++) {
-      if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i]);
-      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i]);
-      x+= pos[i]-IO;
       if (i != rank-1) x*= shape[i+1];
     }
     return arr[x];

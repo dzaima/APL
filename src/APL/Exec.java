@@ -129,12 +129,12 @@ class Exec {
         if (res == null) return;
         run = true;
       }
-      if (is(done, "D!|N←.", end, false)) {
+      if (is(done, "D!|N←.,D!|F←F,D!|D←D,D!|M←M", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         if (Main.debug) printlvl("before:", rev(done));
         var w = done.poll();
         var s = (SetBuiltin) done.poll(); // ←
-        var a = (Value) done.poll();
+        var a = done.poll();
         assert s != null;
         done.addFirst(s.call(a, w));
         run = true;
@@ -254,6 +254,12 @@ class Exec {
   }
 
   private Obj valueOf(Token t) {
+    Obj o = valueOfRaw(t);
+    o.token = t;
+    return o;
+  }
+  
+  private Obj valueOfRaw(Token t) {
     if (t.type == TType.op) {
       switch (t.repr.charAt(0)) {
 
@@ -270,6 +276,9 @@ class Exec {
         case '≢': return new TallyBuiltin();
         case '≡': return new DepthBuiltin();
         case '⊢': return new RTackBuiltin();
+        case '↑': return new UpArrowBuiltin(sc);
+        case '↓': return new DownArrowBuiltin(sc);
+        
         // comparisons
         case '<': return new LTBuiltin();
         case '≤': return new LEBuiltin();
@@ -292,19 +301,14 @@ class Exec {
 
         case '⍬': return new Arr();
         case '⎕': return new Logger();
-        case '⍺':
-          return sc.get("⍺");
-        case '⍵':
-          return sc.get("⍵");
-        case '⍶':
-          return sc.get("⍶");
-        case '⍹':
-          return sc.get("⍹");
-        default:
-          throw new NYIError("no built-in " + t.repr + " defined in exec");
+        case '⍺': return sc.get("⍺");
+        case '⍵': return sc.get("⍵");
+        case '⍶': return sc.get("⍶");
+        case '⍹': return sc.get("⍹");
+        default: throw new NYIError("no built-in " + t.repr + " defined in exec");
       }
     } else if (t.type == TType.number) return new Num(t.repr);
-    else if (t.type == TType.str) return t.repr.length() == 1 ? new Char(t.repr) : string(t.repr);
+    else if (t.type == TType.str) return t.repr.length() == 1 ? new Char(t.repr) : Main.toAPL(t.repr, t);
     else if (t.type == TType.set) return new SetBuiltin();
     else if (t.type == TType.name) return sc.getVar(t.repr);
     else if (t.type == TType.expr) return Main.execTok(t, sc);

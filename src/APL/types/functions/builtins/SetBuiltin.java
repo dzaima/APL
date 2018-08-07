@@ -9,10 +9,10 @@ import java.util.*;
 public class SetBuiltin extends Builtin {
   public SetBuiltin() {
     super("←");
-    valid = 0x001;
+    valid = 0x010;
   }
 
-  public Obj call(Value a, Obj w) {
+  public Obj call(Obj a, Obj w) {
     if (a.setter) {
       Obj res = a.set(w);
       res.shy = true;
@@ -22,18 +22,18 @@ public class SetBuiltin extends Builtin {
       Arr oa = (Arr) a;
       Arr ow = (Arr) w;
       if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes not equal");
-      Arr n = new Arr(oa.shape);
+      Value[] arr = new Value[oa.ia];
       for (int i = 0; i < oa.ia; i++) {
-        n.arr[i] = (Value) this.call(oa.arr[i], (Obj) ow.arr[i]);
+        arr[i] = (Value) this.call(oa.arr[i], (Obj) ow.arr[i]);
       }
-      return n;
+      return new Arr(arr, oa.shape);
     } else {
       Arr oa = ((Arr) a);
-      Arr n = new Arr(oa.shape);
+      Value[] arr = new Value[oa.ia];
       for (int i = 0; i < oa.ia; i++) {
-        n.arr[i] = (Value) this.call(oa.arr[i], w);
+        arr[i] = (Value) this.call(oa.arr[i], w);
       }
-      return n;
+      return new Arr(arr, oa.shape);
     }
   }
 

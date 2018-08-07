@@ -11,7 +11,7 @@ public class Scope {
   public boolean alphaDefined;
   public Scope() {
     vars.put("⎕IO", new Num("1"));
-    vars.put("⎕COND", Main.string("01"));
+    vars.put("⎕COND", Main.toAPL("01", new Token(TType.str, "01",0, "'01'")));
   }
   public Scope(Scope p) {
     parent = p;
