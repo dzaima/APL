@@ -8,6 +8,7 @@ import APL.types.functions.builtins.*;
 import APL.types.functions.builtins.fns.*;
 import APL.types.functions.builtins.mops.*;
 import APL.types.functions.builtins.dops.*;
+import APL.types.functions.trains.*;
 import APL.types.functions.userDefined.UserDefined;
 
 import static APL.Main.*;
@@ -76,6 +77,36 @@ class Exec {
       else done.add(new Arr(arr, true));
     }
     update(done, true);
+    
+    
+    int lastSize = -1;
+    if (done.size() != 1) {
+      while (lastSize != done.size()) {
+        lastSize = done.size();
+        if (is(done, "[FN]FF", false, false)) {
+          if (Main.debug) printlvl("f g h train on", rev(done));
+          var h = done.remove();
+          var g = (Fun) done.remove();
+          var f = done.remove();
+          done.addFirst(new Fork(f, g, h));
+          if (Main.debug) printlvl("→", rev(done));
+        }
+        if (is(done, "NF", false, false)) {
+          if (Main.debug) printlvl("A f train on", rev(done));
+          var f = (Fun) done.remove();
+          var a = done.remove();
+          done.addFirst(new Atop(a, f));
+          if (Main.debug) printlvl("→", rev(done));
+        }
+      }
+      if (done.size() == 2) {
+        var h = (Fun) done.remove();
+        var g = done.remove();
+        done.addFirst(new Atop(g, h));
+      }
+    }
+    
+    
     Main.printlvl--;
     if (Main.debug) printlvl("END:", rev(done));
     if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression");
@@ -107,10 +138,9 @@ class Exec {
       if (is(done, "D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.poll();
-        var f = (Fun) done.poll();
-        var a = (Value) done.poll();
-        assert f != null;
+        var w = (Value) done.remove();
+        var f = (Fun) done.remove();
+        var a = (Value) done.remove();
         var res = f.call(a, w);
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
@@ -120,9 +150,8 @@ class Exec {
       if (is(done, "[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.poll();
-        var f = (Fun) done.poll();
-        assert f != null;
+        var w = (Value) done.remove();
+        var f = (Fun) done.remove();
         var res = f.call(w);
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
@@ -132,21 +161,19 @@ class Exec {
       if (is(done, "D!|N←.,D!|F←F,D!|D←D,D!|M←M", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = done.poll();
-        var s = (SetBuiltin) done.poll(); // ←
-        var a = done.poll();
-        assert s != null;
+        var w = done.remove();
+        var s = (SetBuiltin) done.remove(); // ←
+        var a = done.remove();
         done.addFirst(s.call(a, w));
         run = true;
       }
       if (is(done, "D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.poll();
-        var s = (SetBuiltin) done.poll(); // ←
-        var f = (Fun) done.poll(); // ←
+        var w = (Value) done.remove();
+        var s = (SetBuiltin) done.remove(); // ←
+        var f = (Fun) done.remove(); // ←
         Value a = (Value) done.poll();
-        assert s != null;
         done.addFirst(s.call(f, a, w));
         run = true;
       }
@@ -265,17 +292,24 @@ class Exec {
 
         // fns
         case '+': return new PlusBuiltin();
+        case '-': return new MinusBuiltin();
+        case '×': return new MulBuiltin();
+        case '÷': return new DivBuiltin();
+        case '*': return new StarBuiltin();
+        case '⍟': return new LogBuiltin();
+        case '√': return new RootBuiltin();
+        case '⌈': return new CeilingBuiltin();
+        case '⌊': return new FloorBuiltin();
+        
         case '⊂': return new LShoeBuiltin();
         case '⊃': return new RShoeBuiltin(sc);
-        case '-': return new MinusBuiltin();
-        case '÷': return new DivBuiltin();
-        case '×': return new MulBuiltin();
         case '⍳': return new IotaBuiltin(sc);
         case '⍴': return new RhoBuiltin();
         case ',': return new CatBuiltin();
         case '≢': return new TallyBuiltin();
         case '≡': return new DepthBuiltin();
         case '⊢': return new RTackBuiltin();
+        case '⊣': return new LTackBuiltin();
         case '↑': return new UpArrowBuiltin(sc);
         case '↓': return new DownArrowBuiltin(sc);
         

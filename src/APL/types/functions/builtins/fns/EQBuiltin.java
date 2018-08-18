@@ -13,7 +13,9 @@ public class EQBuiltin extends Builtin {
     valid = 0x010;
   }
   
-  public Obj call(Value a, Value w) {
+  public Obj call(Value a, Value w) { return vec(a, w); }
+  
+  public Value scall(Value a, Value w) {
     return compare(a, w)==0? Num.ONE : Num.ZERO;
   }
 }

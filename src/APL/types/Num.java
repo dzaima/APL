@@ -3,7 +3,9 @@ package APL.types;
 public class Num extends Value {
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
-  public static final Num MINUS_ONE = new Num("-1"); // dammit this should be public for later use
+  public static final Num TWO = new Num("2");
+  public static final Num MINUS_ONE = new Num("-1");
+  public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   private double num;
   public Num(String val) {
     super(ArrType.num);
@@ -43,6 +45,9 @@ public class Num extends Value {
   public Num times(Num w) {
     return new Num(num * w.num);
   }
+  public Num pow(Num w) {
+    return new Num(Math.pow(num, w.num));
+  }
   public Num minus(Num w) {
     return new Num(num - w.num);
   }
@@ -52,6 +57,20 @@ public class Num extends Value {
   }
   public Num negate() {
     return new Num(-num);
+  }
+  
+  public Num floor() {
+    return new Num(Math.floor(num));
+  }
+  public Num root (Num root) {
+    return new Num(Math.pow(num, 1/root.num));
+  }
+  public Num log (Num root) {
+    return new Num(Math.log(num) / Math.log(root.num));
+  }
+  
+  public Num ceil() {
+    return new Num(Math.ceil(num));
   }
 
   public int compareTo(Num n) {
@@ -78,5 +97,12 @@ public class Num extends Value {
   protected String oneliner(int[] ignored) {
     if (num == (int)num) return Integer.toString((int)num);
     return Double.toString(num);
+  }
+  
+  public static Num max (Num a, Num b) {
+    return a.num > b.num? a : b;
+  }
+  public static Num min (Num a, Num b) {
+    return a.num < b.num? a : b;
   }
 }

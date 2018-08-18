@@ -17,6 +17,6 @@ public class DepthBuiltin extends Builtin {
     return new Num(depth);
   }
   public Obj call(Value a, Value w) {
-    return null;
+    return a.equals(w)? Num.ONE : Num.ZERO;
   }
 }

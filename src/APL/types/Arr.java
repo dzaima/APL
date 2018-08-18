@@ -2,8 +2,6 @@ package APL.types;
 
 import java.util.*;
 import APL.*;
-import APL.errors.DomainError;
-import APL.errors.RankError;
 
 public class Arr extends Value {
   public Arr () {
@@ -203,5 +201,17 @@ public class Arr extends Value {
       if (i != rank-1) x*= shape[i+1];
     }
     return arr[x];
+  }
+  
+  @Override
+  public boolean equals(Obj o) {
+    if (!(o instanceof Value)) return false;
+    Value v = (Value) o;
+    if (!Arrays.equals(shape, v.shape)) return false;
+    assert ia == v.ia;
+    for (int i = 0; i < ia; i++) {
+      if (!arr[i].equals(v.arr[i])) return false;
+    }
+    return true;
   }
 }
