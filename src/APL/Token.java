@@ -7,7 +7,7 @@ import static APL.Main.up;
 public class Token {
   public TType type;
   public String repr;
-  public ArrayList<Token> tokens;
+  public List<Token> tokens;
   public String line;
   public int pos;
   Token (TType t, String s, int pos, String line) {
@@ -16,7 +16,7 @@ public class Token {
     this.line = line;
     this.pos = pos;
   }
-  Token (TType t, ArrayList<Token> s) {
+  Token (TType t, List<Token> s) {
     assert(t==TType.expr||t==TType.lines||t==TType.pick||t==TType.usr);
     type = t;
     tokens = s;

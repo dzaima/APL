@@ -30,13 +30,10 @@ public class DownArrowBuiltin extends Builtin {
       shape[i] = w.shape[i] - d;
       ia *= shape[i];
     }
-    System.out.println(Arrays.toString(shape));
-    System.out.println(Arrays.toString(offsets));
-    System.out.println(ia);
     Value[] arr = new Value[ia];
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
-    for (int[] index : indexer) {//System.out.println(Arrays.toString(index));
+    for (int[] index : indexer) {
       arr[i] = w.at(index, this);
       i++;
     }

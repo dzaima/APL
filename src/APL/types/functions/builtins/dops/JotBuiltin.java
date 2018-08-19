@@ -18,7 +18,7 @@ public class JotBuiltin extends Dop {
         return ((Fun)ww).call((Value)aa, w);
       }
     } else {
-      if (aa.type == Type.array) throw new SyntaxError("arr∘arr makes no sense");
+      if (aa.type == Type.array) throw new SyntaxError("arr∘arr makes no sense", this, w);
       //ww is fn
       return ((Fun)aa).call(w, (Value)ww);
     }
@@ -26,7 +26,7 @@ public class JotBuiltin extends Dop {
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
     boolean af = aa.type == Type.fn;
     boolean wf = ww.type == Type.fn;
-    if (!af || !wf) throw new SyntaxError("dyadic ∘ requires both operands to be functions");
+    if (!af || !wf) throw new SyntaxError("dyadic ∘ requires both operands to be functions", this, a);
     return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
   }
 }

@@ -154,11 +154,33 @@ public class Main {
     print("\n");
   }
   
-  static public Obj execLines(Token t, Scope sc) {
-    assert (t.type == TType.lines || t.type == TType.usr);
+  static public Obj execLines(Token lines, Scope sc) {
+    assert (lines.type == TType.lines || lines.type == TType.usr);
     Obj res = null;
-    for (Token ln : t.tokens) {
-      res = execTok(ln, sc);
+    for (Token ln : lines.tokens) {
+      List<Token> tokens = ln.tokens;
+      int guardPos = -1;
+      boolean endAfter = tokens.size() > 0 && tokens.get(0).type == TType.set;
+      if (endAfter) tokens = tokens.subList(1, tokens.size());
+      else for (int i = 0; i < tokens.size(); i++) {
+        if (tokens.get(i).type == TType.guard ) {
+          guardPos = i;
+          if (i == tokens.size()-1) throw new SyntaxError("Guard without success expression");
+          if (tokens.get(i+1).type == TType.set) endAfter = true;
+          break;
+        }
+      }
+      if (guardPos >= 0) {
+        var guard = new Token(ln.type, tokens.subList(0, guardPos));
+        if (bool((Value) execTok(guard, sc), sc)) {
+          var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()));
+          res = execTok(expr, sc);
+          if (endAfter) return res;
+        }
+      } else {
+        res = execTok(endAfter? new Token(ln.type, tokens) : ln, sc);
+        if (endAfter) return res;
+      }
     }
     return res;
   }

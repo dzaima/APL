@@ -5,5 +5,5 @@ public enum TType {
   op, set,
   lines,
   expr, pick, usr,
-  guard, errGuard
+  guard, errGuard, semi
 }

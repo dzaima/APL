@@ -31,7 +31,7 @@ public class UpArrowBuiltin extends Builtin {
     Value[] arr = new Value[ia];
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
-    for (int[] index : indexer) {System.out.println(Arrays.toString(index));
+    for (int[] index : indexer) {
       arr[i] = w.at(index, this);
       i++;
     }

@@ -10,10 +10,10 @@ class Tokenizer {
     for (char c : validNames) if (c == i) return true;
     return false;
   }
-  static class Line {
+  static class Expr {
     ArrayList<ArrayList<Token>> a;
     char b;
-    Line(ArrayList<ArrayList<Token>> a, char b) {
+    Expr(ArrayList<ArrayList<Token>> a, char b) {
       this.a = a;
       this.b = b;
     }
@@ -22,8 +22,8 @@ class Tokenizer {
     }
   }
   static Token tokenize(String s) {
-    var levels = new ArrayList<Line>();
-    levels.add(new Line(new ArrayList<>(), '⋄'));
+    var levels = new ArrayList<Expr>();
+    levels.add(new Expr(new ArrayList<>(), '⋄'));
     levels.get(0).a.add(new ArrayList<>());
     int li = 0;
     int len = s.length();
@@ -32,7 +32,8 @@ class Tokenizer {
     int crlinei = 0;
     int reprpos = 0;
     for (int i = 0; i < len; li = i) {
-      var lines = levels.get(levels.size()-1).a;
+      var expr = levels.get(levels.size()-1);
+      var lines = expr.a;
       var tokens = lines.get(lines.size()-1);
       int si = i;
       char c = s.charAt(i);
@@ -45,14 +46,14 @@ class Tokenizer {
           case '[': match = ']'; break;
           default: throw new Error("this should really not happen");
         }
-        levels.add(new Line(new ArrayList<>(),match));
+        levels.add(new Expr(new ArrayList<>(),match));
         lines = levels.get(levels.size()-1).a;
         lines.add(new ArrayList<>());
         //lines = new ArrayList();
         i++;
       } else if (c == ')' || c == '}' || c == ']') {
         if (lines.size() > 0 && lines.get(lines.size()-1).size() == 0) lines.remove(lines.size()-1); // no trailing empties!!
-        Line closed = levels.remove(levels.size()-1);
+        Expr closed = levels.remove(levels.size()-1);
         if (c != closed.b) throw new SyntaxError("mismatched parentheses of "+c+" and "+closed.b);
         TType type;
         switch(c) {
@@ -105,7 +106,10 @@ class Tokenizer {
         }
         i++;
         tokens.add(new Token(TType.str, str.toString(), reprpos, crline));
-      } else if (c == '\n' || c == '⋄' || c == '\r') {
+      } else if (c == '\n' || c == '⋄' || c == '\r' || c == ';') {
+  
+        if (c == ';') tokens.add(new Token(TType.semi, reprpos, crline));
+        
         if (tokens.size() > 0) {
           lines.add(new ArrayList<>());
         }

@@ -15,11 +15,11 @@ import static APL.Main.*;
 
 class Exec {
   private Scope sc;
-  private ArrayList<Token> ps;
-
+  private List<Token> tokens;
+  
   Exec(Token ln, Scope sc) {
     assert (ln.type == TType.expr || ln.type == TType.usr);
-    ps = ln.tokens;
+    tokens = ln.tokens;
     this.sc = sc;
   }
 
@@ -30,19 +30,21 @@ class Exec {
   }
   private Stack remaining;
   Obj exec() {
-    if (sc.alphaDefined && ps.size() >= 2 && "⍺".equals(ps.get(0).repr) && ps.get(1).type == TType.set) {
+    if (sc.alphaDefined && tokens.size() >= 2 && "⍺".equals(tokens.get(0).repr) && tokens.get(1).type == TType.set) {
       if (Main.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
     var o = new Stack<Token>();
     remaining = o;
-    o.addAll(ps);
-    StringBuilder repr = new StringBuilder();
-    for (Token t : ps) repr.append(t.toRepr()).append(" ");
-    if (Main.debug) printlvl("NEW:");
-    Main.printlvl++;
-    if (Main.debug) printlvl("code:", repr);
-    if (Main.debug) printlvl();
+    o.addAll(tokens);
+    if (Main.debug) {
+      StringBuilder repr = new StringBuilder();
+      for (Token t : tokens) repr.append(t.toRepr()).append(" ");
+      printlvl("NEW:");
+      Main.printlvl++;
+      printlvl("code:", repr);
+      printlvl();
+    }
     var done = new LinkedList<Obj>();
     ArrayList<Value> arr = null;
     while (o.size() > 0) {

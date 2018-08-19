@@ -15,13 +15,13 @@ public class Dop extends Fun {
     return new DerivedDop(repr, aa, ww, this, valid);
   }
   public Obj call(Obj aa, Obj ww) {
-    throw new IncorrectArgsException(htype() + " derived dop called niladically");
+    throw new IncorrectArgsException(htype() + " derived dop called niladically", this);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
-    throw new IncorrectArgsException(htype() + " derived dop called monadically with " + w);
+    throw new IncorrectArgsException(htype() + " derived dop called monadically with " + w, this, w);
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " derived dop called dyadically with " + a + " and " + w);
+    throw new IncorrectArgsException(htype() + " derived dop called dyadically with " + a + " and " + w, this, a);
   }
   public String toString() {
     return repr;
