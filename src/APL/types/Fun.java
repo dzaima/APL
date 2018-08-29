@@ -30,7 +30,13 @@ public abstract class Fun extends Obj {
   public Obj call(Value a, Value w) {
     throw new IncorrectArgsException(htype() + " function "+toString()+" called dyadically with " + a + " and " + w);
   }
-
+  @SuppressWarnings("unused")
+  public Obj callInv(Value w) {
+    throw new DomainError(this+" doesn't support monadic inverting", this, w);
+  }
+  public Obj callInvW(Value a, Value w) {
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
+  }
   protected Value vec(Value w) {
     if (!w.primitive()) {
       Arr o = ((Arr)w);
@@ -65,7 +71,8 @@ public abstract class Fun extends Obj {
       } else {
         Arr oa = ((Arr)a);
         Arr ow = ((Arr)w);
-        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes not equal");
+        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: "+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
+        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
           arr[i] = vec(oa.arr[i], ow.arr[i]);

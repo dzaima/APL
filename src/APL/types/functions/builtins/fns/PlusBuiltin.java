@@ -11,10 +11,18 @@ public class PlusBuiltin extends Builtin {
   }
 
   public Obj call(Value w) { return vec(w); }
+  public Obj callInv(Value w) { return vec(w); }
   public Obj call(Value a, Value w) { return vec(a, w); }
+  public Obj callInvW(Value a, Value w) {
+    try {
+      return new MinusBuiltin().call(w, a);
+    } catch (DomainError e) {
+      throw new DomainError("", this, e.cause);
+    }
+  }
 
   protected Value scall(Value w) {
-     if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
+    if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
     return ((Num)w).conjugate();
   }
   protected Value scall(Value a, Value w) {

@@ -47,6 +47,7 @@ public class Scope {
     if (name.startsWith("⎕")) {
       switch (name) {
         case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
+        case "⎕A": return Main.alphabet;
       }
     }
     Obj f = vars.get(name);

@@ -12,8 +12,9 @@ public class Main {
   public static boolean debug = false;
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
+  public static Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
   static int printlvl = 0;
-  public static Error up = new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
+  public static Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
   
   public static void main(String[] args) {
@@ -91,7 +92,7 @@ public class Main {
             e.print();
             lastError = e;
           } catch (java.util.NoSuchElementException e) {
-            break; // REPL ended
+            break; // EOF; REPL ended
           }
         }
       }
@@ -127,6 +128,14 @@ public class Main {
       case dop: case bdop: return "dyadic operator";
       default: throw new IllegalStateException();
     }
+  }
+  public static String formatAPL (int[] ia) {
+    StringBuilder res = new StringBuilder();
+    for (int i = 0; i < ia.length; i++) {
+      if (i != 0) res.append(" ");
+      res.append(ia[i]);
+    }
+    return res.toString();
   }
   private static String readFile(String path) {
     try {

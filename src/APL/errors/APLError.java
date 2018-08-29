@@ -13,7 +13,8 @@ public class APLError extends Error {
   }
   public void print() {
     String[] ns = getClass().getName().split("[$.]");
-    colorprint(ns[ns.length - 1] + ": " + getMessage(), 246);
+    if (getMessage().length() == 0) colorprint(ns[ns.length - 1], 246);
+    else colorprint(ns[ns.length - 1] + ": " + getMessage(), 246);
     String fnline = null;
     String oline = null;
     int fnpos = 0;

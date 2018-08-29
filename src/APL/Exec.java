@@ -333,6 +333,7 @@ class Exec {
         case '∘': return new JotBuiltin();
         case '.': return new DotBuiltin();
         case '⍣': return new RepeatBuiltin();
+        case '⍥': return new OverBuiltin();
 
 
         case '⍬': return new Arr();

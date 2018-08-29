@@ -26,7 +26,7 @@ public class JotBuiltin extends Dop {
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
     boolean af = aa.type == Type.fn;
     boolean wf = ww.type == Type.fn;
-    if (!af || !wf) throw new SyntaxError("dyadic ∘ requires both operands to be functions", this, a);
+    if (!af || !wf) throw new SyntaxError("strictly monadic derived function called dyadically", this, a);
     return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
   }
 }
