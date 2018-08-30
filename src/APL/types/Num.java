@@ -42,6 +42,9 @@ public class Num extends Value {
   public Num divide(Num w) {
     return new Num(num / w.num);
   }
+  public Num floorDivide(Num w) {
+    return new Num(Math.floor(num / w.num));
+  }
   public Num times(Num w) {
     return new Num(num * w.num);
   }
@@ -50,6 +53,9 @@ public class Num extends Value {
   }
   public Num minus(Num w) {
     return new Num(num - w.num);
+  }
+  public Num mod(Num base) {
+    return new Num(num % base.num);
   }
   
   public Num conjugate() {
@@ -105,4 +111,5 @@ public class Num extends Value {
   public static Num min (Num a, Num b) {
     return a.num < b.num? a : b;
   }
+  
 }

@@ -10,13 +10,10 @@ public class StarBuiltin extends Builtin {
     valid = 0x011;
   }
   
-  public Obj call(Value w) { return vec(w); }
-  public Obj call(Value a, Value w) { return vec(a, w); }
-  
-  protected Value scall(Value w) {
-    return Num.E.pow((Num) w);
+  public Obj call(Value w) {
+    return scalar(v -> Num.E.pow((Num) w), w);
   }
-  protected Value scall(Value a, Value w) {
-    return ((Num)a).pow((Num)w);
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> ((Num)a).pow((Num)w), a0, w0);
   }
 }

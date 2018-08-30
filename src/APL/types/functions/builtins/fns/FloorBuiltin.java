@@ -10,14 +10,10 @@ public class FloorBuiltin extends Builtin {
     super("⌊");
     valid = 0x11;
   }
-  public Obj call(Value w) { return vec(w); }
-  public Obj call(Value a, Value w) { return vec(a, w); }
-  
-  public Value scall(Value w) {
-    return ((Num)w).floor();
+  public Obj call(Value w) {
+    return scalar(v -> ((Num)w).floor(), w);
   }
-  
-  public Value scall(Value a, Value w) {
-    return Num.max((Num)a, (Num)w);
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> Num.max((Num)a, (Num)w), a0, w0);
   }
 }

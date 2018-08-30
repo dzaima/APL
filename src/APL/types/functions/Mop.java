@@ -23,6 +23,12 @@ public class Mop extends Fun {
   public Obj call(Obj f, Value a, Value w) {
     throw new IncorrectArgsException(htype() + " derived mop called dyadically with " + a + " and " + w, this, a);
   }
+  public Obj callInv(Obj f, Value w) {
+    throw new DomainError(this+" doesn't support monadic inverting", this, w);
+  }
+  public Obj callInvW(Obj f, Value a, Value w) {
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
+  }
   public String toString() {
     return repr;
   }

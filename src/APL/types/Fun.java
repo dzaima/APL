@@ -37,26 +37,38 @@ public abstract class Fun extends Obj {
   public Obj callInvW(Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
-  protected Value vec(Value w) {
+  public Obj callInvA(Value a, Value w) {
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
+  }
+  
+  
+  public interface VecFun {
+    Value call(Value w);
+  }
+  public static Value scalar (VecFun f, Value w) {
     if (!w.primitive()) {
       Arr o = ((Arr)w);
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        arr[i] = vec(o.arr[i]);
+        arr[i] = f.call(o.arr[i]);
       }
       return new Arr(arr, o.shape);
-    } else return scall(w);
+    } else return f.call(w);
   }
-  protected Value vec(Value a, Value w) {
-
+  
+  
+  public interface DyVecFun {
+    Value call(Value a, Value w);
+  }
+  protected static Value scalar(DyVecFun f, Value a, Value w) {
     if (a.primitive()) {
       if (w.primitive()) {
-        return scall(a, w);
+        return f.call(a, w);
       } else {
         Arr ow = ((Arr)w);
         Value[] arr = new Value[ow.ia];
         for (int i = 0; i < ow.ia; i++) {
-          arr[i] = vec(a, ow.arr[i]);
+          arr[i] = f.call(a, ow.arr[i]);
         }
         return new Arr(arr, ow.shape);
       }
@@ -65,7 +77,7 @@ public abstract class Fun extends Obj {
         Arr oa = ((Arr)a);
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          arr[i] = vec(oa.arr[i], w);
+          arr[i] = f.call(oa.arr[i], w);
         }
         return new Arr(arr, oa.shape);
       } else {
@@ -75,12 +87,10 @@ public abstract class Fun extends Obj {
         if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          arr[i] = vec(oa.arr[i], ow.arr[i]);
+          arr[i] = f.call(oa.arr[i], ow.arr[i]);
         }
         return new Arr(arr, oa.shape);
       }
     }
   }
-  protected Value scall(Value w) { throw new IllegalStateException("scall not defined but called with " + w); }
-  protected Value scall(Value a, Value w) { throw new IllegalStateException("scall not defined but called with " +a+ " and " +w); }
 }

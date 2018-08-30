@@ -10,22 +10,19 @@ public class MulBuiltin extends Builtin {
     super("×");
     valid = 0x011;
   }
-
-  public Obj call(Value w) { return vec(w); }
-  public Obj call(Value a, Value w) { return vec(a, w); }
+  
+  public Obj call(Value w) {
+    return scalar(v -> Main.compareObj(w, Num.ZERO), w);
+  }
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> ((Num)a).times((Num)w), a0, w0);
+  }
+  
   public Obj callInvW(Value a, Value w) {
     try {
       return new DivBuiltin().call(w, a);
     } catch (DomainError e) {
       throw new DomainError("", this, e.cause);
     }
-  }
-
-  protected Value scall(Value w) {
-    Num n = (Num) w;
-    return Main.compareObj(w, Num.ZERO);
-  }
-  protected Value scall(Value a, Value w) {
-    return ((Num)a).times((Num)w);
   }
 }

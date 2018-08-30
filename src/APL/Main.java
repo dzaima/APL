@@ -115,7 +115,7 @@ public class Main {
       case array:  return article? "an array"    : "array";
       case chr:    return article? "a character" : "character";
       case num:    return article? "a number"    : "number";
-      case nothing:return "nothing";
+      case nothing:return article? "an undefined variable" : "undefined variable";
       default: throw new IllegalStateException();
     }
   }

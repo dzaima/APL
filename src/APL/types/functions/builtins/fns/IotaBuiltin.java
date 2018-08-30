@@ -31,8 +31,4 @@ public class IotaBuiltin extends Builtin {
     }
     return new Arr(arr, shape);
   }
-  public Obj call(Value a, Value w) { return vec(a, w); }
-  protected Value scall(Value a, Value w) {
-    return ((Num)a).minus((Num)w);
-  }
 }

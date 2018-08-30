@@ -12,9 +12,7 @@ public class NEBuiltin extends Builtin {
     valid = 0x010;
   }
   
-  public Obj call(Value a, Value w) { return vec(a, w); }
-  
-  public Value scall(Value a, Value w) {
-    return compare(a, w)!=0? Num.ONE : Num.ZERO;
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> compare(a, w)!=0? Num.ONE : Num.ZERO, a0, w0);
   }
 }

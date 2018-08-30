@@ -23,6 +23,19 @@ public class JotBuiltin extends Dop {
       return ((Fun)aa).call(w, (Value)ww);
     }
   }
+  public Obj callInv(Obj aa, Obj ww, Value w) {
+    if (ww.type == Type.fn) {
+      if (aa.type == Type.fn) {
+        return ((Fun)aa).call((Value)((Fun)ww).call(w));
+      } else {
+        return ((Fun)ww).callInvW((Value)aa, w);
+      }
+    } else {
+      if (aa.type == Type.array) throw new SyntaxError("arr∘arr makes no sense", this, w);
+      //ww is fn
+      return ((Fun)aa).callInvA(w, (Value)ww);
+    }
+  }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
     boolean af = aa.type == Type.fn;
     boolean wf = ww.type == Type.fn;

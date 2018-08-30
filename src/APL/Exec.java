@@ -312,8 +312,11 @@ class Exec {
         case '≡': return new DepthBuiltin();
         case '⊢': return new RTackBuiltin();
         case '⊣': return new LTackBuiltin();
+        case '⊥': return new UTackBuiltin();
+        case '⊤': return new DTackBuiltin();
         case '↑': return new UpArrowBuiltin(sc);
         case '↓': return new DownArrowBuiltin(sc);
+        
         
         // comparisons
         case '<': return new LTBuiltin();
@@ -334,6 +337,7 @@ class Exec {
         case '.': return new DotBuiltin();
         case '⍣': return new RepeatBuiltin();
         case '⍥': return new OverBuiltin();
+        case '⍢': return new DualBuiltin();
 
 
         case '⍬': return new Arr();
