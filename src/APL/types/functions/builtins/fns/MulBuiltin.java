@@ -12,7 +12,7 @@ public class MulBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> Main.compareObj(w, Num.ZERO), w);
+    return numChr(n -> Main.compareObj(n, Num.ZERO), c -> new Num(c.getCase()), w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> ((Num)a).times((Num)w), a0, w0);

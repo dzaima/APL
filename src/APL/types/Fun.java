@@ -50,12 +50,31 @@ public abstract class Fun extends Obj {
       Arr o = ((Arr)w);
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        arr[i] = f.call(o.arr[i]);
+        arr[i] = scalar(f, o.arr[i]);
       }
       return new Arr(arr, o.shape);
     } else return f.call(w);
   }
   
+  
+  public interface NumVecFun {
+    Value call(Num w);
+  }
+  public interface ChrVecFun {
+    Value call(Char w);
+  }
+  protected static Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
+    if (!w.primitive()) {
+      Arr o = ((Arr)w);
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = numChr(nf, cf, o.arr[i]);
+      }
+      return new Arr(arr, o.shape);
+    } else if (w instanceof Char) return cf.call((Char)w);
+      else if (w instanceof  Num) return nf.call((Num) w);
+      else throw new DomainError("Expected either number or character argument, got "+Main.human(w.valtype, false), null, w);
+  }
   
   public interface DyVecFun {
     Value call(Value a, Value w);
@@ -68,7 +87,7 @@ public abstract class Fun extends Obj {
         Arr ow = ((Arr)w);
         Value[] arr = new Value[ow.ia];
         for (int i = 0; i < ow.ia; i++) {
-          arr[i] = f.call(a, ow.arr[i]);
+          arr[i] = scalar(f, a, ow.arr[i]);
         }
         return new Arr(arr, ow.shape);
       }
@@ -87,7 +106,7 @@ public abstract class Fun extends Obj {
         if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          arr[i] = f.call(oa.arr[i], ow.arr[i]);
+          arr[i] = scalar(f, oa.arr[i], ow.arr[i]);
         }
         return new Arr(arr, oa.shape);
       }

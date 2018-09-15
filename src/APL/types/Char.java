@@ -15,6 +15,24 @@ public class Char extends Value {
     assert(s.length() == 1);
     chr = s.charAt(0);
   }
+  
+  public Char upper() {
+    return new Char(Character.toUpperCase(chr));
+  }
+  
+  public Char lower() {
+    return new Char(Character.toLowerCase(chr));
+  }
+  
+  public Char swap() {
+    if (Character.isUpperCase(chr)) return lower();
+    if (Character.isLowerCase(chr)) return upper();
+    return new Char(chr);
+  }
+  
+  public int getCase() {
+    return Character.isUpperCase(chr)? 1 : Character.isLowerCase(chr)? -1 : 0;
+  }
 
   public String toString() {
     if (quotestrings) return "'"+chr+"'";
