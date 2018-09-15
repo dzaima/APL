@@ -8,7 +8,7 @@ import APL.types.functions.Builtin;
 public class LogBuiltin extends Builtin {
   public LogBuiltin() {
     super("⍟");
-    valid = 0x11;
+    valid = 0x011;
   }
   
   public Obj call(Value w) {

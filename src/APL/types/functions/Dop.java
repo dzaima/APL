@@ -18,10 +18,10 @@ public class Dop extends Fun {
     throw new IncorrectArgsException(htype() + " derived dop called niladically", this);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
-    throw new IncorrectArgsException(htype() + " derived dop called monadically with " + w, this, w);
+    throw new IncorrectArgsException(htype() + " derived dop called monadically", this, w);
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " derived dop called dyadically with " + a + " and " + w, this, a);
+    throw new IncorrectArgsException(htype() + " derived dop called dyadically", this, a);
   }
   public Obj callInv(Obj aa, Obj ww, Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);

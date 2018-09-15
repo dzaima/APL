@@ -64,6 +64,10 @@ public class Num extends Value {
   public Num negate() {
     return new Num(-num);
   }
+  public Num abs() {
+    if (num < 0) return new Num(-num);
+    else return this;
+  }
   
   public Num floor() {
     return new Num(Math.floor(num));

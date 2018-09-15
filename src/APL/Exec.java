@@ -302,6 +302,7 @@ class Exec {
         case '√': return new RootBuiltin();
         case '⌈': return new CeilingBuiltin();
         case '⌊': return new FloorBuiltin();
+        case '|': return new StileBuiltin();
         
         case '⊂': return new LShoeBuiltin();
         case '⊃': return new RShoeBuiltin(sc);
@@ -316,6 +317,10 @@ class Exec {
         case '⊤': return new DTackBuiltin();
         case '↑': return new UpArrowBuiltin(sc);
         case '↓': return new DownArrowBuiltin(sc);
+        
+        case '…': return new EllipsisBuiltin();
+        
+        
         
         
         // comparisons

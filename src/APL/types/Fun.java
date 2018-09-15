@@ -9,7 +9,7 @@ public abstract class Fun extends Obj {
   public Fun(Type t) {
     super(t);
   }
-  public int valid;
+  public int valid; // 0x niladic dyadic monadic
   public Value identity = null;
   protected String htype() {
     StringBuilder sb = new StringBuilder();
@@ -22,13 +22,13 @@ public abstract class Fun extends Obj {
     return sb.toString();
   }
   public Obj call() {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called niladically");
+    throw new IncorrectArgsException(htype() + " function "+toString()+" called niladically", this);
   }
   public Obj call(Value w) {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called monadically with " + w);
+    throw new IncorrectArgsException(htype() + " function "+toString()+" called monadically", this, w);
   }
   public Obj call(Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called dyadically with " + a + " and " + w);
+    throw new IncorrectArgsException(htype() + " function "+toString()+" called dyadically", this, a);
   }
   @SuppressWarnings("unused")
   public Obj callInv(Value w) {

@@ -21,7 +21,7 @@ public class Mop extends Fun {
     throw new IncorrectArgsException(htype() + " derived mop called monadically with " + w, this, w);
   }
   public Obj call(Obj f, Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " derived mop called dyadically with " + a + " and " + w, this, a);
+    throw new IncorrectArgsException(htype() + " derived mop called dyadically", this, a);
   }
   public Obj callInv(Obj f, Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);

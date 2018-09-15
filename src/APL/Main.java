@@ -12,7 +12,8 @@ public class Main {
   public static boolean debug = false;
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
-  public static Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
+  static Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
+  static Arr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz", null);
   static int printlvl = 0;
   public static Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
@@ -246,7 +247,7 @@ public class Main {
       case "01":
         if (n.equals(Num.ZERO)) return false;
         if (n.equals(Num.ONE)) return true;
-        throw new DomainError("⎕COND='01' expected 0 or 1, got "+n.toInt(null));
+        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+n.toInt(null));
       case ">0":
         return n.compareTo(Num.ZERO)>0;
       case "≠0":

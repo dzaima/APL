@@ -5,7 +5,7 @@ import APL.errors.*;
 
 class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
-  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢∆⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
+  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢∆⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞…"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
   private static boolean validName(char i) {
     for (char c : validNames) if (c == i) return true;
     return false;
@@ -37,6 +37,7 @@ class Tokenizer {
       var tokens = lines.get(lines.size()-1);
       int si = i;
       char c = s.charAt(i);
+      char next = i+1<len? s.charAt(i+1) : ' ';
       String cS = String.valueOf(c);
       if (c == '(' || c == '{' || c == '[') {
         char match;
@@ -69,15 +70,19 @@ class Tokenizer {
         tokens = lines.get(lines.size()-1);
         tokens.add(t);
         i++;
-      } else if (validName(c)  ||  c=='⎕' && i+1<len && validName(s.charAt(i+1))) {
+      } else if (validName(c)  ||  c=='⎕' && validName(next)) {
         i++;
         while (i < len && validName(s.charAt(i))) i++;
         var name = s.substring(si, i);
         if (c == '⎕') name = name.toUpperCase();
         tokens.add(new Token(TType.name, name, reprpos, crline));
-      } else if (c >= '0' && c <= '9' || c == '¯') {
+      } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
         i++;
-        while (i < len && (c = s.charAt(i)) >= '0' && c <= '9') i++;
+        boolean metpoint = false;
+        while (i < len && (c = s.charAt(i)) >= '0' && c <= '9'  ||  c == '.' && !metpoint) {
+          if (c == '.') metpoint = true;
+          i++;
+        }
         tokens.add(new Token(TType.number, s.substring(si, i), reprpos, crline));
       } else if (ops.contains(cS)) {
         tokens.add(new Token(TType.op, cS, reprpos, crline));
@@ -86,7 +91,7 @@ class Tokenizer {
         tokens.add(new Token(TType.set, reprpos, crline));
         i++;
       } else if (c == ':') {
-        if (s.charAt(i+1) == ':') {
+        if (next == ':') {
           tokens.add(new Token(TType.errGuard, reprpos, crline));
           i++;
         } else tokens.add(new Token(TType.guard, reprpos, crline));

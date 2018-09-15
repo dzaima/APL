@@ -48,6 +48,8 @@ public class Scope {
       switch (name) {
         case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
         case "⎕A": return Main.alphabet;
+        case "⎕L": return Main.lowercaseAlphabet;
+        case "⎕LA": return Main.lowercaseAlphabet;
       }
     }
     Obj f = vars.get(name);
