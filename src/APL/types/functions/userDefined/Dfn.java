@@ -30,4 +30,5 @@ public class Dfn extends Fun {
   public String toString() {
     return token.toRepr();
   }
+  public String name() { return "dfn"; }
 }

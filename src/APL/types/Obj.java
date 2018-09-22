@@ -40,4 +40,8 @@ public abstract class Obj {
     if (Main.debug) Main.printdbg("non-overriden equals called");
     return false;
   }
+  
+  public String name() {
+    return toString();
+  }
 }

@@ -14,6 +14,7 @@ public class Char extends Value {
     super(ArrType.chr);
     assert(s.length() == 1);
     chr = s.charAt(0);
+    prototype = SPACE;
   }
   
   public Char upper() {

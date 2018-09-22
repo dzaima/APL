@@ -45,6 +45,6 @@ public class RhoBuiltin extends Builtin {
         if (index == w.ia) index = 0;
       }
     }
-    return new Arr(arr, sh);
+    return new Arr(arr, sh, w.prototype);
   }
 }

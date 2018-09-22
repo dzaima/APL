@@ -19,87 +19,85 @@ public class Main {
   static long startingMillis = System.currentTimeMillis();
   
   public static void main(String[] args) {
-    try {
-      Scope global = new Scope();
-      Throwable lastError = null;
-      if (args.length > 0) {
-        debug = args[0].contains("d");
-        prettyprint = args[0].contains("p");
-        quotestrings = args[0].contains("q");
-        if (args.length > 1) {
-          int rest = args[0].contains("e") ? 2 : 1;
-          for (int i = rest; i < args.length; i++) {
-            String s = readFile(args[i]);
-            if (s == null) colorprint("File " + args[i] + " not found", 246);
-            else try {
-            exec(s, global);
-            } catch (APLError e) {
-              e.print();
-            }
-          }
-          if (args[0].contains("e")) {
-            try {
-              Obj r = exec(args[1], global);
-              if (!r.shy) println(r.toString());
-            } catch (APLError e) {
-              e.print();
-            }
-          }
-        }
-      }
-      if (args.length == 0 || args[0].contains("r")) { // REPL
-        Scanner console = new Scanner(System.in);
-        REPL: while (true) {
-          print("> ");
-          try {
-            String cr = console.nextLine();
-            if (cr.equals("exit")) break;
-            if (cr.startsWith(")")) {
-              String[] parts = cr.split(" ");
-              String t = parts[0].toUpperCase();
-              String rest = cr.substring(t.length());
-              switch (t) {
-                case ")EX":
-                  exec(readFile(parts[1]), global);
-                  break;
-                case ")DEBUG":
-                  debug = !debug;
-                  break;
-                case ")QUOTE":
-                  quotestrings = !quotestrings;
-                  break;
-                case ")ONELINE":
-                  prettyprint = !prettyprint;
-                  break;
-                case ")OFF": case ")EXIT": case ")STOP":
-                  break REPL;
-                case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
-                case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-                case ")TYPE": println( exec(rest, global).type.toString() ); break;
-                case ")ATYPE": println( ((Value) exec(rest, global)).valtype.toString() ); break;
-                case ")STACK":
-                  if (lastError != null) {
-                    lastError.printStackTrace();
-                  }
-                  break;
-                default:
-                  throw new SyntaxError("Undefined user command");
-              }
-            } else {
-              Obj r = exec(cr, global);
-              if (!r.shy) println(r.toString());
-            }
+    Scope global = new Scope();
+    Throwable lastError = null;
+    if (args.length > 0) {
+      debug = args[0].contains("d");
+      prettyprint = args[0].contains("p");
+      quotestrings = args[0].contains("q");
+      if (args.length > 1) {
+        int rest = args[0].contains("e") ? 2 : 1;
+        for (int i = rest; i < args.length; i++) {
+          String s = readFile(args[i]);
+          if (s == null) colorprint("File " + args[i] + " not found", 246);
+          else try {
+          exec(s, global);
           } catch (APLError e) {
             e.print();
-            lastError = e;
-          } catch (java.util.NoSuchElementException e) {
-            break; // EOF; REPL ended
+          }
+        }
+        if (args[0].contains("e")) {
+          try {
+            Obj r = exec(args[1], global);
+            if (!r.shy) println(r.toString());
+          } catch (APLError e) {
+            e.print();
           }
         }
       }
-    } catch (Throwable e) {
-      e.printStackTrace();
-      colorprint(e + ": " + e.getMessage(), 246);
+    }
+    if (args.length == 0 || args[0].contains("r")) { // REPL
+      Scanner console = new Scanner(System.in);
+      REPL: while (true) {
+        print("> ");
+        try {
+          String cr = console.nextLine();
+          if (cr.equals("exit")) break;
+          if (cr.startsWith(")")) {
+            String[] parts = cr.split(" ");
+            String t = parts[0].toUpperCase();
+            String rest = cr.substring(t.length());
+            switch (t) {
+              case ")EX":
+                exec(readFile(parts[1]), global);
+                break;
+              case ")DEBUG":
+                debug = !debug;
+                break;
+              case ")QUOTE":
+                quotestrings = !quotestrings;
+                break;
+              case ")ONELINE":
+                prettyprint = !prettyprint;
+                break;
+              case ")OFF": case ")EXIT": case ")STOP":
+                break REPL;
+              case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
+              case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
+              case ")TYPE": println( exec(rest, global).type.toString() ); break;
+              case ")ATYPE": println( ((Value) exec(rest, global)).valtype.toString() ); break;
+              case ")STACK":
+                if (lastError != null) {
+                  lastError.printStackTrace();
+                }
+                break;
+              default:
+                throw new SyntaxError("Undefined user command");
+            }
+          } else {
+            Obj r = exec(cr, global);
+            if (!r.shy) println(r.toString());
+          }
+        } catch (APLError e) {
+          e.print();
+          lastError = e;
+        } catch (java.util.NoSuchElementException e) {
+          break; // EOF; REPL ended
+        } catch (Throwable e) {
+          e.printStackTrace();
+          colorprint(e + ": " + e.getMessage(), 246);
+        }
+      }
     }
   }
   

@@ -11,7 +11,7 @@ abstract public class Value extends Obj {
   public int rank;
   public int ia; // item amount
   public Value[] arr;
-  public Value prototype = Num.ZERO;
+  public Value prototype = null;
   public final ArrType valtype;
   protected Value(ArrType type) {
     super(Type.array);
@@ -60,5 +60,24 @@ abstract public class Value extends Obj {
       if (i != rank-1) x*= shape[i+1];
     }
     return arr[x];
+  }
+  public Value at(int[] pos, Value def) {
+    int x = 0;
+    for (int i = 0; i < rank; i++) {
+      if (pos[i] < 0 || pos[i] >= shape[i]) return def;
+      x+= pos[i];
+      if (i != rank-1) x*= shape[i+1];
+    }
+    return arr[x];
+  }
+  public Value toPrototype() {
+    if (this instanceof Num) return Num.ZERO;
+    if (this instanceof Char) return Char.SPACE;
+    if (this instanceof Arr) {
+      Arr a = (Arr) this;
+      Value[] na = new Value[a.ia];
+      for (int i = 0; i < na.length; i++) na[i] = a.arr[i].toPrototype();
+    }
+    throw new DomainError("type doesn't have a prototype");
   }
 }

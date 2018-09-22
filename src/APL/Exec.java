@@ -80,7 +80,6 @@ class Exec {
     }
     update(done, true);
     
-    
     int lastSize = -1;
     if (done.size() != 1) {
       while (lastSize != done.size()) {
@@ -108,6 +107,7 @@ class Exec {
       }
     }
     
+    if (done.size() != 1) update(done, true); // e.g. for f←1+
     
     Main.printlvl--;
     if (Main.debug) printlvl("END:", rev(done));
@@ -319,7 +319,7 @@ class Exec {
         case '↓': return new DownArrowBuiltin(sc);
         
         case '…': return new EllipsisBuiltin();
-        
+        case '⍕': return new FormatBuiltin();
         
         
         
@@ -345,7 +345,7 @@ class Exec {
         case '⍢': return new DualBuiltin();
 
 
-        case '⍬': return new Arr();
+        case '⍬': return new Arr(Num.ZERO);
         case '⎕': return new Logger();
         case '⍺': return sc.get("⍺");
         case '⍵': return sc.get("⍵");

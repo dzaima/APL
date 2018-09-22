@@ -2,6 +2,7 @@ package APL;
 
 import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.functions.Builtin;
 
 import java.util.HashMap;
 
@@ -50,6 +51,7 @@ public class Scope {
         case "⎕A": return Main.alphabet;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
+        case "⎕ERASE": return new Eraser();
       }
     }
     Obj f = vars.get(name);
@@ -76,5 +78,16 @@ public class Scope {
     if (parent != null) res.append(cp).append("parent: ").append(parent.toString(cp));
     res.append(prep).append("}\n");
     return res.toString();
+  }
+  class Eraser extends Builtin {
+    Eraser() {
+      super("⎕ERASE");
+      valid = 0x001;
+    }
+    
+    public Obj call(Value w) {
+      w.set(null);
+      return w;
+    }
   }
 }

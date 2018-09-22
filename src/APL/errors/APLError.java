@@ -7,7 +7,7 @@ import static APL.Main.*;
 
 public class APLError extends Error {
   public Obj fn;
-  public Value cause;
+  public Obj cause;
   APLError (String msg) {
     super(msg);
   }

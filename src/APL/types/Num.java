@@ -13,27 +13,32 @@ public class Num extends Value {
     if (val.startsWith("¯")) {
       num = -Double.parseDouble(val.substring(1));
     } else num = Double.parseDouble(val);
+    prototype = Num.ZERO;
   }
 
   public Num (Num num) {
     super(ArrType.num);
     repr = num.repr;
     this.num = num.num;
+    prototype = Num.ZERO;
   }
   public Num (int n) {
     super(ArrType.num);
     repr = Integer.toString(n);
     num = n;
+    prototype = Num.ZERO;
   }
   public Num (long n) {
     super(ArrType.num);
     repr = Long.toString(n);
     num = n;
+    prototype = Num.ZERO;
   }
   public Num (double val) {
     super(ArrType.num);
     repr = Double.toString(val);
     num = val;
+    prototype = Num.ZERO;
   }
 
   public Num plus(Num w) {

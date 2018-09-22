@@ -2,10 +2,15 @@ package APL.types;
 
 import java.util.*;
 import APL.*;
+import APL.errors.LengthError;
 
 public class Arr extends Value {
-  public Arr () {
-    this(new ArrayList<>(), false);
+//  public Arr () {
+//    this(new Value[0], false);
+//  }
+  public Arr (Value prototype) {
+    this(new Value[0], false);
+    this.prototype = prototype;
   }
   public Arr (ArrayList<Value> v) {
     this(v, false);
@@ -19,6 +24,14 @@ public class Arr extends Value {
     shape = sh;
     rank = sh.length;
     arr = v;
+  }
+  public Arr (Value[] v, int[] sh, Value prototype) {
+    super(ArrType.array);
+    ia = v.length;
+    shape = sh;
+    rank = sh.length;
+    arr = v;
+    this.prototype = prototype;
   }
   public Arr (ArrayList<Value> v, boolean reverse) { // 1D
     this(v.toArray(new Value[0]), reverse);
@@ -64,7 +77,14 @@ public class Arr extends Value {
     return null;
   }
   public String toString() {
-    if (ia == 0) return prototype == Num.ZERO? "⍬" : "''";
+    if (ia == 0) {
+      if (rank == 1) return prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?";
+      else {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < rank; i++) s.append(i == 0 ? "" : " ").append(shape[i]);
+        return s + "⍴" + (prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?");
+      }
+    }
     String qs = string(Main.quotestrings || Main.prettyprint);
     if (qs != null) return qs;
     if (Main.prettyprint) {
@@ -181,7 +201,7 @@ public class Arr extends Value {
       for (int i = 0; i < shape[where.length]; i++) {
         pos[rank-1] = i;
         if (i != 0) res.append(", ");
-        res.append(at(pos).oneliner(new int[0]));
+        res.append(simpleAt(pos).oneliner(new int[0]));
       }
     } else {
       int[] pos = new int[where.length+1];
@@ -194,7 +214,7 @@ public class Arr extends Value {
     }
     return res + (where.length==0?"}":"]");
   }
-  private Value at(int[] pos) {
+  private Value simpleAt(int[] pos) {
     int x = 0;
     for (int i = 0; i < rank; i++) {
       x+= pos[i];
