@@ -46,14 +46,16 @@ public abstract class Fun extends Obj {
     Value call(Value w);
   }
   public static Value scalar (VecFun f, Value w) {
-    if (!w.primitive()) {
+    if (w.primitive()) {
+      return f.call(w);
+    } else {
       Arr o = ((Arr)w);
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
         arr[i] = scalar(f, o.arr[i]);
       }
       return new Arr(arr, o.shape);
-    } else return f.call(w);
+    }
   }
   
   

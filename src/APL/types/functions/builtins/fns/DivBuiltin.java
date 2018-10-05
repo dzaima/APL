@@ -11,7 +11,7 @@ public class DivBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> Num.ONE.divide((Num) w), w);
+    return scalar(v -> Num.ONE.divide((Num) v), w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {

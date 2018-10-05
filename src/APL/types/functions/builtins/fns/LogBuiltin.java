@@ -12,7 +12,7 @@ public class LogBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> ((Num) w).log(Num.E), w);
+    return scalar(v -> ((Num) v).log(Num.E), w);
   }
   
   public Obj call(Value a0, Value w0) {

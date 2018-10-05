@@ -12,7 +12,7 @@ public class TrigBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> Num.PI.times((Num) w), w);
+    return scalar(v -> Num.PI.times((Num) v), w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {

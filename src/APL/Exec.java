@@ -80,34 +80,8 @@ class Exec {
     }
     update(done, true);
     
-    int lastSize = -1;
-    if (done.size() != 1) {
-      while (lastSize != done.size()) {
-        lastSize = done.size();
-        if (is(done, "[FN]FF", false, false)) {
-          if (Main.debug) printlvl("f g h train on", rev(done));
-          var h = done.remove();
-          var g = (Fun) done.remove();
-          var f = done.remove();
-          done.addFirst(new Fork(f, g, h));
-          if (Main.debug) printlvl("→", rev(done));
-        }
-        if (is(done, "NF", false, false)) {
-          if (Main.debug) printlvl("A f train on", rev(done));
-          var f = (Fun) done.remove();
-          var a = done.remove();
-          done.addFirst(new Atop(a, f));
-          if (Main.debug) printlvl("→", rev(done));
-        }
-      }
-      if (done.size() == 2) {
-        var h = (Fun) done.remove();
-        var g = done.remove();
-        done.addFirst(new Atop(g, h));
-      }
-    }
     
-    if (done.size() != 1) update(done, true); // e.g. for f←1+
+//    if (done.size() != 1) update(done, true); // e.g. for f←1+
     
     Main.printlvl--;
     if (Main.debug) printlvl("END:", rev(done));
@@ -126,9 +100,9 @@ class Exec {
   }
 
   private void update(LinkedList<Obj> done, boolean end) {
-    boolean run = true;
     if (done.size() == 1 && done.get(0) == null) return;
-    while (run) {
+    while (true) {
+      if (Main.debug) printlvl("now:", rev(done));
       if (done.size() >= 3 && "∘".equals(done.getLast().repr) && ".".equals(done.get(done.size() - 2).repr)) {
         done.removeLast();
         done.removeLast();
@@ -136,7 +110,6 @@ class Exec {
         done.addLast(new TableBuiltin().derive(fn));
       }
       if (Main.debug) printlvl("UPDATE", rev(done));
-      run = false;
       if (is(done, "D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
         if (Main.debug) printlvl("before:", rev(done));
@@ -147,7 +120,7 @@ class Exec {
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
         if (res == null) return;
-        run = true;
+        continue;
       }
       if (is(done, "[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
@@ -158,7 +131,7 @@ class Exec {
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
         if (res == null) return;
-        run = true;
+        continue;
       }
       if (is(done, "D!|N←.,D!|F←F,D!|D←D,D!|M←M", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
@@ -167,7 +140,17 @@ class Exec {
         var s = (SetBuiltin) done.remove(); // ←
         var a = done.remove();
         done.addFirst(s.call(a, w));
-        run = true;
+        continue;
+      }
+      if (end && is(done, "D!|NF←N", end, false)) {
+        if (Main.debug) printlvl("NF←.");
+        if (Main.debug) printlvl("before:", rev(done));
+        var w = (Value) done.remove();
+        var s = (SetBuiltin) done.remove(); // ←
+        var f = (Fun) done.remove(); // ←
+        Value a = (Value) done.poll();
+        done.addFirst(s.call(f, a, w));
+        continue;
       }
       if (is(done, "D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
@@ -177,7 +160,7 @@ class Exec {
         var f = (Fun) done.remove(); // ←
         Value a = (Value) done.poll();
         done.addFirst(s.call(f, a, w));
-        run = true;
+        continue;
       }
       if (is(done, "!D|[FN]M", end, true)) {
         if (Main.debug) printlvl("FM");
@@ -185,7 +168,7 @@ class Exec {
         var o = (Mop) done.remove(lastPtr);
         var f = (Obj) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
-        run = true;
+        continue;
       }
       if (is(done, "[FN]D[FN]", end, true)) {
         if (Main.debug) printlvl("FDF");
@@ -194,11 +177,39 @@ class Exec {
         var o = (Dop) done.removeLast();
         var ww = done.removeLast();
         done.addLast(o.derive(aa, ww));
-        run = true;
+        continue;
       }
-      if (run) {
-        if (Main.debug) printlvl("after:", rev(done));
+      if (is(done, ".|[FN]FF", end, false)) {
+        if (Main.debug) printlvl("f g h", rev(done));
+        if (Main.debug) printlvl("before:", rev(done));
+        var h = done.remove();
+        var g = (Fun) done.remove();
+        var f = done.remove();
+        done.addFirst(new Fork(f, g, h));
+        continue;
       }
+      if (is(done, "NF", false, false)) {
+        if (Main.debug) printlvl("A f");
+        if (Main.debug) printlvl("before:", rev(done));
+        var f = (Fun) done.remove();
+        var a = done.remove();
+        done.addFirst(new Atop(a, f));
+        continue;
+      }
+      if (is(done, "←FF", false, false)) {
+        if (Main.debug) printlvl("g h");
+        if (Main.debug) printlvl("before:", rev(done));
+        var h = (Fun) done.remove();
+        var g = done.remove();
+        done.addFirst(new Atop(g, h));
+        continue;
+      }
+      break;
+    }
+    if (end && done.size() == 2) {
+      var h = (Fun) done.remove();
+      var g = done.remove();
+      done.addFirst(new Atop(g, h));
     }
   }
 
@@ -237,7 +248,7 @@ class Exec {
         int si = i;
         while (pt.charAt(i) != '[') i--;
         any = pt.substring(i + 1, si);
-        i--;
+//        i--;
       } else if (p == '[') { // reverse
         int si = i;
         while (pt.charAt(i) != ']') i++;
@@ -276,6 +287,7 @@ class Exec {
           throw up;
       }
       //printdbg(any, type, any.contains(str(type)));
+      printlvl(any, type);
       if ((!any.contains(String.valueOf(type))) ^ inv) return false;
       ptr += ptrinc;
     }

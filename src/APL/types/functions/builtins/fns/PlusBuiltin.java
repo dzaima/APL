@@ -13,8 +13,8 @@ public class PlusBuiltin extends Builtin {
 
   public Obj call(Value w) {
     return scalar(v -> {
-      if (!(w instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
-      return ((Num)w).conjugate();
+      if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
+      return ((Num)v).conjugate();
     }, w);
   }
   public Obj call(Value a0, Value w0) {

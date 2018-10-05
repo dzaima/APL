@@ -11,7 +11,12 @@ public class SetBuiltin extends Builtin {
     super("←");
     valid = 0x010;
   }
-
+  
+  @Override
+  public Obj call(Value a, Value w) {
+    return call((Obj)a, w);
+  }
+  
   public Obj call(Obj a, Obj w) {
     if (a.setter) {
       Obj res = a.set(w);

@@ -11,7 +11,7 @@ public class StarBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> Num.E.pow((Num) w), w);
+    return scalar(v -> Num.E.pow((Num) v), w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> ((Num)a).pow((Num)w), a0, w0);
