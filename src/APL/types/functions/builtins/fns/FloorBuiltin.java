@@ -15,6 +15,6 @@ public class FloorBuiltin extends Builtin {
     return numChr(Num::floor, Char::lower, w);
   }
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> Num.max((Num)a, (Num)w), a0, w0);
+    return scalar((a, w) -> Num.min((Num)a, (Num)w), a0, w0);
   }
 }

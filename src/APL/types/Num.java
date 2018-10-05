@@ -69,26 +69,33 @@ public class Num extends Value {
     return new Num(d);
   }
   
-  public Num gcd(Num w) {
-    double a = num;
-    double b = w.num;
-    while (b != 0) {
-      double t = b;
-      b = a % b;
-      a = t;
+  public static Num gcd(Num[] nums) {
+    double res = nums[0].num;
+    for (int i = 1; i < nums.length; i++) {
+      double b = nums[i].num;
+      while (b != 0) {
+        double t = b;
+        b = res % b;
+        res = t;
+      }
     }
-    return new Num(a);
+    return new Num(res);
   }
-  public Num lcm(Num w) {
-    if (num == 0 && w.num == 0) return Num.ZERO;
-    double a = num;
-    double b = w.num;
-    while (b != 0) {
-      double t = b;
-      b = a % b;
-      a = t;
+  
+  public static Num lcm(Num[] nums) {
+    double res = nums[0].num;
+    for (int i = 1; i < nums.length; i++) {
+      double a = nums[i].num;
+      double b = res;
+      while (b != 0) {
+        double t = b;
+        b = a % b;
+        a = t;
+      }
+      
+      res = (nums[i].num * res) / a;
     }
-    return new Num(num*w.num / a);
+    return new Num(res);
   }
   
   public Num conjugate() {
