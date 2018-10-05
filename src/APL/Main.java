@@ -202,10 +202,20 @@ public class Main {
     //println("\u001b["+col+"m"+s+"\u001b[0m");
   }
   
-  public static Value toAPL(int[] ia) {
-    var va = new ArrayList<Value>();
-    for (int i : ia) va.add(new Num(i));
+  public static Value toAPL(int[] arr) {
+    var va = new Value[arr.length];
+    for (int i = 0; i < arr.length; i++) {
+      va[i] = new Num(arr[i]);
+    }
     return new Arr(va);
+  }
+  
+  public static Value toAPL(int[] arr, int[] sh) {
+    var va = new Value[arr.length];
+    for (int i = 0; i < arr.length; i++) {
+      va[i] = new Num(arr[i]);
+    }
+    return new Arr(va, sh);
   }
   
   public static Arr toAPL(String s, Token t) {

@@ -309,6 +309,7 @@ class Exec {
         case '⊂': return new LShoeBuiltin();
         case '⊃': return new RShoeBuiltin(sc);
         case '⍳': return new IotaBuiltin(sc);
+        case '⍸': return new IotaUnderbarBuiltin(sc);
         case '⍴': return new RhoBuiltin();
         case ',': return new CatBuiltin();
         case '≢': return new TallyBuiltin();
