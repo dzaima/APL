@@ -50,7 +50,7 @@ abstract public class Value extends Obj {
   }
   
   public Value at(int[] pos, Fun f) {
-    int IO = ((Num)f.sc.get("⎕IO")).toInt(f);
+    int IO = ((Num)f.sc.get("⎕IO")).toInt(f); // error here = pls take scope as arg
     if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length, f, this);
     int x = 0;
     for (int i = 0; i < rank; i++) {

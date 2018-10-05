@@ -7,8 +7,8 @@ import APL.types.functions.Builtin;
 public class RShoeBuiltin extends Builtin {
   public RShoeBuiltin(Scope sc) {
     super("⊃");
-    this.sc = sc;
     valid = 0x011;
+    this.sc = sc;
   }
   
   public Obj call(Value w) {
@@ -18,6 +18,9 @@ public class RShoeBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    return w.at(a.toIntArr(this), this);
+    for (Value v : a.arr) {
+      w = w.at(v.toIntArr(this), this);
+    }
+    return w;
   }
 }

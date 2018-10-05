@@ -8,9 +8,9 @@ import APL.types.functions.builtins.mops.ReduceBuiltin;
 
 import java.util.ArrayList;
 
-public class IotaUnderbarBuiltin extends Builtin {
+public class IotaUBBuiltin extends Builtin {
   static Fun fn = new ReduceBuiltin().derive(new CeilingBuiltin());
-  public IotaUnderbarBuiltin(Scope sc) {
+  public IotaUBBuiltin(Scope sc) {
     super("⍸");
     valid = 0x011;
     this.sc = sc;

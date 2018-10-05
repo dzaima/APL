@@ -307,9 +307,10 @@ class Exec {
         case '|': return new StileBuiltin();
         
         case '⊂': return new LShoeBuiltin();
+        case '⊇': return new RShoeUBBuiltin(sc);
         case '⊃': return new RShoeBuiltin(sc);
         case '⍳': return new IotaBuiltin(sc);
-        case '⍸': return new IotaUnderbarBuiltin(sc);
+        case '⍸': return new IotaUBBuiltin(sc);
         case '⍴': return new RhoBuiltin();
         case ',': return new CatBuiltin();
         case '≢': return new TallyBuiltin();
@@ -326,6 +327,7 @@ class Exec {
         case '⍉': return new TransposeBuiltin();
         case '∧': return new AndBuiltin();
         case '∨': return new OrBuiltin();
+        case '⌷': return new SquadBuiltin(sc);
         
         case '…': return new EllipsisBuiltin();
         case '⍕': return new FormatBuiltin();
