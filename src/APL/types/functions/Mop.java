@@ -11,7 +11,7 @@ public class Mop extends Fun {
     repr = s;
     this.valid = 0x000;
   }
-  public DerivedMop derive (Fun aa) {
+  public DerivedMop derive (Obj aa) {
     return new DerivedMop(repr, aa, this, valid);
   }
   public Obj call(Obj f) {

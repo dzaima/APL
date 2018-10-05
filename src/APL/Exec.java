@@ -183,7 +183,7 @@ class Exec {
         if (Main.debug) printlvl("FM");
         if (Main.debug) printlvl("before:", rev(done));
         var o = (Mop) done.remove(lastPtr);
-        var f = (Fun) done.remove(lastPtr);
+        var f = (Obj) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
         run = true;
       }

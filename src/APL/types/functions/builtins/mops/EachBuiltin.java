@@ -13,10 +13,12 @@ public class EachBuiltin extends Mop {
   }
 
   public Obj call(Obj f, Value w) {
-    if (w.scalar()) return ((Fun)f).call(w);
+    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w) : f;
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = (Value)((Fun)f).call(w.arr[i]);
+      n[i] = f instanceof Fun ?
+        (Value)((Fun)f).call(w.arr[i])
+      : (Value) f;
     }
     return new Arr(n, w.shape);
   }
