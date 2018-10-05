@@ -15,8 +15,8 @@ public class DivBuiltin extends Builtin {
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {
-      if (!(a instanceof Num)) throw new DomainError("non-number ⍺ argument to -", this, a);
-      if (!(w instanceof Num)) throw new DomainError("non-number ⍵ argument to -", this, w);
+      if (!(a instanceof Num)) throw new DomainError("non-number ⍺ argument to ÷", this, a);
+      if (!(w instanceof Num)) throw new DomainError("non-number ⍵ argument to ÷", this, w);
       return ((Num)a).divide((Num)w);
     }, a0, w0);
   }

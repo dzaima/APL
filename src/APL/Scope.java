@@ -79,7 +79,7 @@ public class Scope {
     res.append(prep).append("}\n");
     return res.toString();
   }
-  class Eraser extends Builtin {
+  static class Eraser extends Builtin {
     Eraser() {
       super("⎕ERASE");
       valid = 0x001;
@@ -89,5 +89,11 @@ public class Scope {
       w.set(null);
       return w;
     }
+  }
+  public double rand(double d) { // TODO seeds
+    return Math.random() * d;
+  }
+  public double rand(int n) {
+    return Math.floor(Math.random() * n);
   }
 }

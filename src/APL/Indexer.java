@@ -50,6 +50,15 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
     return c;
   }
   
+  public static int fromShape(int[] shape, int[] pos) {
+    int x = 0;
+    for (int i = 0; i < shape.length; i++) {
+      x+= pos[i];
+      if (i != shape.length-1) x*= shape[i+1];
+    }
+    return x;
+  }
+  
   @SuppressWarnings("NullableProblems") // not using @NotNull for non-intelliJ compilers
   public Iterator<int[]> iterator() {
     return this;

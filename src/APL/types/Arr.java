@@ -214,7 +214,7 @@ public class Arr extends Value {
     }
     return res + (where.length==0?"}":"]");
   }
-  private Value simpleAt(int[] pos) {
+  public Value simpleAt(int[] pos) {
     int x = 0;
     for (int i = 0; i < rank; i++) {
       x+= pos[i];

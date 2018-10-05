@@ -12,10 +12,10 @@ public class RootBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return ((Num) w).root(Num.TWO);
+    return scalar(v -> ((Num) v).root(Num.TWO), w);
   }
   
-  public Obj call(Value a, Value w) {
-    return ((Num) w).root((Num) a);
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> ((Num) w).root((Num) a), a0, w0);
   }
 }

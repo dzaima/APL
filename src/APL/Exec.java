@@ -317,6 +317,12 @@ class Exec {
         case '⊤': return new DTackBuiltin();
         case '↑': return new UpArrowBuiltin(sc);
         case '↓': return new DownArrowBuiltin(sc);
+        case '?': return new RandBuiltin(sc);
+        case '○': return new TrigBuiltin();
+        case '⍪': return new CommaBarBuiltin();
+        case '⍉': return new TransposeBuiltin();
+        case '∧': return new AndBuiltin();
+        case '∨': return new OrBuiltin();
         
         case '…': return new EllipsisBuiltin();
         case '⍕': return new FormatBuiltin();

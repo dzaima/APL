@@ -12,10 +12,10 @@ public class LogBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return ((Num) w).log(Num.E);
+    return scalar(v -> ((Num) w).log(Num.E), w);
   }
   
-  public Obj call(Value a, Value w) {
-    return ((Num) w).log((Num) a);
+  public Obj call(Value a0, Value w0) {
+    return scalar((a, w) -> ((Num) w).log((Num) a), a0, w0);
   }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DTackBuiltin extends Builtin {
   static UTackBuiltin copy = new UTackBuiltin();
   public DTackBuiltin() {
-    super("⊥");
+    super("⊤");
     valid = 0x011;
   }
   

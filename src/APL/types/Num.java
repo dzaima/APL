@@ -1,12 +1,16 @@
 package APL.types;
 
+import APL.errors.DomainError;
+
 public class Num extends Value {
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
   public static final Num TWO = new Num("2");
   public static final Num MINUS_ONE = new Num("-1");
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
+  public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
   private double num;
+  public static final Num I1 = null; // no imaginary numbers :'(
   public Num(String val) {
     super(ArrType.num);
     repr = val;
@@ -60,7 +64,31 @@ public class Num extends Value {
     return new Num(num - w.num);
   }
   public Num mod(Num base) {
-    return new Num(num % base.num);
+    double d = num % base.num;
+    if (d < 0) return new Num(d+base.num);
+    return new Num(d);
+  }
+  
+  public Num gcd(Num w) {
+    double a = num;
+    double b = w.num;
+    while (b != 0) {
+      double t = b;
+      b = a % b;
+      a = t;
+    }
+    return new Num(a);
+  }
+  public Num lcm(Num w) {
+    if (num == 0 && w.num == 0) return Num.ZERO;
+    double a = num;
+    double b = w.num;
+    while (b != 0) {
+      double t = b;
+      b = a % b;
+      a = t;
+    }
+    return new Num(num*w.num / a);
   }
   
   public Num conjugate() {
@@ -84,6 +112,27 @@ public class Num extends Value {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
+  
+  public Num sin() { return new Num(Math.sin(num)); }
+  public Num cos() { return new Num(Math.cos(num)); }
+  public Num tan() { return new Num(Math.tan(num)); }
+  
+  public Num asin() { return new Num(Math.asin(num)); }
+  public Num acos() { return new Num(Math.acos(num)); }
+  public Num atan() { return new Num(Math.atan(num)); }
+  
+  public Num sinh() { return new Num(Math.sinh(num)); }
+  public Num cosh() { return new Num(Math.cosh(num)); }
+  public Num tanh() { return new Num(Math.tanh(num)); }
+  
+  public Num asinh() { throw new DomainError("inverse hyperbolic functions NYI"); }
+  public Num acosh() { throw new DomainError("inverse hyperbolic functions NYI"); }
+  public Num atanh() { throw new DomainError("inverse hyperbolic functions NYI"); }
+  
+  public Num real() { return this; }
+  public Num imag() { return Num.ZERO; }
+  
+  
   public Num ceil() {
     return new Num(Math.ceil(num));
   }
@@ -100,9 +149,12 @@ public class Num extends Value {
     }
     return false;
   }
-
+  
   public int intValue() {
     return (int)num;
+  }
+  public double doubleValue() {
+    return num;
   }
 
   public String toString() {
