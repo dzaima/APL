@@ -142,22 +142,12 @@ class Exec {
         done.addFirst(s.call(a, w));
         continue;
       }
-      if (end && is(done, "D!|NF←N", end, false)) {
-        if (Main.debug) printlvl("NF←.");
-        if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.remove();
-        var s = (SetBuiltin) done.remove(); // ←
-        var f = (Fun) done.remove(); // ←
-        Value a = (Value) done.poll();
-        done.addFirst(s.call(f, a, w));
-        continue;
-      }
       if (is(done, "D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
         if (Main.debug) printlvl("before:", rev(done));
         var w = (Value) done.remove();
         var s = (SetBuiltin) done.remove(); // ←
-        var f = (Fun) done.remove(); // ←
+        var f = (Fun) done.remove();
         Value a = (Value) done.poll();
         done.addFirst(s.call(f, a, w));
         continue;
