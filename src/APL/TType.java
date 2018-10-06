@@ -1,7 +1,7 @@
 package APL;
 
 public enum TType {
-  name, number, str,
+  name, number, str, chr,
   op, set,
   lines,
   expr, pick, usr,

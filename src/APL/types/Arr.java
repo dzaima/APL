@@ -61,17 +61,17 @@ public class Arr extends Value {
 //    arr = new Value[ia];
 //  }
   public String string(boolean quote) {
-    if (rank == 1 && shape[0] != 1) { // strings
+    if (rank == 1/* && shape[0] != 1*/) { // strings
       StringBuilder all = new StringBuilder();
       for (Value v : arr) {
         if (v.valtype == ArrType.chr) {
           char c = ((Char)v).chr;
-          if (quote && c == '\'') all.append("''");
+          if (quote && c == '\"') all.append("\"\"");
           else all.append(c);
         } else return null;
       }
       if (quote)
-        return "'" + all + "'";
+        return "\"" + all + "\"";
       else return all.toString();
     }
     return null;
@@ -233,5 +233,13 @@ public class Arr extends Value {
       if (!arr[i].equals(v.arr[i])) return false;
     }
     return true;
+  }
+  
+  String fromAPL() {
+    var res = new StringBuilder();
+    for (Value v : arr) {
+      res.append(v.fromAPL());
+    }
+    return res.toString();
   }
 }

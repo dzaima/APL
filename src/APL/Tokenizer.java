@@ -110,6 +110,21 @@ class Tokenizer {
           if (i >= len) throw new SyntaxError("unfinished string");
         }
         i++;
+        tokens.add(new Token(TType.chr, str.toString(), reprpos, crline));
+      } else if (c == '"') {
+        StringBuilder str = new StringBuilder();
+        i++;
+        while (true) {
+          if (s.charAt(i) == '\"') {
+            if (i+1 < len && s.charAt(i+1) == '\"') {
+              str.append("\"");
+              i++;
+            } else break;
+          } else str.append(s.charAt(i));
+          i++;
+          if (i >= len) throw new SyntaxError("unfinished string");
+        }
+        i++;
         tokens.add(new Token(TType.str, str.toString(), reprpos, crline));
       } else if (c == '\n' || c == '⋄' || c == '\r' || c == ';') {
   

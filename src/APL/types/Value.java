@@ -1,9 +1,10 @@
 package APL.types;
 
-import APL.Main;
-import APL.Type;
+import APL.*;
 import APL.errors.DomainError;
 import APL.errors.RankError;
+
+import java.util.*;
 
 
 abstract public class Value extends Obj {
@@ -79,5 +80,42 @@ abstract public class Value extends Obj {
       for (int i = 0; i < na.length; i++) na[i] = a.arr[i].toPrototype();
     }
     throw new DomainError("type doesn't have a prototype");
+  }
+  public int compareTo(Value v) {
+    if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);
+    if (this instanceof Char && v instanceof Char) return ((Char) this).compareTo((Char) v);
+    if (this instanceof Num && (   v instanceof Char ||    v instanceof Arr)) return -1;
+    if (   v instanceof Num && (this instanceof Char || this instanceof Arr)) return 1;
+    if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
+      String s1 =   fromAPL();
+      String s2 = v.fromAPL();
+      System.out.println(s1);
+      System.out.println(s2);
+      return s1.compareTo(s2);
+    }
+    throw new DomainError("Can't compare", v, this);
+  }
+  String fromAPL() {
+    throw new DomainError("can't convert to string", null, this);
+  }
+  public Integer[] gradeUp(Fun f) {
+    if (rank != 1) throw new DomainError("grading rank ≠ 1", f, this);
+    Integer[] na = new Integer[ia];
+    
+    for (int i = 0; i < na.length; i++) {
+      na[i] = i;
+    }
+    Arrays.sort(na, (a, b) -> arr[a].compareTo(arr[b]));
+    return na;
+  }
+  public Integer[] gradeDown(Fun f) {
+    if (rank != 1) throw new DomainError("grading rank ≠ 1", f, this);
+    Integer[] na = new Integer[ia];
+    
+    for (int i = 0; i < na.length; i++) {
+      na[i] = i;
+    }
+    Arrays.sort(na, (a, b) -> arr[b].compareTo(arr[a]));
+    return na;
   }
 }

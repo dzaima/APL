@@ -291,85 +291,89 @@ class Exec {
   }
   
   private Obj valueOfRaw(Token t) {
-    if (t.type == TType.op) {
-      switch (t.repr.charAt(0)) {
-
-        // fns
-        case '+': return new PlusBuiltin();
-        case '-': return new MinusBuiltin();
-        case '×': return new MulBuiltin();
-        case '÷': return new DivBuiltin();
-        case '*': return new StarBuiltin();
-        case '⍟': return new LogBuiltin();
-        case '√': return new RootBuiltin();
-        case '⌈': return new CeilingBuiltin();
-        case '⌊': return new FloorBuiltin();
-        case '|': return new StileBuiltin();
+    switch (t.type) {
+      case op:
+        switch (t.repr.charAt(0)) {
         
-        case '⊂': return new LShoeBuiltin();
-        case '⊇': return new RShoeUBBuiltin(sc);
-        case '⊃': return new RShoeBuiltin(sc);
-        case '⍳': return new IotaBuiltin(sc);
-        case '⍸': return new IotaUBBuiltin(sc);
-        case '⍴': return new RhoBuiltin();
-        case ',': return new CatBuiltin();
-        case '≢': return new TallyBuiltin();
-        case '≡': return new DepthBuiltin();
-        case '⊢': return new RTackBuiltin();
-        case '⊣': return new LTackBuiltin();
-        case '⊥': return new UTackBuiltin();
-        case '⊤': return new DTackBuiltin();
-        case '↑': return new UpArrowBuiltin(sc);
-        case '↓': return new DownArrowBuiltin(sc);
-        case '?': return new RandBuiltin(sc);
-        case '○': return new TrigBuiltin();
-        case '⍪': return new CommaBarBuiltin();
-        case '⍉': return new TransposeBuiltin();
-        case '∧': return new AndBuiltin();
-        case '∨': return new OrBuiltin();
-        case '⌷': return new SquadBuiltin(sc);
-        
-        case '…': return new EllipsisBuiltin();
-        case '⍕': return new FormatBuiltin();
-        
-        
-        
-        // comparisons
-        case '<': return new LTBuiltin();
-        case '≤': return new LEBuiltin();
-        case '=': return new EQBuiltin();
-        case '≥': return new GEBuiltin();
-        case '>': return new GTBuiltin();
-        case '≠': return new NEBuiltin();
-
-        // mops
-        case '/': return new ReduceBuiltin();
-        case '¨': return new EachBuiltin();
-        case '⍨': return new SelfieBuiltin();
-        case '⌾': return new TableBuiltin();
-
-        // dops
-        case '∘': return new JotBuiltin();
-        case '.': return new DotBuiltin();
-        case '⍣': return new RepeatBuiltin();
-        case '⍥': return new OverBuiltin();
-        case '⍢': return new DualBuiltin();
-
-
-        case '⍬': return new Arr(Num.ZERO);
-        case '⎕': return new Logger();
-        case '⍺': return sc.get("⍺");
-        case '⍵': return sc.get("⍵");
-        case '⍶': return sc.get("⍶");
-        case '⍹': return sc.get("⍹");
-        default: throw new NYIError("no built-in " + t.repr + " defined in exec");
-      }
-    } else if (t.type == TType.number) return new Num(t.repr);
-    else if (t.type == TType.str) return t.repr.length() == 1 ? new Char(t.repr) : Main.toAPL(t.repr, t);
-    else if (t.type == TType.set) return new SetBuiltin();
-    else if (t.type == TType.name) return sc.getVar(t.repr);
-    else if (t.type == TType.expr) return Main.execTok(t, sc);
-    else if (t.type == TType.usr) return UserDefined.of(t, sc);
-    else throw new NYIError("Unknown type: " + t.type);
+          // fns
+          case '+': return new PlusBuiltin();
+          case '-': return new MinusBuiltin();
+          case '×': return new MulBuiltin();
+          case '÷': return new DivBuiltin();
+          case '*': return new StarBuiltin();
+          case '⍟': return new LogBuiltin();
+          case '√': return new RootBuiltin();
+          case '⌈': return new CeilingBuiltin();
+          case '⌊': return new FloorBuiltin();
+          case '|': return new StileBuiltin();
+          
+          case '⊂': return new LShoeBuiltin();
+          case '⊇': return new RShoeUBBuiltin(sc);
+          case '⊃': return new RShoeBuiltin(sc);
+          case '⍳': return new IotaBuiltin(sc);
+          case '⍸': return new IotaUBBuiltin(sc);
+          case '⍴': return new RhoBuiltin();
+          case ',': return new CatBuiltin();
+          case '≢': return new TallyBuiltin();
+          case '≡': return new DepthBuiltin();
+          case '⊢': return new RTackBuiltin();
+          case '⊣': return new LTackBuiltin();
+          case '⊥': return new UTackBuiltin();
+          case '⊤': return new DTackBuiltin();
+          case '↑': return new UpArrowBuiltin(sc);
+          case '↓': return new DownArrowBuiltin(sc);
+          case '?': return new RandBuiltin(sc);
+          case '○': return new TrigBuiltin();
+          case '⍪': return new CommaBarBuiltin();
+          case '⍉': return new TransposeBuiltin();
+          case '∧': return new AndBuiltin();
+          case '∨': return new OrBuiltin();
+          case '⌷': return new SquadBuiltin(sc);
+          
+          case '…': return new EllipsisBuiltin();
+          case '⍕': return new FormatBuiltin();
+          case '⍋': return new GradeUpBuiltin(sc);
+          case '⍒': return new GradeDownBuiltin(sc);
+          
+          
+          // comparisons
+          case '<': return new LTBuiltin();
+          case '≤': return new LEBuiltin();
+          case '=': return new EQBuiltin();
+          case '≥': return new GEBuiltin();
+          case '>': return new GTBuiltin();
+          case '≠': return new NEBuiltin();
+  
+          // mops
+          case '/': return new ReduceBuiltin();
+          case '¨': return new EachBuiltin();
+          case '⍨': return new SelfieBuiltin();
+          case '⌾': return new TableBuiltin();
+  
+          // dops
+          case '∘': return new JotBuiltin();
+          case '.': return new DotBuiltin();
+          case '⍣': return new RepeatBuiltin();
+          case '⍥': return new OverBuiltin();
+          case '⍢': return new DualBuiltin();
+  
+  
+          case '⍬': return new Arr(Num.ZERO);
+          case '⎕': return new Logger();
+          case '⍺': return sc.get("⍺");
+          case '⍵': return sc.get("⍵");
+          case '⍶': return sc.get("⍶");
+          case '⍹': return sc.get("⍹");
+          default: throw new NYIError("no built-in " + t.repr + " defined in exec");
+        }
+      case number: return new Num(t.repr);
+      case chr:    return t.repr.length() == 1? new Char(t.repr) : Main.toAPL(t.repr, t);
+      case str:    return                                          Main.toAPL(t.repr, t);
+      case set:    return new SetBuiltin();
+      case name:   return sc.getVar(t.repr);
+      case expr:   return Main.execTok(t, sc);
+      case usr:    return UserDefined.of(t, sc);
+      default: throw new NYIError("Unknown type: " + t.type);
+    }
   }
 }

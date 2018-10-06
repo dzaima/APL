@@ -42,4 +42,12 @@ public class Char extends Value {
   protected String oneliner(int[] ignored) {
     return "'"+chr+"'";
   }
+  
+  public int compareTo(Char v) {
+    return Character.compare(chr, v.chr);
+  }
+  
+  String fromAPL() {
+    return String.valueOf(chr);
+  }
 }

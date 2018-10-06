@@ -21,7 +21,7 @@ public class RhoBuiltin extends Builtin {
     //}
     return toAPL(sh);
   }
-  public Obj call(Value a, Value w) { // TODO ⍬ 2 ⍴ ⍳6
+  public Obj call(Value a, Value w) {
     if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
     int[] sh = new int[a.arr.length];
     int ia = 1;

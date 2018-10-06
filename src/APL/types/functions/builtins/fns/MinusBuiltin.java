@@ -12,10 +12,6 @@ public class MinusBuiltin extends Builtin {
   
   public Obj call(Value w) {
     return numChr(Num::negate, Char::swap, w);
-//    v -> {
-//      if (!(w instanceof Num)) throw new DomainError("negating a non-number", this, w); // TODO decide whether this should exist
-//      return ((Num)w).negate();
-//    }
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {
