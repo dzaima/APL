@@ -295,6 +295,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
         
+          //TODO in Dyalog but not here: !⍲⍱⌽⊖⊆∊⍷⌿\⍀∩∪⍎⌹→←
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -306,10 +307,17 @@ class Exec {
           case '⌈': return new CeilingBuiltin();
           case '⌊': return new FloorBuiltin();
           case '|': return new StileBuiltin();
+          case '∧': return new AndBuiltin();
+          case '∨': return new OrBuiltin();
+          case '⊥': return new UTackBuiltin();
+          case '⊤': return new DTackBuiltin();
+          case '~': return new TildeBuiltin();
+          case '○': return new TrigBuiltin();
           
           case '⊂': return new LShoeBuiltin();
           case '⊇': return new RShoeUBBuiltin(sc);
           case '⊃': return new RShoeBuiltin(sc);
+          case '⌷': return new SquadBuiltin(sc);
           case '⍳': return new IotaBuiltin(sc);
           case '⍸': return new IotaUBBuiltin(sc);
           case '⍴': return new RhoBuiltin();
@@ -318,23 +326,16 @@ class Exec {
           case '≡': return new DepthBuiltin();
           case '⊢': return new RTackBuiltin();
           case '⊣': return new LTackBuiltin();
-          case '⊥': return new UTackBuiltin();
-          case '⊤': return new DTackBuiltin();
           case '↑': return new UpArrowBuiltin(sc);
           case '↓': return new DownArrowBuiltin(sc);
           case '?': return new RandBuiltin(sc);
-          case '○': return new TrigBuiltin();
           case '⍪': return new CommaBarBuiltin();
           case '⍉': return new TransposeBuiltin();
-          case '∧': return new AndBuiltin();
-          case '∨': return new OrBuiltin();
-          case '⌷': return new SquadBuiltin(sc);
           
           case '…': return new EllipsisBuiltin();
           case '⍕': return new FormatBuiltin();
           case '⍋': return new GradeUpBuiltin(sc);
           case '⍒': return new GradeDownBuiltin(sc);
-          
           
           // comparisons
           case '<': return new LTBuiltin();

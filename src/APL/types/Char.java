@@ -47,6 +47,11 @@ public class Char extends Value {
     return Character.compare(chr, v.chr);
   }
   
+  @Override public boolean equals(Obj c) {
+    if (!(c instanceof Char)) return false;
+    return chr == ((Char)c).chr;
+  }
+  
   String fromAPL() {
     return String.valueOf(chr);
   }
