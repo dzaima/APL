@@ -20,7 +20,7 @@ public class IotaUBBuiltin extends Builtin {
     var sub = new ArrayList<Value>();
     for (int[] p : new Indexer(w.shape, ((Num) sc.get("⎕IO")).intValue())) {
       Num n = (Num) w.at(p, this);
-      if (Main.compare(n, Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", this, n);
+      if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", this, n);
       for (int i = 0, nint = n.intValue(); i < nint; i++)
       if (w.rank == 1) sub.add(new Num(p[0]));
       else sub.add(Main.toAPL(p));

@@ -7,10 +7,15 @@ import APL.*;
 @SuppressWarnings("UnusedParameters")
 public class Mop extends Fun {
   protected Mop(String s) {
-    super(Type.mop);
     repr = s;
     this.valid = 0x000;
   }
+  
+  @Override
+  public Type type() {
+    return Type.mop;
+  }
+  
   public DerivedMop derive (Obj aa) {
     return new DerivedMop(repr, aa, this, valid);
   }

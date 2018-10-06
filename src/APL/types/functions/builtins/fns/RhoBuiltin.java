@@ -32,7 +32,7 @@ public class RhoBuiltin extends Builtin {
         if (v.ia == 0) {
           if (emptyPos == null) emptyPos = i;
           else throw new DomainError("shape contained multiple undefined dimension sizes", this, v);
-        } else throw new DomainError("shape for ⍴ contained "+human(v.valtype, true), this, v);
+        } else throw new DomainError("shape for ⍴ contained "+v.humanType(true), this, v);
       } else {
         int c = ((Num) v).intValue();
         sh[i] = c;

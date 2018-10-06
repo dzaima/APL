@@ -17,8 +17,9 @@ public class Main {
   static int printlvl = 0;
   public static Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static long startingMillis = System.currentTimeMillis();
-  
+  public static Scanner console;
   public static void main(String[] args) {
+    console = new Scanner(System.in);
     Scope global = new Scope();
     Throwable lastError = null;
     if (args.length > 0) {
@@ -47,7 +48,6 @@ public class Main {
       }
     }
     if (args.length == 0 || args[0].contains("r")) { // REPL
-      Scanner console = new Scanner(System.in);
       REPL: while (true) {
         print("> ");
         try {
@@ -74,8 +74,8 @@ public class Main {
                 break REPL;
               case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-              case ")TYPE": println( exec(rest, global).type.toString() ); break;
-              case ")ATYPE": println( ((Value) exec(rest, global)).valtype.toString() ); break;
+              case ")TYPE": println(Main.human(exec(rest, global).type())); break;
+              case ")ATYPE": println( ((Value) exec(rest, global)).humanType(false) ); break;
               case ")STACK":
                 if (lastError != null) {
                   lastError.printStackTrace();
@@ -108,15 +108,6 @@ public class Main {
   
   public static void println(String s) {
     System.out.println(s);
-  }
-  public static String human(ArrType t, boolean article) {
-    switch (t) {
-      case array:  return article? "an array"    : "array";
-      case chr:    return article? "a character" : "character";
-      case num:    return article? "a number"    : "number";
-      case nothing:return article? "an undefined variable" : "undefined variable";
-      default: throw new IllegalStateException();
-    }
   }
   public static String human(Type t) {
     switch (t) {
@@ -230,16 +221,16 @@ public class Main {
     a.prototype = Char.SPACE;
     return a;
   }
-  public static int compare(Value a, Value w) {
-    if (a.valtype == ArrType.num && w.valtype == ArrType.num) return ((Num)a).compareTo((Num)w);
-    throw new DomainError("comparing non-numbers"); // TODO not do that
-  }
-  public static Num compareObj(Value a, Value w) {
-    int c = compare(a, w);
-    if (c > 0) return Num.ONE;
-    if (c < 0) return Num.MINUS_ONE;
-    return Num.ZERO;
-  }
+//  public static int compare(Value a, Value w) {
+//    if (a.valtype == ArrType.num && w.valtype == ArrType.num) return ((Num)a).compareTo((Num)w);
+//    throw new DomainError("comparing non-numbers"); // TODO not do that
+//  }
+//  public static Num compareObj(Value a, Value w) {
+//    int c = compare(a, w);
+//    if (c > 0) return Num.ONE;
+//    if (c < 0) return Num.MINUS_ONE;
+//    return Num.ZERO;
+//  }
   public static boolean bool(Value v, Scope sc) {
     String cond = ((Arr)sc.get("⎕COND")).string(false);
     assert cond != null;
@@ -249,7 +240,7 @@ public class Main {
       }
       cond = cond.substring(0, cond.length()-2);
     }
-    if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type));
+    if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type()));
     Num n = (Num) v;
     switch (cond) {
       case "01":

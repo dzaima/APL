@@ -23,15 +23,14 @@ public class Scope {
     else return parent.owner(name);
   }
 
-  public Obj update (String name, Obj val) { // sets wherever var already exists
+  public void update (String name, Obj val) { // sets wherever var already exists
     Scope sc = owner(name);
     if (sc == null) sc = this;
     sc.set(name, val);
-    return val;
   }
-  public Obj set (String name, Obj val) { // sets in current scope
+  public void set (String name, Obj val) { // sets in current scope
     if (name.equals("⎕COND")) {
-      if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type));
+      if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type()));
       String s = ((Arr)val).string(false);
       if (s == null) throw new DomainError("⎕COND must be set to a character vector");
       String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
@@ -41,7 +40,6 @@ public class Scope {
       }
     }
     vars.put(name, val);
-    return val;
   }
   public Obj get (String name) {
     if (name.startsWith("⎕")) {
@@ -52,7 +50,7 @@ public class Scope {
         case "⎕A": return Main.alphabet;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
-        case "⎕ERASE": return new Eraser();
+        case "⎕ERASE": return new Eraser(this);
         case "⎕GC": System.gc(); return Num.ONE;
         case "⎕DEATHLOGGER": return new DeathLogger();
       }
@@ -67,9 +65,7 @@ public class Scope {
     }
   }
   Obj getVar(String name) {
-    Obj v = get(name);
-    if (v == null) return new PlainVar(name, this);
-    return v.varData(name, this); // experimental
+    return new Variable(this, name);
   }
   public String toString() {
     return toString("");
@@ -94,7 +90,6 @@ public class Scope {
     static class DyingObj extends Obj {
       String msg;
       DyingObj(String s) {
-        super(Type.set);
         this.msg = s;
       }
   
@@ -105,6 +100,11 @@ public class Scope {
       }
       public String toString() {
         return "⎕DEATHLOGGER["+msg+"]";
+      }
+  
+      @Override
+      public Type type() {
+        return Type.array;
       }
     }
   }
@@ -136,13 +136,14 @@ public class Scope {
     }
   }
   static class Eraser extends Builtin {
-    Eraser() {
+    Eraser(Scope sc) {
       super("⎕ERASE");
       valid = 0x001;
+      this.sc = sc;
     }
     
     public Obj call(Value w) {
-      w.set(null);
+      sc.set(w.fromAPL(), null);
       return w;
     }
   }

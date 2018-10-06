@@ -1,13 +1,10 @@
 package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
-import APL.types.Arr;
-import APL.types.Num;
-import APL.types.Obj;
-import APL.types.Value;
+import APL.types.*;
 import APL.types.functions.Builtin;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class DTackBuiltin extends Builtin {
   static UTackBuiltin copy = new UTackBuiltin();
@@ -37,6 +34,7 @@ public class DTackBuiltin extends Builtin {
       res.add(num.mod(base));
       num = num.floorDivide(base);
     }
-    return new Arr(res, true);
+    Collections.reverse(res);
+    return new Arr(res);
   }
 }

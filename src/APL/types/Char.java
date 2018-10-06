@@ -1,17 +1,17 @@
 package APL.types;
 
+import APL.*;
+
 import static APL.Main.quotestrings;
 
 public class Char extends Value {
   public static final Char SPACE = new Char(' ');
   public char chr;
   public Char(char c) {
-    super(ArrType.chr);
     prototype = SPACE;
     chr = c;
   }
   public Char(String s) {
-    super(ArrType.chr);
     assert(s.length() == 1);
     chr = s.charAt(0);
     prototype = SPACE;
@@ -46,6 +46,7 @@ public class Char extends Value {
   public int compareTo(Char v) {
     return Character.compare(chr, v.chr);
   }
+  
   
   @Override public boolean equals(Obj c) {
     if (!(c instanceof Char)) return false;

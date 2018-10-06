@@ -11,10 +11,14 @@ public class Fork extends Fun {
   private Fun g;
   private Obj f, h;
   public Fork(Obj f, Fun g, Obj h) {
-    super(Type.fn);
     this.f = f;
     this.g = g;
     this.h = h;
+  }
+  
+  @Override
+  public Type type() {
+    return Type.fn;
   }
   
   public Obj call(Value w) {

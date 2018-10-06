@@ -1,12 +1,7 @@
 package APL.types.functions.builtins.fns;
 
-import APL.types.Char;
-import APL.types.Num;
-import APL.types.Obj;
-import APL.types.Value;
+import APL.types.*;
 import APL.types.functions.Builtin;
-
-import java.util.ArrayList;
 
 public class CeilingBuiltin extends Builtin {
   public CeilingBuiltin() {

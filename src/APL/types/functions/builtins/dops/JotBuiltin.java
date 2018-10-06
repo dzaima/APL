@@ -1,6 +1,5 @@
 package APL.types.functions.builtins.dops;
 
-import APL.Type;
 import APL.errors.SyntaxError;
 import APL.types.*;
 import APL.types.functions.Dop;
@@ -11,34 +10,32 @@ public class JotBuiltin extends Dop {
     valid = 0x011;
   }
   public Obj call(Obj aa, Obj ww, Value w) {
-    if (ww.type == Type.fn) {
-      if (aa.type == Type.fn) {
+    if (ww instanceof Fun) {
+      if (aa instanceof Fun) {
         return ((Fun)aa).call((Value)((Fun)ww).call(w));
       } else {
         return ((Fun)ww).call((Value)aa, w);
       }
     } else {
-      if (aa.type == Type.array) throw new SyntaxError("arr∘arr makes no sense", this, w);
-      //ww is fn
-      return ((Fun)aa).call(w, (Value)ww);
+      if (aa instanceof Fun) return ((Fun) aa).call(w, (Value) ww);
+      throw new SyntaxError("arr∘arr makes no sense", this, w);
     }
   }
   public Obj callInv(Obj aa, Obj ww, Value w) {
-    if (ww.type == Type.fn) {
-      if (aa.type == Type.fn) {
+    if (ww instanceof Fun) {
+      if (aa instanceof Fun) {
         return ((Fun)aa).call((Value)((Fun)ww).call(w));
       } else {
         return ((Fun)ww).callInvW((Value)aa, w);
       }
     } else {
-      if (aa.type == Type.array) throw new SyntaxError("arr∘arr makes no sense", this, w);
-      //ww is fn
-      return ((Fun)aa).callInvA(w, (Value)ww);
+      if (aa instanceof Fun) return ((Fun) aa).callInvA(w, (Value) ww);
+      throw new SyntaxError("arr∘arr makes no sense", this, w);
     }
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
-    boolean af = aa.type == Type.fn;
-    boolean wf = ww.type == Type.fn;
+    boolean af = aa instanceof Fun;
+    boolean wf = ww instanceof Fun;
     if (!af || !wf) throw new SyntaxError("strictly monadic derived function called dyadically", this, a);
     return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
   }

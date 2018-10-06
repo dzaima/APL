@@ -2,10 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Main;
 import APL.errors.NYIError;
-import APL.types.Arr;
-import APL.types.Num;
-import APL.types.Obj;
-import APL.types.Value;
+import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class FormatBuiltin extends Builtin {

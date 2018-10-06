@@ -1,8 +1,7 @@
 package APL.types;
 
 import APL.*;
-import APL.errors.DomainError;
-import APL.errors.RankError;
+import APL.errors.*;
 
 import java.util.*;
 
@@ -13,10 +12,7 @@ abstract public class Value extends Obj {
   public int ia; // item amount
   public Value[] arr;
   public Value prototype = null;
-  public final ArrType valtype;
-  protected Value(ArrType type) {
-    super(Type.array);
-    valtype = type;
+  protected Value() {
     if (primitive()) {
       shape = new int[0];
       arr = new Value[]{this};
@@ -33,15 +29,22 @@ abstract public class Value extends Obj {
     return res;
   }
   public int toInt(Fun caller) {
-    if (valtype != ArrType.num) throw new DomainError("Expected a number, got "+ Main.human(valtype, true), caller, this);
+    if (!(this instanceof Num)) throw new DomainError("Expected a number, got "+ humanType(true), caller, this);
     Num n = (Num)this;
     return n.intValue();
+  }
+  public String humanType(boolean article) {
+    
+    if (this instanceof Arr)  return article? "an array"    : "array";
+    if (this instanceof Char) return article? "a character" : "character";
+    if (this instanceof Num)  return article? "a number"    : "number";
+    return "some type that dzaima hasn't named in Value.humanType ಠ_ಠ";
   }
   public boolean scalar() {
     return rank == 0;
   }
   public boolean primitive() {
-    return valtype !=ArrType.array;
+    return !(this instanceof Arr);
   }
   public Value first() {
     return ia==0? prototype : arr[0];
@@ -118,4 +121,10 @@ abstract public class Value extends Obj {
     Arrays.sort(na, (a, b) -> arr[b].compareTo(arr[a]));
     return na;
   }
+  
+  @Override
+  public Type type() {
+    return Type.array;
+  }
+  
 }

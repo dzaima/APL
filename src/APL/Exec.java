@@ -46,22 +46,18 @@ class Exec {
       printlvl();
     }
     var done = new LinkedList<Obj>();
-    ArrayList<Value> arr = null;
+    ArrayList<Obj> arr = null;
     while (o.size() > 0) {
       Token t = o.pop();
       Obj c = valueOf(t);
       // if (Main.debug) printlvl("token", t.toRepr(), "-> object", c);
       if (c.isObj()) {
-        if (arr != null) {
-          arr.add((Value) c);
-        } else {
-          arr = new ArrayList<>();
-          arr.add((Value) c);
-        }
+        if (arr == null) arr = new ArrayList<>();
+        arr.add(c);
       } else {
         if (arr != null) {
           if (arr.size() == 1) done.add(arr.get(0));
-          else done.add(new Arr(arr, true));
+          else done.add(new VarArr(arr));
           update(done, false);
           arr = null;
         }
@@ -76,7 +72,7 @@ class Exec {
     }
     if (arr != null) {
       if (arr.size() == 1) done.add(arr.get(0));
-      else done.add(new Arr(arr, true));
+      else done.add(new VarArr(arr));
     }
     update(done, true);
     
@@ -104,18 +100,19 @@ class Exec {
     while (true) {
       if (Main.debug) printlvl("now:", rev(done));
       if (done.size() >= 3 && "∘".equals(done.getLast().repr) && ".".equals(done.get(done.size() - 2).repr)) {
+        if (Main.debug) printlvl("∘.");
+        if (Main.debug) printlvl("before:", rev(done));
         done.removeLast();
         done.removeLast();
         var fn = (Fun)done.removeLast();
         done.addLast(new TableBuiltin().derive(fn));
       }
-      if (Main.debug) printlvl("UPDATE", rev(done));
       if (is(done, "D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.remove();
-        var f = (Fun) done.remove();
-        var a = (Value) done.remove();
+        var w = firstVal(done);
+        var f = firstFun(done);
+        var a = firstVal(done);
         var res = f.call(a, w);
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
@@ -125,84 +122,134 @@ class Exec {
       if (is(done, "[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.remove();
-        var f = (Fun) done.remove();
+        var w = firstVal(done);
+        var f = firstFun(done);
         var res = f.call(w);
         if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addFirst(res);
         if (res == null) return;
         continue;
       }
-      if (is(done, "D!|N←.,D!|F←F,D!|D←D,D!|M←M", end, false)) { // "D!|.←." to allow changing type
+      if (is(done, "D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = done.remove();
+        var w = firstObj(done);
         var s = (SetBuiltin) done.remove(); // ←
-        var a = done.remove();
+        var a = done.remove(); // variable
         done.addFirst(s.call(a, w, false));
         continue;
       }
       if (is(done, "D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
         if (Main.debug) printlvl("before:", rev(done));
-        var w = (Value) done.remove();
+        var w = firstVal(done);
         var s = (SetBuiltin) done.remove(); // ←
-        var f = (Fun) done.remove();
-        Value a = (Value) done.poll();
+        var f = firstFun(done);
+        Obj a = done.remove(); // variable
         done.addFirst(s.call(f, a, w));
         continue;
       }
       if (is(done, "!D|[FN]M", end, true)) {
         if (Main.debug) printlvl("FM");
         if (Main.debug) printlvl("before:", rev(done));
-        var o = (Mop) done.remove(lastPtr);
-        var f = (Obj) done.remove(lastPtr);
+        var o = startMop(done, lastPtr); // (Mop) done.remove(lastPtr);
+        var f = startObj(done, lastPtr); // (Obj) done.remove(lastPtr);
         done.add(lastPtr, o.derive(f));
         continue;
       }
       if (is(done, "[FN]D[FN]", end, true)) {
         if (Main.debug) printlvl("FDF");
         if (Main.debug) printlvl("before:", rev(done));
-        var aa = done.removeLast();
-        var o = (Dop) done.removeLast();
-        var ww = done.removeLast();
+        var aa = lastObj(done); // done.removeLast();
+        var  o = lastDop(done); // (Dop) done.removeLast();
+        var ww = lastObj(done); // done.removeLast();
         done.addLast(o.derive(aa, ww));
         continue;
       }
       if (is(done, ".|[FN]FF", end, false)) {
         if (Main.debug) printlvl("f g h", rev(done));
         if (Main.debug) printlvl("before:", rev(done));
-        var h = done.remove();
-        var g = (Fun) done.remove();
-        var f = done.remove();
+        var h = firstObj(done);
+        var g = firstFun(done);
+        var f = firstObj(done);
         done.addFirst(new Fork(f, g, h));
         continue;
       }
       if (is(done, "NF", false, false)) {
         if (Main.debug) printlvl("A f");
         if (Main.debug) printlvl("before:", rev(done));
-        var f = (Fun) done.remove();
-        var a = done.remove();
+        var f = firstFun(done);
+        var a = firstObj(done);
         done.addFirst(new Atop(a, f));
         continue;
       }
       if (is(done, "←FF", false, false)) {
         if (Main.debug) printlvl("g h");
         if (Main.debug) printlvl("before:", rev(done));
-        var h = (Fun) done.remove();
-        var g = done.remove();
+        var h = firstFun(done);
+        var g = firstObj(done);
         done.addFirst(new Atop(g, h));
         continue;
       }
       break;
     }
     if (end && done.size() == 2) {
-      var h = (Fun) done.remove();
-      var g = done.remove();
+      var h = firstFun(done);
+      var g = firstObj(done);
       done.addFirst(new Atop(g, h));
     }
   }
-
+  
+  private static Value firstVal(LinkedList<Obj> l) {
+    var r = l.removeFirst();
+    if (r instanceof Value) return (Value) r;
+    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof Variable) return (Value) ((Variable) r).get();
+    throw new SyntaxError("Expected value, got "+r);
+  }
+  
+  private static Fun firstFun(LinkedList<Obj> l) {
+    var r = l.removeFirst();
+    if (r instanceof Fun) return (Fun) r;
+    if (r instanceof Variable) return (Fun) ((Variable) r).get();
+    throw new SyntaxError("Expected function, got "+r);
+  }
+  
+  private static Mop startMop(LinkedList<Obj> l, int lastPtr) {
+    var r = l.remove(lastPtr);
+    if (r instanceof Mop) return (Mop) r;
+    if (r instanceof Variable) return (Mop) ((Variable) r).get();
+    throw new SyntaxError("Expected function, got "+r);
+  }
+  
+  private static Dop lastDop(LinkedList<Obj> l) {
+    var r = l.removeLast();
+    if (r instanceof Dop) return (Dop) r;
+    if (r instanceof Variable) return (Dop) ((Variable) r).get();
+    throw new SyntaxError("Expected function, got "+r);
+  }
+  
+  private static Obj startObj(LinkedList<Obj> l, int lastPtr) {
+    var r = l.remove(lastPtr);
+    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof Variable) return ((Variable) r).get();
+    return r;
+  }
+  
+  private static Obj firstObj(LinkedList<Obj> l) {
+    var r = l.removeFirst();
+    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof Variable) return ((Variable) r).get();
+    return r;
+  }
+  
+  private static Obj lastObj(LinkedList<Obj> l) {
+    var r = l.removeLast();
+    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof Variable) return ((Variable) r).get();
+    return r;
+  }
+  
   private int lastPtr = -1;
 
   private boolean is(LinkedList<Obj> l, String pt, boolean everythingDone, boolean reverse) {
@@ -251,7 +298,7 @@ class Exec {
       Obj v = l.get(ptr);
       lastPtr = ptr;
       char type;
-      switch (v.type) {
+      switch (v.type()) {
         case array:
           type = 'N';
           break;
@@ -361,7 +408,7 @@ class Exec {
   
   
           case '⍬': return new Arr(Num.ZERO);
-          case '⎕': return new Logger();
+          case '⎕': return new Logger(sc);
           case '⍺': return sc.get("⍺");
           case '⍵': return sc.get("⍵");
           case '⍶': return sc.get("⍶");

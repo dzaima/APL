@@ -13,34 +13,23 @@ public class Num extends Value {
   public static final Num INFINITY = new Num("1e309");
   private double num;
   public Num(String val) {
-    super(ArrType.num);
     repr = val;
     if (val.startsWith("¯")) {
       num = -Double.parseDouble(val.substring(1));
     } else num = Double.parseDouble(val);
-    prototype = Num.ZERO;
   }
 
-  public Num (Num num) {
-    super(ArrType.num);
-    repr = num.repr;
-    this.num = num.num;
-    prototype = Num.ZERO;
-  }
-  public Num (int n) {
-    super(ArrType.num);
+  public Num(int n) {
     repr = Integer.toString(n);
     num = n;
     prototype = Num.ZERO;
   }
-  public Num (long n) {
-    super(ArrType.num);
+  public Num(long n) {
     repr = Long.toString(n);
     num = n;
     prototype = Num.ZERO;
   }
-  public Num (double val) {
-    super(ArrType.num);
+  public Num(double val) {
     repr = Double.toString(val);
     num = val;
     prototype = Num.ZERO;
@@ -178,6 +167,8 @@ public class Num extends Value {
 //    if (num < n.num) return -1;
 //    return 0;
   }
+  
+  
   public boolean equals(Obj n) {
     if (n instanceof Num) {
       return ((Num)n).num == num;

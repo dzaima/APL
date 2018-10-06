@@ -1,52 +1,38 @@
 package APL.types;
 
-import java.util.*;
 import APL.*;
-import APL.errors.LengthError;
+
+import java.util.*;
 
 public class Arr extends Value {
 //  public Arr () {
 //    this(new Value[0], false);
 //  }
   public Arr (Value prototype) {
-    this(new Value[0], false);
+    this(new Value[0]);
     this.prototype = prototype;
   }
-  public Arr (ArrayList<Value> v) {
-    this(v, false);
-  }
-  public Arr (Value[] v) {
-    this(v, false);
-  }
   public Arr (Value[] v, int[] sh) {
-    super(ArrType.array);
     ia = v.length;
     shape = sh;
     rank = sh.length;
     arr = v;
   }
   public Arr (Value[] v, int[] sh, Value prototype) {
-    super(ArrType.array);
     ia = v.length;
     shape = sh;
     rank = sh.length;
     arr = v;
     this.prototype = prototype;
   }
-  public Arr (ArrayList<Value> v, boolean reverse) { // 1D
-    this(v.toArray(new Value[0]), reverse);
+  public Arr (ArrayList<Value> v) { // 1D
+    this(v.toArray(new Value[0]));
   }
-  public Arr (Value[] v, boolean reverse) { // 1D
-    super(ArrType.array);
+  public Arr (Value[] v) { // 1D
     ia = v.length;
     shape = new int[]{ia};
     rank = 1;
-    if (reverse) {
-      arr = new Value[ia];
-      for (int i = 0; i < ia; i++) {
-        arr[ia-i-1] = v[i];
-      }
-    } else arr = v;
+    arr = v;
   }
 //  public Arr (int[] ps) {
 //    super(ArrType.array);
@@ -64,7 +50,7 @@ public class Arr extends Value {
     if (rank == 1/* && shape[0] != 1*/) { // strings
       StringBuilder all = new StringBuilder();
       for (Value v : arr) {
-        if (v.valtype == ArrType.chr) {
+        if (v instanceof Char) {
           char c = ((Char)v).chr;
           if (quote && c == '\"') all.append("\"\"");
           else all.append(c);
@@ -89,7 +75,6 @@ public class Arr extends Value {
     if (qs != null) return qs;
     if (Main.prettyprint) {
       if (rank == 0) return "⊂" + oneliner(new int[0]);
-      if (Main.debug && setter) return varName + ":" + oneliner(new int[0]);
       return oneliner(new int[0]);
     } else {
       if (rank == 0 && !primitive()) return "⊂"+first().toString();
@@ -143,7 +128,7 @@ public class Arr extends Value {
             for (int cy = 0; cy < cobj.length; cy++) {
               String s = cobj[cy];
               char[] line = s.toCharArray();
-              int sx = arr[y*w + x].valtype == ArrType.num? rx+widths[x]-itemWidths[x][y] : rx;
+              int sx = arr[y*w + x] instanceof Num? rx+widths[x]-itemWidths[x][y] : rx;
               System.arraycopy(line, 0, chars[ry + cy], sx, line.length);
             }
             ry+= heights[y]+borderSize;
@@ -222,6 +207,7 @@ public class Arr extends Value {
     }
     return arr[x];
   }
+  
   
   @Override
   public boolean equals(Obj o) {

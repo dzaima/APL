@@ -7,10 +7,15 @@ import APL.*;
 @SuppressWarnings("UnusedParameters")
 public class Dop extends Fun {
   protected Dop(String repr) {
-    super(Type.dop);
     this.repr = repr;
     this.valid = 0x000;
   }
+  
+  @Override
+  public Type type() {
+    return Type.dop;
+  }
+  
   public DerivedDop derive(Obj aa, Obj ww) {
     return new DerivedDop(repr, aa, ww, this, valid);
   }

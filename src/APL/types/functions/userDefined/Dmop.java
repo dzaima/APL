@@ -20,7 +20,7 @@ public class Dmop extends Mop {
     printdbg("dmop call", w);
     sc = new Scope(psc);
     sc.set("⍶", aa);
-    sc.set("⍺", new PlainVar("⍺", sc));
+    sc.set("⍺", new Variable(sc, "⍺"));
     sc.set("⍵", w);
     return execLines(token, sc);
   }

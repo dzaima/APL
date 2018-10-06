@@ -1,6 +1,5 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
@@ -12,7 +11,7 @@ public class MulBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return numChr(n -> Main.compareObj(n, Num.ZERO), c -> new Num(c.getCase()), w);
+    return numChr(n -> new Num(n.compareTo(Num.ZERO)), c -> new Num(c.getCase()), w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> ((Num)a).times((Num)w), a0, w0);

@@ -4,11 +4,9 @@ import java.util.*;
 import APL.*;
 import APL.errors.*;
 
+@SuppressWarnings("unused")
 public abstract class Fun extends Obj {
   public Scope sc;
-  public Fun(Type t) {
-    super(t);
-  }
   public int valid; // 0x niladic dyadic monadic
   public Value identity = null;
   protected String htype() {
@@ -30,7 +28,6 @@ public abstract class Fun extends Obj {
   public Obj call(Value a, Value w) {
     throw new IncorrectArgsException(htype() + " function "+toString()+" called dyadically", this, a);
   }
-  @SuppressWarnings("unused")
   public Obj callInv(Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
@@ -75,7 +72,7 @@ public abstract class Fun extends Obj {
       return new Arr(arr, o.shape);
     } else if (w instanceof Char) return cf.call((Char)w);
       else if (w instanceof  Num) return nf.call((Num) w);
-      else throw new DomainError("Expected either number or character argument, got "+Main.human(w.valtype, false), null, w);
+      else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), null, w);
   }
   
   public interface DyVecFun {
@@ -98,7 +95,7 @@ public abstract class Fun extends Obj {
         Arr oa = ((Arr)a);
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
-          arr[i] = f.call(oa.arr[i], w);
+          arr[i] = scalar(f, oa.arr[i], w);
         }
         return new Arr(arr, oa.shape);
       } else {

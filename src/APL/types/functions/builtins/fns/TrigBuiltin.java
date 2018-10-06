@@ -44,7 +44,7 @@ public class TrigBuiltin extends Builtin {
         case - 9: return n;
         case -10: return n.conjugate();
         case -11: return n.times(n.I1);
-        case -12: return Main.compareObj(n.times(n.I1), Num.ZERO);
+        case -12: return Num.E.pow(n.times(Num.I1));
       }
       throw new DomainError("⍺ of ○ out of bounds", this, a);
     }, a0, w0);

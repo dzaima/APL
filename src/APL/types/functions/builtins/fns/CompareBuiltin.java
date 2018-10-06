@@ -10,6 +10,6 @@ public class CompareBuiltin extends Builtin {
     valid = 0x010;
   }
   public Obj call(Value a, Value w) {
-    return Main.compareObj(a, w);
+    return new Num(a.compareTo(w));
   }
 }

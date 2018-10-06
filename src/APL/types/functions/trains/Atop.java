@@ -11,7 +11,6 @@ public class Atop extends Fun {
   private Obj g;
   private Fun h;
   public Atop(Obj g, Fun h) {
-    super(Type.fn);
     this.g = g;
     this.h = h;
   }
@@ -35,5 +34,10 @@ public class Atop extends Fun {
   
   public String toString() {
     return "("+g+" "+h+")";
+  }
+  
+  @Override
+  public Type type() {
+    return Type.fn;
   }
 }

@@ -7,7 +7,6 @@ public class Dfn extends Fun {
   private Token token;
   private Scope psc;
   Dfn(Token t, Scope sc) {
-    super(Type.fn);
     token = t;
     psc = sc;
     valid = 0x011;
@@ -15,7 +14,7 @@ public class Dfn extends Fun {
   public Obj call(Value w) {
     Main.printdbg("dfn call", w);
     sc = new Scope(psc);
-    sc.set("⍺", new PlainVar("⍺", sc));
+    sc.set("⍺", new Variable(sc, "⍺"));
     sc.set("⍵", w);
     return Main.execLines(token, sc);
   }
@@ -30,5 +29,11 @@ public class Dfn extends Fun {
   public String toString() {
     return token.toRepr();
   }
+  
+  @Override
+  public Type type() {
+    return Type.fn;
+  }
+  
   public String name() { return "dfn"; }
 }
