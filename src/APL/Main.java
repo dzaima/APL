@@ -40,7 +40,7 @@ public class Main {
         if (args[0].contains("e")) {
           try {
             Obj r = exec(args[1], global);
-            if (!r.shy) println(r.toString());
+            println(r.toString());
           } catch (APLError e) {
             e.print();
           }
@@ -75,6 +75,7 @@ public class Main {
               case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
               case ")TYPE": println(Main.human(exec(rest, global).type())); break;
+              case ")CLASS": println(exec(rest, global).getClass().getCanonicalName()); break;
               case ")ATYPE": println( ((Value) exec(rest, global)).humanType(false) ); break;
               case ")STACK":
                 if (lastError != null) {
@@ -86,7 +87,7 @@ public class Main {
             }
           } else {
             Obj r = exec(cr, global);
-            if (!r.shy) println(r.toString());
+            println(r.toString());
           }
         } catch (APLError e) {
           e.print();
@@ -222,7 +223,7 @@ public class Main {
     return a;
   }
 //  public static int compare(Value a, Value w) {
-//    if (a.valtype == ArrType.num && w.valtype == ArrType.num) return ((Num)a).compareTo((Num)w);
+//    if (a instanceof Num && w instanceof Num) return ((Num)a).compareTo((Num)w);
 //    throw new DomainError("comparing non-numbers"); // TODO not do that
 //  }
 //  public static Num compareObj(Value a, Value w) {

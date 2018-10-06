@@ -35,7 +35,6 @@ public class Arr extends Value {
     arr = v;
   }
 //  public Arr (int[] ps) {
-//    super(ArrType.array);
 //    rank = ps.length;
 //    shape = new int[rank];
 //    int tia = 1;

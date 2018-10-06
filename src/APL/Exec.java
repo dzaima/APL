@@ -157,13 +157,18 @@ class Exec {
         done.add(lastPtr, o.derive(f));
         continue;
       }
-      if (is(done, "[FN]D[FN]", end, true)) {
+      if (is(done, "[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
         if (Main.debug) printlvl("before:", rev(done));
         var aa = lastObj(done); // done.removeLast();
         var  o = lastDop(done); // (Dop) done.removeLast();
-        var ww = lastObj(done); // done.removeLast();
-        done.addLast(o.derive(aa, ww));
+        if (o instanceof DotBuiltin && aa instanceof APLMap) {
+          Variable ww = (Variable) done.removeLast();
+          done.addLast(((APLMap)aa).get(Main.toAPL(ww.name, ww.token)));
+        } else {
+          var ww = lastObj(done); // done.removeLast();
+          done.addLast(o.derive(aa, ww));
+        }
         continue;
       }
       if (is(done, ".|[FN]FF", end, false)) {
@@ -204,49 +209,49 @@ class Exec {
     var r = l.removeFirst();
     if (r instanceof Value) return (Value) r;
     if (r instanceof VarArr) return ((VarArr) r).materialize();
-    if (r instanceof Variable) return (Value) ((Variable) r).get();
+    if (r instanceof Settable) return (Value) ((Settable) r).get();
     throw new SyntaxError("Expected value, got "+r);
   }
   
   private static Fun firstFun(LinkedList<Obj> l) {
     var r = l.removeFirst();
     if (r instanceof Fun) return (Fun) r;
-    if (r instanceof Variable) return (Fun) ((Variable) r).get();
+    if (r instanceof Settable) return (Fun) ((Settable) r).get();
     throw new SyntaxError("Expected function, got "+r);
   }
   
   private static Mop startMop(LinkedList<Obj> l, int lastPtr) {
     var r = l.remove(lastPtr);
     if (r instanceof Mop) return (Mop) r;
-    if (r instanceof Variable) return (Mop) ((Variable) r).get();
+    if (r instanceof Settable) return (Mop) ((Settable) r).get();
     throw new SyntaxError("Expected function, got "+r);
   }
   
   private static Dop lastDop(LinkedList<Obj> l) {
     var r = l.removeLast();
     if (r instanceof Dop) return (Dop) r;
-    if (r instanceof Variable) return (Dop) ((Variable) r).get();
+    if (r instanceof Settable) return (Dop) ((Settable) r).get();
     throw new SyntaxError("Expected function, got "+r);
   }
   
   private static Obj startObj(LinkedList<Obj> l, int lastPtr) {
     var r = l.remove(lastPtr);
     if (r instanceof VarArr) return ((VarArr) r).materialize();
-    if (r instanceof Variable) return ((Variable) r).get();
+    if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   
   private static Obj firstObj(LinkedList<Obj> l) {
     var r = l.removeFirst();
     if (r instanceof VarArr) return ((VarArr) r).materialize();
-    if (r instanceof Variable) return ((Variable) r).get();
+    if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   
   private static Obj lastObj(LinkedList<Obj> l) {
     var r = l.removeLast();
     if (r instanceof VarArr) return ((VarArr) r).materialize();
-    if (r instanceof Variable) return ((Variable) r).get();
+    if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   
@@ -341,7 +346,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
         
-          //TODO in Dyalog but not here: ⍲⍱⌽⊖⊆∊⍷⌿\⍀∩∪⌹→
+          //TODO in Dyalog but not here: ⍲⍱⌽⊖⊆∊⍷⌿\⍀∩∪⌹→  ⌿\⍀&⌶⍠⌸⌺⍤@
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -398,6 +403,7 @@ class Exec {
           case '¨': return new EachBuiltin();
           case '⍨': return new SelfieBuiltin();
           case '⌾': return new TableBuiltin();
+          case '⌸': return new KeyBuiltin();
   
           // dops
           case '∘': return new JotBuiltin();

@@ -5,7 +5,7 @@ import APL.*;
 public class Variable extends Settable {
   
   private Scope sc;
-  private String name;
+  public String name;
   
   public Variable(Scope sc, String name) {
     super(sc.get(name));

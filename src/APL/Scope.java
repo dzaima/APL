@@ -53,16 +53,16 @@ public class Scope {
         case "⎕ERASE": return new Eraser(this);
         case "⎕GC": System.gc(); return Num.ONE;
         case "⎕DEATHLOGGER": return new DeathLogger();
+        case "⎕NULL": return Null.NULL;
+        case "⎕MAP": return new StrMap();
+        
       }
     }
     Obj f = vars.get(name);
     if (f == null) {
       if (parent == null) return null;
       else return parent.get(name);
-    } else {
-      f.shy = false;
-      return f;
-    }
+    } else return f;
   }
   Obj getVar(String name) {
     return new Variable(this, name);

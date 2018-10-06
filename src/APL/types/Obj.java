@@ -3,7 +3,6 @@ package APL.types;
 import APL.*;
 
 public abstract class Obj {
-  public boolean shy = false;
   public Token token;
   
   public String repr;
@@ -12,7 +11,7 @@ public abstract class Obj {
   }
   abstract public Type type();
   public boolean equals (Obj o) {
-    if (Main.debug) Main.printdbg("non-overriden equals called");
+    if (Main.debug) Main.printdbg("non-overridden equals called");
     return false;
   }
   

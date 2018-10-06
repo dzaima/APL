@@ -18,7 +18,7 @@ public class VarArr extends Obj {
     Value[] res = new Value[arr.size()];
     for (int i = 0; i < ia; i++) {
       Obj c = arr.get(i);
-      res[i] = c instanceof VarArr? ((VarArr)c).materialize() : (Value) (c instanceof Value? c : ((Variable)c).get());
+      res[i] = c instanceof VarArr? ((VarArr) c).materialize() : (Value) (c instanceof Value? c : ((Settable) c).get());
     }
     return new Arr(res);
   }
