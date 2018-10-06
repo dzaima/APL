@@ -139,7 +139,7 @@ class Exec {
         var w = done.remove();
         var s = (SetBuiltin) done.remove(); // ←
         var a = done.remove();
-        done.addFirst(s.call(a, w));
+        done.addFirst(s.call(a, w, false));
         continue;
       }
       if (is(done, "D!|NF←N", end, false)) {
@@ -277,7 +277,6 @@ class Exec {
           throw up;
       }
       //printdbg(any, type, any.contains(str(type)));
-      printlvl(any, type);
       if ((!any.contains(String.valueOf(type))) ^ inv) return false;
       ptr += ptrinc;
     }
