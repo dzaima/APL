@@ -9,8 +9,9 @@ public class Num extends Value {
   public static final Num MINUS_ONE = new Num("-1");
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
-  private double num;
   public static final Num I1 = null; // no imaginary numbers :'(
+  public static final Num INFINITY = new Num("1e309");
+  private double num;
   public Num(String val) {
     super(ArrType.num);
     repr = val;
@@ -119,6 +120,33 @@ public class Num extends Value {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
+  public Num fact(Fun f) {
+    if (num > 170) return Num.INFINITY;
+    if (num % 1 != 0) throw new DomainError("factorial of non-integer", f, this);
+    if (num < 0) throw new DomainError("factorial of negative number", f, this);
+    double res = 1;
+    for (int i = 2; i < num+1; i++) {
+      res*= i;
+    }
+    return new Num(res);
+  }
+  
+  public Num binomial(Num w, Fun f) {
+    if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", f, this);
+    if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", f, w);
+    if (w.num > num) return Num.ZERO;
+  
+    double res = 1;
+    double a = num;
+    double b = w.num;
+    
+    if (b > a-b) b = a-b;
+    
+    for (int i = 0; i < b; i++) {
+      res = res * (a-i) / (i+1);
+    }
+    return new Num(res);
+  }
   
   public Num sin() { return new Num(Math.sin(num)); }
   public Num cos() { return new Num(Math.cos(num)); }

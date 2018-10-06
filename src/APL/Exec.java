@@ -295,7 +295,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
         
-          //TODO in Dyalog but not here: !⍲⍱⌽⊖⊆∊⍷⌿\⍀∩∪⍎⌹→←
+          //TODO in Dyalog but not here: ⍲⍱⌽⊖⊆∊⍷⌿\⍀∩∪⍎⌹→
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -313,6 +313,7 @@ class Exec {
           case '⊤': return new DTackBuiltin();
           case '~': return new TildeBuiltin();
           case '○': return new TrigBuiltin();
+          case '!': return new ExclBuiltin();
           
           case '⊂': return new LShoeBuiltin();
           case '⊇': return new RShoeUBBuiltin(sc);

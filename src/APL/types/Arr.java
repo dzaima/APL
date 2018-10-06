@@ -235,7 +235,7 @@ public class Arr extends Value {
     return true;
   }
   
-  String fromAPL() {
+  public String fromAPL() {
     var res = new StringBuilder();
     for (Value v : arr) {
       res.append(v.fromAPL());

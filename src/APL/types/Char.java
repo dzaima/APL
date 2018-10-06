@@ -52,7 +52,7 @@ public class Char extends Value {
     return chr == ((Char)c).chr;
   }
   
-  String fromAPL() {
+  public String fromAPL() {
     return String.valueOf(chr);
   }
 }

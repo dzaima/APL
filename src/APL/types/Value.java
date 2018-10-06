@@ -95,7 +95,7 @@ abstract public class Value extends Obj {
     }
     throw new DomainError("Can't compare", v, this);
   }
-  String fromAPL() {
+  public String fromAPL() {
     throw new DomainError("can't convert to string", null, this);
   }
   public Integer[] gradeUp(Fun f) {

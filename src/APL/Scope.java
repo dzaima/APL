@@ -48,6 +48,8 @@ public class Scope {
     if (name.startsWith("⎕")) {
       switch (name) {
         case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
+        case "⎕TIME": return new Timer(this, true);
+        case "⎕HTIME": return new Timer(this, false);
         case "⎕A": return Main.alphabet;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
@@ -78,6 +80,28 @@ public class Scope {
     if (parent != null) res.append(cp).append("parent: ").append(parent.toString(cp));
     res.append(prep).append("}\n");
     return res.toString();
+  }
+  static class Timer extends Builtin {
+    boolean simple;
+    Timer(Scope sc, boolean simple) {
+      super("⎕TIME");
+      valid = 0x001;
+      this.sc = sc;
+      this.simple = simple;
+    }
+    public Obj call(Value w) {
+      long start = System.nanoTime();
+      Main.exec(w.fromAPL(), sc);
+      long end = System.nanoTime();
+      if (simple) return new Num(end-start);
+      else {
+        double t = end-start;
+        if (t < 0.05*1e6) return Main.toAPL(t+" nanos", new Token(TType.expr, "nanos", 0, "the thing that made ⎕htime"));
+        t/= 1e6;
+        if (t > 500) return Main.toAPL((t/1000d)+" seconds", new Token(TType.expr, "seconds", 0, "the thing that made ⎕htime"));
+        return Main.toAPL(t+" millis", new Token(TType.expr, "millis", 0, "the thing that made ⎕htime"));
+      }
+    }
   }
   static class Eraser extends Builtin {
     Eraser() {
