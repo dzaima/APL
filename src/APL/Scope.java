@@ -43,7 +43,6 @@ public class Scope {
     vars.put(name, val);
     return val;
   }
-
   public Obj get (String name) {
     if (name.startsWith("⎕")) {
       switch (name) {
@@ -54,6 +53,8 @@ public class Scope {
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser();
+        case "⎕GC": System.gc(); return Num.ONE;
+        case "⎕DEATHLOGGER": return new DeathLogger();
       }
     }
     Obj f = vars.get(name);
@@ -81,6 +82,32 @@ public class Scope {
     res.append(prep).append("}\n");
     return res.toString();
   }
+  static class DeathLogger extends Builtin {
+    DeathLogger() {
+      super("⎕DEATHLOGGER");
+    }
+  
+    @Override
+    public Obj call(Value w) {
+      return new DyingObj(w.toString());
+    }
+    static class DyingObj extends Obj {
+      String msg;
+      DyingObj(String s) {
+        super(Type.set);
+        this.msg = s;
+      }
+  
+      @SuppressWarnings("deprecation") // as this thing is only used for debugging, this should be fine
+      @Override
+      protected void finalize() {
+        System.out.println(msg+" died");
+      }
+      public String toString() {
+        return "⎕DEATHLOGGER["+msg+"]";
+      }
+    }
+  }
   static class Timer extends Builtin {
     boolean simple;
     Timer(Scope sc, boolean simple) {
@@ -90,13 +117,18 @@ public class Scope {
       this.simple = simple;
     }
     public Obj call(Value w) {
+      return call(Num.ONE, w);
+    }
+    public Obj call(Value a, Value w) {
+      int n = ((Num) a).intValue();
       long start = System.nanoTime();
-      Main.exec(w.fromAPL(), sc);
+      for (int i = 0; i < n; i++) Main.exec(w.fromAPL(), sc);
       long end = System.nanoTime();
-      if (simple) return new Num(end-start);
+      if (simple) return new Num((end-start)/n);
       else {
         double t = end-start;
-        if (t < 0.05*1e6) return Main.toAPL(t+" nanos", new Token(TType.expr, "nanos", 0, "the thing that made ⎕htime"));
+        t/= n;
+        if (t < 1000) return Main.toAPL(t+" nanos", new Token(TType.expr, "nanos", 0, "the thing that made ⎕htime"));
         t/= 1e6;
         if (t > 500) return Main.toAPL((t/1000d)+" seconds", new Token(TType.expr, "seconds", 0, "the thing that made ⎕htime"));
         return Main.toAPL(t+" millis", new Token(TType.expr, "millis", 0, "the thing that made ⎕htime"));
