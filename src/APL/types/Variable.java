@@ -23,6 +23,7 @@ public class Variable extends Settable {
   
   @Override
   public String toString() {
-    return v == null? "var:"+name : "var:"+v.toString();
+    if (Main.debug) return v == null? "var:"+name : "var:"+v;
+    return v == null? "var:"+name : v.toString();
   }
 }

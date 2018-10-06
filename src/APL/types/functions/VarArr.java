@@ -1,6 +1,6 @@
 package APL.types.functions;
 
-import APL.Type;
+import APL.*;
 import APL.types.*;
 
 import java.util.*;
@@ -30,6 +30,7 @@ public class VarArr extends Obj {
   
   @Override
   public String toString() {
-    return arr.toString();
+    if (Main.debug) return "vararr:"+arr;
+    return materialize().toString();
   }
 }
