@@ -1,6 +1,7 @@
 #!/bin/bash
-rm APL.jar
-rm -r src/build/APL
+rm -f APL.jar
+rm -rf src/build/APL
+mkdir -p build
 cd src
 shopt -s globstar
 javac -d ./build APL/**/*.java
