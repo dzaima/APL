@@ -10,6 +10,7 @@ public class DerivedMop extends Builtin {
     this.valid = valid;
     this.aa = aa;
     this.op = op;
+    token = op.token;
   }
 
   public Obj call(Value w) {

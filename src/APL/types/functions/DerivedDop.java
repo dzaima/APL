@@ -11,6 +11,7 @@ public class DerivedDop extends Builtin {
     this.aa = aa;
     this.ww = ww;
     this.op = op;
+    token = op.token;
   }
   
   public Obj call(Value w) {

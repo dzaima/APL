@@ -13,4 +13,8 @@ public class SyntaxError extends APLError {
     assert fn != null  ||  cause == null;
     this.cause = cause;
   }
+  public SyntaxError (String s, Obj cause){
+    super(s);
+    this.fn = cause;
+  }
 }

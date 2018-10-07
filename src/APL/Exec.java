@@ -28,15 +28,16 @@ class Exec {
     for (int i = 0; i < Main.printlvl; i++) print("  ");
     Main.printdbg(args);
   }
-  private Stack remaining;
+  @Deprecated
+  private LinkedList<Obj> done;
+  private Stack<Token> left;
   Obj exec() {
     if (sc.alphaDefined && tokens.size() >= 2 && "⍺".equals(tokens.get(0).repr) && tokens.get(1).type == TType.set) {
       if (Main.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
-    var o = new Stack<Token>();
-    remaining = o;
-    o.addAll(tokens);
+    left = new Stack<>();
+    left.addAll(tokens);
     if (Main.debug) {
       StringBuilder repr = new StringBuilder();
       for (Token t : tokens) repr.append(t.toRepr()).append(" ");
@@ -45,10 +46,10 @@ class Exec {
       printlvl("code:", repr);
       printlvl();
     }
-    var done = new LinkedList<Obj>();
+    done = new LinkedList<>();
     ArrayList<Obj> arr = null;
-    while (o.size() > 0) {
-      Token t = o.pop();
+    while (left.size() > 0) {
+      Token t = left.pop();
       Obj c = valueOf(t);
       // if (Main.debug) printlvl("token", t.toRepr(), "-> object", c);
       if (c.isObj()) {
@@ -56,234 +57,224 @@ class Exec {
         arr.add(c);
       } else {
         if (arr != null) {
-          if (arr.size() == 1) done.add(arr.get(0));
-          else done.add(new VarArr(arr));
-          update(done, false);
+          if (arr.size() == 1) done.addFirst(arr.get(0));
+          else done.addFirst(new VarArr(arr));
+          update(false);
           arr = null;
         }
-        if (t.type == TType.op) done.add(c);
-        else if (t.type == TType.set) done.add(c);
-        else if (t.type == TType.name) done.add(c);
-        else if (t.type == TType.expr) done.add(c);
-        else if (t.type == TType.usr) done.add(c);
+        if (t.type == TType.op) done.addFirst(c);
+        else if (t.type == TType.set) done.addFirst(c);
+        else if (t.type == TType.name) done.addFirst(c);
+        else if (t.type == TType.expr) done.addFirst(c);
+        else if (t.type == TType.usr) done.addFirst(c);
         else throw new Error("unknown type: " + t.type + " (no idea if this should be a thing)");
-        update(done, false);
+        update(false);
       }
     }
     if (arr != null) {
-      if (arr.size() == 1) done.add(arr.get(0));
-      else done.add(new VarArr(arr));
+      if (arr.size() == 1) done.addFirst(arr.get(0));
+      else done.addFirst(new VarArr(arr));
     }
-    update(done, true);
+    update(true);
     
     
 //    if (done.size() != 1) update(done, true); // e.g. for f←1+
     
     Main.printlvl--;
-    if (Main.debug) printlvl("END:", rev(done));
+    if (Main.debug) printlvl("END:", done);
     if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression");
     return done.get(0);
   }
 
-  private String rev(LinkedList l) {
-    StringBuilder res = new StringBuilder("[");
-    ListIterator li = l.listIterator(l.size());
-    while (li.hasPrevious()) {
-      if (res.length() != 1) res.append(", ");
-      res.append(li.previous());
-    }
-    return res + "]";
-  }
-
-  private void update(LinkedList<Obj> done, boolean end) {
+  private void update(boolean end) {
     if (done.size() == 1 && done.get(0) == null) return;
     while (true) {
-      if (Main.debug) printlvl("now:", rev(done));
-      if (done.size() >= 3 && "∘".equals(done.getLast().repr) && ".".equals(done.get(done.size() - 2).repr)) {
+      if (Main.debug) printlvl(done);
+      if (done.size() >= 3 && done.getFirst() instanceof JotBuiltin && done.get(1) instanceof DotBuiltin) {
         if (Main.debug) printlvl("∘.");
-        if (Main.debug) printlvl("before:", rev(done));
-        done.removeLast();
-        done.removeLast();
-        var fn = (Fun)done.removeLast();
-        done.addLast(new TableBuiltin().derive(fn));
+        var jot = done.removeFirst();
+        done.removeFirst();
+        var fn = done.removeFirst();
+        var TB = new TableBuiltin();
+        TB.token = jot.token;
+        done.addFirst(TB.derive(fn));
+        continue;
       }
-      if (is(done, "D!|NFN", end, false)) {
+      if (is("D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
-        if (Main.debug) printlvl("before:", rev(done));
-        var w = firstVal(done);
-        var f = firstFun(done);
-        var a = firstVal(done);
+        var w = lastVal();
+        var f = lastFun();
+        var a = lastVal();
         var res = f.call(a, w);
-        if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
-        done.addFirst(res);
+        if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
+        done.addLast(res);
         if (res == null) return;
         continue;
       }
-      if (is(done, "[FM←]|FN", end, false)) {
+      if (is("[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
-        if (Main.debug) printlvl("before:", rev(done));
-        var w = firstVal(done);
-        var f = firstFun(done);
+        var w = lastVal();
+        var f = lastFun();
         var res = f.call(w);
-        if (res == null && remaining.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
-        done.addFirst(res);
+        if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
+        done.addLast(res);
         if (res == null) return;
         continue;
       }
-      if (is(done, "D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
+      if (is("D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
-        if (Main.debug) printlvl("before:", rev(done));
-        var w = firstObj(done);
-        var s = (SetBuiltin) done.remove(); // ←
-        var a = done.remove(); // variable
-        done.addFirst(s.call(a, w, false));
+        var w = lastObj();
+        var s = (SetBuiltin) done.removeLast(); // ←
+        var a = done.removeLast(); // variable
+        done.addLast(s.call(a, w, false));
         continue;
       }
-      if (is(done, "D!|NF←N", end, false)) {
+      if (is("D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
-        if (Main.debug) printlvl("before:", rev(done));
-        var w = firstVal(done);
-        var s = (SetBuiltin) done.remove(); // ←
-        var f = firstFun(done);
-        Obj a = done.remove(); // variable
-        done.addFirst(s.call(f, a, w));
+        var w = lastVal();
+        var s = (SetBuiltin) done.removeLast(); // ←
+        var f = lastFun();
+        Obj a = done.removeLast(); // variable
+        done.addLast(s.call(f, a, w));
         continue;
       }
-      if (is(done, "!D|[FN]M", end, true)) {
+      if (is("!D|[FN]M", end, true)) {
         if (Main.debug) printlvl("FM");
-        if (Main.debug) printlvl("before:", rev(done));
-        var o = startMop(done, lastPtr); // (Mop) done.remove(lastPtr);
-        var f = startObj(done, lastPtr); // (Obj) done.remove(lastPtr);
-        done.add(lastPtr, o.derive(f));
+        var f = firstObj(); // (Obj) done.removeLast(lastPtr);
+        var o = firstMop(); //fixme (Mop) done.removeLast(lastPtr);
+        addFirst(o.derive(f));
         continue;
       }
-      if (is(done, "[FNV]D[FNV]", end, true)) {
+      if (is("[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
-        if (Main.debug) printlvl("before:", rev(done));
-        var aa = lastObj(done); // done.removeLast();
-        var  o = lastDop(done); // (Dop) done.removeLast();
-        if (o instanceof DotBuiltin && aa instanceof APLMap) {
-          Variable ww = (Variable) done.removeLast();
-          done.addLast(((APLMap)aa).get(Main.toAPL(ww.name, ww.token)));
+        var aa = done.removeFirst(); // done.removeFirst();
+        var  o = firstDop(); // (Dop) done.removeFirst();
+        var ww = done.removeFirst();
+        var aau = aa;
+        var wwu = ww;
+        if (aau instanceof Settable) aau = ((Settable) aa).get();
+        if (wwu instanceof Settable) wwu = ((Settable) ww).get();
+        if (o instanceof DotBuiltin && aau instanceof APLMap) {
+          done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
-          var ww = lastObj(done); // done.removeLast();
-          done.addLast(o.derive(aa, ww));
+          done.addFirst(o.derive(aau, wwu));
         }
         continue;
       }
-      if (is(done, ".|[FN]FF", end, false)) {
-        if (Main.debug) printlvl("f g h", rev(done));
-        if (Main.debug) printlvl("before:", rev(done));
-        var h = firstObj(done);
-        var g = firstFun(done);
-        var f = firstObj(done);
-        done.addFirst(new Fork(f, g, h));
+      if (is(".|[FN]FF", end, false)) {
+        if (Main.debug) printlvl("f g h");
+        var h = lastObj();
+        var g = lastFun();
+        var f = lastObj();
+        done.addLast(new Fork(f, g, h));
         continue;
       }
-      if (is(done, "NF", false, false)) {
+      if (is("D!|NF", false, false)) {
         if (Main.debug) printlvl("A f");
-        if (Main.debug) printlvl("before:", rev(done));
-        var f = firstFun(done);
-        var a = firstObj(done);
-        done.addFirst(new Atop(a, f));
+        var f = lastFun();
+        var a = lastObj();
+        done.addLast(new Atop(a, f));
         continue;
       }
-      if (is(done, "←FF", false, false)) {
+      if (is("←FF", false, false)) {
         if (Main.debug) printlvl("g h");
-        if (Main.debug) printlvl("before:", rev(done));
-        var h = firstFun(done);
-        var g = firstObj(done);
-        done.addFirst(new Atop(g, h));
+        var h = lastFun();
+        var g = lastObj();
+        done.addLast(new Atop(g, h));
         continue;
       }
       break;
     }
     if (end && done.size() == 2) {
-      var h = firstFun(done);
-      var g = firstObj(done);
-      done.addFirst(new Atop(g, h));
+      var h = lastFun();
+      var g = lastObj();
+      done.addLast(new Atop(g, h));
     }
   }
   
-  private static Value firstVal(LinkedList<Obj> l) {
-    var r = l.removeFirst();
+  private Value lastVal() {
+    var r = done.removeLast();
     if (r instanceof Value) return (Value) r;
     if (r instanceof VarArr) return ((VarArr) r).materialize();
     if (r instanceof Settable) return (Value) ((Settable) r).get();
-    throw new SyntaxError("Expected value, got "+r);
+    throw new SyntaxError("Expected value, got "+r, r);
   }
   
-  private static Fun firstFun(LinkedList<Obj> l) {
-    var r = l.removeFirst();
+  private Fun lastFun() {
+    var r = done.removeLast();
     if (r instanceof Fun) return (Fun) r;
     if (r instanceof Settable) return (Fun) ((Settable) r).get();
-    throw new SyntaxError("Expected function, got "+r);
+    throw new SyntaxError("Expected function, got "+r, r);
   }
   
-  private static Mop startMop(LinkedList<Obj> l, int lastPtr) {
-    var r = l.remove(lastPtr);
-    if (r instanceof Mop) return (Mop) r;
-    if (r instanceof Settable) return (Mop) ((Settable) r).get();
-    throw new SyntaxError("Expected function, got "+r);
-  }
   
-  private static Dop lastDop(LinkedList<Obj> l) {
-    var r = l.removeLast();
+  private Dop firstDop() {
+    var r = done.removeFirst();
     if (r instanceof Dop) return (Dop) r;
     if (r instanceof Settable) return (Dop) ((Settable) r).get();
-    throw new SyntaxError("Expected function, got "+r);
+    throw new SyntaxError("Expected function, got "+r, r);
   }
   
-  private static Obj startObj(LinkedList<Obj> l, int lastPtr) {
-    var r = l.remove(lastPtr);
+  private Obj lastObj() {
+    var r = done.removeLast();
     if (r instanceof VarArr) return ((VarArr) r).materialize();
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
-  
-  private static Obj firstObj(LinkedList<Obj> l) {
-    var r = l.removeFirst();
+  private Obj firstObj() {
+    var r = done.remove(barPtr);
     if (r instanceof VarArr) return ((VarArr) r).materialize();
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
-  
-  private static Obj lastObj(LinkedList<Obj> l) {
-    var r = l.removeLast();
-    if (r instanceof VarArr) return ((VarArr) r).materialize();
-    if (r instanceof Settable) return ((Settable) r).get();
-    return r;
+  private Mop firstMop() {
+    var r = done.remove(barPtr);
+    if (r instanceof Mop) return (Mop) r;
+    if (r instanceof Settable) return (Mop) ((Settable) r).get();
+    throw new SyntaxError("Expected function, got "+r, r);
+  }
+  private void addFirst(Obj o) {
+    done.add(barPtr, o);
   }
   
-  private int lastPtr = -1;
+//  private Obj lastObj() {
+//    var r = done.removeLast();
+//    if (r instanceof VarArr) return ((VarArr) r).materialize();
+//    if (r instanceof Settable) return ((Settable) r).get();
+//    return r;
+//  }
+  
+  private int barPtr = 0;
 
-  private boolean is(LinkedList<Obj> l, String pt, boolean everythingDone, boolean reverse) {
+  private boolean is(String pt, boolean everythingDone, boolean reverse) {
+    barPtr = 0;
     if (pt.contains(",")) {
       for (String s : pt.split(",")) {
-        if (is(l, s, everythingDone, reverse)) return true;
+        if (is(s, everythingDone, reverse)) return true;
       }
     }
-    if (everythingDone && is(l, pt, false, reverse)) return true;
+    if (everythingDone && is(pt, false, reverse)) return true;
     if (reverse && everythingDone && pt.contains("|")) {
-      return is(l, pt.split("\\|")[1], false, true);
+      return is(pt.split("\\|")[1], false, true);
     }
     int len = pt.length();
-    int ptr = reverse ? l.size() - 1 : 0;
-    int ptrinc = reverse ? -1 : 1;
+    int ptr = reverse ? 0 : done.size() - 1;
+    int ptrinc = reverse ? 1 : -1;
     boolean pass = false;
-    for (int i = reverse ? 0 : len - 1; (reverse ? i < len : i >= 0); i -= ptrinc) {
+    for (int i = reverse ? 0 : len - 1; (reverse ? i < len : i >= 0); i += ptrinc) {
       char p = pt.charAt(i);
       String any;
       boolean inv = false;
       if (p == '|') {
         pass = everythingDone;
-        i -= ptrinc;
+        barPtr = ptr;
+        i += ptrinc;
         p = pt.charAt(i);
       }
-      if (ptr >= l.size() || ptr < 0) return pass;
+      if (ptr >= done.size() || ptr < 0) return pass;
       if (p == '!') {
         inv = true;
-        i -= ptrinc;
+        i += ptrinc;
         p = pt.charAt(i);
       }
       if (p == ']') { // regular
@@ -300,8 +291,7 @@ class Exec {
         ptr += ptrinc;
         continue;
       }
-      Obj v = l.get(ptr);
-      lastPtr = ptr;
+      Obj v = done.get(ptr);
       char type;
       switch (v.type()) {
         case array:

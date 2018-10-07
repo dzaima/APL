@@ -199,4 +199,8 @@ public class Num extends Value {
     return a.num < b.num? a : b;
   }
   
+  @Override
+  public int hashCode() {
+    return Double.hashCode(num);
+  }
 }

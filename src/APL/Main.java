@@ -76,6 +76,7 @@ public class Main {
               case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
               case ")TYPE": println(Main.human(exec(rest, global).type())); break;
+              case ")ERR": new NotErrorError("", exec(rest, global)).print(); break;
               case ")CLASS": println(exec(rest, global).getClass().getCanonicalName()); break;
               case ")ATYPE": println( ((Value) exec(rest, global)).humanType(false) ); break;
               case ")STACK":

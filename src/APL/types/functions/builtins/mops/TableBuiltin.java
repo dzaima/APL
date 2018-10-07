@@ -20,6 +20,7 @@ public class TableBuiltin extends Mop {
         i++;
       }
     }
+    if (shape.length == 0) return arr[0];
     return new Arr(arr, shape);
   }
 }
