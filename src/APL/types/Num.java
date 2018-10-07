@@ -87,8 +87,8 @@ public class Num extends Value {
         b = a % b;
         a = t;
       }
-      
-      res = (nums[i].num * res) / a;
+      if (a == 0) res = 0;
+      else res = (nums[i].num * res) / a;
     }
     return new Num(res);
   }

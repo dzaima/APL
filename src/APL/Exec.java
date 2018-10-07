@@ -28,7 +28,6 @@ class Exec {
     for (int i = 0; i < Main.printlvl; i++) print("  ");
     Main.printdbg(args);
   }
-  @Deprecated
   private LinkedList<Obj> done;
   private Stack<Token> left;
   Obj exec() {
