@@ -1,13 +1,12 @@
 package APL.types;
 
-import APL.*;
+import APL.Main;
+import APL.errors.DomainError;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class Arr extends Value {
-//  public Arr () {
-//    this(new Value[0], false);
-//  }
   public Arr (Value prototype) {
     this(new Value[0]);
     this.prototype = prototype;
@@ -65,8 +64,7 @@ public class Arr extends Value {
     if (ia == 0) {
       if (rank == 1) return prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?";
       else {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < rank; i++) s.append(i == 0 ? "" : " ").append(shape[i]);
+        String s = IntStream.range(0, rank).mapToObj(i -> String.valueOf(shape[i])).collect(Collectors.joining(" "));
         return s + "⍴" + (prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?");
       }
     }
@@ -173,7 +171,7 @@ public class Arr extends Value {
       } else return oneliner(new int[0]);
     }
   }
-  protected String oneliner(int[] where) {
+  String oneliner(int[] where) {
     var qs = string(true);
     if (qs != null) return qs;
     StringBuilder res = new StringBuilder(where.length == 0 ? "{" : "[");
@@ -214,17 +212,11 @@ public class Arr extends Value {
     Value v = (Value) o;
     if (!Arrays.equals(shape, v.shape)) return false;
     assert ia == v.ia;
-    for (int i = 0; i < ia; i++) {
-      if (!arr[i].equals(v.arr[i])) return false;
-    }
-    return true;
+    return IntStream.range(0, ia).allMatch(i -> arr[i].equals(v.arr[i]));
   }
   
   public String fromAPL() {
-    var res = new StringBuilder();
-    for (Value v : arr) {
-      res.append(v.fromAPL());
-    }
-    return res.toString();
+    if (!Arrays.stream(arr).allMatch(c -> c instanceof Char)) throw new DomainError("Converting non-char array to string");
+    return Arrays.stream(arr).map(Value::fromAPL).collect(Collectors.joining());
   }
 }

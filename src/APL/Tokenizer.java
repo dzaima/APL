@@ -11,8 +11,8 @@ class Tokenizer {
     return false;
   }
   static class Expr {
-    ArrayList<ArrayList<Token>> a;
-    char b;
+    final ArrayList<ArrayList<Token>> a;
+    final char b;
     Expr(ArrayList<ArrayList<Token>> a, char b) {
       this.a = a;
       this.b = b;
@@ -78,9 +78,9 @@ class Tokenizer {
         tokens.add(new Token(TType.name, name, reprpos, crline));
       } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
         i++;
-        boolean metpoint = false;
-        while (i < len && (c = s.charAt(i)) >= '0' && c <= '9'  ||  c == '.' && !metpoint) {
-          if (c == '.') metpoint = true;
+        boolean foundPoint = false;
+        while (i < len && (c = s.charAt(i)) >= '0' && c <= '9'  ||  c == '.' && !foundPoint) {
+          if (c == '.') foundPoint = true;
           i++;
         }
         tokens.add(new Token(TType.number, s.substring(si, i), reprpos, crline));

@@ -5,8 +5,6 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 import APL.types.functions.builtins.mops.EachBuiltin;
 
-import static APL.Main.up;
-
 public class RShoeUBBuiltin extends Builtin {
   public RShoeUBBuiltin(Scope sc) {
     super("⊇");

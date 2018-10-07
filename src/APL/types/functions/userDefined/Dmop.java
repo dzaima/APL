@@ -8,8 +8,8 @@ import static APL.Main.*;
 
 
 public class Dmop extends Mop {
-  private Token token;
-  private Scope psc;
+  private final Token token;
+  private final Scope psc;
   Dmop(Token t, Scope sc) {
     super(t.toRepr());
     token = t;

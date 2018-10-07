@@ -5,7 +5,7 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class UTackBuiltin extends Builtin {
-  static UTackBuiltin copy = new UTackBuiltin();
+  static final UTackBuiltin copy = new UTackBuiltin();
   public UTackBuiltin() {
     super("⊥");
     valid = 0x011;

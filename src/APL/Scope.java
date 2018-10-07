@@ -5,9 +5,10 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class Scope {
-  private HashMap<String, Obj> vars = new HashMap<>();
+  private final HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
   public boolean alphaDefined;
   public Scope() {
@@ -28,14 +29,14 @@ public class Scope {
     if (sc == null) sc = this;
     sc.set(name, val);
   }
+  private static final Stream<String> conds = Stream.of("01", ">0", "≠0");
   public void set (String name, Obj val) { // sets in current scope
     if (name.equals("⎕COND")) {
       if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type()));
       String s = ((Arr)val).string(false);
       if (s == null) throw new DomainError("⎕COND must be set to a character vector");
       String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
-      
-      if (!m.equals("01") && !m.equals(">0") && !m.equals("≠0")) {
+      if (conds.noneMatch(m::equals)) {
         throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
       }
     }
@@ -70,7 +71,7 @@ public class Scope {
   public String toString() {
     return toString("");
   }
-  public String toString(String prep) {
+  private String toString(String prep) {
     StringBuilder res = new StringBuilder("{\n");
     String cp = prep+"  ";
     for (String n : vars.keySet()) res.append(cp).append(n).append(" ← ").append(get(n)).append("\n");
@@ -88,7 +89,7 @@ public class Scope {
       return new DyingObj(w.toString());
     }
     static class DyingObj extends Obj {
-      String msg;
+      final String msg;
       DyingObj(String s) {
         this.msg = s;
       }
@@ -109,7 +110,7 @@ public class Scope {
     }
   }
   static class Timer extends Builtin {
-    boolean simple;
+    final boolean simple;
     Timer(Scope sc, boolean simple) {
       super("⎕TIME");
       valid = 0x001;

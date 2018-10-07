@@ -3,8 +3,8 @@ package APL.types.functions;
 import APL.types.*;
 
 public class DerivedDop extends Builtin {
-  private Obj aa, ww;
-  private Dop op;
+  private final Obj aa, ww;
+  private final Dop op;
   DerivedDop(String s, Obj aa, Obj ww, Dop op, int valid) {
     super(s);
     this.valid = valid;

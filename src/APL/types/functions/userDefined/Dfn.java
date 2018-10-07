@@ -4,8 +4,8 @@ import APL.*;
 import APL.types.*;
 
 public class Dfn extends Fun {
-  private Token token;
-  private Scope psc;
+  private final Token token;
+  private final Scope psc;
   Dfn(Token t, Scope sc) {
     token = t;
     psc = sc;

@@ -1,15 +1,14 @@
 package APL.types.functions.trains;
 
 import APL.Type;
-import APL.errors.DomainError;
 import APL.errors.SyntaxError;
 import APL.types.Fun;
 import APL.types.Obj;
 import APL.types.Value;
 
 public class Atop extends Fun {
-  private Obj g;
-  private Fun h;
+  private final Obj g;
+  private final Fun h;
   public Atop(Obj g, Fun h) {
     this.g = g;
     this.h = h;

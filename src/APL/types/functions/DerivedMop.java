@@ -3,8 +3,8 @@ package APL.types.functions;
 import APL.types.*;
 
 public class DerivedMop extends Builtin {
-  private Obj aa;
-  private Mop op;
+  private final Obj aa;
+  private final Mop op;
   DerivedMop(String s, Obj aa, Mop op, int valid) {
     super(s);
     this.valid = valid;

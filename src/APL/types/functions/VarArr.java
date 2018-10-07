@@ -6,8 +6,8 @@ import APL.types.*;
 import java.util.*;
 
 public class VarArr extends Obj {
-  public ArrayList<Obj> arr;
-  public int ia;
+  public final ArrayList<Obj> arr;
+  public final int ia;
   public VarArr(ArrayList<Obj> arr) {
     ia = arr.size();
     Collections.reverse(arr);

@@ -4,9 +4,6 @@ import APL.types.Obj;
 import APL.types.Value;
 
 public class IncorrectArgsException extends APLError {
-  public IncorrectArgsException (String s){
-    super(s);
-  }
   public IncorrectArgsException (String s, Obj fn, Value cause){
     super(s);
     this.fn = fn;

@@ -2,16 +2,21 @@ package APL.types;
 
 import APL.errors.DomainError;
 
+import java.util.stream.IntStream;
+
 public class Num extends Value {
+  
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
   public static final Num TWO = new Num("2");
+  @SuppressWarnings("unused") // soon, it will. Soon....
   public static final Num MINUS_ONE = new Num("-1");
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
   public static final Num I1 = null; // no imaginary numbers :'(
+  @SuppressWarnings("WeakerAccess") // no, bad
   public static final Num INFINITY = new Num("1e309");
-  private double num;
+  private final double num;
   public Num(String val) {
     repr = val;
     if (val.startsWith("¯")) {
@@ -113,10 +118,7 @@ public class Num extends Value {
     if (num > 170) return Num.INFINITY;
     if (num % 1 != 0) throw new DomainError("factorial of non-integer", f, this);
     if (num < 0) throw new DomainError("factorial of negative number", f, this);
-    double res = 1;
-    for (int i = 2; i < num+1; i++) {
-      res*= i;
-    }
+    double res = IntStream.range(2, (int) (num+1)).asDoubleStream().reduce(1, (a, b) -> a * b);
     return new Num(res);
   }
   
@@ -154,6 +156,7 @@ public class Num extends Value {
   public Num atanh() { throw new DomainError("inverse hyperbolic functions NYI"); }
   
   public Num real() { return this; }
+  @SuppressWarnings("SameReturnValue") // no imaginary numbers.. for now
   public Num imag() { return Num.ZERO; }
   
   
@@ -170,10 +173,7 @@ public class Num extends Value {
   
   
   public boolean equals(Obj n) {
-    if (n instanceof Num) {
-      return ((Num)n).num == num;
-    }
-    return false;
+    return n instanceof Num && ((Num) n).num == num;
   }
   
   public int intValue() {

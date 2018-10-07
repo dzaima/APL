@@ -12,7 +12,7 @@ abstract public class Value extends Obj {
   public int ia; // item amount
   public Value[] arr;
   public Value prototype = null;
-  protected Value() {
+  Value() {
     if (primitive()) {
       shape = new int[0];
       arr = new Value[]{this};
@@ -49,7 +49,7 @@ abstract public class Value extends Obj {
   public Value first() {
     return ia==0? prototype : arr[0];
   }
-  protected String oneliner(int[] where) {
+  String oneliner(int[] where) {
     throw Main.up;
   }
   
@@ -73,16 +73,6 @@ abstract public class Value extends Obj {
       if (i != rank-1) x*= shape[i+1];
     }
     return arr[x];
-  }
-  public Value toPrototype() {
-    if (this instanceof Num) return Num.ZERO;
-    if (this instanceof Char) return Char.SPACE;
-    if (this instanceof Arr) {
-      Arr a = (Arr) this;
-      Value[] na = new Value[a.ia];
-      for (int i = 0; i < na.length; i++) na[i] = a.arr[i].toPrototype();
-    }
-    throw new DomainError("type doesn't have a prototype");
   }
   public int compareTo(Value v) {
     if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);

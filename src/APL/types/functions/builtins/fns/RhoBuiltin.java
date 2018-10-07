@@ -4,7 +4,6 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import static APL.Main.human;
 import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
@@ -40,7 +39,6 @@ public class RhoBuiltin extends Builtin {
       }
     }
     if (emptyPos != null) {
-//      System.out.println(w.ia+" "+ia);
       if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, w);
       sh[emptyPos] = w.ia/ia;
       ia = w.ia;

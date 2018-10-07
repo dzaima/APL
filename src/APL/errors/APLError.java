@@ -1,12 +1,13 @@
 package APL.errors;
 
 import APL.types.Obj;
-import APL.types.Value;
+
+import java.util.stream.*;
 
 import static APL.Main.*;
 
 public class APLError extends Error {
-  public Obj fn;
+  Obj fn;
   public Obj cause;
   APLError (String msg) {
     super(msg);
@@ -37,10 +38,9 @@ public class APLError extends Error {
         colorprint(s.toString(), 217);
       }
     } else if (fnline != null) {
-      StringBuilder s = new StringBuilder();
-      for (int i = 0; i < fnpos; i++) s.append(" ");
+      String s = IntStream.range(0, fnpos).mapToObj(i -> " ").collect(Collectors.joining());
       colorprint(fnline, 217);
-      colorprint(s.toString()+"^", 217);
+      colorprint(s +"^", 217);
     }
   }
 }

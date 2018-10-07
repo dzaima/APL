@@ -14,8 +14,8 @@ public abstract class APLMap extends Value {
   abstract public void set(Value k, Obj v);
   
   class MapPointer extends Settable {
-    private APLMap map;
-    private Value k;
+    private final APLMap map;
+    private final Value k;
     
     MapPointer(APLMap map, Value k) {
       super(map.getRaw(k));

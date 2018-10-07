@@ -3,6 +3,8 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
+import java.util.Arrays;
+
 
 public class LTBuiltin extends Builtin {
   public LTBuiltin() {
@@ -16,10 +18,6 @@ public class LTBuiltin extends Builtin {
   
   public Obj call(Value w) {
     var order = w.gradeUp(this);
-    Value[] res = new Value[order.length];
-    for (int i = 0; i < order.length; i++) {
-      res[i] = w.arr[order[i]];
-    }
-    return new Arr(res);
+    return new Arr(Arrays.stream(order).map(integer -> w.arr[integer]).toArray(Value[]::new));
   }
 }

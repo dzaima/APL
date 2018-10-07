@@ -3,7 +3,6 @@ package APL.types.functions.builtins.dops;
 import APL.types.Fun;
 import APL.types.Obj;
 import APL.types.Value;
-import APL.types.functions.Builtin;
 import APL.types.functions.Dop;
 
 public class DualBuiltin extends Dop {

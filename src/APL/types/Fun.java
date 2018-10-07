@@ -1,23 +1,21 @@
 package APL.types;
 
 import java.util.*;
+import java.util.stream.*;
+
 import APL.*;
 import APL.errors.*;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Convert2streamapi"}) // class for getting overridden & being fast so no streams
 public abstract class Fun extends Obj {
   public Scope sc;
   public int valid; // 0x niladic dyadic monadic
   public Value identity = null;
   protected String htype() {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < 3; i++) {
-      if (1 == (0xf & (valid >> 4*(2-i)))) {
-        if (sb.length() > 0) sb.append("/");
-        sb.append(new String[]{"niladic", "dyadic", "monadic"}[i]);
-      }
-    }
-    return sb.toString();
+    return IntStream.range(0, 3)
+      .filter(i -> 1 == (0xf & (valid >> 4 * (2-i))))
+      .mapToObj(i -> new String[]{"niladic", "dyadic", "monadic"}[i])
+      .collect(Collectors.joining("/"));
   }
   public Obj call() {
     throw new IncorrectArgsException(htype() + " function "+toString()+" called niladically", this);
@@ -71,8 +69,8 @@ public abstract class Fun extends Obj {
       }
       return new Arr(arr, o.shape);
     } else if (w instanceof Char) return cf.call((Char)w);
-      else if (w instanceof  Num) return nf.call((Num) w);
-      else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), null, w);
+    else if (w instanceof  Num) return nf.call((Num) w);
+    else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), null, w);
   }
   
   public interface DyVecFun {

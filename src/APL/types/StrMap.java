@@ -3,7 +3,7 @@ package APL.types;
 import java.util.*;
 
 public class StrMap extends APLMap {
-  private HashMap<String, Obj> map = new HashMap<>();
+  private final HashMap<String, Obj> map = new HashMap<>();
   
   
   @Override

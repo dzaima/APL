@@ -1,7 +1,5 @@
 package APL.types;
 
-import APL.*;
-
 import static APL.Main.quotestrings;
 
 public class Char extends Value {
@@ -49,8 +47,7 @@ public class Char extends Value {
   
   
   @Override public boolean equals(Obj c) {
-    if (!(c instanceof Char)) return false;
-    return chr == ((Char)c).chr;
+    return c instanceof Char && chr == ((Char) c).chr;
   }
   
   public String fromAPL() {

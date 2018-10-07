@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 import java.util.*;
 
 public class DTackBuiltin extends Builtin {
-  static UTackBuiltin copy = new UTackBuiltin();
+  static final UTackBuiltin copy = new UTackBuiltin();
   public DTackBuiltin() {
     super("⊤");
     valid = 0x011;

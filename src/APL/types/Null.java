@@ -1,7 +1,7 @@
 package APL.types;
 
 public class Null extends Value {
-  public static Null NULL = new Null();
+  public static final Null NULL = new Null();
   
   @Override
   public String toString() {

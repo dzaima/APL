@@ -5,8 +5,6 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.*;
 
-import java.util.*;
-
 public class SetBuiltin extends Builtin {
   public SetBuiltin() {
     super("←");

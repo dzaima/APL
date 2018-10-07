@@ -3,6 +3,9 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
+import java.util.*;
+import java.util.stream.Stream;
+
 
 public class GTBuiltin extends Builtin {
   public GTBuiltin() {
@@ -17,9 +20,7 @@ public class GTBuiltin extends Builtin {
   public Obj call(Value w) {
     var order = w.gradeDown(this);
     Value[] res = new Value[order.length];
-    for (int i = 0; i < order.length; i++) {
-      res[i] = w.arr[order[i]];
-    }
+    Arrays.setAll(res, i -> w.arr[order[i]]);
     return new Arr(res);
   }
 }

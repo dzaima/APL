@@ -1,7 +1,6 @@
 package APL.errors;
 
 import APL.types.Obj;
-import APL.types.Value;
 
 public class ValueError extends APLError {
   public ValueError (String s){

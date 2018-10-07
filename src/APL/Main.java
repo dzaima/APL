@@ -7,16 +7,17 @@ import java.io.*;
 import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.stream.Collectors;
 
 public class Main {
   public static boolean debug = false;
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
-  static Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
-  static Arr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz", null);
+  static final Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
+  static final Arr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz", null);
   static int printlvl = 0;
-  public static Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
-  static long startingMillis = System.currentTimeMillis();
+  public static final Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
+  static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
   public static void main(String[] args) {
     console = new Scanner(System.in);
@@ -121,12 +122,7 @@ public class Main {
     }
   }
   public static String formatAPL (int[] ia) {
-    StringBuilder res = new StringBuilder();
-    for (int i = 0; i < ia.length; i++) {
-      if (i != 0) res.append(" ");
-      res.append(ia[i]);
-    }
-    return res.toString();
+    return Arrays.stream(ia).mapToObj(String::valueOf).collect(Collectors.joining(" "));
   }
   private static String readFile(String path) {
     try {

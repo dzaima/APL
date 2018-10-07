@@ -5,8 +5,6 @@ import APL.Scope;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class DownArrowBuiltin extends Builtin {
   public DownArrowBuiltin(Scope sc) {
     super("↓");

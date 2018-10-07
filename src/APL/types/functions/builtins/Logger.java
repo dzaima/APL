@@ -4,7 +4,7 @@ import APL.*;
 import APL.types.*;
 
 public class Logger extends Settable {
-  private Scope sc;
+  private final Scope sc;
   public Logger(Scope sc) {
     super(null);
     this.sc = sc;

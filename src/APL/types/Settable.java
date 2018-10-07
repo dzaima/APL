@@ -4,8 +4,8 @@ import APL.*;
 import APL.errors.*;
 
 public abstract class Settable extends Obj {
-  protected Obj v;
-  public Settable(Obj v) {
+  final Obj v;
+  protected Settable(Obj v) {
     this.v = v;
   }
   @Override

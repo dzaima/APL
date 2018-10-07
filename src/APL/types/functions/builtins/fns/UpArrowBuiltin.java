@@ -48,9 +48,8 @@ public class UpArrowBuiltin extends Builtin {
         if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", this, v);
         for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
       }
-      int totalIA = 1;
-      for (int c : def) totalIA *= c;
-      for (int c : arr.shape) totalIA *= c;
+      int totalIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
+      totalIA *= Arrays.stream(arr.shape).reduce(1, (a, b) -> a * b);
       int[] totalShape = new int[def.length + arr.rank];
       System.arraycopy(arr.shape, 0, totalShape, 0, arr.rank);
       System.arraycopy(def, 0, totalShape, arr.rank, def.length);
