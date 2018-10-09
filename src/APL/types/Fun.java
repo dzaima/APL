@@ -40,7 +40,7 @@ public abstract class Fun extends Obj {
   public interface VecFun {
     Value call(Value w);
   }
-  public static Value scalar (VecFun f, Value w) {
+  public Value scalar (VecFun f, Value w) {
     if (w.primitive()) {
       return f.call(w);
     } else {
@@ -60,7 +60,7 @@ public abstract class Fun extends Obj {
   public interface ChrVecFun {
     Value call(Char w);
   }
-  protected static Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
+  protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
     if (!w.primitive()) {
       Arr o = ((Arr)w);
       Value[] arr = new Value[o.ia];
@@ -76,7 +76,7 @@ public abstract class Fun extends Obj {
   public interface DyVecFun {
     Value call(Value a, Value w);
   }
-  protected static Value scalar(DyVecFun f, Value a, Value w) {
+  protected Value scalar(DyVecFun f, Value a, Value w) {
     if (a.primitive()) {
       if (w.primitive()) {
         return f.call(a, w);
@@ -99,8 +99,8 @@ public abstract class Fun extends Obj {
       } else {
         Arr oa = ((Arr)a);
         Arr ow = ((Arr)w);
-        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: "+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
-        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")");
+        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: "+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")", this, w);
+        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")", this, w);
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
           arr[i] = scalar(f, oa.arr[i], ow.arr[i]);
