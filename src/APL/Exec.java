@@ -139,8 +139,8 @@ class Exec {
       }
       if (is("!D|[FN]M", end, true)) {
         if (Main.debug) printlvl("FM");
-        var f = firstObj(); // (Obj) done.removeLast(lastPtr);
-        var o = firstMop(); //fixme (Mop) done.removeLast(lastPtr);
+        var f = firstObj();
+        var o = firstMop();
         addFirst(o.derive(f));
         continue;
       }
@@ -151,12 +151,12 @@ class Exec {
         var ww = done.removeFirst();
         var aau = aa;
         var wwu = ww;
-        if (aau instanceof Settable) aau = ((Settable) aa).get();
-        if (wwu instanceof Settable) wwu = ((Settable) ww).get();
-        if (o instanceof DotBuiltin && aau instanceof APLMap) {
+        if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
+        if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
+        if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
           done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
-          done.addFirst(o.derive(aau, wwu));
+          done.addFirst(o.derive(aa, ww));
         }
         continue;
       }
