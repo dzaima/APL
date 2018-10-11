@@ -72,8 +72,19 @@ public abstract class Fun extends Obj {
       }
       return new Arr(arr, o.shape);
     } else if (w instanceof Char) return cf.call((Char)w);
-    else if (w instanceof  Num) return nf.call((Num) w);
+    else if (w instanceof Num) return nf.call((Num) w);
     else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), null, w);
+  }
+  protected Value num(NumVecFun nf, Value w) {
+    if (!w.primitive()) {
+      Arr o = ((Arr)w);
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = num(nf, o.arr[i]);
+      }
+      return new Arr(arr, o.shape);
+    } else if (w instanceof Num) return nf.call((Num) w);
+    else throw new DomainError("Expected number, got "+w.humanType(false), null, w);
   }
   protected Value numChrMap(NumVecFun nf, ChrVecFun cf, MapVecFun mf, Value w) {
     if (!w.primitive()) {
