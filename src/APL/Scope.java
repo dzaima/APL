@@ -79,6 +79,14 @@ public class Scope {
     res.append(prep).append("}\n");
     return res.toString();
   }
+  
+  public double rand(double d) { // TODO seeds
+    return Math.random() * d;
+  }
+  public double rand(int n) {
+    return Math.floor(Math.random() * n);
+  }
+  
   static class DeathLogger extends Builtin {
     DeathLogger() {
       super("⎕DEATHLOGGER");
@@ -148,12 +156,6 @@ public class Scope {
       return w;
     }
   }
-  public double rand(double d) { // TODO seeds
-    return Math.random() * d;
-  }
-  public double rand(int n) {
-    return Math.floor(Math.random() * n);
-  }
   
   private class MapGen extends Builtin {
   
@@ -164,7 +166,12 @@ public class Scope {
   
     @Override
     public Obj call(Value w) {
-      return new StrMap();
+      var map = new StrMap();
+      for (Value v : w.arr) {
+        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕smap should be 2-item arrays", this, v);
+        map.set(v.arr[0], v.arr[1]);
+      }
+      return map;
     }
   
     @Override
