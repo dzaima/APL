@@ -2,6 +2,7 @@ package APL.types.functions.userDefined;
 
 import APL.*;
 import APL.types.*;
+import APL.types.functions.VarArr;
 
 public class Dfn extends Fun {
   private final Token token;
@@ -16,7 +17,9 @@ public class Dfn extends Fun {
     sc = new Scope(psc);
     sc.set("⍺", new Variable(sc, "⍺"));
     sc.set("⍵", w);
-    return Main.execLines(token, sc);
+    var res = Main.execLines(token, sc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    return res;
   }
   public Obj call(Value a, Value w) {
     Main.printdbg("dfn call", a, w);
@@ -24,7 +27,9 @@ public class Dfn extends Fun {
     sc.set("⍺", a);
     sc.set("⍵", w);
     sc.alphaDefined = true;
-    return Main.execLines(token, sc);
+    var res = Main.execLines(token, sc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    return res;
   }
   public String toString() {
     return token.toRepr();

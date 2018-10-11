@@ -11,7 +11,7 @@ public class StileBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return numChrMap(Num::abs, c->{ throw new DomainError("|char", this, w); }, c -> new Num(c.size()), w); // TODO char something or remove
+    return numChrMap(Num::abs, c->{ throw new DomainError("|char", this, w); }, c -> new Num(c.size()), w);
   }
   
   public Obj call(Value a0, Value w0) {

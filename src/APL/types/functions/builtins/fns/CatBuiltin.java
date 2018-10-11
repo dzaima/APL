@@ -18,7 +18,6 @@ public class CatBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     if (a.scalar()) a = new Arr(new Value[]{a.arr[0]});
     if (w.scalar()) w = new Arr(new Value[]{w.arr[0]});
-    //if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal", this, w); // TODO not
     for (int i = 0; i < a.rank-1; i++) {
       if (a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", this, w);
     }

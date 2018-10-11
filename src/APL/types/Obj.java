@@ -1,6 +1,7 @@
 package APL.types;
 
 import APL.*;
+import APL.errors.NYIError;
 
 public abstract class Obj {
   public Token token;
@@ -17,5 +18,10 @@ public abstract class Obj {
   
   public String name() {
     return toString();
+  }
+  
+  @Override
+  public int hashCode() {
+    throw new NYIError("hash not supported for "+this);
   }
 }

@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.dops;
 
-import APL.errors.SyntaxError;
+import APL.errors.NYIError;
 import APL.types.Fun;
 import APL.types.Obj;
 import APL.types.Value;
@@ -13,7 +13,7 @@ public class OverBuiltin extends Dop {
   }
   
   public Obj call(Obj aa, Obj ww, Value w) {
-    throw new SyntaxError("TODO");
+    throw new NYIError("TODO");
   }
   
   public Obj call(Obj aa, Obj ww, Value a, Value w) {

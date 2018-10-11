@@ -28,22 +28,17 @@ public class SetBuiltin extends Builtin {
     VarArr oa = (VarArr) a;
     if (w instanceof Arr) {
       Arr ow = (Arr) w;
-//      if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes not equal"); TODO shapes
       if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", this, ow);
       if (ow.ia != oa.ia) throw new LengthError("← scatter argument lengths not equal", this, ow);
-//      Value[] arr = new Value[oa.ia];
       for (int i = 0; i < oa.ia; i++) {
-//        arr[i] = (Value)
         this.call(oa.arr.get(i), ow.arr[i], update);
       }
-      return w; //new Arr(arr, oa.shape);
+      return w;
     } else {
-//      Value[] arr = new Value[oa.ia];
       for (int i = 0; i < oa.ia; i++) {
-//        arr[i] = (Value)
         this.call(oa.arr.get(i), w, update);
       }
-      return w; //new Arr(arr, oa.shape);
+      return w;
     }
   }
 

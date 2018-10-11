@@ -53,4 +53,9 @@ public class Char extends Value {
   public String fromAPL() {
     return String.valueOf(chr);
   }
+  
+  @Override
+  public int hashCode() {
+    return Character.hashCode(chr);
+  }
 }

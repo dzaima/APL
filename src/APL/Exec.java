@@ -150,13 +150,13 @@ class Exec {
         var  o = firstDop(); // (Dop) done.removeFirst();
         var ww = done.removeFirst();
         var aau = aa;
-//        var wwu = ww;
+        var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
-//        if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
+        if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
           done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
-          done.addFirst(o.derive(aa, ww));
+          done.addFirst(o.derive(aau, wwu));
         }
         continue;
       }
@@ -394,7 +394,7 @@ class Exec {
           case '¨': return new EachBuiltin();
           case '⍨': return new SelfieBuiltin();
           case '⌾': return new TableBuiltin();
-          case '⌸': return new KeyBuiltin();
+          case '⌸': return new KeyBuiltin(sc);
   
           // dops
           case '∘': return new JotBuiltin();
