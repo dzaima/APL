@@ -7,12 +7,12 @@ import static APL.Main.*;
 
 public class UserDefined {
   public static Obj of(Token ts, Scope sc) {
-    // TODO: dops
     assert(ts.type == TType.usr);
     Type type = funType(ts);
     if (type == Type.fn) return new Dfn(ts, sc);
     else if (type == Type.mop) return new Dmop(ts, sc);
-    else throw up; // TEMP
+    else if (type == Type.dop) return new Ddop(ts, sc);
+    else throw new IllegalStateException("UserDefined.funType = "+type);
   }
   private static Type funType(Token i) {
     Type type = Type.fn;
