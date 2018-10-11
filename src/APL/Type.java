@@ -1,7 +1,7 @@
 package APL;
 
 public enum Type {
-  array, var,
+  array, var, nul,
   fn,  mop,  dop,
   bfn, bmop, bdop,
   set,

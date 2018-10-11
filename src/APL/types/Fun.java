@@ -60,6 +60,9 @@ public abstract class Fun extends Obj {
   public interface ChrVecFun {
     Value call(Char w);
   }
+  public interface MapVecFun {
+    Value call(APLMap w);
+  }
   protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
     if (!w.primitive()) {
       Arr o = ((Arr)w);
@@ -71,6 +74,19 @@ public abstract class Fun extends Obj {
     } else if (w instanceof Char) return cf.call((Char)w);
     else if (w instanceof  Num) return nf.call((Num) w);
     else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), null, w);
+  }
+  protected Value numChrMap(NumVecFun nf, ChrVecFun cf, MapVecFun mf, Value w) {
+    if (!w.primitive()) {
+      Arr o = ((Arr)w);
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = numChr(nf, cf, o.arr[i]);
+      }
+      return new Arr(arr, o.shape);
+    } else if (w instanceof Char) return cf.call((Char)w);
+    else if (w instanceof Num) return nf.call((Num) w);
+    else if (w instanceof APLMap) return mf.call((APLMap) w);
+    else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), null, w);
   }
   
   public interface DyVecFun {

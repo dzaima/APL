@@ -42,7 +42,6 @@ public class Token {
     r.append('\n');
     p+= "  ";
     if (tokens != null) {
-      r.append("\n");
       for (Token t : tokens) r.append(t.toTree(p));
     }
     return r.toString();

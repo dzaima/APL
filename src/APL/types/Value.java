@@ -12,7 +12,7 @@ abstract public class Value extends Obj {
   public int ia; // item amount
   public Value[] arr;
   public Value prototype = null;
-  Value() {
+  public Value() {
     if (primitive()) {
       shape = new int[0];
       arr = new Value[]{this};
@@ -35,9 +35,10 @@ abstract public class Value extends Obj {
   }
   public String humanType(boolean article) {
     
-    if (this instanceof Arr)  return article? "an array"    : "array";
-    if (this instanceof Char) return article? "a character" : "character";
-    if (this instanceof Num)  return article? "a number"    : "number";
+    if (this instanceof Arr)   return article? "an array"    : "array";
+    if (this instanceof Char)  return article? "a character" : "character";
+    if (this instanceof Num)   return article? "a number"    : "number";
+    if (this instanceof APLMap)return article? "a map"       : "map";
     return "some type that dzaima hasn't named in Value.humanType ಠ_ಠ";
   }
   public boolean scalar() {

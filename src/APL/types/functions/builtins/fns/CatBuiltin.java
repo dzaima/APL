@@ -25,6 +25,9 @@ public class CatBuiltin extends Builtin {
     int[] newShape = new int[a.rank];
     System.arraycopy(a.shape, 0, newShape, 0, a.rank - 1);
     int chunkSizeA = a.shape[a.rank-1];
+    if (chunkSizeA==0) {
+      return w; //new Arr(new Value[0], newShape);
+    }
     int chunkSizeW = w.shape[w.rank-1];
     newShape[a.rank-1] = chunkSizeA+chunkSizeW;
     int chunks = a.ia/chunkSizeA;

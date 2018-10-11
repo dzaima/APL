@@ -1,6 +1,6 @@
 package APL;
 
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
@@ -55,7 +55,7 @@ public class Scope {
         case "⎕GC": System.gc(); return Num.ONE;
         case "⎕DEATHLOGGER": return new DeathLogger();
         case "⎕NULL": return Null.NULL;
-        case "⎕MAP": return new StrMap();
+        case "⎕SMAP": case "⎕NS": return new MapGen();
         
       }
     }
@@ -88,7 +88,7 @@ public class Scope {
     public Obj call(Value w) {
       return new DyingObj(w.toString());
     }
-    static class DyingObj extends Obj {
+    class DyingObj extends Value {
       final String msg;
       DyingObj(String s) {
         this.msg = s;
@@ -153,5 +153,30 @@ public class Scope {
   }
   public double rand(int n) {
     return Math.floor(Math.random() * n);
+  }
+  
+  private class MapGen extends Builtin {
+  
+    MapGen() {
+      super("⎕SMAP");
+      valid = 0x011;
+    }
+  
+    @Override
+    public Obj call(Value w) {
+      return new StrMap();
+    }
+  
+    @Override
+    public Obj call(Value a, Value w) {
+      if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", this, a);
+      if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", this, w);
+      if (a.ia != w.ia) throw new LengthError("both sides lengths should match", this, w);
+      var map = new StrMap();
+      for (int i = 0; i < a.ia; i++) {
+        map.set(a.arr[i], w.arr[i]);
+      }
+      return map;
+    }
   }
 }

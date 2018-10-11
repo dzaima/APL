@@ -3,7 +3,6 @@ package APL.types;
 import APL.Main;
 
 public abstract class APLMap extends Value {
-  APLMap() { }
   
   public MapPointer get(Value k) {
     return new MapPointer(this, k);
@@ -12,6 +11,10 @@ public abstract class APLMap extends Value {
   public abstract Obj getRaw(Value k);
   
   abstract public void set(Value k, Obj v);
+  
+  abstract public Arr toArr();
+  
+  abstract public int size();
   
   class MapPointer extends Settable {
     private final APLMap map;
@@ -30,7 +33,7 @@ public abstract class APLMap extends Value {
   
     @Override
     public String toString() {
-      if (Main.debug) return v == null? "map@"+k : "ptr:"+v;
+      if (Main.debug) return v == null? "map@"+k : "ptr@"+k+":"+v;
       return v == null? "map@"+k : v.toString();
     }
   }

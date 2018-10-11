@@ -150,9 +150,9 @@ class Exec {
         var  o = firstDop(); // (Dop) done.removeFirst();
         var ww = done.removeFirst();
         var aau = aa;
-        var wwu = ww;
+//        var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
-        if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
+//        if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
           done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
@@ -311,13 +311,13 @@ class Exec {
         case bdop:
           type = 'D';
           break;
-        case var:
+        case var: case nul:
           type = 'V';
           break;
         default:
           throw up;
       }
-      //printdbg(any, type, any.contains(str(type)));
+//      printdbg(type, v);
       if ((!any.contains(String.valueOf(type))) ^ inv) return false;
       ptr += ptrinc;
     }

@@ -15,7 +15,23 @@ public class StrMap extends APLMap {
   
   @Override
   public void set(Value k, Obj v) {
-    map.put(k.fromAPL(), v);
+    if (v == Null.NULL) map.remove(k.fromAPL());
+    else map.put(k.fromAPL(), v);
+  }
+  
+  @Override
+  public Arr toArr() {
+    Object[] a = map.values().toArray();
+    var items = new ArrayList<Value>();
+    for (Object o : a) {
+      if (o instanceof Value) items.add((Value) o);
+    }
+    return new Arr(items);
+  }
+  
+  @Override
+  public int size() {
+    return map.size();
   }
   
   @Override
