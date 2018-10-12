@@ -328,8 +328,8 @@ class Exec {
     switch (t.type) {
       case op:
         switch (t.repr.charAt(0)) {
-        
-          //TODO in Dyalog but not here: ⌽⊖⊆∊⍷⌿\⍀∩∪⌹→  ⌿\⍀&⌶⍠⌸⌺⍤@
+          // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
+          //in Dyalog but not here: ⊆∊⍷∩∪⌹→  ⌿\⍀&⌶⍠⌸⌺⍤@
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -376,6 +376,7 @@ class Exec {
           case '⍎': return new EvalBuiltin(sc);
           case '⍋': return new GradeUpBuiltin(sc);
           case '⍒': return new GradeDownBuiltin(sc);
+          case '⌿': return new ReplicateBuiltin();
           
           // comparisons
           case '<': return new LTBuiltin();
@@ -387,6 +388,7 @@ class Exec {
   
           // mops
           case '/': return new ReduceBuiltin();
+          case '\\':return new ScanBuiltin();
           case '¨': return new EachBuiltin();
           case '⍨': return new SelfieBuiltin();
           case '⌾': return new TableBuiltin();

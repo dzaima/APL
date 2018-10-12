@@ -24,7 +24,7 @@ public class Token {
     this.line = s.get(0).line;
     this.pos = s.get(0).pos;
   }
-  Token (TType t, int pos, String line) {
+  public Token(TType t, int pos, String line) {
     type = t;
     if (type == TType.set) repr = "←";
     if (type == TType.lines) tokens = new ArrayList<>();

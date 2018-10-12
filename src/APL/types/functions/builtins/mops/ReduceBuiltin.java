@@ -11,6 +11,7 @@ public class ReduceBuiltin extends Mop {
   }
 
   public Obj call(Obj f, Value w) {
+    // TODO ranks
     Value[] a = w.arr;
     if (a.length == 0) {
       if (((Fun)f).identity == null) throw new DomainError("No identity defined for "+f.name(), this, f);

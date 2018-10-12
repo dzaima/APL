@@ -1,12 +1,14 @@
 package APL.types;
 
-import APL.Main;
+import APL.*;
 import APL.errors.DomainError;
 
 import java.util.*;
 import java.util.stream.*;
 
 public class Arr extends Value {
+  private static final Arr errNull = Main.toAPL("JAVANULL", new Token(TType.str, 0, "JAVANULL"));
+  
   public Arr (Value prototype) {
     this(new Value[0]);
     this.prototype = prototype;
@@ -68,9 +70,13 @@ public class Arr extends Value {
         StringBuilder res = new StringBuilder();
         var simple = true;
         for (Value v : arr) {
-          simple &= v.primitive();
           if (res.length() > 0) res.append(" ");
-          res.append(v.toString());
+          if (v == null) {
+            res.append("JAVANULL");
+          } else {
+            simple &= v.primitive();
+            res.append(v.toString());
+          }
         }
         if (simple) return res.toString();
       }
@@ -84,6 +90,7 @@ public class Arr extends Value {
         var simple = true;
         int x=0, y=0;
         for (Value v : arr) {
+          if (v == null) v = Arr.errNull;
           simple &= v.primitive();
           var c = v.toString().split("\n");
           var cw = 0;
