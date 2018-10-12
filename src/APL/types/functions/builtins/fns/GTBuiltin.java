@@ -4,7 +4,6 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 
 public class GTBuiltin extends Builtin {

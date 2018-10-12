@@ -12,7 +12,7 @@ abstract public class Value extends Obj {
   public int ia; // item amount
   public Value[] arr;
   public Value prototype = null;
-  public Value() {
+  protected Value() {
     if (primitive()) {
       shape = new int[0];
       arr = new Value[]{this};

@@ -55,7 +55,7 @@ public class Scope {
         case "⎕GC": System.gc(); return Num.ONE;
         case "⎕DEATHLOGGER": return new DeathLogger();
         case "⎕NULL": return Null.NULL;
-        case "⎕SMAP": case "⎕NS": return new MapGen();
+        case "⎕MAP": case "⎕NS": return new MapGen();
         
       }
     }
@@ -160,7 +160,7 @@ public class Scope {
   private class MapGen extends Builtin {
   
     MapGen() {
-      super("⎕SMAP");
+      super("⎕MAP");
       valid = 0x011;
     }
   

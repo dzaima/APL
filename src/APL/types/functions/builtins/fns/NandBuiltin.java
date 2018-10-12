@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.*;
-import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 

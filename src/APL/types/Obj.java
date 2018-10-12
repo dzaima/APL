@@ -6,7 +6,7 @@ import APL.errors.NYIError;
 public abstract class Obj {
   public Token token;
   
-  public String repr;
+  protected String repr;
   public boolean isObj() {
     return type()==Type.array || type() == Type.var;
   }
