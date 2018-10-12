@@ -329,7 +329,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
           // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
-          //in Dyalog but not here: ⊆∊⍷∩∪⌹→  ⌿\⍀&⌶⍠⌸⌺⍤@
+          //in Dyalog but not here: ⊆⍷∩∪⌹→  &⌶⍠⌸⌺⍤@
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -350,7 +350,8 @@ class Exec {
           case '~': return new TildeBuiltin();
           case '○': return new TrigBuiltin();
           case '!': return new ExclBuiltin();
-          
+  
+          case '∊': return new EpsilonBuiltin();
           case '⊂': return new LShoeBuiltin();
           case '⊇': return new RShoeUBBuiltin(sc);
           case '⊃': return new RShoeBuiltin(sc);
