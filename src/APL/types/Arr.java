@@ -244,4 +244,14 @@ public class Arr extends Value {
     if (!Arrays.stream(arr).allMatch(c -> c instanceof Char)) throw new DomainError("Converting non-char array to string");
     return Arrays.stream(arr).map(Value::fromAPL).collect(Collectors.joining());
   }
+  
+  private Integer hashCode;
+  @Override
+  public int hashCode() {
+    if (hashCode == null) {
+      hashCode = Arrays.hashCode(arr);
+      hashCode^= Arrays.hashCode(shape);
+    }
+    return hashCode;
+  }
 }

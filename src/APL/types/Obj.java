@@ -16,6 +16,12 @@ public abstract class Obj {
     return false;
   }
   
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Obj)) return false;
+    return equals((Obj) obj);
+  }
+  
   public String name() {
     return toString();
   }
