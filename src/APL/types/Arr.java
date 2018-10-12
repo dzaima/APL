@@ -33,17 +33,6 @@ public class Arr extends Value {
     rank = 1;
     arr = v;
   }
-//  public Arr (int[] ps) {
-//    rank = ps.length;
-//    shape = new int[rank];
-//    int tia = 1;
-//    for (int i = 0; i < ps.length; i++) {
-//      tia*= ps[i];
-//      shape[i] = ps[i];
-//    }
-//    ia = tia;
-//    arr = new Value[ia];
-//  }
   public String string(boolean quote) {
     if (rank == 1/* && shape[0] != 1*/) { // strings
       StringBuilder all = new StringBuilder();
@@ -204,7 +193,36 @@ public class Arr extends Value {
     }
     return arr[x];
   }
-  
+  public Arr reverseOn(int dim) {
+    if (rank == 0) {
+      if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis");
+      return this;
+    }
+    // 2×3×4:
+    // 0 - 3×4s for 2
+    // 1 - 4s for 3
+    // 2 - 1s for 4
+    int chunkS = 1;
+    int cPSec = shape[dim]; // chunks per section
+    for (int i = rank-1; i > dim; i--) {
+      chunkS*= shape[i];
+    }
+    int sec = chunkS * cPSec; // section length
+//    System.out.println(chunkS+" "+cPSec+" "+sec);
+    Value[] res = new Value[ia];
+    int c = 0;
+    while (c < ia) {
+      for (int i = 0; i < cPSec; i++) {
+        for (int j = 0; j < chunkS; j++) {
+//          System.out.println(c+" "+i+" "+j);
+          res[c + (cPSec-i-1)*chunkS + j] =
+            arr[c + i*chunkS + j];
+        }
+      }
+      c+= sec;
+    }
+    return new Arr(res, shape);
+  }
   
   @Override
   public boolean equals(Obj o) {

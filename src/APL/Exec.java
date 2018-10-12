@@ -236,12 +236,6 @@ class Exec {
     done.add(barPtr, o);
   }
   
-//  private Obj lastObj() {
-//    var r = done.removeLast();
-//    if (r instanceof VarArr) return ((VarArr) r).materialize();
-//    if (r instanceof Settable) return ((Settable) r).get();
-//    return r;
-//  }
   
   private int barPtr = 0;
 
@@ -374,6 +368,8 @@ class Exec {
           case '?': return new RandBuiltin(sc);
           case '⍪': return new CommaBarBuiltin();
           case '⍉': return new TransposeBuiltin();
+          case '⊖': return new FlipBuiltin();
+          case '⌽': return new ReverseBuiltin();
           
           case '…': return new EllipsisBuiltin();
           case '⍕': return new FormatBuiltin();
