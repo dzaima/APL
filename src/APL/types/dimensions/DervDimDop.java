@@ -12,7 +12,8 @@ public class DervDimDop extends Dop {
   public DervDimDop(Dop f, int dim, Scope sc) {
     super(f.repr+"["+dim+"]");
     this.f = f;
-    this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
+    if (dim < 0) this.dim = dim;
+    else this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
     this.token = f.token;
     
   }
