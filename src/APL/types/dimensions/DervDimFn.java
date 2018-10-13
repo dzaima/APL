@@ -8,10 +8,11 @@ public class DervDimFn extends Fun {
   private Fun f;
   private int dim;
   
-  public DervDimFn(Fun f, int dim, Scope sc) {
+  public DervDimFn(Fun f, Integer dim, Scope sc) {
     this.repr = f.repr+"["+dim+"]";
     this.f = f;
-    if (dim < 0) this.dim = dim;
+    if (dim == null) this.dim = 0;
+    else if (dim < 0) this.dim = dim;
     else this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
     this.token = f.token;
     

@@ -9,10 +9,11 @@ public class DervDimMop extends Mop {
   private Mop f;
   private int dim;
   
-  public DervDimMop(Mop f, int dim, Scope sc) {
+  public DervDimMop(Mop f, Integer dim, Scope sc) {
     super(f.repr+"["+dim+"]");
     this.f = f;
-    if (dim < 0) this.dim = dim;
+    if (dim == null) this.dim = 0;
+    else if (dim < 0) this.dim = dim;
     else this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
     this.token = f.token;
     

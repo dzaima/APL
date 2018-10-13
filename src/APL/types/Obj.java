@@ -3,6 +3,7 @@ package APL.types;
 import APL.*;
 import APL.errors.NYIError;
 import APL.types.dimensions.Brackets;
+import APL.types.functions.VarArr;
 
 public abstract class Obj {
   public Token token;
@@ -26,7 +27,9 @@ public abstract class Obj {
     if (this instanceof Fun)     return article? "a function"  : "function";
     if (this instanceof Null)    return article? "javanull"    : "javanull";
     if (this instanceof Brackets)return article? "brackets"    : "brackets";
-    return "some type that dzaima hasn't named in Value.humanType ಠ_ಠ";
+    if (this instanceof VarArr)  return article? "a vararr"    : "vararr";
+    if (this instanceof Variable)return article? "a variable"  : "variable";
+    return "some type that dzaima hasn't named in Obj.humanType ಠ_ಠ (class = "+getClass()+")";
   }
   
   @Override

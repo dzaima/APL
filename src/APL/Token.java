@@ -16,13 +16,12 @@ public class Token {
     this.line = line;
     this.pos = pos;
   }
-  Token (TType t, List<Token> s) {
+  Token (TType t, List<Token> s, Token ptr) {
     assert(t==TType.expr||t==TType.lines||t==TType.pick||t==TType.usr);
     type = t;
     tokens = s;
-    if (s.size() == 0) throw up;
-    this.line = s.get(0).line;
-    this.pos = s.get(0).pos;
+    this.line = s.size()>0? s.get(0).line : ptr.line;
+    this.pos = s.size()>0? s.get(0).pos : ptr.pos;
   }
   public Token(TType t, int pos, String line) {
     type = t;

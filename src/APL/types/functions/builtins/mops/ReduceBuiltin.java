@@ -19,7 +19,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   public Obj call(Obj f, Value w) {
     // TODO ranks
     if (w.rank >= 2) {
-      return ngnReduce(w, 0, (Fun) f);
+      return ngnReduce(w, -1, (Fun) f);
     }
     Value[] a = w.arr;
     if (a.length == 0) {

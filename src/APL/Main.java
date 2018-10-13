@@ -168,21 +168,21 @@ public class Main {
         }
       }
       if (guardPos >= 0) {
-        var guard = new Token(ln.type, tokens.subList(0, guardPos));
+        var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
         if (bool((Value) execTok(guard, sc), sc)) {
-          var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()));
+          var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
           res = execTok(expr, sc);
           if (endAfter) return res;
         }
       } else {
-        res = execTok(endAfter? new Token(ln.type, tokens) : ln, sc);
+        res = execTok(endAfter? new Token(ln.type, tokens, lines) : ln, sc);
         if (endAfter) return res;
       }
     }
     return res;
   }
   
-  static Obj execTok(Token ln, Scope sc) {
+  public static Obj execTok(Token ln, Scope sc) {
     return new Exec(ln, sc).exec();
   }
   

@@ -22,6 +22,7 @@ class Tokenizer {
     }
   }
   static Token tokenize(String s) {
+    Token uexpr = new Token(TType.expr, s, 0, s);
     var levels = new ArrayList<Expr>();
     levels.add(new Expr(new ArrayList<>(), '⋄'));
     levels.get(0).a.add(new ArrayList<>());
@@ -64,8 +65,8 @@ class Tokenizer {
           default: throw new Error("this should really not happen");
         }
         var lineTokens = new ArrayList<Token>();
-        for (var ta : closed.a) lineTokens.add(new Token(TType.expr, ta));
-        Token t = new Token(type, lineTokens);
+        for (var ta : closed.a) lineTokens.add(new Token(TType.expr, ta, uexpr));
+        Token t = new Token(type, lineTokens, uexpr);
         lines = levels.get(levels.size()-1).a;
         tokens = lines.get(lines.size()-1);
         tokens.add(t);
@@ -157,8 +158,8 @@ class Tokenizer {
     if (lines.size() > 0 && lines.get(lines.size()-1).size() == 0) lines.remove(lines.size()-1); // no trailing empties!!
     var expressions = new ArrayList<Token>();
     for (ArrayList<Token> line : lines) {
-      expressions.add(new Token(TType.expr, line));
+      expressions.add(new Token(TType.expr, line, uexpr));
     }
-    return new Token(TType.lines, expressions);
+    return new Token(TType.lines, expressions, uexpr);
   }
 }

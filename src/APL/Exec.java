@@ -116,21 +116,21 @@ class Exec {
         if (Main.debug) printlvl("F@");
         var f = (Fun) firstObj();
         var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimFn(f, w.dim, sc));
+        done.addFirst(new DervDimFn(f, w.toInt(), sc));
         continue;
       }
       if (is("M@", end, true)) {
-        if (Main.debug) printlvl("F@");
+        if (Main.debug) printlvl("M@");
         var f = firstMop();
         var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimMop(f, w.dim, sc));
+        done.addFirst(new DervDimMop(f, w.toInt(), sc));
         continue;
       }
       if (is("D@", end, true)) {
-        if (Main.debug) printlvl("F@");
+        if (Main.debug) printlvl("D@");
         var f = firstDop();
         var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimDop(f, w.dim, sc));
+        done.addFirst(new DervDimDop(f, w.toInt(), sc));
         continue;
       }
       if (is("[FM←]|FN", end, false)) {
@@ -449,7 +449,7 @@ class Exec {
       case name:   return sc.getVar(t.repr);
       case expr:   return Main.execTok(t, sc);
       case usr:    return UserDefined.of(t, sc);
-      case pick:   return new Brackets(Num.toInt(Main.execTok(t, sc), new TokenFun(t)));
+      case pick:   return new Brackets(t, sc);
       default: throw new NYIError("Unknown type: " + t.type);
     }
   }

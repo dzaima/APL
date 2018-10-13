@@ -9,10 +9,11 @@ public class DervDimDop extends Dop {
   private Dop f;
   private int dim;
   
-  public DervDimDop(Dop f, int dim, Scope sc) {
+  public DervDimDop(Dop f, Integer dim, Scope sc) {
     super(f.repr+"["+dim+"]");
     this.f = f;
-    if (dim < 0) this.dim = dim;
+    if (dim == null) this.dim = 0;
+    else if (dim < 0) this.dim = dim;
     else this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
     this.token = f.token;
     
