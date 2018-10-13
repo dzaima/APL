@@ -11,6 +11,27 @@ public class DownArrowBuiltin extends Builtin {
     valid = 0x011;
     this.sc = sc;
   }
+  
+  @Override
+  public Obj call(Value w) {
+    if (!(w instanceof Arr)) return w;
+    if (w.rank <= 1) return new Arr(w);
+    // TODO stupid dimensions
+    int csz = w.shape[w.rank-1]; // chunk size
+    int cam = w.ia/csz; // chunk amount
+    Value[] res = new Value[cam];
+    for (int i = 0; i < cam; i++) {
+      Value[] c = new Value[csz];
+      for (int j = 0; j < csz; j++) {
+        c[j] = w.arr[i*csz + j];
+      }
+      res[i] = new Arr(c);
+    }
+    int[] nsh = new int[w.rank-1];
+    System.arraycopy(w.shape, 0, nsh, 0, nsh.length);
+    return new Arr(res, nsh);
+  }
+  
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
     int IO = ((Value)sc.get("⎕IO")).toInt(this);
     int[] shape = a.toIntArr(this);

@@ -66,10 +66,18 @@ abstract public class Value extends Obj {
     }
     return arr[x];
   }
-  public Value at(int[] pos, Value def) {
+  public Value at(int[] pos, Value def) { // 0-indexed
     int x = 0;
     for (int i = 0; i < rank; i++) {
       if (pos[i] < 0 || pos[i] >= shape[i]) return def;
+      x+= pos[i];
+      if (i != rank-1) x*= shape[i+1];
+    }
+    return arr[x];
+  }
+  public Value simpleAt(int[] pos) {
+    int x = 0;
+    for (int i = 0; i < rank; i++) {
       x+= pos[i];
       if (i != rank-1) x*= shape[i+1];
     }

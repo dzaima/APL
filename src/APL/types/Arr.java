@@ -18,6 +18,7 @@ public class Arr extends Value {
     shape = sh;
     rank = sh.length;
     arr = v;
+    if (ia >= 1) prototype = v[0] instanceof Char? Char.SPACE : Num.ZERO;
   }
   public Arr (Value[] v, int[] sh, Value prototype) {
     ia = v.length;
@@ -34,6 +35,7 @@ public class Arr extends Value {
     shape = new int[]{ia};
     rank = 1;
     arr = v;
+    if (ia >= 1) prototype = v[0] instanceof Char? Char.SPACE : Num.ZERO;
   }
   public String string(boolean quote) {
     if (rank == 1/* && shape[0] != 1*/) { // strings
@@ -191,14 +193,6 @@ public class Arr extends Value {
       }
     }
     return res + (where.length==0?"}":"]");
-  }
-  public Value simpleAt(int[] pos) {
-    int x = 0;
-    for (int i = 0; i < rank; i++) {
-      x+= pos[i];
-      if (i != rank-1) x*= shape[i+1];
-    }
-    return arr[x];
   }
   public Arr reverseOn(int dim) {
     if (rank == 0) {

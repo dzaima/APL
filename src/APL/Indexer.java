@@ -8,7 +8,7 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
   private final int rank;
   private final int[] c;
   private int ia = 1;
-  private int ci = 0;
+  public int ci = 0;
   private final int[] offsets;
   
   public Indexer(int[] sh, int[] offsets) {
@@ -48,6 +48,23 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
     }
     ci++;
     return c;
+  }
+  
+  public static int[] add(int[] a, int b) {
+    int[] res = new int[a.length];
+    for (int i = 0; i < res.length; i++) res[i] = a[i] + b;
+    return res;
+  }
+  
+  public static int[] sub(int[] a, int[] b) {
+    int[] res = new int[a.length];
+    for (int i = 0; i < res.length; i++) res[i] = a[i] - b[i];
+    return res;
+  }
+  public static int[] add(int[] a, int[] b) {
+    int[] res = new int[a.length];
+    for (int i = 0; i < res.length; i++) res[i] = a[i] + b[i];
+    return res;
   }
   
   public static int fromShape(int[] shape, int[] pos, int IO) {
