@@ -1,17 +1,18 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Main;
+import APL.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class TildeBuiltin extends Builtin {
-  public TildeBuiltin() {
+  public TildeBuiltin(Scope sc) {
     super("~");
     valid = 0x011;
+    this.sc = sc;
   }
   
   public Obj call(Value w) {
-    return Main.bool(w, sc)? Num.ZERO : Num.ONE;
+    return scalar(v -> Main.bool(v, sc)? Num.ZERO : Num.ONE, w);
   }
   
   public Obj call(Value a, Value w) {

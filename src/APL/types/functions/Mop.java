@@ -6,8 +6,8 @@ import APL.*;
 
 @SuppressWarnings("UnusedParameters")
 public class Mop extends Fun {
-  protected Mop(String s) {
-    repr = s;
+  protected Mop(String repr) {
+    this.repr = repr;
     this.valid = 0x000;
   }
   

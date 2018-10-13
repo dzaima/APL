@@ -3,6 +3,7 @@ package APL;
 import java.util.*;
 import APL.types.*;
 import APL.errors.*;
+import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
 import APL.types.functions.builtins.fns.*;
@@ -61,12 +62,13 @@ class Exec {
           update(false);
           arr = null;
         }
-        if (t.type == TType.op) done.addFirst(c);
-        else if (t.type == TType.set) done.addFirst(c);
-        else if (t.type == TType.name) done.addFirst(c);
-        else if (t.type == TType.expr) done.addFirst(c);
-        else if (t.type == TType.usr) done.addFirst(c);
-        else throw new Error("unknown type: " + t.type + " (no idea if this should be a thing)");
+        done.addFirst(c);
+//        if (t.type == TType.op) done.addFirst(c);
+//        else if (t.type == TType.set) done.addFirst(c);
+//        else if (t.type == TType.name) done.addFirst(c);
+//        else if (t.type == TType.expr) done.addFirst(c);
+//        else if (t.type == TType.usr) done.addFirst(c);
+//        else throw new Error("unknown type: " + t.type + " (no idea if this should be a thing)");
         update(false);
       }
     }
@@ -108,6 +110,27 @@ class Exec {
         if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addLast(res);
         if (res == null) return;
+        continue;
+      }
+      if (is("F@", end, true)) {
+        if (Main.debug) printlvl("F@");
+        var f = (Fun) firstObj();
+        var w = (Brackets) done.removeFirst();
+        done.addFirst(new DervDimFn(f, w.dim, sc));
+        continue;
+      }
+      if (is("M@", end, true)) {
+        if (Main.debug) printlvl("F@");
+        var f = firstMop();
+        var w = (Brackets) done.removeFirst();
+        done.addFirst(new DervDimMop(f, w.dim, sc));
+        continue;
+      }
+      if (is("D@", end, true)) {
+        if (Main.debug) printlvl("F@");
+        var f = firstDop();
+        var w = (Brackets) done.removeFirst();
+        done.addFirst(new DervDimDop(f, w.dim, sc));
         continue;
       }
       if (is("[FM←]|FN", end, false)) {
@@ -310,6 +333,9 @@ class Exec {
         case var: case nul:
           type = 'V';
           break;
+        case dim:
+          type = '@';
+          break;
         default:
           throw up;
       }
@@ -349,7 +375,7 @@ class Exec {
           case '⍱': return new NorBuiltin(sc);
           case '⊥': return new UTackBuiltin();
           case '⊤': return new DTackBuiltin();
-          case '~': return new TildeBuiltin();
+          case '~': return new TildeBuiltin(sc);
           case '○': return new TrigBuiltin();
           case '!': return new ExclBuiltin();
   
@@ -423,6 +449,7 @@ class Exec {
       case name:   return sc.getVar(t.repr);
       case expr:   return Main.execTok(t, sc);
       case usr:    return UserDefined.of(t, sc);
+      case pick:   return new Brackets(Num.toInt(Main.execTok(t, sc), new TokenFun(t)));
       default: throw new NYIError("Unknown type: " + t.type);
     }
   }

@@ -209,22 +209,18 @@ public class Arr extends Value {
       chunkS*= shape[i];
     }
     int sec = chunkS * cPSec; // section length
-//    System.out.println(chunkS+" "+cPSec+" "+sec);
     Value[] res = new Value[ia];
     int c = 0;
     while (c < ia) {
       for (int i = 0; i < cPSec; i++) {
         for (int j = 0; j < chunkS; j++) {
-//          System.out.println(c+" "+i+" "+j);
-          res[c + (cPSec-i-1)*chunkS + j] =
-            arr[c + i*chunkS + j];
+          res[c + (cPSec-i-1)*chunkS + j] = arr[c + i*chunkS + j];
         }
       }
       c+= sec;
     }
     return new Arr(res, shape);
   }
-  
   @Override
   public boolean equals(Obj o) {
     if (!(o instanceof Value)) return false;
@@ -248,4 +244,5 @@ public class Arr extends Value {
     }
     return hashCode;
   }
+  
 }

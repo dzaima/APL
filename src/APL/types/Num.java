@@ -199,6 +199,11 @@ public class Num extends Value {
     return a.num < b.num? a : b;
   }
   
+  public static int toInt(Obj o, Fun caller) {
+    if (!(o instanceof Num)) throw new DomainError("expected number, got "+(o).humanType(true), caller, o);
+    return ((Num) o).intValue();
+  }
+  
   @Override
   public int hashCode() {
     return Double.hashCode(num);

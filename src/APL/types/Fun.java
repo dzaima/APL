@@ -10,6 +10,7 @@ import APL.errors.*;
 public abstract class Fun extends Obj {
   public Scope sc;
   public int valid; // 0x niladic dyadic monadic
+  
   public Value identity = null;
   protected String htype() {
     return IntStream.range(0, 3)
@@ -135,5 +136,10 @@ public abstract class Fun extends Obj {
         return new Arr(arr, oa.shape);
       }
     }
+  }
+  
+  @Override
+  public Type type() {
+    return Type.fn;
   }
 }

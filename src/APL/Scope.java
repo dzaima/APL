@@ -29,14 +29,13 @@ public class Scope {
     if (sc == null) sc = this;
     sc.set(name, val);
   }
-  private static final Stream<String> conds = Stream.of("01", ">0", "≠0");
   public void set (String name, Obj val) { // sets in current scope
     if (name.equals("⎕COND")) {
       if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type()));
       String s = ((Arr)val).string(false);
       if (s == null) throw new DomainError("⎕COND must be set to a character vector");
       String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
-      if (conds.noneMatch(m::equals)) {
+      if (!m.equals("01") && !m.equals(">0") && !m.equals("≠0")) {
         throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
       }
     }

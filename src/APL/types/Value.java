@@ -33,14 +33,6 @@ abstract public class Value extends Obj {
     Num n = (Num)this;
     return n.intValue();
   }
-  public String humanType(boolean article) {
-    
-    if (this instanceof Arr)   return article? "an array"    : "array";
-    if (this instanceof Char)  return article? "a character" : "character";
-    if (this instanceof Num)   return article? "a number"    : "number";
-    if (this instanceof APLMap)return article? "a map"       : "map";
-    return "some type that dzaima hasn't named in Value.humanType ಠ_ಠ";
-  }
   public boolean scalar() {
     return rank == 0;
   }
@@ -121,6 +113,12 @@ abstract public class Value extends Obj {
     return na;
   }
   
+  public int[] eraseDim(int place) {
+    int[] res = new int[rank-1];
+    for (int i = 0; i < place; i++) res[i] = shape[i];
+    for (int i = place; i < rank-1; i++) res[i] = shape[i+1];
+    return res;
+  }
   @Override
   public Type type() {
     return Type.array;

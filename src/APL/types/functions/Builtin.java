@@ -10,9 +10,4 @@ public class Builtin extends Fun {
   public String toString() {
     return repr;
   }
-  
-  @Override
-  public Type type() {
-    return Type.fn;
-  }
 }

@@ -220,13 +220,13 @@ public class Main {
     return a;
   }
   public static boolean bool(Value v, Scope sc) {
-    String cond = ((Arr)sc.get("⎕COND")).string(false);
+    String cond = ((Arr) sc.get("⎕COND")).string(false);
     assert cond != null;
     if (cond.endsWith(" ")) {
       if (v instanceof Char) {
         return ((Char) v).chr != ' ';
       }
-      cond = cond.substring(0, cond.length()-2);
+      cond = cond.substring(0, cond.length()-1);
     }
     if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type()));
     Num n = (Num) v;
