@@ -4,6 +4,8 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
+import java.util.Arrays;
+
 public class ReplicateBuiltin extends Builtin {
   public ReplicateBuiltin() {
     super("⌿");
@@ -15,6 +17,12 @@ public class ReplicateBuiltin extends Builtin {
     if (w.rank > 1) throw new RankError("⍵ for ⌿ should have rank ≤1", this, w);
     if (a.rank == 0) {
       int sz = a.toInt(this);
+      if (sz < 0) {
+        Value[] res = new Value[w.ia*-sz];
+        Value n = w.first() instanceof Char? Char.SPACE : Num.ZERO;
+        Arrays.fill(res, n);
+        return new Arr(res);
+      }
       Value[] res = new Value[w.ia*sz];
       int ptr = 0;
       for (int i = 0; i < w.ia; i++) {
@@ -31,14 +39,19 @@ public class ReplicateBuiltin extends Builtin {
     int i = 0;
     for (Value v : a.arr) {
       int c = v.toInt(this);
-      total+= c;
+      total+= Math.abs(c);
       sizes[i++] = c;
     }
     int ptr = 0;
     Value[] res = new Value[total];
     for (i = 0; i < a.ia; i++) {
       Value c = w.arr[i];
-      for (int j = 0; j < sizes[i]; j++) {
+      int am = sizes[i];
+      if (sizes[i] < 0) {
+        am = -am;
+        c = c instanceof Char? Char.SPACE : Num.ZERO;
+      }
+      for (int j = 0; j < am; j++) {
         res[ptr++] = c;
       }
     }
