@@ -153,6 +153,8 @@ class Exec {
         var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
         if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
+        if (aau instanceof VarArr) aau = ((VarArr) aau).materialize();
+        if (wwu instanceof VarArr) wwu = ((VarArr) wwu).materialize();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
           done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
