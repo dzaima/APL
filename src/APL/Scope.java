@@ -5,7 +5,6 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
 public class Scope {
   private final HashMap<String, Obj> vars = new HashMap<>();

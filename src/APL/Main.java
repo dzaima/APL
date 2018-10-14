@@ -78,7 +78,7 @@ public class Main {
               case ")TYPE": println(Main.human(exec(rest, global).type())); break;
               case ")ERR": new NotErrorError("", exec(rest, global)).print(); break;
               case ")CLASS": println(exec(rest, global).getClass().getCanonicalName()); break;
-              case ")ATYPE": println( ((Value) exec(rest, global)).humanType(false) ); break;
+              case ")ATYPE": println(exec(rest, global).humanType(false)); break;
               case ")STACK":
                 if (lastError != null) {
                   lastError.printStackTrace();

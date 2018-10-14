@@ -34,13 +34,13 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   }
   private Value ngnReduce(Value x, int axis, Fun f) { // https://chat.stackexchange.com/transcript/message/47158587#47158587
     if (x.rank == 0) return x;
-    if (axis < 0) axis += x.rank;
+    if (axis < 0) axis+= x.rank;
     int n0 = 1; // product of all dimensions before "axis"
     for (int i = 0; i < axis; i++) {
       n0*= x.shape[i];
     }
     int n1 = x.shape[axis]; // the dimension at "axis" - what's getting removed/reduced
-    int n2 = x.ia/(n1*n0); // product of the rest of the shape
+    int n2 = x.ia / (n1*n0); // product of the rest of the shape
     int[] ns = x.eraseDim(axis);
     
     Value[] r = new Value[n0 * n2];

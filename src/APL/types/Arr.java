@@ -199,6 +199,7 @@ public class Arr extends Value {
       if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis");
       return this;
     }
+    if (dim < 0) dim+= rank;
     // 2×3×4:
     // 0 - 3×4s for 2
     // 1 - 4s for 3
