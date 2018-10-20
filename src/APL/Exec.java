@@ -19,7 +19,6 @@ class Exec {
   private List<Token> tokens;
   
   Exec(Token ln, Scope sc) {
-    assert (ln.type == TType.expr || ln.type == TType.usr);
     tokens = ln.tokens;
     this.sc = sc;
   }
@@ -167,11 +166,11 @@ class Exec {
         addFirst(o.derive(f));
         continue;
       }
-      if (is("[FNV]D[FNV]", end, true)) {
+      if (is(".|[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
-        var aa = done.removeFirst(); // done.removeFirst();
+        var aa = done.remove(barPtr); // done.removeFirst();
         var  o = firstDop(); // (Dop) done.removeFirst();
-        var ww = done.removeFirst();
+        var ww = done.remove(barPtr);
         var aau = aa;
         var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
@@ -179,9 +178,9 @@ class Exec {
         if (aau instanceof VarArr) aau = ((VarArr) aau).materialize();
         if (wwu instanceof VarArr) wwu = ((VarArr) wwu).materialize();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
-          done.addFirst(((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
+          done.add(barPtr, ((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
         } else {
-          done.addFirst(o.derive(aau, wwu));
+          done.add(barPtr, o.derive(aau, wwu));
         }
         continue;
       }
@@ -233,10 +232,10 @@ class Exec {
   
   
   private Dop firstDop() {
-    var r = done.removeFirst();
+    var r = done.remove(barPtr);
     if (r instanceof Dop) return (Dop) r;
     if (r instanceof Settable) return (Dop) ((Settable) r).get();
-    throw new SyntaxError("Expected function, got "+r, r);
+    throw new SyntaxError("Expected dop, got "+r, r);
   }
   
   private Obj lastObj() {
@@ -255,7 +254,7 @@ class Exec {
     var r = done.remove(barPtr);
     if (r instanceof Mop) return (Mop) r;
     if (r instanceof Settable) return (Mop) ((Settable) r).get();
-    throw new SyntaxError("Expected function, got "+r, r);
+    throw new SyntaxError("Expected mop, got "+r, r);
   }
   private void addFirst(Obj o) {
     done.add(barPtr, o);

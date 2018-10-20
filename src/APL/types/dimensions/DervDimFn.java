@@ -29,4 +29,9 @@ public class DervDimFn extends Fun {
     if (!(f instanceof DimMFn)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", f, w);
     return ((DimMFn) f).call(w, dim);
   }
+  
+  @Override
+  public String toString() {
+    return this.repr;
+  }
 }

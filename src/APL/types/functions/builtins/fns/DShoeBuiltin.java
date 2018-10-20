@@ -12,12 +12,12 @@ public class DShoeBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    var res = new LinkedHashSet<>(Arrays.asList(w.arr));
+    var res = new LinkedHashSet<Value>(Arrays.asList(w.arr));
     return new Arr(res.toArray(new Value[0]));
   }
   
   public Obj call(Value a, Value w) {
-    var m = new LinkedHashSet<>(Arrays.asList(a.arr));
+    var m = new LinkedHashSet<Value>(Arrays.asList(a.arr));
     m.addAll(Arrays.asList(w.arr));
     return new Arr(m.toArray(new Value[0]));
   }
