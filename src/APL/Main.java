@@ -194,7 +194,7 @@ public class Main {
     else println(s);
   }
   
-  public static Value toAPL(int[] arr) {
+  public static Arr toAPL(int[] arr) {
     var va = new Value[arr.length];
     for (int i = 0; i < arr.length; i++) {
       va[i] = new Num(arr[i]);
@@ -202,7 +202,7 @@ public class Main {
     return new Arr(va);
   }
   
-  public static Value toAPL(int[] arr, int[] sh) {
+  public static Arr toAPL(int[] arr, int[] sh) {
     var va = new Value[arr.length];
     for (int i = 0; i < arr.length; i++) {
       va[i] = new Num(arr[i]);

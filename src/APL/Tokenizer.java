@@ -36,7 +36,6 @@ class Tokenizer {
       var expr = levels.get(levels.size()-1);
       var lines = expr.a;
       var tokens = lines.get(lines.size()-1);
-      int si = i;
       char c = s.charAt(i);
       char next = i+1<len? s.charAt(i+1) : ' ';
       String cS = String.valueOf(c);
@@ -74,7 +73,7 @@ class Tokenizer {
       } else if (validName(c)  ||  c=='⎕' && validName(next)) {
         i++;
         while (i < len && (validName(s.charAt(i))  ||  s.charAt(i)>='0' && s.charAt(i)<='9')) i++;
-        var name = s.substring(si, i);
+        var name = s.substring(li, i);
         if (c == '⎕') name = name.toUpperCase();
         tokens.add(new Token(TType.name, name, reprpos, crline));
       } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
@@ -84,7 +83,7 @@ class Tokenizer {
           if (c == '.') foundPoint = true;
           i++;
         }
-        tokens.add(new Token(TType.number, s.substring(si, i), reprpos, crline));
+        tokens.add(new Token(TType.number, s.substring(li, i), reprpos, crline));
       } else if (ops.contains(cS)) {
         tokens.add(new Token(TType.op, cS, reprpos, crline));
         i++;

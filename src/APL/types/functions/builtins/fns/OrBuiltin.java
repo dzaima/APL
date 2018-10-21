@@ -9,6 +9,7 @@ public class OrBuiltin extends Builtin {
   public OrBuiltin() {
     super("∨");
     valid = 0x011;
+    identity = Num.ZERO;
   }
   
   public Obj call(Value w) {
