@@ -10,6 +10,13 @@ public abstract class APLMap extends Value {
   
   public abstract Obj getRaw(Value k);
   
+  public Obj getRaw(String k) {
+    return getRaw(Main.toAPL(k, token));
+  }
+  public MapPointer get(String k) {
+    return get(Main.toAPL(k, token));
+  }
+  
   abstract public void set(Value k, Obj v);
   
   abstract public Arr toArr();

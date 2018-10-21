@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.mops;
 
 import APL.Scope;
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.*;
 
@@ -55,6 +55,6 @@ public class KeyBuiltin extends Mop {
       ((APLMap)aa).set(a, w);
       return w;
     }
-    throw null;
+    throw new NYIError("dyadic ⌸"); // TODO
   }
 }

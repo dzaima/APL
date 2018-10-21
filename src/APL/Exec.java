@@ -1,16 +1,17 @@
 package APL;
 
-import java.util.*;
-import APL.types.*;
 import APL.errors.*;
+import APL.types.*;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
+import APL.types.functions.builtins.dops.*;
 import APL.types.functions.builtins.fns.*;
 import APL.types.functions.builtins.mops.*;
-import APL.types.functions.builtins.dops.*;
 import APL.types.functions.trains.*;
 import APL.types.functions.userDefined.UserDefined;
+
+import java.util.*;
 
 import static APL.Main.*;
 
@@ -49,8 +50,58 @@ class Exec {
     ArrayList<Obj> arr = null;
     while (left.size() > 0) {
       Token t = left.pop();
-      Obj c = valueOf(t);
-      // if (Main.debug) printlvl("token", t.toRepr(), "-> object", c);
+      Obj c;
+      if (t.type == TType.name && left.size() >= 2
+        && left.peek().type == TType.op
+        && left.peek().repr.equals(".")
+        && left.get(left.size() - 2).type == TType.name) {
+        int ptr = left.size() - 2;
+        while (ptr >= 2) {
+          if (left.get(ptr - 1).type == TType.op
+           && left.get(ptr - 1).repr.equals(".")
+           && left.get(ptr - 2).type == TType.name) ptr -= 2;
+          else break;
+        }
+        String[] names = new String[(left.size() - ptr >> 1) + 1];
+        names[names.length - 1] = t.repr;
+        for (int i = names.length - 2; i >= 0; i--) {
+          Token dot = left.pop();
+          assert dot.repr.equals(".");
+          Token name = left.pop();
+          assert name.type == TType.name;
+          names[i] = name.repr;
+        }
+  
+        if (Main.debug) printlvl("dotnot", Arrays.toString(names));
+        Obj d = null;
+        Settable r = sc.getVar(names[0]);
+        for (int i = 1; i < names.length; i++) {
+          if (r == null) {
+            r = sc.getVar(names[i]);
+            if (Main.debug) printlvl(":start", d, r, names[i]);
+          } else {
+            var got = r.getOrThis();
+            if (got instanceof Fun) {
+              if (Main.debug) printlvl(":fn", d, r, names[i]);
+              if (d == null) d = got;
+              else d = new DotBuiltin().derive(d, got);
+              r = sc.getVar(names[i]);
+            } else if (got instanceof APLMap) {
+              if (Main.debug) printlvl(":map", d, r, names[i]);
+              r = ((APLMap) got).get(names[i]);
+            } else throw new SyntaxError("dot-chain contained non-fn/map");
+          }
+        }
+        if (r != null) {
+          if (d == null) d = r;
+          else d = new DotBuiltin().derive(d, r.get());
+        } else if (d == null) throw new SyntaxError("what?");
+        c = d;
+        if (Main.debug) printlvl(done);
+        
+      } else {
+        c = valueOf(t);
+      }
       if (c.isObj()) {
         if (arr == null) arr = new ArrayList<>();
         arr.add(c);
@@ -62,12 +113,6 @@ class Exec {
           arr = null;
         }
         done.addFirst(c);
-//        if (t.type == TType.op) done.addFirst(c);
-//        else if (t.type == TType.set) done.addFirst(c);
-//        else if (t.type == TType.name) done.addFirst(c);
-//        else if (t.type == TType.expr) done.addFirst(c);
-//        else if (t.type == TType.usr) done.addFirst(c);
-//        else throw new Error("unknown type: " + t.type + " (no idea if this should be a thing)");
         update(false);
       }
     }
@@ -263,22 +308,22 @@ class Exec {
   
   private int barPtr = 0;
 
-  private boolean is(String pt, boolean everythingDone, boolean reverse) {
+  private boolean is(String pt, boolean everythingDone, boolean fromStart) {
     barPtr = 0;
     if (pt.contains(",")) {
       for (String s : pt.split(",")) {
-        if (is(s, everythingDone, reverse)) return true;
+        if (is(s, everythingDone, fromStart)) return true;
       }
     }
-    if (everythingDone && is(pt, false, reverse)) return true;
-    if (reverse && everythingDone && pt.contains("|")) {
+    if (everythingDone && is(pt, false, fromStart)) return true;
+    if (fromStart && everythingDone && pt.contains("|")) {
       return is(pt.split("\\|")[1], false, true);
     }
     int len = pt.length();
-    int ptr = reverse ? 0 : done.size() - 1;
-    int ptrinc = reverse ? 1 : -1;
+    int ptr = fromStart ? 0 : done.size() - 1;
+    int ptrinc = fromStart ? 1 : -1;
     boolean pass = false;
-    for (int i = reverse ? 0 : len - 1; (reverse ? i < len : i >= 0); i += ptrinc) {
+    for (int i = fromStart ? 0 : len - 1; (fromStart ? i < len : i >= 0); i += ptrinc) {
       char p = pt.charAt(i);
       String any;
       boolean inv = false;
@@ -299,7 +344,7 @@ class Exec {
         while (pt.charAt(i) != '[') i--;
         any = pt.substring(i + 1, si);
 //        i--;
-      } else if (p == '[') { // reverse
+        } else if (p == '[') { // reverse
         int si = i;
         while (pt.charAt(i) != ']') i++;
         any = pt.substring(si + 1, i);
@@ -309,6 +354,11 @@ class Exec {
         continue;
       }
       Obj v = done.get(ptr);
+      if (p == 'v') {
+        if (!(v instanceof VarArr || v instanceof Settable) ^ inv) return false;
+        ptr += ptrinc;
+        continue;
+      }
       char type;
       switch (v.type()) {
         case array:
@@ -329,7 +379,8 @@ class Exec {
         case bdop:
           type = 'D';
           break;
-        case var: case nul:
+        case var:
+        case nul:
           type = 'V';
           break;
         case dim:
@@ -338,7 +389,6 @@ class Exec {
         default:
           throw up;
       }
-//      printdbg(type, v);
       if ((!any.contains(String.valueOf(type))) ^ inv) return false;
       ptr += ptrinc;
     }
@@ -356,7 +406,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
           // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
-          // in Dyalog but not partially implemented: ⊆⌹→  &⌶⌸⌺⍤@
+          // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤@
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();

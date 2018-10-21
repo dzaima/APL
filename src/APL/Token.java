@@ -2,7 +2,6 @@ package APL;
 
 import java.util.*;
 
-import static APL.Main.up;
 
 public class Token {
   public TType type;

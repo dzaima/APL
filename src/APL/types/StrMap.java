@@ -8,7 +8,11 @@ public class StrMap extends APLMap {
   
   @Override
   public Obj getRaw(Value k) {
-    Obj v = map.get(k.fromAPL());
+    return getRaw(k.fromAPL());
+  }
+  @Override
+  public Obj getRaw(String k) {
+    Obj v = map.get(k);
     if (v == null) return Null.NULL;
     return v;
   }

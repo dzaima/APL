@@ -36,6 +36,7 @@ public class Main {
           exec(s, global);
           } catch (APLError e) {
             e.print();
+            lastError = e;
           }
         }
         if (args[0].contains("e")) {
@@ -44,6 +45,7 @@ public class Main {
             println(r.toString());
           } catch (APLError e) {
             e.print();
+            lastError = e;
           }
         }
       }
@@ -143,10 +145,10 @@ public class Main {
   
   static public void printdbg(Object... args) {
     if (!debug) return;
-    if (args.length > 0) print(args[0].toString());
+    if (args.length > 0) print(args[0] == null? "null" : args[0].toString());
     for (int i = 1; i < args.length; i++) {
       print(" ");
-      print(args[i].toString());
+      print(args[i] == null? "null" : args[i].toString());
     }
     print("\n");
   }
@@ -169,7 +171,7 @@ public class Main {
       }
       if (guardPos >= 0) {
         var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
-        if (bool((Value) execTok(guard, sc), sc)) {
+        if (bool(execTok(guard, sc), sc)) {
           var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
           res = execTok(expr, sc);
           if (endAfter) return res;
@@ -219,7 +221,8 @@ public class Main {
     a.prototype = Char.SPACE;
     return a;
   }
-  public static boolean bool(Value v, Scope sc) {
+  public static boolean bool(Obj v, Scope sc) {
+    if (v instanceof Settable) v = ((Settable) v).get();
     String cond = ((Arr) sc.get("⎕COND")).string(false);
     assert cond != null;
     if (cond.endsWith(" ")) {

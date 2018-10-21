@@ -63,7 +63,7 @@ public class Scope {
       else return parent.get(name);
     } else return f;
   }
-  Obj getVar(String name) {
+  Variable getVar(String name) {
     return new Variable(this, name);
   }
   public String toString() {
