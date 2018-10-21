@@ -73,7 +73,7 @@ class Tokenizer {
         i++;
       } else if (validName(c)  ||  c=='⎕' && validName(next)) {
         i++;
-        while (i < len && validName(s.charAt(i))) i++;
+        while (i < len && (validName(s.charAt(i))  ||  s.charAt(i)>='0' && s.charAt(i)<='9')) i++;
         var name = s.substring(si, i);
         if (c == '⎕') name = name.toUpperCase();
         tokens.add(new Token(TType.name, name, reprpos, crline));
