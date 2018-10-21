@@ -135,7 +135,7 @@ class Tokenizer {
           lines.add(new ArrayList<>());
         }
         if (c == '\n') {
-          reprpos-= 1;
+          reprpos = -1;
           crline = rlines[++crlinei];
         }
         i++;

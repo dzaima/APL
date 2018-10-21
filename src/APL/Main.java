@@ -13,6 +13,7 @@ public class Main {
   public static boolean debug = false;
   public static boolean prettyprint = false;
   public static boolean quotestrings = false;
+  public static boolean colorful = true;
   static final Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
   static final Arr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz", null);
   static int printlvl = 0;
@@ -189,8 +190,8 @@ public class Main {
   }
   
   public static void colorprint(String s, int col) {
-    println("\u001b[38;5;" + col + "m" + s + "\u001b[0m");
-    //println("\u001b["+col+"m"+s+"\u001b[0m");
+    if (colorful) println("\u001b[38;5;" + col + "m" + s + "\u001b[0m");
+    else println(s);
   }
   
   public static Value toAPL(int[] arr) {
