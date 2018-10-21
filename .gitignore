@@ -3,3 +3,8 @@ src/build
 .idea
 APL.jar
 APL.iml
+app/APL/src/
+app/build/
+app/APLApp/android/
+# temp
+app/

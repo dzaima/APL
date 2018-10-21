@@ -1,0 +1,86 @@
+fns:
+ dyadic  monadic
++   add; conjugate
+-   sub; negate / swap case
+×   mul; sign / case (i.e. ×'Hi ' → 1 ¯1 0) / ×|map
+÷   div; 1÷⍵
+*   pow; e*⍵
+⍟   log; e⍟⍵
+√  root; 2√⍵
+⌈   max; ceil / uppercase
+⌊   min; floor / lowercase
+|   mod; abs / map size
+∧   lcm; lcm (also and)
+∨   gcd; gcd (also or)
+⍲  nand; NYI
+⍱   nor; NYI
+⊥  from; 2⊥⍵
+⊤    to; 2⊤⍵
+○  trig; pi×⍵
+!   nCk; factorial
+
+  monadic  dyadic
+∊      in; enlist
+⍷     NYI; find
+⊂     NYI; enclose
+⊇     NYI; first if enclosed
+⊃   first; pick;
+∪  unique; union
+∩     NYI; intersection
+⌷       ⊢; index; also values of map
+⍳ indexes; where
+~ without; negate
+⍸   where; NYI; where > 0 (positions replicated n times)
+⍴   shape; reshape
+,   ravel; concat
+≢  not eq; tally (⊃⍴⍵)
+≡   depth; equal; depth is amount of ⊃s needed to get to a primitive (to be changed)
+⊢       ⍵; ⍵
+⊣       ⍵; ⍺ (monadic to be changed)
+↑   merge; take; merge as in merge dimensions
+↓   split; drop; split off last dimension as arrays
+?    rand; NYI
+⍪   table; vertical concat;
+⊖    flip; NYI
+⌽ reverse; NYI
+…     NYI; range
+⍕     NYI; format
+⍎     NYI; eval
+⍋     NYI; grade up
+⍒     NYI; grade down
+⌿     NYI; replicate
+⍉ transpose; NYI
+          
+
+< lt; sort asc
+≤ le; NYI
+= eq; NYI
+≥ ge; NYI
+> gt; sort desc
+≠ ne; NYI
+  
+monadic ops:
+
+/  reduce
+\  scan
+¨  for each
+⍨  selfie; commute
+⌾  table (∘.⍺⍺)
+⌸  get/set map keys ('x'(map⌸)5; map⌸'x')
+
+dyadic ops
+
+∘  compose
+.  NYI
+⍣  repeat
+⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
+⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵} )
+
+nilads:
+
+⍬  0⍴0
+⎕  console
+⍺  left arg
+⍵  right arg
+⍶  left operand
+⍹  right operand

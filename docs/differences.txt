@@ -1,0 +1,73 @@
+"c" ←→ ,'c'
+'abc' ←→ "abc"
+
+/ - only reduce
+⌿ - only replicate
+\ - only scan; executes left-to-right, isn't O(n^2)
+
+monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
+
+A¨ ←→ {A}¨ (though A is evaluated only once)
+
+⊥ & ⊤ default left arg = 2
+⊤ with a scalar left arg is like Dyalogs ⊥⍣¯1
+
+⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
+
+√ exists (2√ ←→ √)
+⍥ & ⍢ exist from https://github.com/abrudz/dyalog-apl-extensions (though only the versions with both operands being functions are implemented)
+
+⍸ works for things not 0 & 1 (also ⍸⍣¯1 works)
+
+> & < sort
+
+∨ & ∧ monadically are lcm/gcd of the array (so every/some too)
+
+⌊/⌈/×/- for things with char cases
+
+⌽[dim] takes dim reversed
+
+⎕-s:
+  ⎕IO: IO. Can be set freely, but who knows what'll happen with ~⎕IO∊0 1
+  ⎕COND:
+    '01': 0 - falsy; 1 - truthy; anything else - error
+    '>0': >0: truthy; ≤0: falsy
+    '≠0': 0: falsy; ≠0: truthy
+    If followed by a space, makes ' ' falsy & every other char truthy. Otherwise, chars are a domain error
+  ⎕MILLIS: time since starting
+  ⎕TIME: time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
+  ⎕HTIME: as above but convert to a better time format
+  ⎕L/⎕LA: lowercase alphabet
+  ⎕ERASE 'varname': erase the variable
+  ⎕GC: force Java garbage collection
+  ⎕DEATHLOGGER 'name': log message upon getting garbage collected. This may be removed at any point in time without warning.
+    Meant for testing for memory leaks (though make sure to call ⎕GC before concluding anything!)
+  ⎕NULL: null object (value of undefined keys in maps)
+  ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
+    monadic: create from key-value pairs
+    dyadic: left - keys; right - values
+    get length: |map
+    has items: ×map
+    set:
+      map.key ← value
+      'key' (map⌸) value
+    get:
+      map.key
+      'key'⊃map
+      map⌸'key'
+
+
+
+REPL:
+  )ex filename
+  )oneline: disable fancy boxes
+  )quote: quote strings/chars
+  
+  )stack: stacktrace of last error
+  )debug: debug info (useful for "couldn't join everything up into a single expression")
+  )tokenize expr; )tokenizerepr: tokenize the following code
+  )type: get object type
+  )class: get object class
+  )atype: array type (whatever that is; pretty much )class )
+  )err to get a fake error pointing to code
+  )off←→)exit←→)stop←→exit (yep, without a starting ")")
