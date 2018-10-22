@@ -58,6 +58,18 @@ abstract public class Value extends Obj {
     }
     return arr[x];
   }
+  public Value at(int[] pos, Scope sc) {
+    int IO = ((Num)sc.get("⎕IO")).toInt(null);
+    if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length, null, this);
+    int x = 0;
+    for (int i = 0; i < rank; i++) {
+      if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], null, this);
+      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], null, this);
+      x+= pos[i]-IO;
+      if (i != rank-1) x*= shape[i+1];
+    }
+    return arr[x];
+  }
   public Value at(int[] pos, Value def) { // 0-indexed
     int x = 0;
     for (int i = 0; i < rank; i++) {

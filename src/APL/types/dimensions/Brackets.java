@@ -7,7 +7,7 @@ import APL.types.functions.VarArr;
 
 public class Brackets extends Obj {
   
-  private Value val;
+  public Value val;
   
   public Brackets(Token t, Scope sc) {
     if (t.tokens.size() != 0) {

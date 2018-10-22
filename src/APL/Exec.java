@@ -157,24 +157,31 @@ class Exec {
         continue;
       }
       if (is("F@", end, true)) {
-        if (Main.debug) printlvl("F@");
+        if (Main.debug) printlvl("F[]");
         var f = (Fun) firstObj();
         var w = (Brackets) done.removeFirst();
         done.addFirst(new DervDimFn(f, w.toInt(), sc));
         continue;
       }
       if (is("M@", end, true)) {
-        if (Main.debug) printlvl("M@");
+        if (Main.debug) printlvl("M[]");
         var f = firstMop();
         var w = (Brackets) done.removeFirst();
         done.addFirst(new DervDimMop(f, w.toInt(), sc));
         continue;
       }
       if (is("D@", end, true)) {
-        if (Main.debug) printlvl("D@");
+        if (Main.debug) printlvl("D[]");
         var f = firstDop();
         var w = (Brackets) done.removeFirst();
         done.addFirst(new DervDimDop(f, w.toInt(), sc));
+        continue;
+      }
+      if (is("v@", end, true)) {
+        if (Main.debug) printlvl("v[]");
+        var f = firstVar();
+        var w = (Brackets) done.removeFirst();
+        done.addFirst(new Pick((Variable) f, w, sc));
         continue;
       }
       if (is("[FM←]|FN", end, false)) {
@@ -211,7 +218,7 @@ class Exec {
         addFirst(o.derive(f));
         continue;
       }
-      if (is(".|[FNV]D[FNV]", end, true)) {
+      if (is("[^D].|[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
         var aa = done.remove(barPtr); // done.removeFirst();
         var  o = firstDop(); // (Dop) done.removeFirst();
@@ -295,6 +302,11 @@ class Exec {
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
+  private Settable firstVar() {
+    var r = done.remove(barPtr);
+    if (r instanceof Settable) return (Settable) r;
+    throw new SyntaxError("Expected a variable, got "+r, r);
+  }
   private Mop firstMop() {
     var r = done.remove(barPtr);
     if (r instanceof Mop) return (Mop) r;
@@ -355,7 +367,7 @@ class Exec {
       }
       Obj v = done.get(ptr);
       if (p == 'v') {
-        if (!(v instanceof VarArr || v instanceof Settable) ^ inv) return false;
+        if (!(v instanceof Settable) ^ inv) return false;
         ptr += ptrinc;
         continue;
       }
@@ -406,7 +418,7 @@ class Exec {
       case op:
         switch (t.repr.charAt(0)) {
           // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
-          // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤@
+          // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤
           // fns
           case '+': return new PlusBuiltin();
           case '-': return new MinusBuiltin();
@@ -481,6 +493,7 @@ class Exec {
           case '⍣': return new RepeatBuiltin();
           case '⍥': return new OverBuiltin();
           case '⍢': return new DualBuiltin();
+          case '@': return new AtBuiltin(sc);
   
   
           case '⍬': return new Arr(Num.ZERO);

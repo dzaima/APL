@@ -21,6 +21,18 @@ public class Variable extends Settable {
     sc.update(name, v);
   }
   
+  public void setAt(int[] pos, Value what) {
+    Arr a = (Arr) v;
+    Value[] nvals = new Value[a.ia];
+    System.arraycopy(a.arr, 0, nvals, 0, a.ia);
+    nvals[Indexer.fromShape(a.shape, pos, ((Value) sc.get("⎕IO")).toInt(null))] = what;
+    set(new Arr(nvals, a.shape));
+  }
+  public Value getAt(int[] pos, Scope sc) {
+    Arr a = (Arr) v;
+    return a.at(pos, sc);
+  }
+  
   @Override
   public String toString() {
     if (Main.debug) return v == null? "var:"+name : "var:"+v;
