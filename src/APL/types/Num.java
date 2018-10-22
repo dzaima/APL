@@ -65,6 +65,7 @@ public class Num extends Value {
   }
   
   public static Num gcd(Num[] nums) {
+    if (nums.length == 0) return Num.ZERO;
     double res = nums[0].num;
     for (int i = 1; i < nums.length; i++) {
       double b = nums[i].num;
@@ -78,6 +79,7 @@ public class Num extends Value {
   }
   
   public static Num lcm(Num[] nums) {
+    if (nums.length == 0) return Num.ONE;
     double res = nums[0].num;
     for (int i = 1; i < nums.length; i++) {
       double a = nums[i].num;
