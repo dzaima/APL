@@ -9,23 +9,23 @@ public class Pick extends Settable {
   
   
   private int[] pos;
-  private Variable var;
+  private Variable variable;
   private Scope sc;
   
   public Pick(Variable v, Brackets where, Scope sc) {
     super(v.getAt(where.val.toIntArr(null), sc));
     pos = where.val.toIntArr(null);
-    var = v;
+    variable = v;
     this.sc = sc;
   }
   
   @Override
   public void set(Obj v) {
-    var.setAt(pos, (Value) v);
+    variable.setAt(pos, (Value) v);
   }
   
   @Override
   public String toString() {
-    return var.name+"["+ Arrays.toString(pos) +"]";
+    return variable.name+"["+ Arrays.toString(pos) +"]";
   }
 }

@@ -1,5 +1,6 @@
 package APL.errors;
 
+import APL.Token;
 import APL.types.Obj;
 
 import java.util.stream.*;
@@ -9,6 +10,11 @@ import static APL.Main.*;
 public class APLError extends Error {
   Obj fn;
   public Obj cause;
+  Token t;
+  APLError (String msg, Token t) {
+    super(msg);
+    this.t = t;
+  }
   APLError (String msg) {
     super(msg);
   }
@@ -41,6 +47,13 @@ public class APLError extends Error {
       String s = IntStream.range(0, fnpos).mapToObj(i -> " ").collect(Collectors.joining());
       colorprint(fnline, 217);
       colorprint(s +"^", 217);
+    } else if (t != null) {
+      StringBuilder s = new StringBuilder();
+      for (int i = 0; i < t.line.length(); i++) {
+        s.append(i == t.pos ? '^' : ' ');
+      }
+      colorprint(t.line, 217);
+      colorprint(s.toString(), 217);
     }
   }
 }

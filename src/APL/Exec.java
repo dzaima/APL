@@ -127,7 +127,7 @@ class Exec {
     
     Main.printlvl--;
     if (Main.debug) printlvl("END:", done);
-    if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression");
+    if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression", done.get(0).token);
     return done.get(0);
   }
 
@@ -218,7 +218,7 @@ class Exec {
         addFirst(o.derive(f));
         continue;
       }
-      if (is("[^D].|[FNV]D[FNV]", end, true)) {
+      if (is("!D|[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
         var aa = done.remove(barPtr); // done.removeFirst();
         var  o = firstDop(); // (Dop) done.removeFirst();

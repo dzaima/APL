@@ -26,7 +26,7 @@ public class Variable extends Settable {
     Value[] nvals = new Value[a.ia];
     System.arraycopy(a.arr, 0, nvals, 0, a.ia);
     nvals[Indexer.fromShape(a.shape, pos, ((Value) sc.get("⎕IO")).toInt(null))] = what;
-    set(new Arr(nvals, a.shape));
+    update(new Arr(nvals, a.shape));
   }
   public Value getAt(int[] pos, Scope sc) {
     Arr a = (Arr) v;
