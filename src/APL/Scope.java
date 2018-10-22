@@ -54,7 +54,7 @@ public class Scope {
         case "⎕DEATHLOGGER": return new DeathLogger();
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
-        
+        case "⎕SCOPE": return new ScopeViewer(this);
       }
     }
     Obj f = vars.get(name);
@@ -152,6 +152,47 @@ public class Scope {
     public Obj call(Value w) {
       sc.set(w.fromAPL(), null);
       return w;
+    }
+  }
+  
+  class ScopeViewer extends APLMap {
+  
+    private final Scope sc;
+  
+    ScopeViewer(Scope sc) {
+      this.sc = sc;
+    }
+  
+    @Override
+    public Obj getRaw(Value k) {
+      String s = k.fromAPL();
+      if (s.equals("parent")) return new ScopeViewer(sc.parent);
+      return sc.vars.get(s);
+    }
+  
+    @Override
+    public void set(Value k, Obj v) {
+      throw new SyntaxError("No setting scope things!", this, v instanceof Value? (Value) v : null);
+    }
+  
+    @Override
+    public Arr toArr() {
+      throw new SyntaxError("scope to array", this);
+    }
+  
+    @Override
+    public int size() {
+      throw new SyntaxError("size of scope", this);
+    }
+    @Override
+    public String toString() {
+      StringBuilder res = new StringBuilder("(");
+      sc.vars.forEach((key, value) -> {
+        if (value instanceof ScopeViewer) return;
+        if (res.length() != 1) res.append("⋄");
+        res.append(key).append(":").append(value);
+      });
+      return res + ")";
     }
   }
   
