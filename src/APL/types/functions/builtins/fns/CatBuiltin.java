@@ -12,7 +12,7 @@ public class CatBuiltin extends Builtin {
     identity = new Arr(Num.ZERO); // TODO not
   }
   public Obj call(Value w) {
-    if (w.scalar()) return new Arr(new Value[]{w});
+    if (w.primitive()) return new Arr(new Value[]{w});
     return new Arr(((Arr)w).arr);
   }
   public Obj call(Value a, Value w) {

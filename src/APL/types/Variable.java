@@ -1,6 +1,7 @@
 package APL.types;
 
 import APL.*;
+import APL.errors.ValueError;
 
 public class Variable extends Settable {
   
@@ -11,6 +12,11 @@ public class Variable extends Settable {
     super(sc.get(name));
     this.sc = sc;
     this.name = name;
+  }
+  
+  public Obj get() {
+    if (v == null) throw new ValueError("tying to get value of non-existing variable "+name);
+    return v;
   }
   
   @Override
