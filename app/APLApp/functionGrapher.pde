@@ -1,14 +1,14 @@
 LL<Point> points = new LL<Point>();
 PQ<Double, Point> pq = new PQ<Double, Point>();
 double[] b;
-APL.types.Fun fn;
+Fun fn;
 int pts = 1000;
 double scale = 10;
 
 
 
 void initFn() {
-  fn = (APL.types.Fun)resVal;
+  fn = (Fun)resVal;
   points.clear();
   pq.clear();
   bounds();
