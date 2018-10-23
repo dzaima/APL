@@ -44,7 +44,7 @@ void functionGrapher() {
     if (bg != null && ((Double) bg.m) > b[2]) {
       Point p = (Point) bg.t;
       add((p.x + p.pnode.next.v.x)/2,  p.pnode);
-      println("sz", pq.size(), points.size);
+      // println("sz", pq.size(), points.size);
     } else break;
     if (millis()-millis > 5) break;
   }
