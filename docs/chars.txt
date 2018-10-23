@@ -10,10 +10,10 @@ fns:
 ⌈   max; ceil / uppercase
 ⌊   min; floor / lowercase
 |   mod; abs / map size
-∧   lcm; lcm (also and)
-∨   gcd; gcd (also or)
-⍲  nand; NYI
-⍱   nor; NYI
+∧   lcm; lcm (aka every; all truthy)
+∨   gcd; gcd (aka some; contains truthy)
+⍲  nand; not all / contains falsy
+⍱   nor; none / all falsy
 ⊥  from; 2⊥⍵
 ⊤    to; 2⊤⍵
 ○  trig; pi×⍵
@@ -28,7 +28,7 @@ fns:
 ⍸   where; NYI; where > 0 (positions replicated n times)
 ⍴   shape; reshape
 ,   ravel; concat
-≢  not eq; tally (⊃⍴⍵)
+≢  not eq; tally (⊃1,⍨⍴⍵)
 ≡   depth; equal; depth is amount of ⊃s needed to get to a primitive (to be changed)
 ⊢       ⍵; ⍵
 ⊣       ⍵; ⍺ (monadic to be changed)
@@ -75,6 +75,7 @@ dyadic ops
 ⍣  repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
 ⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵} )
+@  at; right op = indices or function giving boolean array, left op = replacement array or function
 
 nilads:
 

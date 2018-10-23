@@ -91,6 +91,7 @@ public class Num extends Value {
       }
       if (a == 0) res = 0;
       else res = (nums[i].num * res) / a;
+      if (res == 0) return Num.ZERO;
     }
     return new Num(res);
   }
