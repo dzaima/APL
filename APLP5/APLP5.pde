@@ -59,4 +59,4 @@ void call(Fun f, Value w) {
     throw e;
   }
 }
-Fun tf = new Fun() {};
+Fun tf = new Fun(0x011) {};

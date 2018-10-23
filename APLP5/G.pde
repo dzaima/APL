@@ -21,20 +21,20 @@ class APLGraphics extends APLMap {
   Obj getRaw(Value k) {
     String s = k.fromAPL().toLowerCase();
     switch (s) {
-      case "background": case "bg": return new Fun() {
+      case "background": case "bg": return new Fun(0x001) {
         public Obj call(Value w) {
           g.background(col(w));
           return w;
         }
       };
-      case "text": return new Fun() {
+      case "text": return new Fun(0x010) {
         public Obj call(Value a, Value w) {
           XY p = new XY(a);
           g.text(w.fromAPL(), (float)p.x, (float)p.y);
           return w;
         }
       };
-      case "textalign": case "ta": return new Fun() {
+      case "textalign": case "ta": return new Fun(0x011) {
         public Obj call(Value w) {
           String hs = w.fromAPL();
           Integer h = hs.equals("center")? (Integer)CENTER : hs.equals("left")? (Integer)LEFT : hs.equals("right")? (Integer)RIGHT : null;

@@ -36,6 +36,9 @@ int col(Obj v) {
 }
 
 abstract class ForFA extends Fun {
+  
+  ForFA() { super(0x011); }
+  
   abstract void draw(float[] fa);
   void setup(Value a) { }
   void finish() { }
