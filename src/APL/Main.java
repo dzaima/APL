@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Main {
   public static boolean debug = false;
-  public static boolean prettyprint = false;
+  public static boolean noBoxing = false;
   public static boolean quotestrings = false;
   public static boolean colorful = true;
   static final Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
@@ -21,39 +21,100 @@ public class Main {
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
   public static void main(String[] args) {
+    colorful = System.console() != null && System.getenv().get("TERM") != null;
     console = new Scanner(System.in);
     Scope global = new Scope();
     Throwable lastError = null;
+    boolean REPL = false;
+    boolean silentREPL = false;
     if (args.length > 0) {
-      debug = args[0].contains("d");
-      prettyprint = args[0].contains("p");
-      quotestrings = args[0].contains("q");
-      if (args.length > 1) {
-        int rest = args[0].contains("e") ? 2 : 1;
-        for (int i = rest; i < args.length; i++) {
-          String s = readFile(args[i]);
-          if (s == null) colorprint("File " + args[i] + " not found", 246);
-          else try {
-          exec(s, global);
-          } catch (APLError e) {
-            e.print();
-            lastError = e;
+      try {
+        for (int i = 0; i < args.length; i++) {
+          String p = args[i];
+          if (p.length() >= 2 && p.charAt(0) == '-') {
+            if (p.charAt(1) == '-') {
+              switch (p) {
+                case "--help":
+                  println("Usage: APL [options]");
+                  println("Options:");
+                  println("-f file: execute the contents of the file");
+                  println("-e code: execute the argument as APL");
+                  println("-p code: execute the argument as APL and print its result");
+                  println("-i     : execute STDIN as APL");
+                  println("-r     : start the REPL after everything else");
+                  println("-s     : start the REPL without \">\" after everything else");
+                  println("-d     : enable debug mode");
+                  println("-q     : enable quoting of strings");
+                  println("-b     : disable boxing");
+                  println("-c     : disable colorful printing");
+                  println("If given no arguments, an implicit -r will be added");
+                  System.exit(0);
+                  break;
+                default:
+                  throw new DomainError("Unknown command-line argument " + p);
+              }
+            } else {
+              for (char c : p.substring(1).toCharArray()) {
+                switch (c) {
+                  case 'f':
+                    String name = args[++i];
+                    exec(readFile(name), global);
+                    break;
+                  case 'e':
+                    String code = args[++i];
+                    exec(code, global);
+                    break;
+                  case 'p':
+                    code = args[++i];
+                    println(exec(code, global).toString());
+                    break;
+                  case 'i':
+                    StringBuilder s = new StringBuilder();
+                    while (console.hasNext()) {
+                      s.append(console.nextLine()).append('\n');
+                    }
+                    exec(s.toString(), global);
+                    break;
+                  case 'r':
+                    REPL = true;
+                    break;
+                  case 's':
+                    REPL = true;
+                    silentREPL^= true;
+                    break;
+                  case 'd':
+                    debug = true;
+                    break;
+                  case 'q':
+                    quotestrings = true;
+                    break;
+                  case 'b':
+                    noBoxing = true;
+                    break;
+                  case 'c':
+                    colorful = false;
+                    break;
+                  default:
+                    throw new DomainError("Unknown command-line argument -" + c);
+                }
+              }
+            }
+          } else {
+            throw new DomainError("Unknown command-line argument " + p);
           }
         }
-        if (args[0].contains("e")) {
-          try {
-            Obj r = exec(args[1], global);
-            println(r.toString());
-          } catch (APLError e) {
-            e.print();
-            lastError = e;
-          }
-        }
+      } catch (APLError e) {
+        e.print();
+        throw e;
+      } catch (Throwable e) {
+        e.printStackTrace();
+        colorprint(e + ": " + e.getMessage(), 246);
+        throw e;
       }
     }
-    if (args.length == 0 || args[0].contains("r")) { // REPL
-      REPL: while (true) {
-        print("> ");
+    if (args.length == 0 || REPL) {
+      if (!silentREPL) print("> ");
+      REPL: while (console.hasNext()) {
         try {
           String cr = console.nextLine();
           if (cr.equals("exit")) break;
@@ -72,16 +133,16 @@ public class Main {
                 quotestrings = !quotestrings;
                 break;
               case ")ONELINE":
-                prettyprint = !prettyprint;
+                noBoxing = !noBoxing;
                 break;
               case ")OFF": case ")EXIT": case ")STOP":
                 break REPL;
-              case ")TOKENIZE": println(Tokenizer.tokenize(rest).toTree("")); break;
+              case ")TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-              case ")TYPE": println(Main.human(exec(rest, global).type())); break;
-              case ")ERR": new NotErrorError("", exec(rest, global)).print(); break;
-              case ")CLASS": println(exec(rest, global).getClass().getCanonicalName()); break;
-              case ")ATYPE": println(exec(rest, global).humanType(false)); break;
+              case ")TYPE"        : println(Main.human(exec(rest, global).type())); break;
+              case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
+              case ")CLASS"       : println(exec(rest, global).getClass().getCanonicalName()); break;
+              case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
               case ")STACK":
                 if (lastError != null) {
                   lastError.printStackTrace();
@@ -97,18 +158,17 @@ public class Main {
         } catch (APLError e) {
           e.print();
           lastError = e;
-        } catch (java.util.NoSuchElementException e) {
-          break; // EOF; REPL ended
         } catch (Throwable e) {
           e.printStackTrace();
           colorprint(e + ": " + e.getMessage(), 246);
         }
+        if (!silentREPL) print("> ");
       }
     }
   }
   
   
-  static void print(String s) {
+  public static void print(String s) {
     System.out.print(s);
   }
   
@@ -133,7 +193,7 @@ public class Main {
       byte[] encoded = Files.readAllBytes(Paths.get(path));
       return new String(encoded, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      return null;
+      throw new DomainError("File "+path+" not found");
     }
   }
   

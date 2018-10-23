@@ -61,9 +61,9 @@ public class Arr extends Value {
         return s + "⍴" + (prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?");
       }
     }
-    String qs = string(Main.quotestrings || Main.prettyprint);
+    String qs = string(Main.quotestrings || Main.noBoxing);
     if (qs != null) return qs;
-    if (Main.prettyprint) {
+    if (Main.noBoxing) {
       if (rank == 0) return "⊂" + oneliner(new int[0]);
       return oneliner(new int[0]);
     } else {

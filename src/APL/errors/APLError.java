@@ -42,6 +42,13 @@ public class APLError extends Error {
         }
         colorprint(oline, 217);
         colorprint(s.toString(), 217);
+      } else if (fnline != null) {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < fnline.length(); i++) {
+          s.append(i == fnpos ? '^' : ' ');
+        }
+        colorprint(fnline, 217);
+        colorprint(s.toString(), 217);
       }
     } else if (fnline != null) {
       String s = IntStream.range(0, fnpos).mapToObj(i -> " ").collect(Collectors.joining());

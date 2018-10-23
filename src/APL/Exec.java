@@ -194,7 +194,11 @@ class Exec {
         if (res == null) return;
         continue;
       }
-      if (is("D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
+      if (is("#!←", end, true) || done.size() == 1 && done.get(0).type() == Type.gettable) {
+        var w = firstVar();
+        addFirst(w.get());
+      }
+      if (is("D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N,#←.", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         var w = lastObj();
         var s = (SetBuiltin) done.removeLast(); // ←
@@ -398,6 +402,9 @@ class Exec {
         case dim:
           type = '@';
           break;
+        case gettable:
+          type = '#';
+          break;
         default:
           throw up;
       }
@@ -497,7 +504,8 @@ class Exec {
   
   
           case '⍬': return new Arr(Num.ZERO);
-          case '⎕': return new Logger(sc);
+          case '⎕': return new Quad(sc);
+          case '⍞': return new QuoteQuad(sc);
           case '⍺': return sc.get("⍺");
           case '⍵': return sc.get("⍵");
           case '⍶': return sc.get("⍶");

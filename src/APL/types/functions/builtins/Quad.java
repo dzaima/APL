@@ -3,9 +3,9 @@ package APL.types.functions.builtins;
 import APL.*;
 import APL.types.*;
 
-public class Logger extends Settable {
+public class Quad extends Settable {
   private final Scope sc;
-  public Logger(Scope sc) {
+  public Quad(Scope sc) {
     super(null);
     this.sc = sc;
   }
@@ -17,6 +17,9 @@ public class Logger extends Settable {
   @Override
   public Obj get() {
     return Main.exec(Main.console.nextLine(), sc);
+  }
+  public Type type() {
+    return Type.gettable;
   }
   
   public String toString() {
