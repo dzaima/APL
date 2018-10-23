@@ -1,3 +1,0 @@
-#!/bin/bash
-# debug REPL; enables asserts
-rlwrap java -ea -jar APL.jar "$@"

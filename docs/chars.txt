@@ -22,11 +22,6 @@ fns:
   monadic  dyadic
 ∊      in; enlist
 ⍷     NYI; find
-⊂     NYI; enclose
-⊇     NYI; first if enclosed
-⊃   first; pick;
-∪  unique; union
-∩     NYI; intersection
 ⌷       ⊢; index; also values of map
 ⍳ indexes; where
 ~ without; negate
@@ -49,6 +44,11 @@ fns:
 ⍋     NYI; grade up
 ⍒     NYI; grade down
 ⌿     NYI; replicate
+∪  unique; union
+∩     NYI; intersection
+⊂     NYI; enclose
+⊃   first; pick;
+⊇ first if enclosed; select
 ⍉ transpose; NYI
           
 
