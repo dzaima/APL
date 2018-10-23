@@ -1,0 +1,74 @@
+P5
+  setup w h   called once before starting the draw loop
+  draw w h    called every frame
+  size←w h    set window size (do this outside of setup/draw!)
+  cursor type set the cursor to the specified type (one of cross, hand, arrow, move, text & wait)
+
+      scroll|sc  dir: called when mouse wheel is scrolled. ⍵ positive = up/away from user, negative = down/towards
+    scrollup|scu dir: called when direction of scroll is positive, otherwise as above
+  scrolldown|scd dir: called when direction of scroll is negative, otherwise as above
+
+  mod keypress|kp key  called when a key is pressed; key = char vector; mod = (ctrl shift alt altgr meta)
+      modpress|mp mod  called when a modifer key is pressed; mod = [ctrl|shift|alt|altgr]
+      
+  mod keyrelease|kr key: called when a key is released; key = char vector; mod = (ctrl shift alt altgr meta)
+      modrelease|mr mod: called when a modifer key is released; mod = [ctrl|shift|alt|altgr]
+  
+  dispsize      | ds: array of display width & height
+  displaywidth  | dw: display width
+  displayheight | dh: display height
+  width         | w : width of the canvas
+  height        | h : height of the canvas
+  
+   mousex   |  mx  : mouse X position
+   mousey   |  my  : mouse Y position
+  pmousex   | pmx  : previous mouse X position
+  pmousey   | pmy  : previous mouse Y position
+   mousepos |  mpos: array of mouse X & Y
+  pmousepos | pmpos: array of previous mouse X & Y
+  
+  key: last key pressed
+  
+  fps|framerate: framerate
+  
+  color|col: convert char vector to a number representing the color
+  
+  exit code: System.exit(code)
+  
+  
+  LM & RM & MM:
+    mouse object for the left, middle, & right button respectively
+          clicked|c  mpos: called when the mouse button is clicked with ⍵ = P5.mpos
+    spos released|r  mpos: called when the mouse button is clicked with ⍵ = P5.mpos & ⍺=sp
+    
+      startx|sx  : mouse X when the button was started to be held
+      starty|sy  : mouse Y when the button was started to be held
+    startpos|sp|s: array of sx & sy
+     pressed|p   : is this button pressed
+    ppressed|pp  : was this button pressed last frame
+  
+  G:
+    fill  ←col: set the fill color
+    stroke←col: set the stroke color
+    textsize←size: set text size
+    bg|background col: color the canvas to the color
+    x y text 'text': draw that text at (x;y)
+    
+    Further on, "pts" arguments can either be number vector or number vector vectors, the latter scattering the operation for each. aka ⍥1, when that gets implemented
+    
+    [type] rect pts: draw a rectangle. type can be:
+      corner:  x1 y1 w h←pts
+      corners: x1 y1 x2 y2←pts (default)
+      center:  centerx centery w h←ptr
+      radius:  center←pts[1 2]⋄w h←pts[3 4]×2
+    [type] ellipse pts: draw an ellipse. type can be:
+      corner:  x1 y1 w h←pts
+      corners: x1 y1 x2 y2←pts (default)
+      center:  centerx centery w h←ptr
+      radius:  center←pts[1 2]⋄w h←pts[3 4]×2
+    [type] cicle pts: draw a circle. type can be:
+      center:  centerX centerY w h←ptr
+      radius:  center←pts[1 2]⋄w h←pts[3 4]×2
+    point|pt pts: draw single pixels at (x; y) pairs of the array
+    [weight] line|ln vertexes: connect the points - every 2 items in ⍵; ⍵ is a number vector; weight default is 1; WARNING this does P5.G.fill ← ⍬
+    [weight] loop pts: draw closed loop(s) of the points of the array; weight default is 1

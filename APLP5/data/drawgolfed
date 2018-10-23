@@ -1,0 +1,5 @@
+P←P5⋄P.size←,⍨700⋄G←P.G⋄a←l←⍬
+P.draw←{G.bg'd'⋄G.stroke←9
+{P.LM.P:←l,←P.mpos
+×≢l:a⊢←⍵⋄l⊢←⍬}G.ln a,⊂l}
+P.kp←{a↓⍨←-×≢a}
