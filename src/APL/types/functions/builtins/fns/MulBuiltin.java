@@ -6,8 +6,7 @@ import APL.types.functions.Builtin;
 
 public class MulBuiltin extends Builtin {
   public MulBuiltin() {
-    super("×");
-    valid = 0x011;
+    super("×", 0x011);
   }
   
   public Obj call(Value w) {

@@ -6,9 +6,7 @@ import APL.types.functions.*;
 
 public class AtBuiltin extends Dop {
   public AtBuiltin(Scope sc) {
-    super("@");
-    valid = 0x001;
-    this.sc = sc;
+    super("@", 0x001, sc);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     int IO = ((Num)sc.get("⎕IO")).intValue();

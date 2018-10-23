@@ -1,14 +1,13 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Main;
+import APL.*;
 import APL.errors.NYIError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class FormatBuiltin extends Builtin {
   public FormatBuiltin() {
-    super("⍕");
-    valid = 0x011;
+    super("⍕", 0x011);
   }
   
   public Obj call(Value w) {

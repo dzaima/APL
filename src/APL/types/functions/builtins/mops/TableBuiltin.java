@@ -5,8 +5,7 @@ import APL.types.functions.Mop;
 
 public class TableBuiltin extends Mop {
   public TableBuiltin() {
-    super("⌾");
-    valid = 0x010;
+    super("⌾", 0x010);
   }
   public Obj call(Obj f, Value a, Value w) {
     Value[] arr = new Value[a.ia*w.ia];

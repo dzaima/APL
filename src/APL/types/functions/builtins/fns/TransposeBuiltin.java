@@ -1,13 +1,12 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Indexer;
+import APL.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class TransposeBuiltin extends Builtin {
   public TransposeBuiltin() {
-    super("⍉");
-    valid = 0x011;
+    super("⍉", 0x011);
   }
   
   public Obj call(Value w) {

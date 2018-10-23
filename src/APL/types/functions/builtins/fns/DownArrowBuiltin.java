@@ -7,9 +7,7 @@ import APL.types.*;
 
 public class DownArrowBuiltin extends Builtin {
   public DownArrowBuiltin(Scope sc) {
-    super("↓");
-    valid = 0x011;
-    this.sc = sc;
+    super("↓", 0x011, sc);
   }
   
   @Override

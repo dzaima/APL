@@ -7,9 +7,7 @@ import APL.types.functions.Builtin;
 
 public class RandBuiltin extends Builtin {
   public RandBuiltin(Scope sc) {
-    super("?");
-    valid = 0x011;
-    this.sc = sc;
+    super("?", 0x011, sc);
   }
   
   public Obj call(Value w) {

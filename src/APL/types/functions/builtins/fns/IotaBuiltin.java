@@ -12,9 +12,7 @@ import static APL.Main.*;
 
 public class IotaBuiltin extends Builtin {
   public IotaBuiltin(Scope sc) {
-    super("⍳");
-    this.sc = sc;
-    valid = 0x011;
+    super("⍳", 0x011, sc);
   }
   public Obj call(Value w) {
     int IO = ((Num) sc.get("⎕IO")).intValue();

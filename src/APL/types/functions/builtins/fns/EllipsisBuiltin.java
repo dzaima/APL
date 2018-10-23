@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 public class EllipsisBuiltin extends Builtin {
   public EllipsisBuiltin() {
-    super("…");
-    valid = 0x010;
+    super("…", 0x010);
   }
   
   public Obj call(Value a, Value w) {

@@ -7,8 +7,7 @@ import APL.types.functions.*;
 
 public class SetBuiltin extends Builtin {
   public SetBuiltin() {
-    super("←");
-    valid = 0x010;
+    super("←", 0x010);
   }
   
   @Override

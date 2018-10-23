@@ -9,8 +9,7 @@ import java.util.*;
 public class DTackBuiltin extends Builtin {
   static final UTackBuiltin copy = new UTackBuiltin();
   public DTackBuiltin() {
-    super("⊤");
-    valid = 0x011;
+    super("⊤", 0x011);
   }
   
   public Obj call(Value w) {

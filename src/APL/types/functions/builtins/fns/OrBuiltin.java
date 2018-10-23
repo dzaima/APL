@@ -7,8 +7,7 @@ import java.util.stream.IntStream;
 
 public class OrBuiltin extends Builtin {
   public OrBuiltin() {
-    super("∨");
-    valid = 0x011;
+    super("∨", 0x011);
     identity = Num.ZERO;
   }
   

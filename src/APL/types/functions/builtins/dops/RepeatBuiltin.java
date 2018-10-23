@@ -5,8 +5,7 @@ import APL.types.functions.Dop;
 
 public class RepeatBuiltin extends Dop {
   public RepeatBuiltin() {
-    super("⍣");
-    valid = 0x011;
+    super("⍣", 0x011);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     int am = ((Num)ww).intValue();

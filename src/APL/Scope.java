@@ -87,7 +87,7 @@ public class Scope {
   
   static class DeathLogger extends Builtin {
     DeathLogger() {
-      super("⎕DEATHLOGGER");
+      super("⎕DEATHLOGGER", 0x001);
     }
   
     @Override
@@ -118,9 +118,7 @@ public class Scope {
   static class Timer extends Builtin {
     final boolean simple;
     Timer(Scope sc, boolean simple) {
-      super("⎕TIME");
-      valid = 0x001;
-      this.sc = sc;
+      super("⎕TIME", 0x001, sc);
       this.simple = simple;
     }
     public Obj call(Value w) {
@@ -144,9 +142,7 @@ public class Scope {
   }
   static class Eraser extends Builtin {
     Eraser(Scope sc) {
-      super("⎕ERASE");
-      valid = 0x001;
-      this.sc = sc;
+      super("⎕ERASE", 0x001, sc);
     }
     
     public Obj call(Value w) {
@@ -199,8 +195,7 @@ public class Scope {
   private class MapGen extends Builtin {
   
     MapGen() {
-      super("⎕MAP");
-      valid = 0x011;
+      super("⎕MAP", 0x011);
     }
   
     @Override

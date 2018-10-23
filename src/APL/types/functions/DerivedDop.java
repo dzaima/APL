@@ -6,8 +6,7 @@ public class DerivedDop extends Builtin {
   private final Obj aa, ww;
   private final Dop op;
   DerivedDop(String s, Obj aa, Obj ww, Dop op, int valid) {
-    super(s);
-    this.valid = valid;
+    super(s, valid);
     this.aa = aa;
     this.ww = ww;
     this.op = op;

@@ -8,8 +8,7 @@ import java.util.*;
 
 public class GTBuiltin extends Builtin {
   public GTBuiltin() {
-    super(">");
-    valid = 0x010;
+    super(">", 0x010);
   }
   
   public Obj call(Value a0, Value w0) {

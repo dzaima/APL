@@ -9,31 +9,28 @@ import static APL.Main.*;
 
 public class Ddop extends Dop {
   private final Token token;
-  private final Scope psc;
   Ddop(Token t, Scope sc) {
-    super(t.toRepr());
+    super(t.toRepr(), 0x011, sc);
     token = t;
-    psc = sc;
-    valid = 0x011;
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     printdbg("ddop call", w);
-    sc = new Scope(psc);
-    sc.set("⍶", aa);
-    sc.set("⍹", ww);
-    sc.set("⍺", new Variable(sc, "⍺"));
-    sc.set("⍵", w);
-    return execLines(token, sc);
+    Scope nsc = new Scope(sc);
+    nsc.set("⍶", aa);
+    nsc.set("⍹", ww);
+    nsc.set("⍺", new Variable(nsc, "⍺"));
+    nsc.set("⍵", w);
+    return execLines(token, nsc);
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
     printdbg("ddop call", a, w);
-    sc = new Scope(psc);
-    sc.set("⍶", aa);
-    sc.set("⍹", ww);
-    sc.set("⍺", a);
-    sc.set("⍵", w);
-    sc.alphaDefined = true;
-    return execLines(token, sc);
+    Scope nsc = new Scope(sc);
+    nsc.set("⍶", aa);
+    nsc.set("⍹", ww);
+    nsc.set("⍺", a);
+    nsc.set("⍵", w);
+    nsc.alphaDefined = true;
+    return execLines(token, nsc);
   }
   public String toString() {
     return token.toRepr();

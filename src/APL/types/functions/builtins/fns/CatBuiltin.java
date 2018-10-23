@@ -7,8 +7,7 @@ import APL.types.functions.Builtin;
 
 public class CatBuiltin extends Builtin {
   public CatBuiltin() {
-    super(",");
-    valid = 0x011;
+    super(",", 0x011);
     identity = new Arr(Num.ZERO); // TODO not
   }
   public Obj call(Value w) {

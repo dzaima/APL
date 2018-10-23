@@ -6,8 +6,7 @@ import APL.types.functions.*;
 
 public class ScanBuiltin extends Mop {
   public ScanBuiltin() {
-    super("\\");
-    valid = 0x001;
+    super("\\", 0x001);
   }
   
   public Obj call(Obj aa, Value w) {

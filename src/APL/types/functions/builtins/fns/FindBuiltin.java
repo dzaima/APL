@@ -1,16 +1,13 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Indexer;
+import APL.*;
 import APL.errors.RankError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import java.util.Arrays;
-
 public class FindBuiltin extends Builtin {
   public FindBuiltin() {
-    super("⍷");
-    valid = 0x010;
+    super("⍷", 0x010);
   }
   
   public Obj call(Value a, Value w) {

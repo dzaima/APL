@@ -5,8 +5,7 @@ import APL.types.functions.Mop;
 
 public class SelfieBuiltin extends Mop {
   public SelfieBuiltin() {
-    super("⍨");
-    valid = 0x011;
+    super("⍨", 0x011);
   }
 
   public Obj call(Obj f, Value w) {
