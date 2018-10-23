@@ -5,8 +5,7 @@ import APL.types.functions.Builtin;
 
 public class RootBuiltin extends Builtin {
   public RootBuiltin() {
-    super("√");
-    valid = 0x11;
+    super("√", 0x11);
   }
   
   public Obj call(Value w) {

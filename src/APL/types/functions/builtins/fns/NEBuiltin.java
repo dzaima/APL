@@ -6,8 +6,7 @@ import APL.types.functions.Builtin;
 
 public class NEBuiltin extends Builtin {
   public NEBuiltin() {
-    super("≠");
-    valid = 0x010;
+    super("≠", 0x010);
   }
   
   public Obj call(Value a0, Value w0) {

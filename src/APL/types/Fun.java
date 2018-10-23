@@ -1,31 +1,32 @@
 package APL.types;
 
-import java.util.*;
-import java.util.stream.*;
-
 import APL.*;
 import APL.errors.*;
 
+import java.util.Arrays;
+
 @SuppressWarnings({"unused", "Convert2streamapi"}) // class for getting overridden & being fast so no streams
-public abstract class Fun extends Obj {
-  public Scope sc;
-  public int valid; // 0x niladic dyadic monadic
+public abstract class Fun extends Scopeable {
+  public final int valid; // 0x niladic dyadic monadic
   
   public Value identity = null;
-  protected String htype() {
-    return IntStream.range(0, 3)
-      .filter(i -> 1 == (0xf & (valid >> 4 * (2-i))))
-      .mapToObj(i -> new String[]{"niladic", "dyadic", "monadic"}[i])
-      .collect(Collectors.joining("/"));
+  
+  protected Fun(int valid, Scope sc) {
+    super(sc);
+    this.valid = valid;
+  }
+  protected Fun(int valid) {
+    super(null);
+    this.valid = valid;
   }
   public Obj call() {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called niladically", this);
+    throw new IncorrectArgsException("function "+toString()+" called niladically", this);
   }
   public Obj call(Value w) {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called monadically", this, w);
+    throw new IncorrectArgsException("function "+toString()+" called monadically", this, w);
   }
   public Obj call(Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " function "+toString()+" called dyadically", this, a);
+    throw new IncorrectArgsException("function "+toString()+" called dyadically", this, a);
   }
   public Obj callInv(Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);

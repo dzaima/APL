@@ -7,8 +7,7 @@ import APL.types.dimensions.DimMMop;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   public ReduceBuiltin() {
-    super("/");
-    valid = 0x010;
+    super("/", 0x010);
   }
   
   @Override

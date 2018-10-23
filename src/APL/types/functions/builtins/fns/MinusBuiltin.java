@@ -6,8 +6,7 @@ import APL.types.functions.Builtin;
 
 public class MinusBuiltin extends Builtin {
   public MinusBuiltin() {
-    super("-");
-    valid = 0x011;
+    super("-", 0x011);
   }
   
   public Obj call(Value w) {

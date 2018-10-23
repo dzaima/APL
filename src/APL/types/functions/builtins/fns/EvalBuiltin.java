@@ -7,9 +7,7 @@ import APL.types.functions.Builtin;
 
 public class EvalBuiltin extends Builtin {
   public EvalBuiltin(Scope sc) {
-    super("⍎");
-    valid = 0x001;
-    this.sc = sc;
+    super("⍎", 0x001, sc);
   }
   
   public Obj call(Value w) {

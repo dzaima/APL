@@ -5,8 +5,7 @@ import APL.types.functions.Builtin;
 
 public class FloorBuiltin extends Builtin {
   public FloorBuiltin() {
-    super("⌊");
-    valid = 0x11;
+    super("⌊", 0x011);
   }
   public Obj call(Value w) {
     return numChr(Num::floor, Char::lower, w);

@@ -5,10 +5,18 @@ import APL.types.*;
 import APL.*;
 
 @SuppressWarnings("UnusedParameters")
-public class Mop extends Fun {
-  protected Mop(String repr) {
+public class Mop extends Scopeable {
+  public final int valid;
+  
+  protected Mop(String repr, int valid, Scope sc) {
+    super(sc);
+    this.valid = valid;
     this.repr = repr;
-    this.valid = 0x000;
+  }
+  protected Mop(String repr, int valid) {
+    super(null);
+    this.valid = valid;
+    this.repr = repr;
   }
   
   @Override
@@ -20,13 +28,13 @@ public class Mop extends Fun {
     return new DerivedMop(repr, aa, this, valid);
   }
   public Obj call(Obj f) {
-    throw new IncorrectArgsException(htype() + " derived mop called niladically", this);
+    throw new IncorrectArgsException(" derived mop called niladically", this);
   }
   public Obj call(Obj f, Value w) {
-    throw new IncorrectArgsException(htype() + " derived mop called monadically with " + w, this, w);
+    throw new IncorrectArgsException(" derived mop called monadically with " + w, this, w);
   }
   public Obj call(Obj f, Value a, Value w) {
-    throw new IncorrectArgsException(htype() + " derived mop called dyadically", this, a);
+    throw new IncorrectArgsException(" derived mop called dyadically", this, a);
   }
   public Obj callInv(Obj f, Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);

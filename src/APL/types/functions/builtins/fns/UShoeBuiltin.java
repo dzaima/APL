@@ -7,8 +7,7 @@ import java.util.*;
 
 public class UShoeBuiltin extends Builtin {
   public UShoeBuiltin() {
-    super("∩");
-    valid = 0x010;
+    super("∩", 0x010);
   }
   
   public Obj call(Value a, Value w) {

@@ -7,9 +7,7 @@ import APL.types.functions.builtins.mops.EachBuiltin;
 
 public class RShoeUBBuiltin extends Builtin {
   public RShoeUBBuiltin(Scope sc) {
-    super("⊇");
-    valid = 0x011;
-    this.sc = sc;
+    super("⊇", 0x011, sc);
   }
   
   public Obj call(Value w) {

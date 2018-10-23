@@ -6,8 +6,7 @@ import APL.types.functions.Builtin;
 
 public class ReverseBuiltin extends Builtin implements DimMFn {
   public ReverseBuiltin() {
-    super("⌽");
-    valid = 0x001;
+    super("⌽", 0x001);
   }
   @Override
   public Obj call(Value w, int dim) {

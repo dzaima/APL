@@ -10,7 +10,7 @@ public class DervDimMop extends Mop {
   private int dim;
   
   public DervDimMop(Mop f, Integer dim, Scope sc) {
-    super(f.repr+"["+dim+"]");
+    super(f.repr+"["+dim+"]", f.valid, sc);
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;

@@ -9,29 +9,26 @@ import static APL.Main.*;
 
 public class Dmop extends Mop {
   private final Token token;
-  private final Scope psc;
   Dmop(Token t, Scope sc) {
-    super(t.toRepr());
+    super(t.toRepr(), 0x011, sc);
     token = t;
-    psc = sc;
-    valid = 0x011;
   }
   public Obj call(Obj aa, Value w) {
     printdbg("dmop call", w);
-    sc = new Scope(psc);
-    sc.set("⍶", aa);
-    sc.set("⍺", new Variable(sc, "⍺"));
-    sc.set("⍵", w);
-    return execLines(token, sc);
+    Scope nsc = new Scope(sc);
+    nsc.set("⍶", aa);
+    nsc.set("⍺", new Variable(nsc, "⍺"));
+    nsc.set("⍵", w);
+    return execLines(token, nsc);
   }
   public Obj call(Obj aa, Value a, Value w) {
     printdbg("dmop call", a, w);
-    sc = new Scope(psc);
-    sc.set("⍶", aa);
-    sc.set("⍺", a);
-    sc.set("⍵", w);
-    sc.alphaDefined = true;
-    return execLines(token, sc);
+    Scope nsc = new Scope(sc);
+    nsc.set("⍶", aa);
+    nsc.set("⍺", a);
+    nsc.set("⍵", w);
+    nsc.alphaDefined = true;
+    return execLines(token, nsc);
   }
   public String toString() {
     return token.toRepr();

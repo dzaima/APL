@@ -6,8 +6,7 @@ public class DerivedMop extends Builtin {
   private final Obj aa;
   private final Mop op;
   DerivedMop(String s, Obj aa, Mop op, int valid) {
-    super(s);
-    this.valid = valid;
+    super(s, valid);
     this.aa = aa;
     this.op = op;
     token = op.token;

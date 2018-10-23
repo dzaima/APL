@@ -10,6 +10,7 @@ public class Atop extends Fun {
   private final Obj g;
   private final Fun h;
   public Atop(Obj g, Fun h) {
+    super(0x011);
     this.g = g;
     this.h = h;
   }

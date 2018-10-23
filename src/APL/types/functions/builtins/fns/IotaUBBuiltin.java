@@ -11,9 +11,7 @@ import java.util.ArrayList;
 public class IotaUBBuiltin extends Builtin {
   private static final Fun fn = new ReduceBuiltin().derive(new CeilingBuiltin());
   public IotaUBBuiltin(Scope sc) {
-    super("⍸");
-    valid = 0x011;
-    this.sc = sc;
+    super("⍸", 0x011, sc);
   }
   
   public Obj call(Value w) {

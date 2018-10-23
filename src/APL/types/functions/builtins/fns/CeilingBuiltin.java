@@ -5,8 +5,7 @@ import APL.types.functions.Builtin;
 
 public class CeilingBuiltin extends Builtin {
   public CeilingBuiltin() {
-    super("⌈");
-    valid = 0x11;
+    super("⌈", 0x011);
   }  public Obj call(Value w) {
     return numChr(Num::ceil, Char::upper, w);
   }

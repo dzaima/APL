@@ -8,8 +8,7 @@ import java.util.Arrays;
 
 public class ReplicateBuiltin extends Builtin {
   public ReplicateBuiltin() {
-    super("⌿");
-    valid = 0x010;
+    super("⌿", 0x010);
   }
   
   public Obj call(Value a, Value w) {

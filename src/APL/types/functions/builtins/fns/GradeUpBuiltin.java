@@ -6,9 +6,7 @@ import APL.types.functions.Builtin;
 
 public class GradeUpBuiltin extends Builtin {
   public GradeUpBuiltin(Scope sc) {
-    super("⍋");
-    valid = 0x001;
-    this.sc = sc;
+    super("⍋", 0x001, sc);
   }
   
   public Obj call(Value w) {

@@ -6,8 +6,7 @@ import APL.types.functions.Dop;
 
 public class JotBuiltin extends Dop {
   public JotBuiltin() {
-    super("∘");
-    valid = 0x011;
+    super("∘", 0x011);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     if (ww instanceof Fun) {

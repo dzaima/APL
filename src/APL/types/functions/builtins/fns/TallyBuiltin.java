@@ -5,8 +5,7 @@ import APL.types.functions.Builtin;
 
 public class TallyBuiltin extends Builtin {
   public TallyBuiltin() {
-    super("≢");
-    valid = 0x011;
+    super("≢", 0x011);
   }
   public Obj call(Value w) {
     if (w.scalar()) return Num.ONE;

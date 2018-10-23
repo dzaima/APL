@@ -8,8 +8,7 @@ import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
   public RhoBuiltin() {
-    super("⍴");
-    valid = 0x011;
+    super("⍴", 0x011);
   }
   public Obj call(Value w) {
 

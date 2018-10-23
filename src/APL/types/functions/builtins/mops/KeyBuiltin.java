@@ -9,9 +9,7 @@ import java.util.*;
 
 public class KeyBuiltin extends Mop {
   public KeyBuiltin(Scope sc) {
-    super("⌸");
-    valid = 0x011;
-    this.sc = sc;
+    super("⌸", 0x011, sc);
   }
   
   public Obj call(Obj aa, Value w) {

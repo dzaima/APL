@@ -10,9 +10,7 @@ import java.util.Arrays;
 
 public class UpArrowBuiltin extends Builtin {
   public UpArrowBuiltin(Scope sc) {
-    super("↑");
-    valid = 0x011;
-    this.sc = sc;
+    super("↑", 0x011, sc);
   }
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
     int IO = ((Value)sc.get("⎕IO")).toInt(this);

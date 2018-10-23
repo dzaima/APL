@@ -4,11 +4,9 @@ import APL.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-public class NandBuiltin extends Builtin {
+public class NandBuiltin extends Builtin { // TODO monadic
   public NandBuiltin(Scope sc) {
-    super("⍲");
-    valid = 0x010;
-    this.sc = sc;
+    super("⍲", 0x010, sc);
   }
   
   public Obj call(Value a0, Value w0) {

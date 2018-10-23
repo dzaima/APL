@@ -20,7 +20,7 @@ abstract public class Value extends Obj {
       rank = 0;
     }
   }
-  public int[] toIntArr(Fun caller) {
+  public int[] toIntArr(Obj caller) {
     if (rank > 1) throw new RankError("Expected rank <= 1, got " + rank, caller, this);
     int[] res = new int[ia];
     for (int i = 0; i < arr.length; i++) {
@@ -28,7 +28,7 @@ abstract public class Value extends Obj {
     }
     return res;
   }
-  public int toInt(Fun caller) {
+  public int toInt(Obj caller) {
     if (!(this instanceof Num)) throw new DomainError("Expected a number, got "+ humanType(true), caller, this);
     Num n = (Num)this;
     return n.intValue();
