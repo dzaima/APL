@@ -3,7 +3,7 @@ rm APLApp/code/APL8.jar
 cd APL
 rm -r src/build/APL
 cd src
-shopt -s globstar
+mkdir build
 javac -Xmaxerrs 1000 --release 8 -d ./build $(find APL -name '*.java')
 cd build
 jar cvfe APL.jar APL.Main * > /dev/null
