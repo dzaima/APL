@@ -8,4 +8,5 @@ javac -Xmaxerrs 1000 --release 8 -d ./build APL/**/*.java
 cd build
 jar cvfe APL.jar APL.Main * > /dev/null
 cp APL.jar ../../../APLApp/code/APL8.jar
+mkdir -p ../../../../APLP5/code
 mv APL.jar ../../../../APLP5/code/APL8.jar
