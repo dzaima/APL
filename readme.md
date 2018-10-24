@@ -2,6 +2,18 @@
 
 `./build` to build, `./REPL` to start a REPL.
 
+# Processing integration
+
+[docs](https://github.com/dzaima/APL/blob/master/APLP5/docs)
+
+1. run `convert.py` in the folder `app`
+2. run `APLP5` in Processing
+
+To choose what file to run as APL, in `void settings` change the `args` array (or export & pass an actual argument) with the filename. Some examples are given in the folder `data`.
+
+
+# Android calculator-ish app
+
 Uses The fonts [APL385](http://apl385.com/fonts/index.htm) and [DejaVu Sans Mono](https://dejavu-fonts.github.io).
 
 To build the APL Android app, 
