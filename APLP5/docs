@@ -2,7 +2,7 @@ P5
   setup w h   called once before starting the draw loop
   draw w h    called every frame
   size←w h    set window size (do this outside of setup/draw!)
-  cursor type set the cursor to the specified type (one of cross, hand, arrow, move, text & wait)
+  cursor type set the cursor to the specified type - string of cross, hand, arrow, move, text & wait, or ⍬ for no cursor, or an APLImg for a custom one
 
       scroll|sc  dir: called when mouse wheel is scrolled. ⍵ positive = up/away from user, negative = down/towards
     scrollup|scu dir: called when direction of scroll is positive, otherwise as above

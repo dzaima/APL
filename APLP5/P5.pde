@@ -27,7 +27,9 @@ class P5 extends APLMap {
       }
       
       case "cursor": {
-        if (((Value) v).arr[0] instanceof Char) {
+        if (((Value) v).ia == 0) {
+          noCursor();
+        } else if (((Value) v).arr[0] instanceof Char) {
           String name = ((Value) v).fromAPL();
           switch (name.toLowerCase()) {
             case "cross": cursor(CROSS); break;
@@ -37,9 +39,9 @@ class P5 extends APLMap {
             case "text": cursor(TEXT); break;
             case "wait": cursor(WAIT); break;
           }
-        } else {
-          // TODO PImage
-        }
+        } else if (v instanceof APLImg) {
+          cursor(((APLImg)v).img);
+        } else throw new DomainError("Can't set cursor to "+v);
         break;
       }
       default: throw new DomainError("setting non-existing key "+s+" for PS");
