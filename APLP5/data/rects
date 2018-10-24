@@ -1,0 +1,49 @@
+⎕IO←0
+P5.size ← 500 500 ⍝ P5.dw (P5.dh-50)
+G ← P5.G
+rs ← ⍬
+click ← 0
+pin ← 0
+LM MM RM ← P5.lm P5.mm P5.rm
+held ← ⍬
+P5.draw ← {
+  G.bg '222'
+  cin ← anyin P5.mpos
+  1 0≡cin pin: P5.cursor ← 'hand'
+  0 1≡cin pin: P5.cursor ← 'arrow'
+  pin⊢← cin
+  G.rect rs
+  G.fill←'d2'
+  LM.p ∧ ~click: G.rect LM.s , P5.mpos
+  MM.p ∧ ⍬≢held: rs⊢← ({⊂ {⍵+4⍴P5.mpos-P5.pmpos} @ (⍳4) ⊃ ⍵} @ held) rs
+}
+sort ← { , ⍉↑ <¨ ↓⍉ 2 2⍴ ⍵ }
+
+MM.c ← {
+  anyin P5.mpos:← held⊢← ⊃⌽ ⍸ P5.mpos∘in ¨ rs
+  held⊢← ⍬
+}
+LM.c ← {
+  click⊢← anyin ⍵: {
+    i ← ⊃⌽ ⍸ ⍵∘in ¨ rs
+    rs[i] ← ((256⊥255 , ?3⌿255) @ 4) i⊃rs
+  }⍵
+}
+LM.r ← {
+  ~click: {
+     ∧ 20 < +/ | LM.s-P5.mpos: rs,←⊂ (sort LM.s , P5.mpos), P5.col 'd2'
+  }⍬
+}
+RM.c ← {
+  anyin ⍵: {
+    i ← ⊃⌽ ⍸ ⍵∘in ¨ rs
+    rs⊢← (i ≠ ⍳≢rs) ⌿ rs
+  }⍵
+}
+
+anyin ← {∨ ⍵∘in ¨ rs}
+in ← {
+  x y ← ⍺
+  sx sy ex ey ← 4↑⍵
+  (x > sx) ∧ (x < ex) ∧ (y > sy) ∧ (y < ey)
+}

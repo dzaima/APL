@@ -1,0 +1,19 @@
+P5.size ← 500 500
+G ← P5.G
+all ← ⍬
+ln ← ⍬
+P5.draw ← {
+  G.bg 'd2'
+  G.stroke ← 'f00'
+  P5.lm.p: ln,←P5.mpos
+  G.fill ← '6'
+  3 G.line all,⊂ln
+}
+P5.LM.r ← {
+  all,←⊂ln
+  ln⊢← ⍬
+}
+P5.kp ← {
+  "Escape"≡⍵: P5.exit 0
+  (×≢all) ∧ 1 0 0 0 0 'z'≡⍺,⍵: all⊢←¯1↓all
+}
