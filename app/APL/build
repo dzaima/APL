@@ -4,4 +4,4 @@ rm -rf src/build/APL
 cd src
 mkdir -p build
 shopt -s globstar
-javac -Xmaxerrs 1000 -d ./build APL/**/*.java
+javac -Xmaxerrs 1000 -d ./build $(find APL -name '*.java')

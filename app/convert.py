@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # horrible code that shouldn't exist
 from subprocess import call
 import glob
