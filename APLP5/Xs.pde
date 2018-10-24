@@ -78,6 +78,13 @@ float[][] f2D(Value v) {
   }
   return res;
 }
+float[] f1D(Value v) {
+  float[] res = new float[v.ia];
+  for (int i = 0; i < res.length; i++) {
+    res[i] = (float)((Num)(v.arr[i])).doubleValue();
+  }
+  return res;
+}
 
 Arr arr (int... ia) {
   return Main.toAPL(ia);
@@ -86,4 +93,15 @@ Arr arr (boolean... ia) {
   Value[] vs = new Value[ia.length]; // TODO make Main.toBoolArr
   for (int i = 0; i < ia.length; i++) vs[i] = ia[i]? Num.ONE : Num.ZERO;
   return new Arr(vs);
+}
+
+Arr APL(byte[] a) {
+  Value[] res = new Value[a.length];
+  for (int i = 0; i < a.length; i++) res[i] = new Num(a[i]&0xff);
+  return new Arr(res);
+}
+Arr APL(String[] a) {
+  Value[] res = new Value[a.length];
+  for (int i = 0; i < a.length; i++) res[i] = Main.toAPL(a[i], null);
+  return new Arr(res);
 }

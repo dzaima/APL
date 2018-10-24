@@ -81,6 +81,24 @@ class P5 extends APLMap {
           return null;
         }
       };
+      
+      // files
+      
+      case "bytes": return new Fun(0x001) {
+        public Obj call(Value w) {
+          return APL(loadBytes(w.fromAPL()));
+        }
+      };
+      case "lines": return new Fun(0x001) {
+        public Obj call(Value w) {
+          return APL(loadStrings(w.fromAPL()));
+        }
+      };
+      case "image": return new Fun(0x001) {
+        public Obj call(Value w) {
+          return new APLImg(loadImage(w.fromAPL()));
+        }
+      };
       default: return NULL;
     }
   }

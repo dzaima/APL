@@ -47,12 +47,28 @@ P5
      pressed|p   : is this button pressed
     ppressed|pp  : was this button pressed last frame
   
+  
+  bytes path: returns an array of bytes in file at the specified path
+  lines path: returns an array of lines of file at the specified path
+  image path: returns an APLImg object with the image at the specified path
+  
+  APLImg:
+     width|w: get the width of the image
+    height|h: get the height of the image
+   
   G:
     fill  ←col: set the fill color
     stroke←col: set the stroke color
     textsize←size: set text size
     bg|background col: color the canvas to the color
     x y text 'text': draw that text at (x;y)
+    
+    x y       img|image Img: draw the image at the specified coordinates
+    x y x2 y2 img|image Img: draw the image between the specified coordinates
+    x y scale img|image Img: draw the image with the top-left corner being (x; y) with the given scale (0 = 0%, 1 = 100%)
+    
+      textalign|ta h: set horizontal text-aligning to either left, right or center
+    v textalign|ta h: set horizontal text-aligning to either left, right or center & vertical to bottom, center or top
     
     Further on, "pts" arguments can either be number vector or number vector vectors, the latter scattering the operation for each. aka ⍥1, when that gets implemented
     
@@ -70,5 +86,5 @@ P5
       center:  centerX centerY w h←ptr
       radius:  center←pts[1 2]⋄w h←pts[3 4]×2
     point|pt pts: draw single pixels at (x; y) pairs of the array
-    [weight] line|ln vertexes: connect the points - every 2 items in ⍵; ⍵ is a number vector; weight default is 1; WARNING this does P5.G.fill ← ⍬
+    [weight] line|ln pts: connect the points - every 2 items in ⍵; weight default is 1; WARNING this does P5.G.fill ← ⍬
     [weight] loop pts: draw closed loop(s) of the points of the array; weight default is 1

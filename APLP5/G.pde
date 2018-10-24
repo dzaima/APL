@@ -133,6 +133,22 @@ class APLGraphics extends APLMap {
           }
         }
       };
+      case "img": case "image": return new Fun(0x010) {
+        public Obj call(Value a, Value w) {
+          float[] fa = f1D(a);
+          PImage img = ((APLImg) w).img;
+          if (fa.length == 2) g.image(img, fa[0], fa[1]);
+          else if (fa.length == 3) {
+            g.imageMode(CORNER);
+            g.image(img, fa[0], fa[1], fa[2]*img.width, fa[2]*img.height);
+          }
+          else if (fa.length == 4) {
+            g.imageMode(CORNERS);
+            g.image(img, fa[0], fa[1], fa[2], fa[3]);
+          }
+          return w;
+        }
+      };
       default: return NULL;
     }
   }
