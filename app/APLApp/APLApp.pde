@@ -1,4 +1,3 @@
-import java.util.LinkedList;
 import java.util.Arrays;
 
 private static final int[] index = {0x00ffffff, 0xFF134ADB, 0xFF282828, 0xFF353535};
