@@ -2,7 +2,7 @@ LL<Point> points = new LL<Point>();
 PQ<Double, Point> pq = new PQ<Double, Point>();
 double[] b;
 Fun fn;
-int pts = 20000;
+int pts = 1000;
 double scale = 10;
 
 
@@ -38,26 +38,24 @@ void functionGrapher() {
   
   if (!sInR) add(b[0], points.start);
   if (!eInR) add(b[1], points.last());
-  int millis = millis(); // TODO make work if program has been running longer than 24 days
-  while (true) {
-    PQ.Item bg = pq.biggest(); // can't be PQ<Double, Point>.Item because Processing :|
-    if (bg != null && ((Double) bg.m) > b[2]) {
-      Point p = (Point) bg.t;
+  long nt = System.nanoTime();
+  int ptsadded = 0;
+  while (pq.size() > 0) {
+    PQNode<Double, Point> bg = pq.biggest();
+    if (((Double) bg.m) > b[2]) {
+      Point p = (Point) bg.v;
       add((p.x + p.pnode.next.v.x)/2,  p.pnode);
+      ptsadded++;
     } else break;
-    if (millis()-millis > 5) break;
+    if (System.nanoTime()-nt > 5E6) break;
   }
-  println("sz", pq.size(), points.size);
+  //println("sz", pq.size(), points.size, ptsadded*1f/(System.nanoTime()-nt)*1E9, frameRate);
   
-  while (true) {
-    PQ.Item sm = pq.smallest(); // can't be PQ<Double, Point>.Item because Processing :|
-    if (sm != null) {
-      Point p = (Point) sm.t;
-      if ((Double) sm.m < b[2]/4) {
-        remove(p.pnode);
-      } else break;
-    }
-    else break;
+  while (pq.size() > 0) {
+    PQNode<Double, Point> sm = pq.smallest(); // can't be PQ<Double, Point>.Item because Processing :|
+    if ((Double) sm.m < b[2]/4) {
+      remove(sm.v.pnode);
+    } else break;
   }
   
   noFill();
@@ -150,49 +148,6 @@ void bounds() {
     (width/fullS)/scale / pts,
   };
 }
-class PQ<M extends Comparable, T> {
-  LL<Item> items = new LL<Item>();
-  //Node<Item> add(M m, T t) {
-  //  Node<Item> n = items.first();
-  //  while (n != items.end && n.v.m.compareTo(m) < 0) n = n.next;
-  //  Item item = new Item(m, t);
-  //  item.n = n.addBefore(item);
-  //  return item.n;
-  //}
-  LLNode<Item> add(M m, T t) {
-    LLNode<Item> n = items.first();
-    while (n != items.end && n.v.m.compareTo(m) < 0) n = n.next;
-    Item item = new Item(m, t);
-    item.n = n.addBefore(item);
-    return item.n;
-  }
-  Item biggest() {
-    return items.last().v;
-  }
-  Item smallest() {
-    return items.first().v;
-  }
-  class Item {
-    M m;
-    T t;
-    LLNode<Item> n;
-    Item(M m, T t) {
-      this.m = m;
-      this.t = t;
-    }
-    void remove() {
-      n.remove();
-      if(rmd)throw null;rmd=true;
-    }
-    boolean rmd;
-  }
-  int size() {
-    return items.size;
-  }
-  void clear() {
-    items.clear();
-  }
-}
 
 
 class LL<T> {
@@ -276,9 +231,12 @@ class Point {
   double x;
   Double y;
   LLNode<Point> pnode;
-  LLNode pqr;
+  PQNode pqr;
   Point (double x, Double y) {
     this.x = x;
     this.y = y;
+  }
+  String toString() {
+    return x+"";
   }
 }
