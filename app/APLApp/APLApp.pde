@@ -244,7 +244,7 @@ void draw() {
   float cy = vC-(height-mouseY)*1f/h-1;
   
   if (mousePressed && !pmousePressed) {
-    if (x >= 0 && x <= hC && y >= 0 && y <= vC)
+    if (x >= 0 && x < hC && y >= 0 && y < vC)
       started = chars[y][x];
     else started = null;
   }
