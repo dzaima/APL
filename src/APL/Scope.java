@@ -55,6 +55,7 @@ public class Scope {
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕SCOPE": return new ScopeViewer(this);
+        case "⎕UCS": return new UCS(this);
       }
     }
     Obj f = vars.get(name);
@@ -148,6 +149,15 @@ public class Scope {
     public Obj call(Value w) {
       sc.set(w.fromAPL(), null);
       return w;
+    }
+  }
+  static class UCS extends Builtin {
+    UCS(Scope sc) {
+      super("⎕UCS", 0x001, sc);
+    }
+    
+    public Obj call(Value w) {
+      return numChr(c->new Char((char)c.intValue()), c->new Num(c.chr), w);
     }
   }
   

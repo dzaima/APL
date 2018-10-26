@@ -141,7 +141,7 @@ class Tokenizer {
       } else if (c == '⍝') {
         i++;
         while (i < len && s.charAt(i) != '\n') i++;
-      } else if (c == ' ') {i++;} else {
+      } else if (c == ' ' || c == '\t') {i++;} else {
         Main.colorprint("warning: unknown token `"+c+"`", 206);
         i++;
       }
