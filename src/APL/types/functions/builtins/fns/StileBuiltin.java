@@ -22,7 +22,7 @@ public class StileBuiltin extends Builtin {
     public void call(double[] res, double a, double[] w) {
       for (int i = 0; i < w.length; i++) {
         double c = w[i] % a;
-        if (c < 0) res[i] = c + w[i];
+        if (c < 0) res[i] = c + a;
         else res[i] = c;
       }
     }
@@ -30,14 +30,14 @@ public class StileBuiltin extends Builtin {
       if (w > 0) for (int i = 0; i < a.length; i++) res[i] = w % a[i];
       else       for (int i = 0; i < a.length; i++) {
         double c = w % a[i];
-        if (c < 0) res[i] = c + w;
+        if (c < 0) res[i] = c + a[i];
         else res[i] = c;
       }
     }
     public void call(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) {
         double c = w[i] % a[i];
-        if (c < 0) res[i] = c + w[i];
+        if (c < 0) res[i] = c + a[i];
         else res[i] = c;
       }
     }
