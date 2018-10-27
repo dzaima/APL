@@ -153,45 +153,43 @@ public abstract class Fun extends Scopeable {
   }
   
   public interface DyNumVecFun {
-    Value call(Num a, Num w);
-    default Arr call(Num a, DoubleArr w) {
-      Value[] res = new Value[w.ia];
-      double[] vals = w.arr;
-      for (int i = 0; i < vals.length; i++) {
-        res[i] = call(a, new Num(vals[i]));
+    double call(double a, double w);
+    default void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) {
+        res[i] = call(a, w[i]);
       }
-      return new HArr(res, w.shape);
     }
-    default Arr call(DoubleArr a, Num w) {
-      Value[] res = new Value[a.ia];
-      double[] vals = a.arr;
-      for (int i = 0; i < vals.length; i++) {
-        res[i] = call(new Num(vals[i]), w);
+    default void call(double[] res, double[] a, double w) {
+      for (int i = 0; i < a.length; i++) {
+        res[i] = call(a[i], w);
       }
-      return new HArr(res, w.shape);
     }
-    default Arr call(DoubleArr a, DoubleArr w) {
-      Value[] res = new Value[a.ia];
-      double[] av = a.arr;
-      double[] wv = w.arr;
-      for (int i = 0; i < a.ia; i++) {
-        res[i] = call(new Num(av[i]), new Num(wv[i]));
+    default void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) {
+        res[i] = call(a[i], w[i]);
       }
-      return new HArr(res, w.shape);
     }
   }
   protected Value scalarNum(DyNumVecFun f, Value a, Value w) {
-    if (a instanceof DoubleArr && w instanceof Num      ) return f.call((DoubleArr) a, (Num      ) w);
-    if (a instanceof Num       && w instanceof DoubleArr) return f.call((Num      ) a, (DoubleArr) w);
+    if (a instanceof DoubleArr && w instanceof Num) {
+      double[] res = new double[a.ia];
+      f.call(res, a.asDoubleArr(), w.asDouble());
+      return new DoubleArr(res, a.shape);
+    }
+    if (a instanceof Num && w instanceof DoubleArr) {
+      double[] res = new double[w.ia];
+      f.call(res, a.asDouble(), w.asDoubleArr());
+      return new DoubleArr(res, w.shape);
+    }
     if (a instanceof DoubleArr && w instanceof DoubleArr) {
       if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes of ⍺ & ⍵ don't match", w);
-      return f.call((DoubleArr) a, (DoubleArr) w);
+      double[] res = new double[w.ia];
+      f.call(res, a.asDoubleArr(), w.asDoubleArr());
+      return new DoubleArr(res, a.shape);
     }
     if (a instanceof Primitive) {
       if (w instanceof Primitive) {
-        if (!(w instanceof Num)) throw new DomainError("number-only scalar function called with ⍵ "+w.humanType(false), w);
-        if (!(a instanceof Num)) throw new DomainError("number-only scalar function called with ⍺ "+a.humanType(false), a);
-        return f.call((Num)a, (Num)w);
+        return new Num(f.call(a.asDouble(), w.asDouble()));
       } else {
         Arr ow = (Arr) w;
         Value[] arr = new Value[ow.ia];

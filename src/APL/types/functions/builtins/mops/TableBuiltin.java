@@ -16,8 +16,7 @@ public class TableBuiltin extends Mop {
     int i = 0;
     for (Value na : a) {
       for (Value nw : w) {
-        arr[i] = (Value)((Fun)f).call(na, nw);
-        i++;
+        arr[i++] = (Value)((Fun)f).call(na, nw);
       }
     }
     if (shape.length == 0) return arr[0];

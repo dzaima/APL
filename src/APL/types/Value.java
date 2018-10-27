@@ -116,7 +116,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     
     @Override
     public Value next() {
-      return get(c++);
+      return vs != null? vs[c++] : get(c++);
     }
   }
   

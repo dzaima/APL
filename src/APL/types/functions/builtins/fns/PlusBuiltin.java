@@ -19,23 +19,23 @@ public class PlusBuiltin extends Builtin {
   }
   
   static class DNf implements DyNumVecFun {
-    public Value call(Num a, Num w) {
-      return a.plus(w);
+    public double call(double a, double w) {
+      return a+w;
     }
-    public Arr call(Num a, DoubleArr w) {
-      double[] res = new double[w.ia]; double   av = a.num; double[] wv = w.arr;
-      for (int i = 0; i < w.ia; i++) res[i] = av   +wv[i];
-      return new DoubleArr(res, w.shape);
+    public void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) {
+        res[i] = a+w[i];
+      }
     }
-    public Arr call(DoubleArr a, Num w) {
-      double[] res = new double[a.ia]; double[] av = a.arr; double   wv = w.num;
-      for (int i = 0; i < a.ia; i++) res[i] = av[i]+wv   ;
-      return new DoubleArr(res, a.shape);
+    public void call(double[] res, double[] a, double w) {
+      for (int i = 0; i < a.length; i++) {
+        res[i] = a[i]+w;
+      }
     }
-    public Arr call(DoubleArr a, DoubleArr w) {
-      double[] res = new double[a.ia]; double[] av = a.arr; double[] wv = w.arr;
-      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv[i];
-      return new DoubleArr(res, a.shape);
+    public void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) {
+        res[i] = a[i]+w[i];
+      }
     }
   }
   private static DNf DNF = new DNf();
