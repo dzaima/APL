@@ -15,16 +15,31 @@ public class StileBuiltin extends Builtin {
   
   static class DNf implements DyNumVecFun {
     public double call(double a, double w) {
-      return w % a;
+      double c = w % a;
+      if (c < 0) return c + w;
+      return c;
     }
     public void call(double[] res, double a, double[] w) {
-      for (int i = 0; i < w.length; i++) res[i] = w[i] % a;
+      for (int i = 0; i < w.length; i++) {
+        double c = w[i] % a;
+        if (c < 0) res[i] = c + w[i];
+        else res[i] = c;
+      }
     }
     public void call(double[] res, double[] a, double w) {
-      for (int i = 0; i < a.length; i++) res[i] = w % a[i];
+      if (w > 0) for (int i = 0; i < a.length; i++) res[i] = w % a[i];
+      else       for (int i = 0; i < a.length; i++) {
+        double c = w % a[i];
+        if (c < 0) res[i] = c + w;
+        else res[i] = c;
+      }
     }
     public void call(double[] res, double[] a, double[] w) {
-      for (int i = 0; i < a.length; i++) res[i] = w[i] % a[i];
+      for (int i = 0; i < a.length; i++) {
+        double c = w[i] % a[i];
+        if (c < 0) res[i] = c + w[i];
+        else res[i] = c;
+      }
     }
   }
   private static DNf DNF = new DNf();
