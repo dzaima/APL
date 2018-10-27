@@ -62,25 +62,25 @@ public class Num extends Primitive {
     return new Num(d);
   }
   
-  public static Num gcd(Num[] nums) {
-    if (nums.length == 0) return Num.ZERO;
-    double res = nums[0].num;
+  public static double gcd(double... nums) {
+    if (nums.length == 0) return 0;
+    double res = nums[0];
     for (int i = 1; i < nums.length; i++) {
-      double b = nums[i].num;
+      double b = nums[i];
       while (b != 0) {
         double t = b;
         b = res % b;
         res = t;
       }
     }
-    return new Num(res);
+    return res;
   }
   
-  public static Num lcm(Num[] nums) {
-    if (nums.length == 0) return Num.ONE;
-    double res = nums[0].num;
+  public static double lcm(double... nums) {
+    if (nums.length == 0) return 1;
+    double res = nums[0];
     for (int i = 1; i < nums.length; i++) {
-      double a = nums[i].num;
+      double a = nums[i];
       double b = res;
       while (b != 0) {
         double t = b;
@@ -88,10 +88,10 @@ public class Num extends Primitive {
         a = t;
       }
       if (a == 0) res = 0;
-      else res = (nums[i].num * res) / a;
-      if (res == 0) return Num.ZERO;
+      else res = (nums[i] * res) / a;
+      if (res == 0) return 0;
     }
-    return new Num(res);
+    return res;
   }
   
   public Num conjugate() {
@@ -115,7 +115,7 @@ public class Num extends Primitive {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
-  public Num fact(Fun f) {
+  public Num fact() {
     if (num > 170) return Num.INFINITY;
     if (num % 1 != 0) throw new DomainError("factorial of non-integer", this);
     if (num < 0) throw new DomainError("factorial of negative number", this);
@@ -123,7 +123,7 @@ public class Num extends Primitive {
     return new Num(res);
   }
   
-  public Num binomial(Num w, Fun f) {
+  public Num binomial(Num w) {
     if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", this);
     if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", w);
     if (w.num > num) return Num.ZERO;

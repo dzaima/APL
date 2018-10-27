@@ -142,7 +142,7 @@ public class Scope {
       return call(Num.ONE, w);
     }
     public Obj call(Value a, Value w) {
-      int n = ((Num) a).asInt();
+      int n = a.asInt();
       long start = System.nanoTime();
       for (int i = 0; i < n; i++) Main.exec(w.asString(), sc);
       long end = System.nanoTime();

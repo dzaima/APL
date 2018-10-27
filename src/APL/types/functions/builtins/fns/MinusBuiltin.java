@@ -13,10 +13,8 @@ public class MinusBuiltin extends Builtin {
     public Value call(Num w) {
       return w.negate();
     }
-    public Arr call(DoubleArr a) {
-      double[] n = new double[a.ia];
-      for (int i = 0; i < a.ia; i++) n[i] = -a.arr[i];
-      return new DoubleArr(n, a.shape);
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = -a[i];
     }
   }
   private static Nf NF = new Nf();

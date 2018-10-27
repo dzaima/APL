@@ -29,7 +29,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return rank == 0;
   }
   public boolean primitive() {
-    return !(this instanceof HArr);
+    return this instanceof Primitive;
   }
   public Value first() {
     return get(0);
@@ -41,9 +41,9 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public int compareTo(Value v) {
     if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);
     if (this instanceof Char && v instanceof Char) return ((Char) this).compareTo((Char) v);
-    if (this instanceof Num && (   v instanceof Char ||    v instanceof HArr)) return -1;
-    if (   v instanceof Num && (this instanceof Char || this instanceof HArr)) return 1;
-    if ((this instanceof HArr || this instanceof Char) && (v instanceof HArr || v instanceof Char)) {
+    if (this instanceof Num && (   v instanceof Char ||    v instanceof Arr)) return -1;
+    if (   v instanceof Num && (this instanceof Char || this instanceof Arr)) return 1;
+    if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
       String s1 =   asString();
       String s2 = v.asString();
       System.out.println(s1);

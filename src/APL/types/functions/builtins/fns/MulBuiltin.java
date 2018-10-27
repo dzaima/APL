@@ -10,8 +10,17 @@ public class MulBuiltin extends Builtin {
     super("×", 0x011);
   }
   
+  static class Nf implements NumVecFun {
+    public Value call(Num w) {
+      return new Num(w.compareTo(Num.ZERO));
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = a[i]>0? 1 : a[i]<0? -1 : 0;
+    }
+  }
+  private static Nf NF = new Nf();
   public Obj call(Value w) {
-    return numChrMap(n -> new Num(n.compareTo(Num.ZERO)), c -> new Num(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
+    return numChrMap(NF, c -> new Num(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
   }
   
   static class DNf implements DyNumVecFun {
@@ -29,8 +38,8 @@ public class MulBuiltin extends Builtin {
     }
   }
   private static DNf DNF = new DNf();
-  public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+  public Obj call(Value a, Value w) {
+    return scalarNum(DNF, a, w);
   }
   
   public Obj callInvW(Value a, Value w) {
