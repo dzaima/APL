@@ -27,8 +27,9 @@ public class DTackBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     if (!(a instanceof Num)) throw new DomainError("non-scalar number base not implemented", a);
     if (!(w instanceof Num)) throw new DomainError("non-scalar number not implemented", w);
-    double base = ((Num) a).asDouble();
-    double num = ((Num) w).asDouble();
+    double base = a.asDouble();
+    double num = w.asDouble();
+    if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible");
     var res = new ArrayList<Double>();
     while (num > 0) {
       res.add(num%base);

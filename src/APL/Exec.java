@@ -109,7 +109,7 @@ class Exec {
       } else {
         if (arr != null) {
           if (arr.size() == 1) done.addFirst(arr.get(0));
-          else done.addFirst(new VarArr(arr));
+          else done.addFirst(VarArr.of(arr));
           update(false);
           arr = null;
         }
@@ -119,7 +119,7 @@ class Exec {
     }
     if (arr != null) {
       if (arr.size() == 1) done.addFirst(arr.get(0));
-      else done.addFirst(new VarArr(arr));
+      else done.addFirst(VarArr.of(arr));
     }
     update(true);
     
@@ -151,7 +151,7 @@ class Exec {
         var w = lastVal();
         var f = lastFun();
         var a = lastVal();
-        Main.lastExecutedFun = f;
+        Main.faulty = f;
         var res = f.call(a, w);
         if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addLast(res);
@@ -190,7 +190,7 @@ class Exec {
         if (Main.debug) printlvl("FN");
         var w = lastVal();
         var f = lastFun();
-        Main.lastExecutedFun = f;
+        Main.faulty = f;
         var res = f.call(w);
         if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addLast(res);
@@ -206,7 +206,7 @@ class Exec {
         var w = lastObj();
         var s = (SetBuiltin) done.removeLast(); // ←
         var a = done.removeLast(); // variable
-        Main.lastExecutedFun = s;
+        Main.faulty = s;
         done.addLast(s.call(a, w, false));
         continue;
       }
@@ -216,7 +216,7 @@ class Exec {
         var s = (SetBuiltin) done.removeLast(); // ←
         var f = lastFun();
         Obj a = done.removeLast(); // variable
-        Main.lastExecutedFun = f;
+        Main.faulty = f;
         done.addLast(s.call(f, a, w));
         continue;
       }

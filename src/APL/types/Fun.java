@@ -2,7 +2,7 @@ package APL.types;
 
 import APL.*;
 import APL.errors.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 import java.util.Arrays;
 
@@ -59,15 +59,27 @@ public abstract class Fun extends Scopeable {
   
   public interface NumVecFun {
     Value call(Num w);
+    default Arr call(DoubleArr a) {
+      Value[] res = new Value[a.ia];
+      for (int i = 0; i < a.ia; i++) res[i] = call(new Num(a.vals[i]));
+      return new HArr(res, a.shape);
+    }
   }
   public interface ChrVecFun {
     Value call(Char w);
+    default Arr call(ChrArr a) {
+      Value[] res = new Value[a.ia];
+      for (int i = 0; i < a.ia; i++) res[i] = call(new Char(a.s.charAt(i)));
+      return new HArr(res, a.shape);
+    }
   }
   public interface MapVecFun {
     Value call(APLMap w);
   }
   protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
     if (w instanceof Arr) {
+      if (w instanceof DoubleArr) return nf.call((DoubleArr) w);
+      if (w instanceof    ChrArr) return cf.call((ChrArr   ) w);
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
@@ -134,6 +146,71 @@ public abstract class Fun extends Scopeable {
         Value[] arr = new Value[oa.ia];
         for (int i = 0; i < oa.ia; i++) {
           arr[i] = scalar(f, oa.get(i), ow.get(i));
+        }
+        return new HArr(arr, oa.shape);
+      }
+    }
+  }
+  
+  public interface DyNumVecFun {
+    Value call(Num a, Num w);
+    default Arr call(Num a, DoubleArr w) {
+      Value[] res = new Value[w.ia];
+      double[] vals = w.vals;
+      for (int i = 0; i < vals.length; i++) {
+        res[i] = call(a, new Num(vals[i]));
+      }
+      return new HArr(res, w.shape);
+    }
+    default Arr call(DoubleArr a, Num w) {
+      Value[] res = new Value[a.ia];
+      double[] vals = a.vals;
+      for (int i = 0; i < vals.length; i++) {
+        res[i] = call(new Num(vals[i]), w);
+      }
+      return new HArr(res, w.shape);
+    }
+    default Arr call(DoubleArr a, DoubleArr w) {
+      Value[] res = new Value[a.ia];
+      double[] av = a.vals;
+      double[] wv = w.vals;
+      for (int i = 0; i < a.ia; i++) {
+        res[i] = call(new Num(av[i]), new Num(wv[i]));
+      }
+      return new HArr(res, w.shape);
+    }
+  }
+  protected Value scalarNum(DyNumVecFun f, Value a, Value w) {
+    if (a instanceof DoubleArr && w instanceof Num      ) return f.call((DoubleArr) a, (Num      ) w);
+    if (a instanceof Num       && w instanceof DoubleArr) return f.call((Num      ) a, (DoubleArr) w);
+    if (a instanceof DoubleArr && w instanceof DoubleArr) return f.call((DoubleArr) a, (DoubleArr) w);
+    if (a instanceof Primitive) {
+      if (w instanceof Primitive) {
+        return f.call((Num)a, (Num)w);
+      } else {
+        Arr ow = (Arr) w;
+        Value[] arr = new Value[ow.ia];
+        for (int i = 0; i < ow.ia; i++) {
+          arr[i] = scalarNum(f, a, ow.get(i));
+        }
+        return new HArr(arr, ow.shape);
+      }
+    } else {
+      if (w instanceof Primitive) {
+        Arr oa = (Arr) a;
+        Value[] arr = new Value[oa.ia];
+        for (int i = 0; i < oa.ia; i++) {
+          arr[i] = scalarNum(f, oa.get(i), w);
+        }
+        return new HArr(arr, oa.shape);
+      } else {
+        Arr oa = (Arr) a;
+        Arr ow = (Arr) w;
+        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(oa.shape) + " vs " + Main.formatAPL(ow.shape) + ")", w);
+        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(oa.shape) + " vs " + Main.formatAPL(ow.shape) + ")", w);
+        Value[] arr = new Value[oa.ia];
+        for (int i = 0; i < oa.ia; i++) {
+          arr[i] = scalarNum(f, oa.get(i), ow.get(i));
         }
         return new HArr(arr, oa.shape);
       }

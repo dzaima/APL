@@ -98,7 +98,6 @@ public abstract class Value extends Obj implements Iterable<Value> {
       Value[] vs = new Value[ia];
       for (int i = 0; i < ia; i++) vs[i] = get(i);
       this.vs = vs;
-      return vs;
     }
     return vs;
   }

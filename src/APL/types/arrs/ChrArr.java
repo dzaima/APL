@@ -4,7 +4,7 @@ import APL.errors.DomainError;
 import APL.types.*;
 
 public class ChrArr extends Arr {
-  private String s;
+  public String s;
   
   public ChrArr(String s) {
     super(new int[]{s.length()}, s.length(), 1);

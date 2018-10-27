@@ -17,7 +17,7 @@ public class Num extends Primitive {
   public static final Num I1 = null; // no imaginary numbers :'(
   @SuppressWarnings("WeakerAccess") // no, bad
   public static final Num INFINITY = new Num("1e309");
-  private final double num;
+  public final double num;
   public Num(String val) {
     repr = val;
     if (val.startsWith("¯")) {
@@ -180,11 +180,16 @@ public class Num extends Primitive {
   @Override
   public int asInt() { // warning: rounds
     return (int) num;
-  }
+  } // TODO not round
   public double asDouble() {
     return num;
   }
-
+  
+  @Override
+  public int[] asIntArr() { // TODO not round
+    return new int[]{(int)num};
+  }
+  
   public String toString() {
     if (num == (int)num) return Integer.toString((int)num);
     return Double.toString(num);
