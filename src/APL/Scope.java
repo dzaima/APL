@@ -40,7 +40,6 @@ public class Scope {
       nIO = IO==0? Num.ZERO : Num.ONE;
     }
     if (name.equals("⎕COND")) {
-      if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type()));
       String s = ((Arr) val).asString();
       if (s == null) throw new DomainError("⎕COND must be set to a character vector");
       String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;

@@ -175,7 +175,6 @@ public class Main {
                 break REPL;
               case ")TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-              case ")TYPE"        : println(Main.human(exec(rest, global).type())); break;
               case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
               case ")CLASS"       : println(exec(rest, global).getClass().getCanonicalName()); break;
               case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
@@ -215,16 +214,6 @@ public class Main {
   
   public static void println(String s) {
     System.out.println(s);
-  }
-  public static String human(Type t) {
-    switch (t) {
-      case array: return "array";
-      case var: return "variable";
-      case  fn: case  bfn: return "function";
-      case mop: case bmop: return "monadic operator";
-      case dop: case bdop: return "dyadic operator";
-      default: throw new IllegalStateException();
-    }
   }
   public static String formatAPL (int[] ia) {
     return Arrays.stream(ia).mapToObj(String::valueOf).collect(Collectors.joining(" "));
@@ -324,7 +313,7 @@ public class Main {
       }
       cond = cond.substring(0, cond.length()-1);
     }
-    if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type()));
+    if (!(v instanceof Num)) throw new DomainError("⎕COND does not accept "+v.humanType(false));
     Num n = (Num) v;
     switch (cond) {
       case "01":
