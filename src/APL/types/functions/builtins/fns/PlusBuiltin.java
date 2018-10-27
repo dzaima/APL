@@ -2,7 +2,6 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 
@@ -23,19 +22,13 @@ public class PlusBuiltin extends Builtin {
       return a+w;
     }
     public void call(double[] res, double a, double[] w) {
-      for (int i = 0; i < w.length; i++) {
-        res[i] = a+w[i];
-      }
+      for (int i = 0; i < w.length; i++) res[i] = a + w[i];
     }
     public void call(double[] res, double[] a, double w) {
-      for (int i = 0; i < a.length; i++) {
-        res[i] = a[i]+w;
-      }
+      for (int i = 0; i < a.length; i++) res[i] = a[i] + w;
     }
     public void call(double[] res, double[] a, double[] w) {
-      for (int i = 0; i < a.length; i++) {
-        res[i] = a[i]+w[i];
-      }
+      for (int i = 0; i < a.length; i++) res[i] = a[i] + w[i];
     }
   }
   private static DNf DNF = new DNf();
