@@ -316,7 +316,7 @@ public class Main {
   }
   public static boolean bool(Obj v, Scope sc) {
     if (v instanceof Settable) v = ((Settable) v).get();
-    String cond = ((HArr) sc.get("⎕COND")).string(false);
+    String cond = ((Value) sc.get("⎕COND")).asString();
     assert cond != null;
     if (cond.endsWith(" ")) {
       if (v instanceof Char) {

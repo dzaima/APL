@@ -32,7 +32,7 @@ public class Variable extends Settable {
     update(((Value) v).with(what, pos));
   }
   public Value getAt(int[] pos, Scope sc) {
-    HArr a = (HArr) v;
+    Arr a = (Arr) v;
     return a.at(pos, sc.IO);
   }
   

@@ -26,8 +26,8 @@ public class SetBuiltin extends Builtin {
       return w;
     }
     VarArr oa = (VarArr) a;
-    if (w instanceof HArr) {
-      HArr ow = (HArr) w;
+    if (w instanceof Arr) {
+      Arr ow = (Arr) w;
       if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
       if (ow.ia != oa.ia) throw new LengthError("← scatter argument lengths not equal", ow);
       for (int i = 0; i < oa.ia; i++) {

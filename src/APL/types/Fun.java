@@ -59,10 +59,11 @@ public abstract class Fun extends Scopeable {
   
   public interface NumVecFun {
     Value call(Num w);
-    default Arr call(DoubleArr a) {
-      Value[] res = new Value[a.ia];
-      for (int i = 0; i < a.ia; i++) res[i] = call(new Num(a.arr[i]));
-      return new HArr(res, a.shape);
+    default double call(double w) {
+      return call(new Num(w)).asDouble();
+    }
+    default void call(double[] res, double[] a) {
+      for (int i = 0; i < res.length; i++) res[i] = call(a[i]);
     }
   }
   public interface ChrVecFun {
@@ -78,8 +79,12 @@ public abstract class Fun extends Scopeable {
   }
   protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
     if (w instanceof Arr) {
-      if (w instanceof DoubleArr) return nf.call((DoubleArr) w);
-      if (w instanceof    ChrArr) return cf.call((ChrArr   ) w);
+      if (w instanceof DoubleArr) {
+        double[] res = new double[w.ia];
+        nf.call(res, w.asDoubleArr());
+        return new DoubleArr(res, w.shape);
+      }
+      if (w instanceof ChrArr) return cf.call((ChrArr   ) w);
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
@@ -92,6 +97,11 @@ public abstract class Fun extends Scopeable {
   }
   protected Value num(NumVecFun nf, Value w) {
     if (w instanceof Arr) {
+      if (w instanceof DoubleArr) {
+        double[] res = new double[w.ia];
+        nf.call(res, w.asDoubleArr());
+        return new DoubleArr(res, w.shape);
+      }
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {

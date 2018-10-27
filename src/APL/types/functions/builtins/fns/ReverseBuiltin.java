@@ -11,10 +11,10 @@ public class ReverseBuiltin extends Builtin implements DimMFn {
   }
   @Override
   public Obj call(Value w, int dim) {
-    return ((HArr) w).reverseOn(-dim-1);
+    return ((Arr) w).reverseOn(-dim-1);
   }
   public Obj call(Value w) {
-    if (!(w instanceof HArr)) return w;
-    return ((HArr) w).reverseOn(w.rank-1);
+    if (w instanceof Primitive) return w;
+    return ((Arr) w).reverseOn(w.rank-1);
   }
 }
