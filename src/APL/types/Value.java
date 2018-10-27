@@ -165,7 +165,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public double asDouble() {
     throw new DomainError("Using "+this+" as number");
   }
-  public boolean quickDoubleArr() {
+  public boolean quickDoubleArr() { // also must be 100% sure that I can actually convert to double arr
     return false;
   }
   public Value optimize() {
@@ -191,6 +191,16 @@ public abstract class Value extends Obj implements Iterable<Value> {
       }
       return new ChrArr(s.toString(), shape);
     }
+    boolean anyBetter = false;
+    Value[] optimized = new Value[ia];
+    Value[] values = values();
+    for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
+      Value v = values[i];
+      Value vo = v.optimize();
+      if (vo != v) anyBetter = true;
+      optimized[i] = vo;
+    }
+    if (anyBetter) return new HArr(optimized, shape);
     return this;
   }
 }

@@ -63,4 +63,11 @@ public class SingleItemArr extends Arr {
     for (int i = 0; i < ia; i++) vs[i] = v;
     return vs;
   }
+  
+  @Override
+  public Value optimize() {
+    Value ov = v.optimize();
+    if (ov == v) return this;
+    return new SingleItemArr(v, shape);
+  }
 }

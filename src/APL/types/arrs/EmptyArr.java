@@ -47,4 +47,9 @@ public class EmptyArr extends Arr {
   public Value[] values() {
     return NOVALUES;
   }
+  
+  @Override
+  public Value optimize() {
+    return this;
+  }
 }
