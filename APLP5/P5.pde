@@ -72,7 +72,7 @@ class P5 extends APLMap {
       case  "rm": case "rightmouse" : return rm;
       case "key": return new Char(key);
       case "fps": case "framerate": return new Num(frameRate);
-      case "fc": return new Num(frameCount);
+      case "fc": case "framecount": return new Num(frameCount);
       case "color": case "col": return new Fun(0x001) {
         public Obj call(Value w) {
           return new Num(col(w));

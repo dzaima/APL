@@ -1,7 +1,8 @@
 P5
   setup w h   called once before starting the draw loop
   draw w h    called every frame
-  size←w h    set window size (do this outside of setup/draw!)
+  size←w h    set window size (do this outside of setup/draw)
+  smooth←i    set the smoothness (0 is none). (do this outside of setup/draw)
   cursor type set the cursor to the specified type - string of cross, hand, arrow, move, text & wait, or ⍬ for no cursor, or an APLImg for a custom one
 
       scroll|sc  dir: called when mouse wheel is scrolled. ⍵ positive = up/away from user, negative = down/towards
@@ -29,7 +30,8 @@ P5
   
   key: last key pressed
   
-  fps|framerate: framerate
+  fps|framerate : framerate
+   fc|framecount: frame count since starting
   
   color|col: convert char vector to a number representing the color
   
@@ -50,8 +52,8 @@ P5
   
   bytes path: returns an array of bytes in file at the specified path
   lines path: returns an array of lines of file at the specified path
-  image path: returns an APLImg object with the image at the specified path
-  
+  image|img path: returns an APLImg object with the image at the specified path
+  image|img mat : returns an APLImg with the colors from the matrix
   APLImg:
      width|w: get the width of the image
     height|h: get the height of the image
