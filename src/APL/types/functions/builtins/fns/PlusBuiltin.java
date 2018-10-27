@@ -21,7 +21,7 @@ public class PlusBuiltin extends Builtin {
   static class DNf implements DyNumVecFun {
     public Value call(Num a, Num w) {
       return a.plus(w);
-    } 
+    }
     public Arr call(Num a, DoubleArr w) {
       double[] res = new double[w.ia]; double   av = a.num; double[] wv = w.arr;
       for (int i = 0; i < w.ia; i++) res[i] = av   +wv[i];
@@ -29,7 +29,7 @@ public class PlusBuiltin extends Builtin {
     }
     public Arr call(DoubleArr a, Num w) {
       double[] res = new double[a.ia]; double[] av = a.arr; double   wv = w.num;
-      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv   ;
+      for (int i = 0; i < a.ia; i++) res[i] = av[i]+wv   ;
       return new DoubleArr(res, a.shape);
     }
     public Arr call(DoubleArr a, DoubleArr w) {

@@ -36,7 +36,7 @@ public class MinusBuiltin extends Builtin {
     }
     public Arr call(DoubleArr a, Num w) {
       double[] res = new double[a.ia]; double[] av = a.arr; double   wv = w.num;
-      for (int i = 0; i < w.ia; i++) res[i] = av[i]-wv   ;
+      for (int i = 0; i < a.ia; i++) res[i] = av[i]-wv   ;
       return new DoubleArr(res, a.shape);
     }
     public Arr call(DoubleArr a, DoubleArr w) {
