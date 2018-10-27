@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 public class Main {
   public static final String CODEPAGE = "\0\0\0\0\0\0\0\0\0\t\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~÷×↑↓⌈⌊≠∊⍺⍴⍵⍳∍⋾⎕⍞⌸⌺⍇⍁⍂⌻⌼⍃⍄⍈⍌⍍⍐⍓⍔⍗⍯⍰⍠⌹⊆⊇⍶⍸⍹⍘⍚⍛⍜⍊≤≥⍮ϼ⍷⍉⌽⊖⊙⌾○∘⍟⊗¨⍨⍡⍥⍩⍣⍢⍤⊂⊃∩∪⊥⊤∆∇⍒⍋⍫⍱⍲∨∧⍬⊣⊢⌷⍕⍎←→⍅⍆⍏⍖⌿⍀⍪≡≢⍦⍧⍭‽⍑∞…√";
@@ -195,8 +195,13 @@ public class Main {
           e.print();
           lastError = e;
         } catch (Throwable e) {
-          e.printStackTrace();
           colorprint(e + ": " + e.getMessage(), 246);
+          if (faulty != null && faulty.token != null) {
+            String s = IntStream.range(0, faulty.token.pos).mapToObj(i -> " ").collect(Collectors.joining());
+            colorprint(faulty.token.line, 217);
+            colorprint(s + "^", 217);
+          }
+          e.printStackTrace();
         }
         if (!silentREPL) print("> ");
       }

@@ -11,13 +11,9 @@ public class MinusBuiltin extends Builtin {
   }
   
   static class Nf implements NumVecFun {
-  
-    @Override
     public Value call(Num w) {
       return w.negate();
     }
-  
-    @Override
     public Arr call(DoubleArr a) {
       double[] n = new double[a.ia];
       for (int i = 0; i < a.ia; i++) n[i] = -a.vals[i];
