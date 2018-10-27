@@ -2,13 +2,13 @@
 class Example extends APLMap {
   Arr toArr() { throw new SyntaxError("Converting a ______ object to array"); }
   void set(Value k, Obj v) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       default: throw new DomainError("setting non-existing key "+s+" for ______");
     }
   }
   Obj getRaw(Value k) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       default: return NULL;
     }

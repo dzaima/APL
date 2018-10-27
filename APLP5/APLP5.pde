@@ -8,7 +8,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"f"};
+  if (args == null) args = new String[]{"draw"};
   
   global = new Scope();
   String s = new String(loadBytes(args[0]));
@@ -59,4 +59,3 @@ void call(Fun f, Value w) {
     throw e;
   }
 }
-Fun tf = new Fun(0x011) {};

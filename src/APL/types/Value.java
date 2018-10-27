@@ -165,4 +165,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public double asDouble() {
     throw new DomainError("Using "+this+" as number");
   }
+  public boolean quickDoubleArr() {
+    return false;
+  }
 }

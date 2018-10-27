@@ -6,18 +6,18 @@ class APLImg extends APLMap {
     this.img = img;
     w = new Num(img.width );
     h = new Num(img.height);
-    size = new Arr(new Value[]{w, h});
+    size = new DoubleArr(new double[]{img.width, img.height});
   }
   
   Arr toArr() { throw new SyntaxError("Converting a APLImg object to array"); }
   void set(Value k, Obj v) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       default: throw new DomainError("setting non-existing key "+s+" for APLImg");
     }
   }
   Obj getRaw(Value k) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       case "w": case "width" : return w;
       case "h": case "height": return h;
@@ -25,11 +25,11 @@ class APLImg extends APLMap {
       case "mat": case "pixels": 
         if (px != null) return px;
         int ia = img.pixels.length;
-        Value[] vals = new Value[ia];
+        double[] vals = new double[ia];
         for (int i = 0; i < ia; i++) {
-          vals[i] = new Num(img.pixels[i]);
+          vals[i] = img.pixels[i];
         }
-        return new Arr(vals, new int[]{img.width, img.height});
+        return new DoubleArr(vals, new int[]{img.width, img.height});
       default: return NULL;
     }
   }

@@ -216,7 +216,7 @@ public class Scope {
     }
   
     @Override
-    public HArr toArr() {
+    public Arr toArr() {
       throw new SyntaxError("scope to array", this);
     }
   

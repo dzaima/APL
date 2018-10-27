@@ -3,6 +3,7 @@ package APL;
 import APL.types.*;
 import APL.errors.*;
 import APL.types.arrs.*;
+import APL.types.functions.VarArr;
 
 import java.io.*;
 import java.util.*;
@@ -262,7 +263,7 @@ public class Main {
       }
       if (guardPos >= 0) {
         var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
-        if (bool(execTok(guard, sc), sc)) {
+        if (bool(norm(execTok(guard, sc)), sc)) {
           var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
           res = execTok(expr, sc);
           if (endAfter) return res;
@@ -298,6 +299,13 @@ public class Main {
       da[i] = arr[i];
     }
     return new DoubleArr(da, sh);
+  }
+  
+  private static Value norm(Obj o) {
+    if (o instanceof VarArr) return ((VarArr) o).materialize();
+    if (o instanceof Settable) return (Value) ((Settable) o).get();
+    if (!(o instanceof Value)) throw new DomainError("Trying to use "+o.humanType(true)+" as array");
+    return (Value) o;
   }
   
   public static ChrArr toAPL(String s) {

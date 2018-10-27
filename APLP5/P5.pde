@@ -5,7 +5,7 @@ class P5 extends APLMap {
     throw new SyntaxError("Converting the P5 object to array");
   }
   void set(Value k, Obj v) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       // callbacks
       case "setup": setup = (Fun) v; break;
@@ -29,8 +29,8 @@ class P5 extends APLMap {
       case "cursor": {
         if (((Value) v).ia == 0) {
           noCursor();
-        } else if (((Value) v).arr[0] instanceof Char) {
-          String name = ((Value) v).fromAPL();
+        } else if (((Value) v).get(0) instanceof Char) {
+          String name = ((Value) v).asString();
           switch (name.toLowerCase()) {
             case "cross": cursor(CROSS); break;
             case "hand": cursor(HAND); break;
@@ -48,7 +48,7 @@ class P5 extends APLMap {
     }
   }
   Obj getRaw(Value k) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       case "g": return mainGraphics;
       case "size": return arr(width, height);
@@ -79,7 +79,7 @@ class P5 extends APLMap {
       };
       case "exit": return new Fun(0x001) {
         public Obj call(Value w) {
-          System.exit(w.toInt(this));
+          System.exit(w.asInt());
           return null;
         }
       };
@@ -88,17 +88,17 @@ class P5 extends APLMap {
       
       case "bytes": return new Fun(0x001) {
         public Obj call(Value w) {
-          return APL(loadBytes(w.fromAPL()));
+          return APL(loadBytes(w.asString()));
         }
       };
       case "lines": return new Fun(0x001) {
         public Obj call(Value w) {
-          return APL(loadStrings(w.fromAPL()));
+          return APL(loadStrings(w.asString()));
         }
       };
       case "image": return new Fun(0x001) {
         public Obj call(Value w) {
-          return new APLImg(loadImage(w.fromAPL()));
+          return new APLImg(loadImage(w.asString()));
         }
       };
       default: return NULL;
@@ -133,11 +133,11 @@ void mouseWheel(MouseEvent e) {
   if (c < 0) call(scrollD, n);
 }
 
-Arr CTRL  = Main.toAPL("ctrl" , null);
-Arr SHIFT = Main.toAPL("shift", null);
-Arr ALT   = Main.toAPL("alt"  , null);
-Arr ALTGR = Main.toAPL("altgr", null);
-Arr MENU  = Main.toAPL("menu" , null);
+Arr CTRL  = Main.toAPL("ctrl" );
+Arr SHIFT = Main.toAPL("shift");
+Arr ALT   = Main.toAPL("alt"  );
+Arr ALTGR = Main.toAPL("altgr");
+Arr MENU  = Main.toAPL("menu" );
 
 //void keyPr
 
@@ -168,12 +168,12 @@ void keyHandle(KeyEvent e, char key, Fun kp, Fun mp) {
         boolean altgr = ne.isAltGraphDown();
         Value v;
         if (key == 65535 || key == 127) {
-          v = Main.toAPL(skey, null);
+          v = Main.toAPL(skey);
         } else {
           if (key < 32) {
-            v = Main.toAPL(shift || skey.length() != 1? skey : skey.toLowerCase(), null);
+            v = Main.toAPL(shift || skey.length() != 1? skey : skey.toLowerCase());
           } else {
-            v = new Arr(new Value[]{new Char(key)});
+            v = new ChrArr(String.valueOf(key));
           }
         }
         call(kp, arr(ctrl, shift, alt, altgr, meta), v);

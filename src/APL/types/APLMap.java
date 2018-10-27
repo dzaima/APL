@@ -20,7 +20,7 @@ public abstract class APLMap extends Primitive {
   
   abstract public void set(Value k, Obj v);
   
-  abstract public HArr toArr();
+  abstract public Arr toArr();
   
   abstract public int size();
   

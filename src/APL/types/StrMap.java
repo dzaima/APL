@@ -26,7 +26,7 @@ public class StrMap extends APLMap {
   }
   
   @Override
-  public HArr toArr() {
+  public Arr toArr() {
     Object[] a = map.values().toArray();
     var items = new ArrayList<Value>();
     for (Object o : a) {

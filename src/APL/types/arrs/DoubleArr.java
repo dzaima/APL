@@ -73,4 +73,9 @@ public class DoubleArr extends Arr {
   public double[] asDoubleArr() {
     return arr;
   }
+  
+  @Override
+  public boolean quickDoubleArr() {
+    return true;
+  }
 }

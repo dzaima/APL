@@ -53,4 +53,9 @@ public class SingleItemArr extends Arr {
   public Value ofShape(int[] sh) {
     return new SingleItemArr(v, sh);
   }
+  
+  @Override
+  public boolean quickDoubleArr() {
+    return v instanceof Num;
+  }
 }
