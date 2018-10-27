@@ -41,4 +41,10 @@ public class EmptyArr extends Arr {
   public Value ofShape(int[] sh) {
     return new EmptyArr(sh);
   }
+  
+  private static final Value[] NOVALUES = new Value[0];
+  @Override
+  public Value[] values() {
+    return NOVALUES;
+  }
 }

@@ -6,29 +6,23 @@ import APL.types.*;
 import java.util.Arrays;
 
 public class DoubleArr extends Arr {
-  final public double[] vals;
-  public DoubleArr(double[] vals, int[] sh) {
+  final public double[] arr;
+  public DoubleArr(double[] arr, int[] sh) {
     super(sh);
     assert sh.length != 0;
-    this.vals = vals;
+    this.arr = arr;
   }
-  public DoubleArr(double[] vals) { // 1D
-    super(new int[]{vals.length});
-    this.vals = vals;
+  public DoubleArr(double[] arr) { // 1D
+    super(new int[]{arr.length});
+    this.arr = arr;
   }
-  public DoubleArr(Integer[] vals) { // 1D
-    super(new int[]{vals.length});
+  public DoubleArr(Integer[] arr) { // 1D
+    super(new int[]{arr.length});
     double[] a = new double[ia];
     for (int i = 0; i < ia; i++) {
-      a[i] = vals[i];
+      a[i] = arr[i];
     }
-    this.vals = a;
-  }
-  
-  public DoubleArr(double[] vals, int[] sh, int ia, int rank) {
-    super(sh, ia, rank);
-    assert sh.length != 0;
-    this.vals = vals;
+    this.arr = a;
   }
   
   @Override
@@ -36,8 +30,8 @@ public class DoubleArr extends Arr {
     if (rank >= 2) throw new RankError("trying to use a rank "+rank+" number array as vector", this);
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
-      if (vals[i] != (int)vals[i]) throw new DomainError("using a fractional number as integer", this);
-      r[i] = ((int) vals[i]);
+      if (arr[i] != (int) arr[i]) throw new DomainError("using a fractional number as integer", this);
+      r[i] = ((int) arr[i]);
     }
     return r;
   }
@@ -49,7 +43,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return new Num(vals[i]);
+    return new Num(arr[i]);
   }
   
   @Override
@@ -64,19 +58,19 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    return new DoubleArr(vals, sh);
+    return new DoubleArr(arr, sh);
   }
   
   @Override
   public double sum() { // TODO whether or not commented code
 //    double r = 0;
-//    for (double val : vals) r += val;
+//    for (double val : arr) r += val;
 //    return r;
-    return Arrays.stream(vals).sum();
+    return Arrays.stream(arr).sum();
   }
   
   @Override
   public double[] asDoubleArr() {
-    return vals;
+    return arr;
   }
 }

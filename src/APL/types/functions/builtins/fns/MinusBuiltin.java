@@ -1,6 +1,5 @@
 package APL.types.functions.builtins.fns;
 
-import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
@@ -16,7 +15,7 @@ public class MinusBuiltin extends Builtin {
     }
     public Arr call(DoubleArr a) {
       double[] n = new double[a.ia];
-      for (int i = 0; i < a.ia; i++) n[i] = -a.vals[i];
+      for (int i = 0; i < a.ia; i++) n[i] = -a.arr[i];
       return new DoubleArr(n, a.shape);
     }
   }
@@ -31,24 +30,18 @@ public class MinusBuiltin extends Builtin {
       return a.minus(w);
     }
     public Arr call(Num a, DoubleArr w) {
-      double[] res = new double[w.ia];
-      double[] wv = w.vals;
-      double av = a.num;
-      for (int i = 0; i < w.ia; i++) res[i] = av+wv[i];
+      double[] res = new double[w.ia]; double   av = a.num; double[] wv = w.arr;
+      for (int i = 0; i < w.ia; i++) res[i] = av   -wv[i];
       return new DoubleArr(res, w.shape);
     }
     public Arr call(DoubleArr a, Num w) {
-      double[] res = new double[a.ia];
-      double[] av = a.vals;
-      double wv = w.num;
-      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv;
+      double[] res = new double[a.ia]; double[] av = a.arr; double   wv = w.num;
+      for (int i = 0; i < w.ia; i++) res[i] = av[i]-wv   ;
       return new DoubleArr(res, a.shape);
     }
     public Arr call(DoubleArr a, DoubleArr w) {
-      double[] res = new double[a.ia];
-      double[] av = a.vals;
-      double[] wv = w.vals;
-      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv[i];
+      double[] res = new double[a.ia]; double[] av = a.arr; double[] wv = w.arr;
+      for (int i = 0; i < w.ia; i++) res[i] = av[i]-wv[i];
       return new DoubleArr(res, a.shape);
     }
   }

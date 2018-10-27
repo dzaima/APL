@@ -42,4 +42,9 @@ public class Shape1Arr extends Arr {
   public Value ofShape(int[] sh) {
     return null;
   }
+  
+  @Override
+  public Value[] values() {
+    return new Value[]{item};
+  }
 }

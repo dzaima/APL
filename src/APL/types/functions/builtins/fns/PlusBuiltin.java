@@ -1,8 +1,9 @@
 package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
-import APL.types.functions.Builtin;
 import APL.types.*;
+import APL.types.arrs.DoubleArr;
+import APL.types.functions.Builtin;
 
 
 public class PlusBuiltin extends Builtin {
@@ -16,12 +17,30 @@ public class PlusBuiltin extends Builtin {
       return ((Num)v).conjugate();
     }, w);
   }
+  
+  static class DNf implements DyNumVecFun {
+    public Value call(Num a, Num w) {
+      return a.plus(w);
+    } 
+    public Arr call(Num a, DoubleArr w) {
+      double[] res = new double[w.ia]; double   av = a.num; double[] wv = w.arr;
+      for (int i = 0; i < w.ia; i++) res[i] = av   +wv[i];
+      return new DoubleArr(res, w.shape);
+    }
+    public Arr call(DoubleArr a, Num w) {
+      double[] res = new double[a.ia]; double[] av = a.arr; double   wv = w.num;
+      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv   ;
+      return new DoubleArr(res, a.shape);
+    }
+    public Arr call(DoubleArr a, DoubleArr w) {
+      double[] res = new double[a.ia]; double[] av = a.arr; double[] wv = w.arr;
+      for (int i = 0; i < w.ia; i++) res[i] = av[i]+wv[i];
+      return new DoubleArr(res, a.shape);
+    }
+  }
+  private static DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> {
-      if (!(w instanceof Num)) throw new DomainError("+ on non-number ⍵", w);
-      if (!(a instanceof Num)) throw new DomainError("+ on non-number ⍺", a);
-      return ((Num)a).plus((Num)w);
-    }, a0, w0);
+    return scalarNum(DNF, a0, w0);
   }
   public Obj callInv(Value w) { return call(w); }
   public Obj callInvW(Value a, Value w) {

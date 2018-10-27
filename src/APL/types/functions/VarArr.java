@@ -45,7 +45,7 @@ public class VarArr extends Obj {
       while (i < a.length) {
         Obj c = vs.get(i);
         if (c instanceof Num) {
-          a[i] = ((Num) c).num;
+          a[a.length-i-1] = ((Num) c).num;
           i++;
         } else {
           a = null;
@@ -55,12 +55,12 @@ public class VarArr extends Obj {
       if (a != null) return new DoubleArr(a);
     } else {
       String s = "";
-      int i = 0;
-      while (i < vs.size()) {
+      int i = vs.size()-1;
+      while (i >= 0) {
         Obj c = vs.get(i);
         if (c instanceof Char) {
           s+= ((Char) c).chr;
-          i++;
+          i--;
         } else {
           s = null;
           break;

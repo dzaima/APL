@@ -61,7 +61,7 @@ public abstract class Fun extends Scopeable {
     Value call(Num w);
     default Arr call(DoubleArr a) {
       Value[] res = new Value[a.ia];
-      for (int i = 0; i < a.ia; i++) res[i] = call(new Num(a.vals[i]));
+      for (int i = 0; i < a.ia; i++) res[i] = call(new Num(a.arr[i]));
       return new HArr(res, a.shape);
     }
   }
@@ -156,7 +156,7 @@ public abstract class Fun extends Scopeable {
     Value call(Num a, Num w);
     default Arr call(Num a, DoubleArr w) {
       Value[] res = new Value[w.ia];
-      double[] vals = w.vals;
+      double[] vals = w.arr;
       for (int i = 0; i < vals.length; i++) {
         res[i] = call(a, new Num(vals[i]));
       }
@@ -164,7 +164,7 @@ public abstract class Fun extends Scopeable {
     }
     default Arr call(DoubleArr a, Num w) {
       Value[] res = new Value[a.ia];
-      double[] vals = a.vals;
+      double[] vals = a.arr;
       for (int i = 0; i < vals.length; i++) {
         res[i] = call(new Num(vals[i]), w);
       }
@@ -172,8 +172,8 @@ public abstract class Fun extends Scopeable {
     }
     default Arr call(DoubleArr a, DoubleArr w) {
       Value[] res = new Value[a.ia];
-      double[] av = a.vals;
-      double[] wv = w.vals;
+      double[] av = a.arr;
+      double[] wv = w.arr;
       for (int i = 0; i < a.ia; i++) {
         res[i] = call(new Num(av[i]), new Num(wv[i]));
       }
@@ -183,9 +183,14 @@ public abstract class Fun extends Scopeable {
   protected Value scalarNum(DyNumVecFun f, Value a, Value w) {
     if (a instanceof DoubleArr && w instanceof Num      ) return f.call((DoubleArr) a, (Num      ) w);
     if (a instanceof Num       && w instanceof DoubleArr) return f.call((Num      ) a, (DoubleArr) w);
-    if (a instanceof DoubleArr && w instanceof DoubleArr) return f.call((DoubleArr) a, (DoubleArr) w);
+    if (a instanceof DoubleArr && w instanceof DoubleArr) {
+      if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes of ⍺ & ⍵ don't match", w);
+      return f.call((DoubleArr) a, (DoubleArr) w);
+    }
     if (a instanceof Primitive) {
       if (w instanceof Primitive) {
+        if (!(w instanceof Num)) throw new DomainError("number-only scalar function called with ⍵ "+w.humanType(false), w);
+        if (!(a instanceof Num)) throw new DomainError("number-only scalar function called with ⍺ "+a.humanType(false), a);
         return f.call((Num)a, (Num)w);
       } else {
         Arr ow = (Arr) w;
