@@ -2,6 +2,7 @@ package APL;
 
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
@@ -150,6 +151,7 @@ class Exec {
         var w = lastVal();
         var f = lastFun();
         var a = lastVal();
+        Main.lastExecutedFun = f;
         var res = f.call(a, w);
         if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addLast(res);
@@ -188,6 +190,7 @@ class Exec {
         if (Main.debug) printlvl("FN");
         var w = lastVal();
         var f = lastFun();
+        Main.lastExecutedFun = f;
         var res = f.call(w);
         if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
         done.addLast(res);
@@ -203,6 +206,7 @@ class Exec {
         var w = lastObj();
         var s = (SetBuiltin) done.removeLast(); // ←
         var a = done.removeLast(); // variable
+        Main.lastExecutedFun = s;
         done.addLast(s.call(a, w, false));
         continue;
       }
@@ -212,6 +216,7 @@ class Exec {
         var s = (SetBuiltin) done.removeLast(); // ←
         var f = lastFun();
         Obj a = done.removeLast(); // variable
+        Main.lastExecutedFun = f;
         done.addLast(s.call(f, a, w));
         continue;
       }
@@ -234,7 +239,7 @@ class Exec {
         if (aau instanceof VarArr) aau = ((VarArr) aau).materialize();
         if (wwu instanceof VarArr) wwu = ((VarArr) wwu).materialize();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
-          done.add(barPtr, ((APLMap) aau).get(Main.toAPL(((Variable) ww).name, ww.token)));
+          done.add(barPtr, ((APLMap) aau).get(Main.toAPL(((Variable) ww).name)));
         } else {
           done.add(barPtr, o.derive(aau, wwu));
         }
@@ -503,7 +508,7 @@ class Exec {
           case '@': return new AtBuiltin(sc);
   
   
-          case '⍬': return new Arr(Num.ZERO);
+          case '⍬': return EmptyArr.SHAPE0;
           case '⎕': return new Quad(sc);
           case '⍞': return new QuoteQuad(sc);
           case '⍺': return sc.get("⍺");
@@ -513,8 +518,8 @@ class Exec {
           default: throw new NYIError("no built-in " + t.repr + " defined in exec");
         }
       case number: return new Num(t.repr);
-      case chr:    return t.repr.length() == 1? new Char(t.repr) : Main.toAPL(t.repr, t);
-      case str:    return                                          Main.toAPL(t.repr, t);
+      case chr:    return t.repr.length() == 1? new Char(t.repr) : Main.toAPL(t.repr);
+      case str:    return                                          Main.toAPL(t.repr);
       case set:    return new SetBuiltin();
       case name:   return sc.getVar(t.repr);
       case expr:   return Main.execTok(t, sc);

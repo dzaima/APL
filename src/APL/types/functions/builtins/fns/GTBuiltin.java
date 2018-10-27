@@ -1,6 +1,7 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 import java.util.*;
@@ -16,9 +17,9 @@ public class GTBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    var order = w.gradeDown(this);
+    var order = w.gradeDown();
     Value[] res = new Value[order.length];
-    Arrays.setAll(res, i -> w.arr[order[i]]);
-    return new Arr(res);
+    Arrays.setAll(res, i -> w.get(order[i]));
+    return new HArr(res);
   }
 }

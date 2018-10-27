@@ -1,5 +1,7 @@
 package APL.types;
 
+import APL.types.arrs.HArr;
+
 import java.util.*;
 
 public class StrMap extends APLMap {
@@ -8,7 +10,7 @@ public class StrMap extends APLMap {
   
   @Override
   public Obj getRaw(Value k) {
-    return getRaw(k.fromAPL());
+    return getRaw(k.asString());
   }
   @Override
   public Obj getRaw(String k) {
@@ -19,18 +21,18 @@ public class StrMap extends APLMap {
   
   @Override
   public void set(Value k, Obj v) {
-    if (v == Null.NULL) map.remove(k.fromAPL());
-    else map.put(k.fromAPL(), v);
+    if (v == Null.NULL) map.remove(k.asString());
+    else map.put(k.asString(), v);
   }
   
   @Override
-  public Arr toArr() {
+  public HArr toArr() {
     Object[] a = map.values().toArray();
     var items = new ArrayList<Value>();
     for (Object o : a) {
       if (o instanceof Value) items.add((Value) o);
     }
-    return new Arr(items);
+    return new HArr(items);
   }
   
   @Override

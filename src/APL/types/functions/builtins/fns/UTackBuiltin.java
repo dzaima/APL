@@ -24,9 +24,9 @@ public class UTackBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     Num res = Num.ZERO;
     Num base = ((Num)a);
-    if (w.rank != 1) throw new DomainError("⊥ on rank "+w.rank, this, w);
+    if (w.rank != 1) throw new DomainError("⊥ on rank "+w.rank, w);
     for (int i = 0; i < w.ia; i++) {
-      res = res.times(base).plus((Num) w.arr[i]);
+      res = res.times(base).plus((Num) w.get(i));
     }
     return res;
   }

@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.*;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class TransposeBuiltin extends Builtin {
@@ -20,9 +21,9 @@ public class TransposeBuiltin extends Builtin {
       for (int i = 0; i < w.rank; i++) {
         nc[i] = c[w.rank - i - 1];
       }
-      arr[Indexer.fromShape(ns, nc, 0)] = ((Arr)w).simpleAt(c);
+      arr[Indexer.fromShape(ns, nc, 0)] = w.simpleAt(c);
     }
-    return new Arr(arr, ns);
+    return new HArr(arr, ns);
   }
   
 //  public Obj call(Value a, Value w) {

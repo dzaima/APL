@@ -8,15 +8,13 @@ public class SyntaxError extends APLError {
   public SyntaxError (String s){
     super(s);
   }
-  public SyntaxError (String s, Obj fn, Value cause){
+  public SyntaxError(String s, Value cause){
     super(s);
-    this.fn = fn;
-    assert fn != null  ||  cause == null;
     this.cause = cause;
   }
   public SyntaxError (String s, Obj cause){
     super(s);
-    this.fn = cause;
+    this.cause = cause;
   }
   
   public SyntaxError(String s, Token t) {

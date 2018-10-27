@@ -12,7 +12,7 @@ public class AndBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return Num.lcm(IntStream.range(0, w.ia).mapToObj(i -> (Num) w.arr[i]).toArray(Num[]::new));
+    return Num.lcm(IntStream.range(0, w.ia).mapToObj(i -> (Num) w.get(i)).toArray(Num[]::new));
   }
   
   public Obj call(Value a0, Value w0) {

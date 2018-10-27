@@ -11,15 +11,15 @@ public class RShoeUBBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    if (w.rank == 0) return w.arr[0];
+    if (w.rank == 0) return w.get(0);
     return w;
   }
   
   public Obj call(Value a, Value w) {
     return new EachBuiltin().derive(new SquadBuiltin(sc)).call(a, (Value)new LShoeBuiltin().call(w));
-//    if (a instanceof Num) a = new Arr(a);
+//    if (a instanceof Num) a = new HArr(a);
 //    Value[] res = new Value[a.ia];
     
-//    return new Arr(res);
+//    return new HArr(res);
   }
 }

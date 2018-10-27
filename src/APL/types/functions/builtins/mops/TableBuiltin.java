@@ -1,6 +1,7 @@
 package APL.types.functions.builtins.mops;
 
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.Mop;
 
 public class TableBuiltin extends Mop {
@@ -13,13 +14,13 @@ public class TableBuiltin extends Mop {
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
     int i = 0;
-    for (Value na : a.arr) {
-      for (Value nw : w.arr) {
+    for (Value na : a) {
+      for (Value nw : w) {
         arr[i] = (Value)((Fun)f).call(na, nw);
         i++;
       }
     }
     if (shape.length == 0) return arr[0];
-    return new Arr(arr, shape);
+    return new HArr(arr, shape);
   }
 }

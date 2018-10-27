@@ -8,7 +8,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"drawgolfed"};
+  if (args == null) args = new String[]{"f"};
   
   global = new Scope();
   String s = new String(loadBytes(args[0]));

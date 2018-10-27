@@ -15,7 +15,7 @@ public class TrigBuiltin extends Builtin {
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {
       Num n = (Num) w;
-      switch(a.toInt(this)) {
+      switch(a.asInt()) {
         case  1: return n.sin();
         case  2: return n.cos();
         case  3: return n.tan();
@@ -27,7 +27,7 @@ public class TrigBuiltin extends Builtin {
         case  9: return n.real();
         case 10: return n.abs();
         case 11: return n.imag();
-        case 12: throw new DomainError("what is phase", this, a);
+        case 12: throw new DomainError("what is phase", a);
         
         case  0: return Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
         
@@ -44,7 +44,7 @@ public class TrigBuiltin extends Builtin {
         case -11: return n.times(Num.I1);
         case -12: return Num.E.pow(n.times(Num.I1));
       }
-      throw new DomainError("⍺ of ○ out of bounds", this, a);
+      throw new DomainError("⍺ of ○ out of bounds", a);
     }, a0, w0);
   }
 }

@@ -12,14 +12,14 @@ public class PlusBuiltin extends Builtin {
 
   public Obj call(Value w) {
     return scalar(v -> {
-      if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
+      if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", w); // TODO decide whether this should exist
       return ((Num)v).conjugate();
     }, w);
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {
-      if (!(w instanceof Num)) throw new DomainError("+ on non-number ⍵", this, w);
-      if (!(a instanceof Num)) throw new DomainError("+ on non-number ⍺", this, a);
+      if (!(w instanceof Num)) throw new DomainError("+ on non-number ⍵", w);
+      if (!(a instanceof Num)) throw new DomainError("+ on non-number ⍺", a);
       return ((Num)a).plus((Num)w);
     }, a0, w0);
   }
@@ -28,7 +28,7 @@ public class PlusBuiltin extends Builtin {
     try {
       return new MinusBuiltin().call(w, a);
     } catch (DomainError e) {
-      throw new DomainError("", this, e.cause);
+      throw new DomainError("", e.cause);
     }
   }
 }

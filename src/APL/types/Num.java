@@ -1,10 +1,11 @@
 package APL.types;
 
 import APL.errors.DomainError;
+import APL.types.arrs.HArr;
 
 import java.util.stream.IntStream;
 
-public class Num extends Value {
+public class Num extends Primitive {
   
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
@@ -27,17 +28,14 @@ public class Num extends Value {
   public Num(int n) {
     repr = Integer.toString(n);
     num = n;
-    prototype = Num.ZERO;
   }
   public Num(long n) {
     repr = Long.toString(n);
     num = n;
-    prototype = Num.ZERO;
   }
   public Num(double val) {
     repr = Double.toString(val);
     num = val;
-    prototype = Num.ZERO;
   }
 
   public Num plus(Num w) {
@@ -119,15 +117,15 @@ public class Num extends Value {
   
   public Num fact(Fun f) {
     if (num > 170) return Num.INFINITY;
-    if (num % 1 != 0) throw new DomainError("factorial of non-integer", f, this);
-    if (num < 0) throw new DomainError("factorial of negative number", f, this);
+    if (num % 1 != 0) throw new DomainError("factorial of non-integer", this);
+    if (num < 0) throw new DomainError("factorial of negative number", this);
     double res = IntStream.range(2, (int) (num+1)).asDoubleStream().reduce(1, (a, b) -> a * b);
     return new Num(res);
   }
   
   public Num binomial(Num w, Fun f) {
-    if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", f, this);
-    if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", f, w);
+    if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", this);
+    if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", w);
     if (w.num > num) return Num.ZERO;
   
     double res = 1;
@@ -179,10 +177,11 @@ public class Num extends Value {
     return n instanceof Num && ((Num) n).num == num;
   }
   
-  public int intValue() {
-    return (int)num;
+  @Override
+  public int asInt() { // warning: rounds
+    return (int) num;
   }
-  public double doubleValue() {
+  public double asDouble() {
     return num;
   }
 
@@ -190,9 +189,15 @@ public class Num extends Value {
     if (num == (int)num) return Integer.toString((int)num);
     return Double.toString(num);
   }
-  protected String oneliner(int[] ignored) {
+  public String oneliner(int[] ignored) {
     if (num == (int)num) return Integer.toString((int)num);
     return Double.toString(num);
+  }
+  
+  @Override
+  public Value ofShape(int[] sh) {
+    assert sh.length != 0;
+    return new HArr(new Value[]{this}, sh);
   }
   
   public static Num max (Num a, Num b) {
@@ -202,13 +207,13 @@ public class Num extends Value {
     return a.num < b.num? a : b;
   }
   
-  public static int toInt(Obj o, Fun caller) {
-    if (!(o instanceof Num)) throw new DomainError("expected number, got "+(o).humanType(true), caller, o);
-    return ((Num) o).intValue();
-  }
-  
   @Override
   public int hashCode() {
     return Double.hashCode(num);
+  }
+  
+  @Override
+  public Value prototype() {
+    return ZERO;
   }
 }

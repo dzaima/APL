@@ -14,7 +14,7 @@ public class NorBuiltin extends Builtin {
   }
   public Obj call(Value w) {
     for (int i = 0; i < w.ia; i++) {
-      if (Main.bool(w.arr[i], sc)) return Num.ZERO;
+      if (Main.bool(w.get(i), sc)) return Num.ZERO;
     }
     return Num.ONE;
   }

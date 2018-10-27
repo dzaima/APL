@@ -20,7 +20,7 @@ public class Brackets extends Obj {
   }
   
   public Integer toInt() {
-    return val == null ? null : val.toInt(null);
+    return val == null ? null : val.asInt();
   }
   
   @Override

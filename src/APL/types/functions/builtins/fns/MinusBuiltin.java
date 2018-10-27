@@ -14,8 +14,8 @@ public class MinusBuiltin extends Builtin {
   }
   public Obj call(Value a0, Value w0) {
     return scalar((a, w) -> {
-      if (!(a instanceof Num)) throw new DomainError("- on non-number ⍵", this, a);
-      if (!(w instanceof Num)) throw new DomainError("- on non-number ⍺", this, w);
+      if (!(a instanceof Num)) throw new DomainError("- on non-number ⍵", a);
+      if (!(w instanceof Num)) throw new DomainError("- on non-number ⍺", w);
       return ((Num)a).minus((Num)w);
     }, a0, w0);
   }

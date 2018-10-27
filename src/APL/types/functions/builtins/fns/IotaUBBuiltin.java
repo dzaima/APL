@@ -3,10 +3,9 @@ package APL.types.functions.builtins.fns;
 import APL.*;
 import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 import APL.types.functions.builtins.mops.ReduceBuiltin;
-
-import java.util.ArrayList;
 
 public class IotaUBBuiltin extends Builtin {
   private static final Fun fn = new ReduceBuiltin().derive(new CeilingBuiltin());
@@ -15,30 +14,46 @@ public class IotaUBBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    var sub = new ArrayList<Value>();
-    for (int[] p : new Indexer(w.shape, ((Num) sc.get("⎕IO")).intValue())) {
-      Num n = (Num) w.at(p, this);
-      if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", this, n);
-      for (int i = 0, nint = n.intValue(); i < nint; i++)
-      if (w.rank == 1) sub.add(new Num(p[0]));
-      else sub.add(Main.toAPL(p));
+    if (w.rank == 1) {
+      int sum = (int)w.sum();
+      var sub = new double[sum];
+      var da = w.asDoubleArr();
+      int p = 0;
+      for (int i = 0; i < w.ia; i++) {
+        if (da[i] < 0) throw new DomainError("⍸ received negative ⍵", w);
+        for (int j = 0; j < da[i]; j++) {
+          sub[p++] = (double) i + sc.IO;
+        }
+      }
+      return new DoubleArr(sub);
+    } else {
+      int sum = (int)w.sum();
+      var sub = new Value[sum];
+      int ap = 0;
+      for (int[] p : new Indexer(w.shape, sc.IO)) {
+        Num n = (Num) w.at(p, sc.IO);
+        if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", n);
+        for (int i = 0, nint = n.asInt(); i < nint; i++) {
+          sub[ap++] = Main.toAPL(p);
+        }
+      }
+      return new HArr(sub);
     }
-    return new Arr(sub);
   }
   public Obj callInv(Value w) {
-    int IO = ((Num) sc.get("⎕IO")).intValue();
-    int[] sh = ((Value) fn.call(w)).toIntArr(this);
+    int IO = sc.IO;
+    int[] sh = ((Value) fn.call(w)).asIntArr();
     int ia = 1;
     for (int i = 0; i < sh.length; i++) {
       sh[i]+=1-IO;
       ia *= sh[i];
     }
-    int[] arr = new int[ia];
-    for (Value v : w.arr) {
-      int[] c = v.toIntArr(this);
+    double[] arr = new double[ia];
+    for (Value v : w) {
+      int[] c = v.asIntArr();
       arr[Indexer.fromShape(sh, c, IO)]++;
     }
-    return Main.toAPL(arr, sh);
+    return new DoubleArr(arr, sh);
   }
   
   public Obj call(Value a, Value w) {

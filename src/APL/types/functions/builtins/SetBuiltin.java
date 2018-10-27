@@ -3,6 +3,7 @@ package APL.types.functions.builtins;
 import APL.Type;
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 public class SetBuiltin extends Builtin {
@@ -25,12 +26,12 @@ public class SetBuiltin extends Builtin {
       return w;
     }
     VarArr oa = (VarArr) a;
-    if (w instanceof Arr) {
-      Arr ow = (Arr) w;
-      if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", this, ow);
-      if (ow.ia != oa.ia) throw new LengthError("← scatter argument lengths not equal", this, ow);
+    if (w instanceof HArr) {
+      HArr ow = (HArr) w;
+      if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
+      if (ow.ia != oa.ia) throw new LengthError("← scatter argument lengths not equal", ow);
       for (int i = 0; i < oa.ia; i++) {
-        this.call(oa.arr.get(i), ow.arr[i], update);
+        this.call(oa.arr.get(i), ow.get(i), update);
       }
       return w;
     } else {

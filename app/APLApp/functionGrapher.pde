@@ -2,7 +2,7 @@ LL<Point> points = new LL<Point>();
 PQ<Double, Point> pq = new PQ<Double, Point>();
 double[] b;
 Fun fn;
-int pts = 1000;
+int pts = 200000;
 double scale = 10;
 
 
@@ -49,7 +49,7 @@ void functionGrapher() {
     } else break;
     if (System.nanoTime()-nt > 5E6) break;
   }
-  //println("sz", pq.size(), points.size, ptsadded*1f/(System.nanoTime()-nt)*1E9, frameRate);
+  println(points.size, ptsadded, ptsadded*1f/(System.nanoTime()-nt)*1E9, frameRate);
   
   while (pq.size() > 0) {
     PQNode<Double, Point> sm = pq.smallest(); // can't be PQ<Double, Point>.Item because Processing :|

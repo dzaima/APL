@@ -3,6 +3,7 @@ package APL.types.functions.builtins.mops;
 import APL.Scope;
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 import java.util.*;
@@ -16,18 +17,18 @@ public class KeyBuiltin extends Mop {
     if (aa instanceof APLMap) {
       if (w.rank > 1) {
         Value[] arr = new Value[w.ia];
-        for (int i = 0; i < w.arr.length; i++) {
-          arr[i] = (Value) ((APLMap) aa).getRaw(w.arr[i]);
+        for (int i = 0; i < w.ia; i++) {
+          arr[i] = (Value) ((APLMap) aa).getRaw(w.get(i));
         }
-        return new Arr(arr, w.shape);
+        return new HArr(arr, w.shape);
       }
       return ((APLMap) aa).getRaw(w);
     }
     if (aa instanceof Fun) {
-      int i = ((Value)sc.get("⎕IO")).toInt(this);
+      int i = sc.IO;
       var vals = new HashMap<Value, ArrayList<Value>>();
       var order = new ArrayList<Value>();
-      for (Value v : w.arr) {
+      for (Value v : w) {
         if (!vals.containsKey(v)) {
           var l = new ArrayList<Value>();
           l.add(new Num(i));
@@ -41,9 +42,9 @@ public class KeyBuiltin extends Mop {
       var res = new Value[order.size()];
       i = 0;
       for (var c : order) {
-        res[i++] = (Value) ((Fun)aa).call(c, new Arr(vals.get(c)));
+        res[i++] = (Value) ((Fun)aa).call(c, new HArr(vals.get(c)));
       }
-      return new Arr(res);
+      return new HArr(res);
     }
     throw new DomainError("⌸ ⍶ not map nor function");
   }

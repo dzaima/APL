@@ -16,7 +16,7 @@ public class QuoteQuad extends Settable {
   
   @Override
   public Obj get() {
-    return Main.toAPL(Main.console.nextLine(), null);
+    return Main.toAPL(Main.console.nextLine());
   }
   public Type type() {
     return Type.gettable;

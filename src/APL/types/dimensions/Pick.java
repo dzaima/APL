@@ -1,6 +1,6 @@
 package APL.types.dimensions;
 
-import APL.Scope;
+import APL.*;
 import APL.types.*;
 
 import java.util.Arrays;
@@ -13,15 +13,15 @@ public class Pick extends Settable {
   private Scope sc;
   
   public Pick(Variable v, Brackets where, Scope sc) {
-    super(v.getAt(where.val.toIntArr(null), sc));
-    pos = where.val.toIntArr(null);
+    super(v.getAt(where.val.asIntArr(), sc));
+    pos = where.val.asIntArr();
     variable = v;
     this.sc = sc;
   }
   
   @Override
   public void set(Obj v) {
-    variable.setAt(pos, (Value) v);
+    variable.setAt(Indexer.sub(pos, sc.IO), (Value) v);
   }
   
   @Override

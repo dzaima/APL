@@ -55,6 +55,11 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
     for (int i = 0; i < res.length; i++) res[i] = a[i] + b;
     return res;
   }
+  public static int[] sub(int[] a, int b) {
+    int[] res = new int[a.length];
+    for (int i = 0; i < res.length; i++) res[i] = a[i] - b;
+    return res;
+  }
   
   public static int[] sub(int[] a, int[] b) {
     int[] res = new int[a.length];

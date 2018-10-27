@@ -4,6 +4,7 @@ import APL.Indexer;
 import APL.Scope;
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.util.Arrays;
@@ -15,14 +16,13 @@ public class IotaBuiltin extends Builtin {
     super("⍳", 0x011, sc);
   }
   public Obj call(Value w) {
-    int IO = ((Num) sc.get("⎕IO")).intValue();
+    int IO = sc.IO;
     if (w.primitive()) {
-      Value[] is = w.arr;
-      Value[] res = new Value[((Num) is[0]).intValue()];
-      for (int i = 0; i < res.length; i++) res[i] = new Num(i + IO);
-      return new Arr(res);
+      double[] res = new double[((Num) w).asInt()];
+      for (int i = 0; i < res.length; i++) res[i] = i + IO;
+      return new DoubleArr(res);
     }
-    int[] shape = w.toIntArr(this);
+    int[] shape = w.asIntArr();
     int ia = Arrays.stream(shape).reduce(1, (a, b) -> a * b);
     Value[] arr = new Value[ia];
     int i = 0;
@@ -30,22 +30,22 @@ public class IotaBuiltin extends Builtin {
       arr[i] = toAPL(c);
       i++;
     }
-    return new Arr(arr, shape);
+    return new HArr(arr, shape);
   }
   
   @Override
   public Obj call(Value a, Value w) {
-    if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", this, w);
-    if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", this, a);
-    int IO = ((Num) sc.get("⎕IO")).intValue();
+    if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
+    if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
+    int IO = sc.IO;
     Value[] res = new Value[w.ia];
     for (int i = 0; i < w.ia; i++) {
       int j = 0;
-      for (var c = w.arr[i]; j < a.ia; j++) {
-        if (a.arr[j].equals(c)) break;
+      for (var c = w.get(i); j < a.ia; j++) {
+        if (a.get(j).equals(c)) break;
       }
       res[i] = new Num(j+IO);
     }
-    return new Arr(res);
+    return new HArr(res);
   }
 }
