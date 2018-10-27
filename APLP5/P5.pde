@@ -17,9 +17,9 @@ class P5 extends APLMap {
       case "modpress"       : case "mp" : mp      = (Fun) v; break;
       case "keyrelease"     : case "kr" : kr      = (Fun) v; break;
       case "modrelease"     : case "mr" : mr      = (Fun) v; break;
-      
       // settings
       
+      case "smooth": smooth(((Value)v).asInt()); return;
       case "size": {
         XY p = new XY(v);
         thisobj.size((int)p.x, (int)p.y);
@@ -72,6 +72,7 @@ class P5 extends APLMap {
       case  "rm": case "rightmouse" : return rm;
       case "key": return new Char(key);
       case "fps": case "framerate": return new Num(frameRate);
+      case "fc": return new Num(frameCount);
       case "color": case "col": return new Fun(0x001) {
         public Obj call(Value w) {
           return new Num(col(w));
@@ -96,9 +97,18 @@ class P5 extends APLMap {
           return APL(loadStrings(w.asString()));
         }
       };
-      case "image": return new Fun(0x001) {
+      case "image": case "img": return new Fun(0x001) {
         public Obj call(Value w) {
-          return new APLImg(loadImage(w.asString()));
+          if (w.rank == 2) {
+            int[] pixels = new int[w.ia];
+            for (int i = 0; i < w.ia; i++) pixels[i] = w.get(i).asInt();
+            PImage img = createImage((int)w.shape[0], (int)w.shape[1], ARGB);
+            img.pixels = pixels;
+            img.updatePixels();
+            return new APLImg(img);
+          } else {
+            return new APLImg(loadImage(w.asString()));
+          }
         }
       };
       default: return NULL;

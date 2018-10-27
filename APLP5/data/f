@@ -1,7 +1,0 @@
-P5.size ← 700 700
-G ← P5.G
-P5.draw ← {
-  G.bg 'fff'
-  G.fill←'f00'
-  G.rect (4⍴P5.mpos)+0 0 40 40
-}

@@ -8,7 +8,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"draw"};
+  if (args == null) args = new String[]{"iKeExample"};
   
   global = new Scope();
   String s = new String(loadBytes(args[0]));

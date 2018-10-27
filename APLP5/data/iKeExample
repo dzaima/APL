@@ -1,0 +1,12 @@
+⍝ idea stolen from https://github.com/JohnEarnest/ok/tree/gh-pages/ike
+⎕IO←0
+P5.size ← 400 400
+G ← P5.G
+cols ← P5.col¨ '002b36' '073642' '586e75' '657b83' '839496' '93a1a1' 'eee8d5' 'fdf6e3' 'b58900' 'cb4b16' 'dc322f' 'd33682' '6c71c4' '268bd2' '2aa198' '859900'
+is ← ∘.{√ +/ ×⍨ ⍺,⍵}⍨⍳200
+⎕ ← ⎕OPT¨ 'is' 'cols'
+P5.smooth←0
+P5.draw ← {
+  (0 0,P5.size) G.img P5.img ((⍉⊖),⍉) (⌽,⊢) cols⊇⍨ 16| ⌊ is - P5.fc÷5
+  ⍝ ⎕←P5.fps
+}
