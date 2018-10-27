@@ -27,21 +27,19 @@ public class RhoBuiltin extends Builtin {
     Integer emptyPos = null;
     for (int i = 0; i < sh.length; i++) {
       Value v = a.get(i);
-      if (! (v instanceof Num)) {
-        if (v.ia == 0) {
-          if (emptyPos == null) emptyPos = i;
-          else throw new DomainError("shape contained multiple undefined dimension sizes", v);
-        } else throw new DomainError("shape for ⍴ contained "+v.humanType(true), v);
-      } else {
+      if (v instanceof Num) {
         int c = v.asInt();
         sh[i] = c;
-        ia *= c;
-      }
+        ia*= c;
+      } else if (v.ia == 0) {
+        if (emptyPos == null) emptyPos = i;
+        else throw new DomainError("shape contained multiple undefined dimension sizes", v);
+      } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), v);
     }
     if (emptyPos != null) {
       if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", w);
       sh[emptyPos] = w.ia/ia;
-      ia = w.ia;
+      return w.ofShape(sh);
     } else if (ia == w.ia) return w.ofShape(sh);
     Value[] arr = new Value[ia];
     if (w.ia == 0) {

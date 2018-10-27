@@ -2,7 +2,7 @@ package APL;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.util.HashMap;
@@ -13,15 +13,24 @@ public class Scope {
   public boolean alphaDefined;
   public int IO;
   private Num nIO;
+  
+  enum Cond {
+    _01, gt0, ne0,
+  }
+  boolean condSpaces;
+  Cond cond;
   public Scope() {
     IO = 1;
     nIO = Num.ONE;
-    vars.put("⎕COND", Main.toAPL("01"));
+    cond = Cond._01;
+    condSpaces = false;
   }
   public Scope(Scope p) {
     parent = p;
     IO = p.IO;
     nIO = p.nIO;
+    cond = p.cond;
+    condSpaces = p.condSpaces;
   }
   private Scope owner(String name) {
     if (vars.containsKey(name)) return this;
@@ -42,9 +51,14 @@ public class Scope {
     if (name.equals("⎕COND")) {
       String s = ((Arr) val).asString();
       if (s == null) throw new DomainError("⎕COND must be set to a character vector");
-      String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
-      if (!m.equals("01") && !m.equals(">0") && !m.equals("≠0")) {
-        throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
+      switch(s) {
+        case "01" : cond = Cond._01; condSpaces = false; return;
+        case ">0" : cond = Cond.gt0; condSpaces = false; return;
+        case "≠0" : cond = Cond.ne0; condSpaces = false; return;
+        case "01 ": cond = Cond._01; condSpaces = true ; return;
+        case ">0 ": cond = Cond.gt0; condSpaces = true ; return;
+        case "≠0 ": cond = Cond.ne0; condSpaces = true ; return;
+        default: throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
       }
     }
     vars.put(name, val);
@@ -66,6 +80,11 @@ public class Scope {
         case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕UCS": return new UCS(this);
         case "⎕IO": return nIO;
+        case "⎕COND": switch (cond) {
+          case _01: if (condSpaces) return new ChrArr("01 "); return new ChrArr("01");
+          case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");
+          case ne0: if (condSpaces) return new ChrArr("≠0 "); return new ChrArr("≠0");
+        }
       }
     }
     Obj f = vars.get(name);

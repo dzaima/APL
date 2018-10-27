@@ -304,27 +304,37 @@ public class Main {
     return new ChrArr(s);
   }
   public static boolean bool(Obj v, Scope sc) {
-    if (v instanceof Settable) v = ((Settable) v).get();
-    String cond = ((Value) sc.get("⎕COND")).asString();
-    assert cond != null;
-    if (cond.endsWith(" ")) {
+    Scope.Cond c = sc.cond;
+    if (sc.condSpaces) {
       if (v instanceof Char) {
         return ((Char) v).chr != ' ';
       }
-      cond = cond.substring(0, cond.length()-1);
     }
     if (!(v instanceof Num)) throw new DomainError("⎕COND does not accept "+v.humanType(false));
     Num n = (Num) v;
-    switch (cond) {
-      case "01":
+    switch (c) {
+      case _01:
         if (n.equals(Num.ZERO)) return false;
         if (n.equals(Num.ONE)) return true;
         throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+n.asInt());
-      case ">0":
+      case gt0:
         return n.compareTo(Num.ZERO)>0;
-      case "≠0":
+      case ne0:
         return n.compareTo(Num.ZERO)!=0;
-      default: throw new IllegalStateException("unknown ⎕COND "+cond);
+      default: throw new IllegalStateException("unknown ⎕COND "+c);
+    }
+  }
+  public static boolean bool(double v, Scope sc) {
+    switch (sc.cond) {
+      case _01:
+        if (v == 0) return false;
+        if (v == 1) return true;
+        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+v);
+      case gt0:
+        return v>0;
+      case ne0:
+        return v!=0;
+      default: throw new IllegalStateException("unknown ⎕COND");
     }
   }
 }
