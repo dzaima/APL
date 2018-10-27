@@ -58,4 +58,9 @@ public class SingleItemArr extends Arr {
   public boolean quickDoubleArr() {
     return v instanceof Num;
   }
+  public Value[] values() {
+    Value[] vs = new Value[ia];
+    for (int i = 0; i < ia; i++) vs[i] = v;
+    return vs;
+  }
 }

@@ -18,7 +18,7 @@ public class IotaBuiltin extends Builtin {
   public Obj call(Value w) {
     int IO = sc.IO;
     if (w.primitive()) {
-      double[] res = new double[((Num) w).asInt()];
+      double[] res = new double[w.asInt()];
       for (int i = 0; i < res.length; i++) res[i] = i + IO;
       return new DoubleArr(res);
     }

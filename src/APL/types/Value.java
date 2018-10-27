@@ -2,7 +2,7 @@ package APL.types;
 
 import APL.*;
 import APL.errors.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 import java.util.*;
 
@@ -167,5 +167,30 @@ public abstract class Value extends Obj implements Iterable<Value> {
   }
   public boolean quickDoubleArr() {
     return false;
+  }
+  public Value optimize() {
+    if (this instanceof Primitive) return this;
+    if (ia == 0) return this;
+    Value f = get(0);
+    if (f instanceof Num) {
+      double[] ds = new double[ia];
+      for (int i = 0; i < ia; i++) {
+        if (get(i) instanceof Num) ds[i] = get(i).asDouble();
+        else {
+          System.out.println(":|");
+          return this;
+        }
+      }
+      return new DoubleArr(ds, shape);
+    }
+    if (f instanceof Char) {
+      StringBuilder s = new StringBuilder();
+      for (int i = 0; i < ia; i++) {
+        if (get(i) instanceof Char) s.append(((Char) get(i)).chr);
+        else return this;
+      }
+      return new ChrArr(s.toString(), shape);
+    }
+    return this;
   }
 }

@@ -10,7 +10,6 @@ public class Num extends Primitive {
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
   public static final Num TWO = new Num("2");
-  @SuppressWarnings("unused") // soon, it will. Soon....
   public static final Num MINUS_ONE = new Num("-1");
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");

@@ -78,4 +78,9 @@ public class DoubleArr extends Arr {
   public boolean quickDoubleArr() {
     return true;
   }
+  
+  @Override
+  public Value optimize() {
+    return this;
+  }
 }

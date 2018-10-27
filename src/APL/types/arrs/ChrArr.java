@@ -50,4 +50,9 @@ public class ChrArr extends Arr {
 //    if (!(what instanceof Char)) return super.with(what, where);
 //    String n =
 //  }
+  
+  @Override
+  public Value optimize() {
+    return this;
+  }
 }

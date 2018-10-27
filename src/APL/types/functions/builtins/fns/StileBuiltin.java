@@ -13,7 +13,22 @@ public class StileBuiltin extends Builtin {
     return numChrMap(Num::abs, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
   }
   
+  static class DNf implements DyNumVecFun {
+    public double call(double a, double w) {
+      return a % w;
+    }
+    public void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) res[i] = a % w[i];
+    }
+    public void call(double[] res, double[] a, double w) {
+      for (int i = 0; i < a.length; i++) res[i] = a[i] % w;
+    }
+    public void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) res[i] = a[i] % w[i];
+    }
+  }
+  private static DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> ((Num)w).mod((Num) a), a0, w0);
+    return scalarNum(DNF, a0, w0);
   }
 }

@@ -85,6 +85,8 @@ public class Scope {
           case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");
           case ne0: if (condSpaces) return new ChrArr("≠0 "); return new ChrArr("≠0");
         }
+        case "⎕OPT": case "⎕OPTIMIZE":
+          return new Optimizer(this);
       }
     }
     Obj f = vars.get(name);
@@ -195,7 +197,7 @@ public class Scope {
     }
   }
   
-  class ScopeViewer extends APLMap {
+  static class ScopeViewer extends APLMap {
   
     private final Scope sc;
   
@@ -242,7 +244,7 @@ public class Scope {
     }
   }
   
-  private class MapGen extends Builtin {
+  private static class MapGen extends Builtin {
   
     MapGen() {
       super("⎕MAP", 0x011);
@@ -268,6 +270,22 @@ public class Scope {
         map.set(a.get(i), w.get(i));
       }
       return map;
+    }
+  }
+  
+  private class Optimizer extends Builtin {
+    Optimizer(Scope sc) {
+      super("⎕OPTIMIZE", 0x001, sc);
+    }
+    @Override
+    public Obj call(Value w) {
+      String name = w.asString();
+      if (! (get(name) instanceof Value)) return Num.MINUS_ONE;
+      Value v = (Value) get(name);
+      Value optimized = v.optimize();
+      if (v == optimized) return Num.ZERO;
+      update(name, optimized);
+      return Num.ONE;
     }
   }
 }
