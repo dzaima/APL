@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import static APL.Main.toAPL;
@@ -41,19 +41,27 @@ public class RhoBuiltin extends Builtin {
       sh[emptyPos] = w.ia/ia;
       return w.ofShape(sh);
     } else if (ia == w.ia) return w.ofShape(sh);
-    Value[] arr = new Value[ia];
     if (w.ia == 0) {
-      var prototype = w.prototype();
+      return new SingleItemArr(w.prototype(), sh);
+    } else if (w instanceof DoubleArr) {
+      double[] inp = w.asDoubleArr();
+      double[] res = new double[ia];
+      int p = 0;
       for (int i = 0; i < ia; i++) {
-        arr[i] = prototype;
+        res[i] = inp[p++];
+        if (p == w.ia) p = 0;
       }
+      return new DoubleArr(res, sh);
+    } else if (w instanceof Primitive) {
+      return new SingleItemArr(w, sh);
     } else {
+      Value[] arr = new Value[ia];
       int index = 0;
       for (int i = 0; i < ia; i++) {
         arr[i] = w.get(index++);
         if (index == w.ia) index = 0;
       }
+      return new HArr(arr, sh);
     }
-    return new HArr(arr, sh);
   }
 }

@@ -508,7 +508,7 @@ class Exec {
           case '@': return new AtBuiltin(sc);
   
   
-          case '⍬': return EmptyArr.SHAPE0;
+          case '⍬': return new DoubleArr(new double[0]);
           case '⎕': return new Quad(sc);
           case '⍞': return new QuoteQuad(sc);
           case '⍺': return sc.get("⍺");

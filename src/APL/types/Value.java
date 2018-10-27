@@ -85,7 +85,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return Type.array;
   }
   
-  public abstract Value prototype();
+  public abstract Value prototype(); // what to append to this array
   
   public String oneliner(int[] where) {
     return toString();
