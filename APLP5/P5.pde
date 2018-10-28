@@ -101,7 +101,10 @@ class P5 extends APLMap {
         public Obj call(Value w) {
           if (w.rank == 2) {
             int[] pixels = new int[w.ia];
-            for (int i = 0; i < w.ia; i++) pixels[i] = w.get(i).asInt();
+            if (w.quickDoubleArr()) {
+              double[] wv = w.asDoubleArr();
+              for (int i = 0; i < w.ia; i++) pixels[i] = (int)wv[i];
+            } else for (int i = 0; i < w.ia; i++) pixels[i] = w.get(i).asInt();
             PImage img = createImage((int)w.shape[1], (int)w.shape[0], ARGB);
             img.pixels = pixels;
             img.updatePixels();

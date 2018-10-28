@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 static final Null NULL = Null.NULL;
 Scope global;
 APLP5 thisobj = this;
@@ -11,7 +12,12 @@ void settings() {
   if (args == null) args = new String[]{"iKeExample"};
   
   global = new Scope();
-  String s = new String(loadBytes(args[0]));
+  String s;
+  try {
+    s = new String(loadBytes(args[0]), "UTF-8");
+  } catch (UnsupportedEncodingException e) {
+    throw new DomainError("failed to load file");
+  }
   p5 = new P5();
   global.set("P5", p5);
   p5.lm = new MouseButton(LEFT);
