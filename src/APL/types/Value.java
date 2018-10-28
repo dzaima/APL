@@ -46,8 +46,6 @@ public abstract class Value extends Obj implements Iterable<Value> {
     if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
       String s1 =   asString();
       String s2 = v.asString();
-      System.out.println(s1);
-      System.out.println(s2);
       return s1.compareTo(s2);
     }
     throw new DomainError("Can't compare "+v+" and "+this, this);

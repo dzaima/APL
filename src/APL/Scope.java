@@ -80,6 +80,7 @@ public class Scope {
         case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕UCS": return new UCS(this);
         case "⎕IO": return nIO;
+        case "⎕CLASS": return new ClassGetter();
         case "⎕COND": switch (cond) {
           case _01: if (condSpaces) return new ChrArr("01 "); return new ChrArr("01");
           case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");
@@ -286,6 +287,15 @@ public class Scope {
       if (v == optimized) return Num.ZERO;
       update(name, optimized);
       return Num.ONE;
+    }
+  }
+  private class ClassGetter extends Builtin {
+    ClassGetter() {
+      super("⎕CLASS", 0x001);
+    }
+    @Override
+    public Obj call(Value w) {
+      return new ChrArr(w.getClass().getCanonicalName());
     }
   }
 }
