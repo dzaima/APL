@@ -31,7 +31,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
         if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", w);
       }
     }
-    int[] rs = !aScalar ? a.shape.clone() : !wScalar ? w.shape.clone() : new int[] {2}; // shape of the result
+    int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result
     rs[k] += aScalar || wScalar ? 1 : w.shape[k];
     int n0 = 1; for (int i = 0; i < k; i++) n0 *= rs[i];             // product of major dimensions
     int n1 = rs[k];                                                  // dimension to catenate on
