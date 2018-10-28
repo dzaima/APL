@@ -222,15 +222,15 @@ public abstract class Arr extends Value {
       if (da != null) return new DoubleArr(da, sh);
     }
     if (v[0] instanceof Char) {
-      String s = "";
+      StringBuilder s = new StringBuilder();
       for (Value aV : v) {
-        if (aV instanceof Char) s += ((Char) aV).chr;
+        if (aV instanceof Char) s.append(((Char) aV).chr);
         else {
           s = null;
           break;
         }
       }
-      if (s != null) return new ChrArr(s, sh);
+      if (s != null) return new ChrArr(s.toString(), sh);
     }
 //    Value[] opt = new Value[v.length]; // do this in the caller please
 //    boolean anyBetter = false;
