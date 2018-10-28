@@ -16,7 +16,7 @@ public class StileBuiltin extends Builtin {
   static class DNf implements DyNumVecFun {
     public double call(double a, double w) {
       double c = w % a;
-      if (c < 0) return c + w;
+      if (c < 0) return c + a;
       return c;
     }
     public void call(double[] res, double a, double[] w) {
