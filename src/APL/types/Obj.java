@@ -6,7 +6,7 @@ import APL.types.arrs.HArr;
 import APL.types.dimensions.*;
 import APL.types.functions.VarArr;
 
-public abstract class Obj {
+public abstract class Obj implements Tokenable {
   public Token token;
   
   public String repr;
@@ -52,5 +52,10 @@ public abstract class Obj {
   @Override
   public int hashCode() {
     throw new NYIError("hash not supported for "+this);
+  }
+  
+  @Override
+  public Token getToken() {
+    return token;
   }
 }

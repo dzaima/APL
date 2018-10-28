@@ -1,6 +1,6 @@
 package APL.types;
 
-import APL.*;
+import APL.Type;
 import APL.errors.*;
 import APL.types.arrs.*;
 
@@ -161,7 +161,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return res;
   }
   public double asDouble() {
-    throw new DomainError("Using "+this+" as number");
+    throw new DomainError("Using "+this.humanType(true)+" as a number", this);
   }
   public boolean quickDoubleArr() { // also must be 100% sure that I can actually convert to double arr
     return false;

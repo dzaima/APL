@@ -23,7 +23,7 @@ public class Main {
   public static final Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
-  public static Obj faulty;
+  public static Tokenable faulty;
   public static void main(String[] args) {
     colorful = System.console() != null && System.getenv().get("TERM") != null;
     console = new Scanner(System.in);
@@ -177,7 +177,7 @@ public class Main {
               case ")TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
               case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
-              case ")CLASS"       : println(exec(rest, global).getClass().getCanonicalName()); break;
+              case ")CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
               case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
               case ")STACK":
                 if (lastError != null) {
@@ -189,16 +189,16 @@ public class Main {
             }
           } else {
             Obj r = exec(cr, global);
-            println(r.toString());
+            if (r!=null) println(r.toString());
           }
         } catch (APLError e) {
           e.print();
           lastError = e;
         } catch (Throwable e) {
           colorprint(e + ": " + e.getMessage(), 246);
-          if (faulty != null && faulty.token != null) {
-            String s = IntStream.range(0, faulty.token.pos).mapToObj(i -> " ").collect(Collectors.joining());
-            colorprint(faulty.token.line, 217);
+          if (faulty != null && faulty.getToken() != null) {
+            String s = IntStream.range(0, faulty.getToken().pos).mapToObj(i -> " ").collect(Collectors.joining());
+            colorprint(faulty.getToken().line, 217);
             colorprint(s + "^", 217);
           }
           e.printStackTrace();

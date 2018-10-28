@@ -1,9 +1,11 @@
 package APL;
 
+import APL.types.Tokenable;
+
 import java.util.*;
 
 
-public class Token {
+public class Token implements Tokenable {
   public TType type;
   public String repr;
   public List<Token> tokens;
@@ -70,5 +72,10 @@ public class Token {
         res = new StringBuilder(type + "");
         return res.toString();
     }
+  }
+  
+  @Override
+  public Token getToken() {
+    return this;
   }
 }

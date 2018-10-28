@@ -19,9 +19,10 @@ import static APL.Main.*;
 class Exec {
   private Scope sc;
   private List<Token> tokens;
-  
+  private Token allToken;
   Exec(Token ln, Scope sc) {
     tokens = ln.tokens;
+    allToken = ln;
     this.sc = sc;
   }
 
@@ -33,6 +34,8 @@ class Exec {
   private LinkedList<Obj> done;
   private Stack<Token> left;
   Obj exec() {
+    if (tokens.size() > 0) Main.faulty = tokens.get(0);
+    else if (allToken != null) Main.faulty = allToken;
     if (sc.alphaDefined && tokens.size() >= 2 && "⍺".equals(tokens.get(0).repr) && tokens.get(1).type == TType.set) {
       if (Main.debug) printlvl("skipping cuz it's ⍺←");
       return null;
@@ -128,7 +131,11 @@ class Exec {
     
     Main.printlvl--;
     if (Main.debug) printlvl("END:", done);
-    if (done.size() != 1) throw new SyntaxError("couldn't join everything up into a single expression", done.get(0).token);
+    if (done.size() != 1) {
+      if (done.size() == 0) return null;
+      if (done.get(0).token != null) Main.faulty = done.get(0).token;
+      throw new SyntaxError("couldn't join everything up into a single expression", done.get(done.size()-1));
+    }
     return done.get(0);
   }
 
@@ -153,9 +160,9 @@ class Exec {
         var a = lastVal();
         Main.faulty = f;
         var res = f.call(a, w);
-        if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
-        done.addLast(res);
-        if (res == null) return;
+        if (res == null && (left.size() > 0 || done.size() > 0)) throw new SyntaxError("trying to use result of function which returned nothing", a);
+        if (res != null) done.addLast(res);
+        else return;
         continue;
       }
       if (is("F@", end, true)) {
@@ -192,9 +199,9 @@ class Exec {
         var f = lastFun();
         Main.faulty = f;
         var res = f.call(w);
-        if (res == null && left.size() > 0) throw new SyntaxError("trying to use result of function which returned null");
-        done.addLast(res);
-        if (res == null) return;
+        if (res == null && (left.size() > 0 || done.size() > 0)) throw new SyntaxError("trying to use result of function which returned nothing", f);
+        if (res != null) done.addLast(res);
+        else return;
         continue;
       }
       if (is("#!←", end, true) || done.size() == 1 && done.get(0).type() == Type.gettable) {
@@ -207,7 +214,8 @@ class Exec {
         var s = (SetBuiltin) done.removeLast(); // ←
         var a = done.removeLast(); // variable
         Main.faulty = s;
-        done.addLast(s.call(a, w, false));
+        var res = s.call(a, w, false);
+        done.addLast(res);
         continue;
       }
       if (is("D!|NF←N", end, false)) {
@@ -217,7 +225,8 @@ class Exec {
         var f = lastFun();
         Obj a = done.removeLast(); // variable
         Main.faulty = f;
-        done.addLast(s.call(f, a, w));
+        var res = s.call(f, a, w);
+        if (res != null) done.addLast(res);
         continue;
       }
       if (is("!D|[FN]M", end, true)) {

@@ -5,15 +5,11 @@ import APL.types.Obj;
 
 import java.util.stream.*;
 
-import static APL.Main.*;
+import static APL.Main.colorprint;
 
 public class APLError extends Error {
   public Obj cause;
-  Token t;
-  APLError (String msg, Token t) {
-    super(msg);
-    this.t = t;
-  }
+  
   APLError (String msg) {
     super(msg);
   }
@@ -27,21 +23,22 @@ public class APLError extends Error {
       oline = cause.token.line;
       opos = cause.token.pos;
     }
-    if (Main.faulty == null || Main.faulty.token == null) {
+    if (Main.faulty == null || Main.faulty.getToken() == null) { // fn bad
+      if (oline == null) return; // both bad
       String s = IntStream.range(0, opos).mapToObj(i -> " ").collect(Collectors.joining());
       colorprint(oline, 217);
       colorprint(s +"^", 217);
-    } else {
-      String fnline = Main.faulty.token.line;
-      int fnpos = Main.faulty.token.pos;
-      if (oline != null && oline.equals(fnline)) {
+    } else { // fn good
+      String fnline = Main.faulty.getToken().line;
+      int fnpos = Main.faulty.getToken().pos;
+      if (oline != null && oline.equals(fnline)) { // draw both
         StringBuilder s = new StringBuilder();
         for (int i = 0; i < oline.length(); i++) {
           s.append(i == fnpos? '^' : i == opos? '¯' : ' ');
         }
         colorprint(oline, 217);
         colorprint(s.toString(), 217);
-      } else {
+      } else { // only fn
         String s = IntStream.range(0, fnpos).mapToObj(i -> " ").collect(Collectors.joining());
         colorprint(fnline, 217);
         colorprint(s + "^", 217);
