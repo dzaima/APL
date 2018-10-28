@@ -58,11 +58,11 @@ public class UpArrowBuiltin extends Builtin {
       for (Value v : sub) {
         for (int[] sh : new Indexer(def, 0)) {
 //          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
-          allVals[i++] = v.at(sh, v.prototype());
+          allVals[i++] = v.at(sh, v.prototype()).squeeze();
         }
       }
       
-      return new HArr(allVals, totalShape);
+      return Arr.create(allVals, totalShape);
     } else return w;
   }
 }

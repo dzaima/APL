@@ -52,9 +52,9 @@ public class DownArrowBuiltin extends Builtin {
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
     for (int[] index : indexer) {
-      arr[i] = w.at(index, sc.IO);
+      arr[i] = w.at(index, sc.IO).squeeze();
       i++;
     }
-    return new HArr(arr, shape);
+    return Arr.create(arr, shape);
   }
 }

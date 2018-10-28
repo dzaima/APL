@@ -283,7 +283,7 @@ public class Scope {
       String name = w.asString();
       if (! (get(name) instanceof Value)) return Num.MINUS_ONE;
       Value v = (Value) get(name);
-      Value optimized = v.optimize();
+      Value optimized = v.squeeze();
       if (v == optimized) return Num.ZERO;
       update(name, optimized);
       return Num.ONE;

@@ -89,7 +89,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return toString();
   }
   
-  transient private Value[] vs;
+  protected transient Value[] vs;
   
   public Value[] values() {
     if (vs == null) {
@@ -166,7 +166,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public boolean quickDoubleArr() { // also must be 100% sure that I can actually convert to double arr
     return false;
   }
-  public Value optimize() {
+  public Value squeeze() {
     if (this instanceof Primitive) return this;
     if (ia == 0) return this;
     Value f = get(0);
@@ -175,26 +175,29 @@ public abstract class Value extends Obj implements Iterable<Value> {
       for (int i = 0; i < ia; i++) {
         if (get(i) instanceof Num) ds[i] = get(i).asDouble();
         else {
-          System.out.println(":|");
-          return this;
+          ds = null;
+          break;
         }
       }
-      return new DoubleArr(ds, shape);
+      if (ds != null) return new DoubleArr(ds, shape);
     }
     if (f instanceof Char) {
       StringBuilder s = new StringBuilder();
       for (int i = 0; i < ia; i++) {
         if (get(i) instanceof Char) s.append(((Char) get(i)).chr);
-        else return this;
+        else {
+          s = null;
+          break;
+        }
       }
-      return new ChrArr(s.toString(), shape);
+      if (s != null) return new ChrArr(s.toString(), shape);
     }
     boolean anyBetter = false;
     Value[] optimized = new Value[ia];
     Value[] values = values();
     for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
       Value v = values[i];
-      Value vo = v.optimize();
+      Value vo = v.squeeze();
       if (vo != v) anyBetter = true;
       optimized[i] = vo;
     }

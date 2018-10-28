@@ -2,7 +2,7 @@ package APL.types;
 
 import APL.*;
 import APL.errors.DomainError;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 import java.util.stream.*;
 
@@ -206,5 +206,42 @@ public abstract class Arr extends Value {
     System.arraycopy(values(), 0, nvals, 0, ia);
     nvals[Indexer.fromShape(shape, where, 0)] = what;
     return new HArr(nvals, shape);
+  }
+  
+  public static Arr create(Value[] v, int[] sh) {
+    if (v.length == 0) return new EmptyArr(sh);
+    if (v[0] instanceof Num) {
+      double[] da = new double[v.length];
+      for (int i = 0; i < v.length; i++) {
+        if (v[i] instanceof Num) da[i] = ((Num)v[i]).num;
+        else {
+          da = null;
+          break;
+        }
+      }
+      if (da != null) return new DoubleArr(da, sh);
+    }
+    if (v[0] instanceof Char) {
+      String s = "";
+      for (Value aV : v) {
+        if (aV instanceof Char) s += ((Char) aV).chr;
+        else {
+          s = null;
+          break;
+        }
+      }
+      if (s != null) return new ChrArr(s, sh);
+    }
+//    Value[] opt = new Value[v.length]; // do this in the caller please
+//    boolean anyBetter = false;
+//    for (int i = 0; i < v.length; i++) {
+//      Value c = v[i];
+//      Value o = c.squeeze();
+//      opt[i] = o;
+//      if (c != o) anyBetter = true;
+//    }
+//    if (anyBetter) return new HArr(opt, sh);
+//    else
+    return new HArr(v, sh);
   }
 }

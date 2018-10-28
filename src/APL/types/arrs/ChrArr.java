@@ -52,7 +52,7 @@ public class ChrArr extends Arr {
 //  }
   
   @Override
-  public Value optimize() {
+  public Value squeeze() {
     return this;
   }
 }

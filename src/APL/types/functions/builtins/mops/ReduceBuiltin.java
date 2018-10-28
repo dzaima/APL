@@ -2,9 +2,8 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.HArr;
-import APL.types.functions.Mop;
 import APL.types.dimensions.DimMMop;
+import APL.types.functions.Mop;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   public ReduceBuiltin() {
@@ -30,7 +29,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     for (int i = a.length-2; i >= 0; i--) {
       last = (Value)((Fun)f).call(a[i], last);
     }
-    return last;
+    return last.squeeze();
   }
   private Value ngnReduce(Value x, int axis, Fun f) { // https://chat.stackexchange.com/transcript/message/47158587#47158587
     if (x.rank == 0) return x;
@@ -50,9 +49,9 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         for (int j = n1 - 2; j >= 0; j--) {
           c = (Value) f.call(x.get(i*n1*n2 + j*n2 + k), c);
         }
-        r[i*n2 + k] = c;
+        r[i*n2 + k] = c.squeeze();
       }
     }
-    return new HArr(r, ns);
+    return Arr.create(r, ns);
   }
 }

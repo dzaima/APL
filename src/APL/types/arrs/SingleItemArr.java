@@ -65,8 +65,8 @@ public class SingleItemArr extends Arr {
   }
   
   @Override
-  public Value optimize() {
-    Value ov = v.optimize();
+  public Value squeeze() {
+    Value ov = v.squeeze();
     if (ov == v) return this;
     return new SingleItemArr(v, shape);
   }
