@@ -31,13 +31,15 @@ public class CatBuiltin extends Builtin {
     int chunks = a.ia/chunkSizeA;
     Value[] arr = new Value[chunks * (chunkSizeA+chunkSizeW)];
     int pos = 0, posA = 0, posW = 0;
+    Value[] av = a.values();
+    Value[] wv = w.values();
     for (int i = 0; i < chunks; i++) {
-      for (int j = 0; j < chunkSizeA; j++) {
-        arr[pos++] = a.get(posA++);
-      }
-      for (int j = 0; j < chunkSizeW; j++) {
-        arr[pos++] = w.get(posW++);
-      }
+      if (chunkSizeA >= 0) System.arraycopy(av, posA, arr, pos, chunkSizeA);
+      pos+= chunkSizeA;
+      posA+= chunkSizeA;
+      if (chunkSizeW >= 0) System.arraycopy(wv, posW, arr, pos, chunkSizeW);
+      pos+= chunkSizeW;
+      posW+= chunkSizeW;
     }
     return new HArr(arr, newShape);
   }
