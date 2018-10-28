@@ -7,6 +7,7 @@ class APLGraphics extends APLMap {
   }
   void set(Value k, Obj v) {
     String s = k.asString().toLowerCase();
+    if (g == null) throw new DomainError(this == mainGraphics? "Make P5.G calls in P5.setup/draw" : "object not yet initialized");
     switch (s) {
       
       case "fill":
@@ -23,6 +24,7 @@ class APLGraphics extends APLMap {
   }
   Obj getRaw(Value k) {
     String s = k.asString().toLowerCase();
+    if (g == null) throw new DomainError(this == mainGraphics? "Make P5.G calls in P5.setup/draw" : "object not yet initialized");
     switch (s) {
       case "background": case "bg": return new Fun(0x001) {
         public Obj call(Value w) {

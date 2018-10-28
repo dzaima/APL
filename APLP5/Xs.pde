@@ -23,7 +23,7 @@ int col(Obj v) {
     return i | (i<<4) | (i<<8) | (i<<12) | (i<<16) | (i<<20) | 0xff000000;
   }
   if (s.length() == 6) return Integer.parseInt(s, 16) | 0xff000000;
-  if (s.length() == 8) return Integer.parseInt(s, 16);
+  if (s.length() == 8) return (int) Long.parseLong(s, 16);
   if (s.length() == 2) {
     int i = Integer.parseInt(s, 16);
     return i | (i<<8) | (i<<16) | 0xff000000;
