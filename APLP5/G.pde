@@ -118,7 +118,7 @@ class APLGraphics extends APLMap {
         }
         public void draw(float[] fa) {
           if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
-          if (fa.length > 4) {
+          if (fa.length >= 4) {
             g.beginShape();
             for (int i = 0; i < fa.length; i+= 2) g.vertex(fa[i], fa[i+1]);
             g.endShape();
