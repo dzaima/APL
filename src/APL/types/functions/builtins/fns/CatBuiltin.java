@@ -4,9 +4,10 @@ import java.util.Arrays;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
+import APL.types.dimensions.DimDFn;
 import APL.types.functions.Builtin;
 
-public class CatBuiltin extends Builtin {
+public class CatBuiltin extends Builtin implements DimDFn {
   public CatBuiltin() {
     super(",", 0x011);
   }
@@ -16,6 +17,10 @@ public class CatBuiltin extends Builtin {
   }
   public Obj call(Value a, Value w) {
     return cat(a, w, Math.max(a.shape.length, w.shape.length) - 1);
+  }
+  public Obj call(Value a, Value w, int dim) {
+    if (dim < 0 || dim >= Math.max(a.shape.length, w.shape.length)) throw new DomainError("dimension given is out of range");
+    return cat(a, w, dim);
   }
   static Obj cat(Value a, Value w, int k) {
     boolean aScalar = a.scalar(), wScalar = w.scalar();
@@ -36,7 +41,7 @@ public class CatBuiltin extends Builtin {
     Value[] rv = new Value[n0 * n1 * n2];                            // result values
     copyChunks(aScalar, a.values(), rv,  0, ad, ad + wd);
     copyChunks(wScalar, w.values(), rv, ad, wd, ad + wd);
-    return new HArr(rv, rs);
+    return Arr.create(rv, rs); // TODO specialize for DoubleArr so this doesn't need squeezing
   }
   private static void copyChunks(boolean scalar, Value[] av, Value[] rv, int offset, int ad, int rd) {
     if (scalar) {
@@ -49,4 +54,5 @@ public class CatBuiltin extends Builtin {
       }
     }
   }
+  
 }
