@@ -1,3 +1,4 @@
+
 P5
   setup w h   called once before starting the draw loop
   draw w h    called every frame
@@ -59,8 +60,8 @@ P5
     height|h: get the height of the image
    
   G:
-    fill  ←col: set the fill color
-    stroke←col: set the stroke color
+    fill  ←col: set the fill color (set to ⍬ for noFill)
+    stroke←col: set the stroke color (set to ⍬ for noStroke)
     textsize←size: set text size
     bg|background col: color the canvas to the color
     x y text 'text': draw that text at (x;y)

@@ -9,11 +9,14 @@ class APLGraphics extends APLMap {
     String s = k.asString().toLowerCase();
     switch (s) {
       
-      case     "fill":
+      case "fill":
         if (((Value) v).ia == 0) g.noFill();
         else g.fill(col(v));
       return;
-      case   "stroke": g.stroke(col(v)); return;
+      case "stroke":
+        if (((Value) v).ia == 0) g.noStroke();
+        else g.stroke(col(v));
+      return;
       case "textsize": g.textSize(w.asInt()); return;
       default: throw new DomainError("setting non-existing key "+s+" for Graphics");
     }
