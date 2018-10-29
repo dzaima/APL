@@ -16,7 +16,7 @@ class XY {
   }
 }
 int col(Obj v) {
-  if (v instanceof Num) return ((Num) v).asInt();
+  if (v instanceof Num) return (int)(long)((Num) v).asDouble();
   String s = ((Value) v).asString();
   if (s.length() == 1) {
     int i = Integer.parseInt(s, 16);
