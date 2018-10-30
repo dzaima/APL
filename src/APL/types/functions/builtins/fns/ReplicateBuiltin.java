@@ -35,7 +35,7 @@ public class ReplicateBuiltin extends Builtin {
     }
     if (a.ia != w.ia) throw new LengthError("⍺ & ⍵ should have equal lengths for ⌿", w);
     int total = 0;
-    int[] sizes = a.asIntArr();
+    int[] sizes = a.asIntVec();
     for (int i = 0; i < a.ia; i++) {
       total+= Math.abs(sizes[i]);
     }

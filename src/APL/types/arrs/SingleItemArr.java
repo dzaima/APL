@@ -17,7 +17,7 @@ public class SingleItemArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntVec() {
     int vi = v.asInt();
     int[] a = new int[ia];
     for (int i = 0; i < ia; i++) a[i] = vi;
@@ -62,6 +62,18 @@ public class SingleItemArr extends Arr {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = v;
     return vs;
+  }
+  @Override
+  public double[] asDoubleArr() {
+    double[] res = new double[ia];
+    double n = v.asDouble();
+    for (int i = 0; i < ia; i++) res[i] = n;
+    return res;
+  }
+  
+  @Override
+  public double[] asDoubleArrClone() {
+    return asDoubleArr();
   }
   
   @Override

@@ -42,7 +42,7 @@ public class IotaUBBuiltin extends Builtin {
   }
   public Obj callInv(Value w) {
     int IO = sc.IO;
-    int[] sh = ((Value) fn.call(w)).asIntArr();
+    int[] sh = ((Value) fn.call(w)).asIntVec();
     int ia = 1;
     for (int i = 0; i < sh.length; i++) {
       sh[i]+=1-IO;
@@ -50,7 +50,7 @@ public class IotaUBBuiltin extends Builtin {
     }
     double[] arr = new double[ia];
     for (Value v : w) {
-      int[] c = v.asIntArr();
+      int[] c = v.asIntVec();
       arr[Indexer.fromShape(sh, c, IO)]++;
     }
     return new DoubleArr(arr, sh);

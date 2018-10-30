@@ -22,7 +22,7 @@ public class IotaBuiltin extends Builtin {
       for (int i = 0; i < res.length; i++) res[i] = i + IO;
       return new DoubleArr(res);
     }
-    int[] shape = w.asIntArr();
+    int[] shape = w.asIntVec();
     int ia = Arrays.stream(shape).reduce(1, (a, b) -> a * b);
     Value[] arr = new Value[ia];
     int i = 0;

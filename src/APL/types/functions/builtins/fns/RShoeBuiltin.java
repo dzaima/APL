@@ -31,7 +31,7 @@ public class RShoeBuiltin extends Builtin {
       return map.getRaw(a);
     }
     for (Value v : a) {
-      w = w.at(v.asIntArr(), sc.IO);
+      w = w.at(v.asIntVec(), sc.IO);
     }
     return w;
   }

@@ -15,7 +15,7 @@ public class UpArrowBuiltin extends Builtin {
   }
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
-    int[] shape = a.asIntArr();
+    int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
     int ia = 1;
     int[] offsets = new int[shape.length];

@@ -44,24 +44,29 @@ public class Scope {
     sc.set(name, val);
   }
   public void set (String name, Obj val) { // sets in current scope
-    if (name.equals("⎕IO")) {
-      IO = ((Value)val).asInt();
-      nIO = IO==0? Num.ZERO : Num.ONE;
+    switch (name) {
+      case "⎕IO":
+        IO = ((Value) val).asInt();
+        nIO = IO==0? Num.ZERO : Num.ONE;
+      break;
+      case "⎕COND":
+        String s = ((Arr) val).asString();
+        if (s == null) throw new DomainError("⎕COND must be set to a character vector");
+        switch (s) {
+          case "01" : cond = Cond._01; condSpaces = false; return;
+          case ">0" : cond = Cond.gt0; condSpaces = false; return;
+          case "≠0" : cond = Cond.ne0; condSpaces = false; return;
+          case "01 ": cond = Cond._01; condSpaces = true ; return;
+          case ">0 ": cond = Cond.gt0; condSpaces = true ; return;
+          case "≠0 ": cond = Cond.ne0; condSpaces = true ; return;
+          default: throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
+        }
+      case "⎕PP":
+        Num.setPrecision(((Value) val).asInt());
+      break;
+      default:
+        vars.put(name, val);
     }
-    if (name.equals("⎕COND")) {
-      String s = ((Arr) val).asString();
-      if (s == null) throw new DomainError("⎕COND must be set to a character vector");
-      switch(s) {
-        case "01" : cond = Cond._01; condSpaces = false; return;
-        case ">0" : cond = Cond.gt0; condSpaces = false; return;
-        case "≠0" : cond = Cond.ne0; condSpaces = false; return;
-        case "01 ": cond = Cond._01; condSpaces = true ; return;
-        case ">0 ": cond = Cond.gt0; condSpaces = true ; return;
-        case "≠0 ": cond = Cond.ne0; condSpaces = true ; return;
-        default: throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
-      }
-    }
-    vars.put(name, val);
   }
   public Obj get (String name) {
     if (name.startsWith("⎕")) {
@@ -81,6 +86,7 @@ public class Scope {
         case "⎕UCS": return new UCS(this);
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
+        case "⎕PP": return new Num(Num.pp);
         case "⎕COND": switch (cond) {
           case _01: if (condSpaces) return new ChrArr("01 "); return new ChrArr("01");
           case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");

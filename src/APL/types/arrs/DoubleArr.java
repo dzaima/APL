@@ -26,7 +26,7 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntVec() {
     if (rank >= 2) throw new RankError("trying to use a rank "+rank+" number array as vector", this);
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
@@ -72,6 +72,10 @@ public class DoubleArr extends Arr {
   @Override
   public double[] asDoubleArr() {
     return arr;
+  }
+  @Override
+  public double[] asDoubleArrClone() {
+    return arr.clone();
   }
   
   @Override

@@ -13,8 +13,8 @@ public class Pick extends Settable {
   private Scope sc;
   
   public Pick(Variable v, Brackets where, Scope sc) {
-    super(v.getAt(where.val.asIntArr(), sc));
-    pos = where.val.asIntArr();
+    super(v.getAt(where.val.asIntVec(), sc));
+    pos = where.val.asIntVec();
     variable = v;
     this.sc = sc;
   }

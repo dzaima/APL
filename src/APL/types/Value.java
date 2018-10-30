@@ -23,7 +23,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     this.ia = ia;
     this.rank = rank;
   }
-  public abstract int[] asIntArr();
+  public abstract int[] asIntVec();
   public abstract int asInt();
   public boolean scalar() {
     return rank == 0;
@@ -159,6 +159,9 @@ public abstract class Value extends Obj implements Iterable<Value> {
       res[i++] = c.asDouble();
     }
     return res;
+  }
+  public double[] asDoubleArrClone() {
+    return asDoubleArr().clone();
   }
   public double asDouble() {
     throw new DomainError("Using "+this.humanType(true)+" as a number", this);

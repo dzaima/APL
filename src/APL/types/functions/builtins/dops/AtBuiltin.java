@@ -52,7 +52,7 @@ public class AtBuiltin extends Dop {
       if (aa instanceof Fun) {
         Value[] matching = new Value[matchingCount];
         for (int i = 0; i < matchingCount; i++) {
-          indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntArr(), IO);
+          indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
           matching[i] = w.get(indexes[i]);
         }
         Value[] replacement = ((Value) ((Fun) aa).call(new HArr(matching))).values();
@@ -63,7 +63,7 @@ public class AtBuiltin extends Dop {
         return new HArr(ra, w.shape);
       } else {
         for (int i = 0; i < matchingCount; i++) {
-          indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntArr(), IO);
+          indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
         }
         Value aaa = (Value) aa;
         System.arraycopy(w.values(), 0, ra, 0, ia);

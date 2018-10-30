@@ -16,7 +16,7 @@ public abstract class Primitive extends Value {
     return this;
   }
   @Override
-  public int[] asIntArr() {
+  public int[] asIntVec() {
     throw new DomainError("using " + this + " as integer vector", this);
   }
   @Override

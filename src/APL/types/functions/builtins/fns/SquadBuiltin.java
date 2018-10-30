@@ -3,7 +3,6 @@ package APL.types.functions.builtins.fns;
 import APL.Scope;
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class SquadBuiltin extends Builtin {
@@ -18,6 +17,6 @@ public class SquadBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    return w.at(a.asIntArr(), sc.IO);
+    return w.at(a.asIntVec(), sc.IO);
   }
 }

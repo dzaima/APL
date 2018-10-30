@@ -11,7 +11,7 @@ public class EmptyArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntVec() {
     if (rank >= 2) throw new DomainError("using rank≥2 array as integer vector");
     return new int[0];
   }

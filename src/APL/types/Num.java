@@ -3,10 +3,24 @@ package APL.types;
 import APL.errors.DomainError;
 import APL.types.arrs.HArr;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.stream.IntStream;
 
 public class Num extends Primitive {
   
+  static DecimalFormat df;
+  public static int pp;
+  static {
+    setPrecision(14);
+  }
+  public static void setPrecision(int p) {
+    pp = p;
+    DecimalFormat cdf = new DecimalFormat("#.#");
+    cdf.setMaximumFractionDigits(p);
+    cdf.setRoundingMode(RoundingMode.HALF_UP);
+    df = cdf;
+  }
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
   public static final Num TWO = new Num("2");
@@ -185,17 +199,18 @@ public class Num extends Primitive {
   }
   
   @Override
-  public int[] asIntArr() { // TODO not round
+  public int[] asIntVec() { // TODO not round
     return new int[]{(int)num};
   }
   
   public String toString() {
     if (num == (int)num) return Integer.toString((int)num);
-    return Double.toString(num);
+  
+    return df.format(num);
   }
   public String oneliner(int[] ignored) {
     if (num == (int)num) return Integer.toString((int)num);
-    return Double.toString(num);
+    return String.format("%.5g%n", 0.912385);
   }
   
   @Override

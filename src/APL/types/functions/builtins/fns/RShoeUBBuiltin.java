@@ -22,13 +22,13 @@ public class RShoeUBBuiltin extends Builtin {
       double[] wv = w.asDoubleArr();
       double[] res = new double[a.ia];
       for (int i = 0; i < a.ia; i++) {
-        res[i] = wv[Indexer.fromShape(w.shape, a.get(i).asIntArr(), sc.IO)];
+        res[i] = wv[Indexer.fromShape(w.shape, a.get(i).asIntVec(), sc.IO)];
       }
       return new DoubleArr(res, a.shape);
     }
     Value[] res = new Value[a.ia];
     for (int i = 0; i < a.ia; i++) {
-      res[i] = w.at(a.get(i).asIntArr(), sc.IO);
+      res[i] = w.at(a.get(i).asIntVec(), sc.IO);
     }
     return new HArr(res, a.shape);
   }
