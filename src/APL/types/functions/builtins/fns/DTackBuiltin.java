@@ -8,7 +8,7 @@ import APL.types.functions.Builtin;
 import java.util.ArrayList;
 
 public class DTackBuiltin extends Builtin {
-  static final UTackBuiltin copy = new UTackBuiltin();
+  static final DTackBuiltin copy = new DTackBuiltin();
   public DTackBuiltin() {
     super("⊤", 0x011);
   }
