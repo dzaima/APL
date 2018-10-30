@@ -5,7 +5,7 @@ class XY {
     y = yi;
   }
   XY(Obj a) {
-    int[] d = ((Value) a).asIntArr();
+    int[] d = ((Value) a).asIntVec();
     if (d.length != 2) throw new LengthError("argument for P5.size must be length 2");
     x = d[0];
     y = d[1];
