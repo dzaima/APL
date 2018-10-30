@@ -14,6 +14,7 @@ public class FlipBuiltin extends Builtin implements DimMFn {
     return ((Arr) w).reverseOn(dim);
   }
   public Obj call(Value w) {
+    if (w instanceof Primitive) return w;
     return ((Arr) w).reverseOn(0);
   }
 }

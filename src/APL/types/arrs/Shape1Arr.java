@@ -5,7 +5,7 @@ import APL.types.*;
 
 public class Shape1Arr extends Arr {
   private static int[] SHAPE = new int[]{1};
-  Value item;
+  private Value item;
   
   public Shape1Arr(Value item) {
     super(SHAPE, 1, 1);
@@ -46,5 +46,15 @@ public class Shape1Arr extends Arr {
   @Override
   public Value[] values() {
     return new Value[]{item};
+  }
+  
+  @Override
+  public boolean quickDoubleArr() {
+    return item instanceof Num;
+  }
+  
+  @Override
+  public double[] asDoubleArr() {
+    return new double[]{ ((Num) item).num };
   }
 }

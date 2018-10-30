@@ -235,4 +235,24 @@ public class Num extends Primitive {
   public Value prototype() {
     return ZERO;
   }
+  
+  @Override
+  public Value[] values() {
+    return new Value[]{this};
+  }
+  
+  @Override
+  public double[] asDoubleArr() {
+    return new double[]{num};
+  }
+  
+  @Override
+  public double[] asDoubleArrClone() {
+    return new double[]{num};
+  }
+  
+  @Override
+  public boolean quickDoubleArr() {
+    return true;
+  }
 }

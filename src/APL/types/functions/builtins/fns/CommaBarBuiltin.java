@@ -20,6 +20,7 @@ public class CommaBarBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
+    if (a.quickDoubleArr() && w.quickDoubleArr()) return CatBuiltin.catDA(a, w, 0);
     return CatBuiltin.cat(a, w, 0);
   }
 }
