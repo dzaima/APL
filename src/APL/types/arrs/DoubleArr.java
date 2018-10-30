@@ -1,5 +1,6 @@
 package APL.types.arrs;
 
+import APL.Indexer;
 import APL.errors.*;
 import APL.types.*;
 
@@ -125,5 +126,15 @@ public class DoubleArr extends Arr {
       c+= sec;
     }
     return new DoubleArr(res, shape);
+  }
+  
+  @Override
+  public Value with(Value what, int[] where) {
+    if (what instanceof Num) {
+      double[] da = arr.clone();
+      da[Indexer.fromShape(shape, where, 0)] = ((Num) what).num;
+      return new DoubleArr(da, shape);
+    }
+    return super.with(what, where);
   }
 }
