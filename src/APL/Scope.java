@@ -74,6 +74,7 @@ public class Scope {
         case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
         case "⎕TIME": return new Timer(this, true);
         case "⎕HTIME": return new Timer(this, false);
+        case "⎕EX": return new Ex(this);
         case "⎕A": return Main.alphabet;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
@@ -302,6 +303,18 @@ public class Scope {
     @Override
     public Obj call(Value w) {
       return new ChrArr(w.getClass().getCanonicalName());
+    }
+  }
+  
+  static private class Ex extends Builtin {
+    Ex(Scope scope) {
+      super("⎕EX", 0x001, scope);
+    }
+  
+    @Override
+    public Obj call(Value w) {
+      String path = w.asString();
+      return Main.exec(Main.readFile(path), sc);
     }
   }
 }

@@ -84,7 +84,16 @@ class P5 extends APLMap {
           return null;
         }
       };
-      
+      case "noise": return new Fun(0x001) {
+        public Obj call(Value w) {
+          double[] da = w.asDoubleArr();
+          double res = 0;
+          if (da.length == 1) res = noise((float)da[0]);
+          if (da.length == 2) res = noise((float)da[0], (float)da[1]);
+          if (da.length == 3) res = noise((float)da[0], (float)da[1], (float)da[2]);
+          return new Num(res);
+        }
+      };
       // files
       
       case "bytes": return new Fun(0x001) {

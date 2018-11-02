@@ -219,7 +219,7 @@ public class Main {
   public static String formatAPL (int[] ia) {
     return Arrays.stream(ia).mapToObj(String::valueOf).collect(Collectors.joining(" "));
   }
-  private static String readFile(String path) {
+  static String readFile(String path) {
     try {
       byte[] encoded = Files.readAllBytes(Paths.get(path));
       return new String(encoded, StandardCharsets.UTF_8);
