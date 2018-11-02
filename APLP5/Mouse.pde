@@ -4,7 +4,7 @@ class MouseButton extends APLMap {
   }
   int m;
   Num sX = Num.ZERO, sY = Num.ZERO;
-  Arr sPos = new Arr(new Value[]{Num.ZERO, Num.ZERO});
+  Arr sPos = new DoubleArr(new double[]{0, 0});
   Num pressed = Num.ZERO;
   Num ppressed = Num.ZERO;
   Fun cH, rH;
@@ -26,7 +26,7 @@ class MouseButton extends APLMap {
     }
   }
   void set(Value k, Obj v) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       // callbacks
       case "clicked" : case "c": cH = (Fun) v; break;
@@ -35,7 +35,7 @@ class MouseButton extends APLMap {
     }
   }
   Obj getRaw(Value k) {
-    String s = k.fromAPL().toLowerCase();
+    String s = k.asString().toLowerCase();
     switch (s) {
       case "sx": case "startx": return sX;
       case "sy": case "starty": return sY;

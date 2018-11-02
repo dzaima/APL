@@ -14,7 +14,7 @@ public abstract class Settable extends Obj {
   }
   public abstract void set(Obj v);
   public Obj get() {
-    if (v == null) throw new ValueError("tying to get value of non-existing settable");
+    if (v == null) throw new ValueError("tying to get value of non-existing settable", this);
     return v;
   }
   public Obj getOrThis() {

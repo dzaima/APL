@@ -2,8 +2,8 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.functions.Mop;
 import APL.types.dimensions.DimMMop;
+import APL.types.functions.Mop;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   public ReduceBuiltin() {
@@ -20,16 +20,16 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     if (w.rank >= 2) {
       return ngnReduce(w, -1, (Fun) f);
     }
-    Value[] a = w.arr;
+    Value[] a = w.values();
     if (a.length == 0) {
-      if (((Fun)f).identity == null) throw new DomainError("No identity defined for "+f.name(), this, f);
+      if (((Fun)f).identity == null) throw new DomainError("No identity defined for "+f.name(), f);
       return ((Fun)f).identity;
     }
     Value last = a[a.length-1];
     for (int i = a.length-2; i >= 0; i--) {
       last = (Value)((Fun)f).call(a[i], last);
     }
-    return last;
+    return last.squeeze();
   }
   private Value ngnReduce(Value x, int axis, Fun f) { // https://chat.stackexchange.com/transcript/message/47158587#47158587
     if (x.rank == 0) return x;
@@ -45,13 +45,13 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     Value[] r = new Value[n0 * n2];
     for (int i = 0; i < n0; i++) {
       for (int k = 0; k < n2; k++) {
-        Value c = x.arr[i*n1*n2 + (n1-1)*n2 + k];
+        Value c = x.get(i*n1*n2 + (n1-1)*n2 + k);
         for (int j = n1 - 2; j >= 0; j--) {
-          c = (Value) f.call(x.arr[i*n1*n2 + j*n2 + k], c);
+          c = (Value) f.call(x.get(i*n1*n2 + j*n2 + k), c);
         }
-        r[i*n2 + k] = c;
+        r[i*n2 + k] = c.squeeze();
       }
     }
-    return new Arr(r, ns);
+    return Arr.create(r, ns);
   }
 }

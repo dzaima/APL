@@ -1,44 +1,95 @@
 package APL.types.functions.builtins.fns;
 
-import APL.errors.LengthError;
+import java.util.Arrays;
+import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
+import APL.types.dimensions.DimDFn;
 import APL.types.functions.Builtin;
 
-
-public class CatBuiltin extends Builtin {
+public class CatBuiltin extends Builtin implements DimDFn {
   public CatBuiltin() {
     super(",", 0x011);
-    identity = new Arr(Num.ZERO); // TODO not
   }
   public Obj call(Value w) {
-    if (w.primitive()) return new Arr(new Value[]{w});
-    return new Arr(((Arr)w).arr);
+    if (w instanceof Primitive) return new Shape1Arr(w);
+    return w.ofShape(new int[]{w.ia});
   }
   public Obj call(Value a, Value w) {
-    if (a.scalar()) a = new Arr(new Value[]{a.arr[0]});
-    if (w.scalar()) w = new Arr(new Value[]{w.arr[0]});
-    for (int i = 0; i < a.rank-1; i++) {
-      if (a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", this, w);
-    }
-    int[] newShape = new int[a.rank];
-    System.arraycopy(a.shape, 0, newShape, 0, a.rank - 1);
-    int chunkSizeA = a.shape[a.rank-1];
-    if (chunkSizeA==0) {
-      return w; //new Arr(new Value[0], newShape);
-    }
-    int chunkSizeW = w.shape[w.rank-1];
-    newShape[a.rank-1] = chunkSizeA+chunkSizeW;
-    int chunks = a.ia/chunkSizeA;
-    Value[] arr = new Value[chunks * (chunkSizeA+chunkSizeW)];
-    int pos = 0, posA = 0, posW = 0;
-    for (int i = 0; i < chunks; i++) {
-      for (int j = 0; j < chunkSizeA; j++) {
-        arr[pos++] = a.arr[posA++];
-      }
-      for (int j = 0; j < chunkSizeW; j++) {
-        arr[pos++] = w.arr[posW++];
-      }
-    }
-    return new Arr(arr, newShape);
+    int dim = Math.max(a.rank, w.rank) - 1;
+    if (a.quickDoubleArr() && w.quickDoubleArr()) return catDA(a, w, dim);
+    return cat(a, w, dim);
   }
+  public Obj call(Value a, Value w, int dim) {
+    if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
+    if (a.quickDoubleArr() && w.quickDoubleArr()) return catDA(a, w, dim);
+    return cat(a, w, dim);
+  }
+  static Obj cat(Value a, Value w, int k) {
+    boolean aScalar = a.scalar(), wScalar = w.scalar();
+    if (aScalar && wScalar) return cat(new Shape1Arr(a.get(0)), w, 0);
+    if (!aScalar && !wScalar) {
+      if (a.rank != w.rank) throw new RankError("ranks not matchable", w);
+      for (int i = 0; i < a.rank; i++) {
+        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", w);
+      }
+    }
+    int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result
+    rs[k] += aScalar || wScalar ? 1 : w.shape[k];
+    int n0 = 1; for (int i = 0; i < k; i++) n0 *= rs[i];             // product of major dimensions
+    int n1 = rs[k];                                                  // dimension to catenate on
+    int n2 = 1; for (int i = k + 1; i < rs.length; i++) n2 *= rs[i]; // product of minor dimensions
+    int ad = aScalar ? n2 : a.shape[k] * n2;                         // chunk size for ⍺
+    int wd = wScalar ? n2 : w.shape[k] * n2;                         // chunk size for ⍵
+    Value[] rv = new Value[n0 * n1 * n2];                            // result values
+    copyChunks(aScalar, a.values(), rv,  0, ad, ad + wd);
+    copyChunks(wScalar, w.values(), rv, ad, wd, ad + wd);
+    return Arr.create(rv, rs);
+  }
+  private static void copyChunks(boolean scalar, Value[] av, Value[] rv, int offset, int ad, int rd) {
+    if (scalar) {
+      for (int i = offset; i < rv.length; i += rd) {
+        Arrays.fill(rv, i, i + ad, av[0]);
+      }
+    } else {
+      for (int i = offset, j = 0; i < rv.length; i += rd, j += ad) { // i:position in rv, j:position in av
+        System.arraycopy(av, j, rv, i, ad);
+      }
+    }
+  }
+  
+  
+  static Obj catDA(Value a, Value w, int k) {
+    boolean aScalar = a.scalar(), wScalar = w.scalar();
+    if (aScalar && wScalar) return catDA(new Shape1Arr(a.get(0)), w, 0);
+    if (!aScalar && !wScalar) {
+      if (a.shape.length != w.shape.length) throw new RankError("ranks not matchable", w);
+      for (int i = 0; i < a.shape.length; i++) {
+        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", w);
+      }
+    }
+    int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result
+    rs[k] += aScalar || wScalar ? 1 : w.shape[k];
+    int n0 = 1; for (int i = 0; i < k; i++) n0 *= rs[i];             // product of major dimensions
+    int n1 = rs[k];                                                  // dimension to catenate on
+    int n2 = 1; for (int i = k + 1; i < rs.length; i++) n2 *= rs[i]; // product of minor dimensions
+    int ad = aScalar ? n2 : a.shape[k] * n2;                         // chunk size for ⍺
+    int wd = wScalar ? n2 : w.shape[k] * n2;                         // chunk size for ⍵
+    double[] rv = new double[n0 * n1 * n2];                            // result values
+    copyChunksD(aScalar, a.asDoubleArr(), rv,  0, ad, ad + wd);
+    copyChunksD(wScalar, w.asDoubleArr(), rv, ad, wd, ad + wd);
+    return new DoubleArr(rv, rs);
+  }
+  private static void copyChunksD(boolean scalar, double[] av, double[] rv, int offset, int ad, int rd) {
+    if (scalar) {
+      for (int i = offset; i < rv.length; i += rd) {
+        Arrays.fill(rv, i, i + ad, av[0]);
+      }
+    } else {
+      for (int i = offset, j = 0; i < rv.length; i += rd, j += ad) { // i:position in rv, j:position in av
+        System.arraycopy(av, j, rv, i, ad);
+      }
+    }
+  }
+  
 }

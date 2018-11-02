@@ -13,13 +13,22 @@ public class TableBuiltin extends Mop {
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
     int i = 0;
-    for (Value na : a.arr) {
-      for (Value nw : w.arr) {
-        arr[i] = (Value)((Fun)f).call(na, nw);
-        i++;
+    Fun ff = (Fun) f;
+    if (a == w) {
+      Value[] vs = w.values();
+      for (Value na : vs) {
+        for (Value nw : vs) arr[i++] = ((Value) ff.call(na, nw)).squeeze();
       }
+      if (shape.length == 0) return arr[0];
+      return Arr.create(arr, shape);
+    } else {
+      for (Value na : a) {
+        for (Value nw : w) {
+          arr[i++] = ((Value) ff.call(na, nw)).squeeze();
+        }
+      }
+      if (shape.length == 0) return arr[0];
+      return Arr.create(arr, shape);
     }
-    if (shape.length == 0) return arr[0];
-    return new Arr(arr, shape);
   }
 }

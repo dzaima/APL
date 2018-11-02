@@ -2,6 +2,7 @@ package APL.types;
 
 import APL.*;
 import APL.errors.ValueError;
+import APL.types.arrs.HArr;
 
 public class Variable extends Settable {
   
@@ -27,16 +28,12 @@ public class Variable extends Settable {
     sc.update(name, v);
   }
   
-  public void setAt(int[] pos, Value what) {
-    Arr a = (Arr) v;
-    Value[] nvals = new Value[a.ia];
-    System.arraycopy(a.arr, 0, nvals, 0, a.ia);
-    nvals[Indexer.fromShape(a.shape, pos, ((Value) sc.get("⎕IO")).toInt(null))] = what;
-    update(new Arr(nvals, a.shape));
+  public void setAt(int[] pos, Value what) { // pos has to be ⎕IO=0
+    update(((Value) v).with(what, pos));
   }
   public Value getAt(int[] pos, Scope sc) {
     Arr a = (Arr) v;
-    return a.at(pos, sc);
+    return a.at(pos, sc.IO);
   }
   
   @Override

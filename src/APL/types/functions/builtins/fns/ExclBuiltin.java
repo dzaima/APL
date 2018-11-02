@@ -9,10 +9,10 @@ public class ExclBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v-> ((Num) v).fact(this), w);
+    return scalar(v-> ((Num) v).fact(), w);
   }
   
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> ((Num) w).binomial((Num) a, this), a0, w0);
+    return scalar((a, w) -> ((Num) w).binomial((Num) a), a0, w0);
   }
 }

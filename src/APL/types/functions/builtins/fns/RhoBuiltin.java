@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import static APL.Main.toAPL;
@@ -20,41 +21,47 @@ public class RhoBuiltin extends Builtin {
     return toAPL(sh);
   }
   public Obj call(Value a, Value w) {
-    if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
-    int[] sh = new int[a.arr.length];
+    if (a.rank > 1) throw new DomainError("multidimensional shape", a);
+    int[] sh = new int[a.ia];
     int ia = 1;
     Integer emptyPos = null;
     for (int i = 0; i < sh.length; i++) {
-      Value v = a.arr[i];
-      if (! (v instanceof Num)) {
-        if (v.ia == 0) {
-          if (emptyPos == null) emptyPos = i;
-          else throw new DomainError("shape contained multiple undefined dimension sizes", this, v);
-        } else throw new DomainError("shape for ⍴ contained "+v.humanType(true), this, v);
-      } else {
-        int c = ((Num) v).intValue();
+      Value v = a.get(i);
+      if (v instanceof Num) {
+        int c = v.asInt();
         sh[i] = c;
-        ia *= c;
-      }
+        ia*= c;
+      } else if (v.ia == 0) {
+        if (emptyPos == null) emptyPos = i;
+        else throw new DomainError("shape contained multiple undefined dimension sizes", v);
+      } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), v);
     }
     if (emptyPos != null) {
-      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, w);
+      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", w);
       sh[emptyPos] = w.ia/ia;
-      ia = w.ia;
-    }
-    Value[] arr = new Value[ia];
+      return w.ofShape(sh);
+    } else if (ia == w.ia) return w.ofShape(sh);
     if (w.ia == 0) {
-      var prototype = w.prototype;
+      return new SingleItemArr(w.prototype(), sh);
+    } else if (w instanceof DoubleArr) {
+      double[] inp = w.asDoubleArr();
+      double[] res = new double[ia];
+      int p = 0;
       for (int i = 0; i < ia; i++) {
-        arr[i] = prototype;
+        res[i] = inp[p++];
+        if (p == w.ia) p = 0;
       }
+      return new DoubleArr(res, sh);
+    } else if (w instanceof Primitive) {
+      return new SingleItemArr(w, sh);
     } else {
+      Value[] arr = new Value[ia];
       int index = 0;
       for (int i = 0; i < ia; i++) {
-        arr[i] = w.arr[index++];
+        arr[i] = w.get(index++);
         if (index == w.ia) index = 0;
       }
+      return new HArr(arr, sh);
     }
-    return new Arr(arr, sh, w.prototype);
   }
 }

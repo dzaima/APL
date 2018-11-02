@@ -2,6 +2,7 @@ package APL;
 
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.util.HashMap;
@@ -10,12 +11,26 @@ public class Scope {
   private final HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
   public boolean alphaDefined;
+  public int IO;
+  private Num nIO;
+  
+  enum Cond {
+    _01, gt0, ne0,
+  }
+  boolean condSpaces;
+  Cond cond;
   public Scope() {
-    vars.put("⎕IO", new Num("1"));
-    vars.put("⎕COND", Main.toAPL("01", new Token(TType.str, "01",0, "'01'")));
+    IO = 1;
+    nIO = Num.ONE;
+    cond = Cond._01;
+    condSpaces = false;
   }
   public Scope(Scope p) {
     parent = p;
+    IO = p.IO;
+    nIO = p.nIO;
+    cond = p.cond;
+    condSpaces = p.condSpaces;
   }
   private Scope owner(String name) {
     if (vars.containsKey(name)) return this;
@@ -29,16 +44,29 @@ public class Scope {
     sc.set(name, val);
   }
   public void set (String name, Obj val) { // sets in current scope
-    if (name.equals("⎕COND")) {
-      if (! (val instanceof Arr)) throw new DomainError("setting ⎕COND to " + Main.human(val.type()));
-      String s = ((Arr)val).string(false);
-      if (s == null) throw new DomainError("⎕COND must be set to a character vector");
-      String m = s.endsWith(" ")? s.substring(0, s.length()-1) : s;
-      if (!m.equals("01") && !m.equals(">0") && !m.equals("≠0")) {
-        throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
-      }
+    switch (name) {
+      case "⎕IO":
+        IO = ((Value) val).asInt();
+        nIO = IO==0? Num.ZERO : Num.ONE;
+      break;
+      case "⎕COND":
+        String s = ((Arr) val).asString();
+        if (s == null) throw new DomainError("⎕COND must be set to a character vector");
+        switch (s) {
+          case "01" : cond = Cond._01; condSpaces = false; return;
+          case ">0" : cond = Cond.gt0; condSpaces = false; return;
+          case "≠0" : cond = Cond.ne0; condSpaces = false; return;
+          case "01 ": cond = Cond._01; condSpaces = true ; return;
+          case ">0 ": cond = Cond.gt0; condSpaces = true ; return;
+          case "≠0 ": cond = Cond.ne0; condSpaces = true ; return;
+          default: throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
+        }
+      case "⎕PP":
+        Num.setPrecision(((Value) val).asInt());
+      break;
+      default:
+        vars.put(name, val);
     }
-    vars.put(name, val);
   }
   public Obj get (String name) {
     if (name.startsWith("⎕")) {
@@ -46,6 +74,7 @@ public class Scope {
         case "⎕MILLIS": return new Num(System.currentTimeMillis() - Main.startingMillis);
         case "⎕TIME": return new Timer(this, true);
         case "⎕HTIME": return new Timer(this, false);
+        case "⎕EX": return new Ex(this);
         case "⎕A": return Main.alphabet;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
@@ -56,6 +85,16 @@ public class Scope {
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕UCS": return new UCS(this);
+        case "⎕IO": return nIO;
+        case "⎕CLASS": return new ClassGetter();
+        case "⎕PP": return new Num(Num.pp);
+        case "⎕COND": switch (cond) {
+          case _01: if (condSpaces) return new ChrArr("01 "); return new ChrArr("01");
+          case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");
+          case ne0: if (condSpaces) return new ChrArr("≠0 "); return new ChrArr("≠0");
+        }
+        case "⎕OPT": case "⎕OPTIMIZE":
+          return new Optimizer(this);
       }
     }
     Obj f = vars.get(name);
@@ -81,10 +120,10 @@ public class Scope {
   
   public double rand(double d) { // TODO seeds
     return Math.random() * d;
-  }
+  } // with ⎕IO←0
   public double rand(int n) {
     return Math.floor(Math.random() * n);
-  }
+  } // with ⎕IO←0
   
   static class DeathLogger extends Builtin {
     DeathLogger() {
@@ -95,7 +134,7 @@ public class Scope {
     public Obj call(Value w) {
       return new DyingObj(w.toString());
     }
-    class DyingObj extends Value {
+    class DyingObj extends Primitive {
       final String msg;
       DyingObj(String s) {
         this.msg = s;
@@ -114,6 +153,11 @@ public class Scope {
       public Type type() {
         return Type.array;
       }
+  
+      @Override
+      public Value ofShape(int[] sh) {
+        throw new DomainError("you're shaping ⎕DEATHLOGGER? what?");
+      }
     }
   }
   static class Timer extends Builtin {
@@ -126,18 +170,18 @@ public class Scope {
       return call(Num.ONE, w);
     }
     public Obj call(Value a, Value w) {
-      int n = ((Num) a).intValue();
+      int n = a.asInt();
       long start = System.nanoTime();
-      for (int i = 0; i < n; i++) Main.exec(w.fromAPL(), sc);
+      for (int i = 0; i < n; i++) Main.exec(w.asString(), sc);
       long end = System.nanoTime();
       if (simple) return new Num((end-start)/n);
       else {
         double t = end-start;
         t/= n;
-        if (t < 1000) return Main.toAPL(t+" nanos", new Token(TType.expr, "nanos", 0, "the thing that made ⎕htime"));
+        if (t < 1000) return Main.toAPL(t+" nanos");
         t/= 1e6;
-        if (t > 500) return Main.toAPL((t/1000d)+" seconds", new Token(TType.expr, "seconds", 0, "the thing that made ⎕htime"));
-        return Main.toAPL(t+" millis", new Token(TType.expr, "millis", 0, "the thing that made ⎕htime"));
+        if (t > 500) return Main.toAPL((t/1000d)+" seconds");
+        return Main.toAPL(t+" millis");
       }
     }
   }
@@ -147,7 +191,7 @@ public class Scope {
     }
     
     public Obj call(Value w) {
-      sc.set(w.fromAPL(), null);
+      sc.set(w.asString(), null);
       return w;
     }
   }
@@ -157,11 +201,11 @@ public class Scope {
     }
     
     public Obj call(Value w) {
-      return numChr(c->new Char((char)c.intValue()), c->new Num(c.chr), w);
+      return numChr(c->new Char((char)c.asInt()), c->new Num(c.chr), w);
     }
   }
   
-  class ScopeViewer extends APLMap {
+  static class ScopeViewer extends APLMap {
   
     private final Scope sc;
   
@@ -171,14 +215,14 @@ public class Scope {
   
     @Override
     public Obj getRaw(Value k) {
-      String s = k.fromAPL();
+      String s = k.asString();
       if (s.equals("parent")) return new ScopeViewer(sc.parent);
       return sc.vars.get(s);
     }
   
     @Override
     public void set(Value k, Obj v) {
-      throw new SyntaxError("No setting scope things!", this, v instanceof Value? (Value) v : null);
+      throw new SyntaxError("No setting scope things!", v instanceof Value? (Value) v : null);
     }
   
     @Override
@@ -188,8 +232,9 @@ public class Scope {
   
     @Override
     public int size() {
-      throw new SyntaxError("size of scope", this);
+      throw new DomainError("size of ⎕SCOPE");
     }
+  
     @Override
     public String toString() {
       StringBuilder res = new StringBuilder("(");
@@ -200,9 +245,14 @@ public class Scope {
       });
       return res + ")";
     }
+  
+    @Override
+    public Value ofShape(int[] sh) {
+      throw new DomainError("⎕SCOPE is a debugging tool, not a toy.");
+    }
   }
   
-  private class MapGen extends Builtin {
+  private static class MapGen extends Builtin {
   
     MapGen() {
       super("⎕MAP", 0x011);
@@ -211,23 +261,60 @@ public class Scope {
     @Override
     public Obj call(Value w) {
       var map = new StrMap();
-      for (Value v : w.arr) {
-        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕smap should be 2-item arrays", this, v);
-        map.set(v.arr[0], v.arr[1]);
+      for (Value v : w) {
+        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕smap should be 2-item arrays", v);
+        map.set(v.get(0), v.get(1));
       }
       return map;
     }
   
     @Override
     public Obj call(Value a, Value w) {
-      if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", this, a);
-      if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", this, w);
-      if (a.ia != w.ia) throw new LengthError("both sides lengths should match", this, w);
+      if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", a);
+      if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", w);
+      if (a.ia != w.ia) throw new LengthError("both sides lengths should match", w);
       var map = new StrMap();
       for (int i = 0; i < a.ia; i++) {
-        map.set(a.arr[i], w.arr[i]);
+        map.set(a.get(i), w.get(i));
       }
       return map;
+    }
+  }
+  
+  private class Optimizer extends Builtin {
+    Optimizer(Scope sc) {
+      super("⎕OPTIMIZE", 0x001, sc);
+    }
+    @Override
+    public Obj call(Value w) {
+      String name = w.asString();
+      if (! (get(name) instanceof Value)) return Num.MINUS_ONE;
+      Value v = (Value) get(name);
+      Value optimized = v.squeeze();
+      if (v == optimized) return Num.ZERO;
+      update(name, optimized);
+      return Num.ONE;
+    }
+  }
+  private class ClassGetter extends Builtin {
+    ClassGetter() {
+      super("⎕CLASS", 0x001);
+    }
+    @Override
+    public Obj call(Value w) {
+      return new ChrArr(w.getClass().getCanonicalName());
+    }
+  }
+  
+  static private class Ex extends Builtin {
+    Ex(Scope scope) {
+      super("⎕EX", 0x001, scope);
+    }
+  
+    @Override
+    public Obj call(Value w) {
+      String path = w.asString();
+      return Main.exec(Main.readFile(path), sc);
     }
   }
 }

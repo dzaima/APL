@@ -8,7 +8,7 @@ public class RepeatBuiltin extends Dop {
     super("⍣", 0x011);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
-    int am = ((Num)ww).intValue();
+    int am = ((Num)ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
         w = (Value)((Fun)aa).callInv(w);
@@ -19,7 +19,7 @@ public class RepeatBuiltin extends Dop {
     return w;
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
-    int am = ((Num)ww).intValue();
+    int am = ((Num)ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
         w = (Value)((Fun)aa).callInvW(a, w);

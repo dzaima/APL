@@ -1,7 +1,9 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Scope;
+import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class RShoeBuiltin extends Builtin {
@@ -10,8 +12,8 @@ public class RShoeBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    if (w.primitive()) return w;
-    else if (w.ia == 0) return w.prototype;
+    if (w instanceof Primitive) return w;
+    else if (w.ia == 0) throw new DomainError("⊃ on array with 0 elements", w);
     else return w.first();
   }
   
@@ -22,14 +24,14 @@ public class RShoeBuiltin extends Builtin {
       if (a.rank > 1) {
         Value[] arr = new Value[a.ia];
         for (int i = 0; i < a.ia; i++) {
-          arr[i] = (Value) map.getRaw(a.arr[i]);
+          arr[i] = (Value) map.getRaw(a.get(i));
         }
-        return new Arr(arr, a.shape);
+        return new HArr(arr, a.shape);
       }
       return map.getRaw(a);
     }
-    for (Value v : a.arr) {
-      w = w.at(v.toIntArr(this), this);
+    for (Value v : a) {
+      w = w.at(v.asIntVec(), sc.IO);
     }
     return w;
   }

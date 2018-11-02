@@ -19,7 +19,10 @@ public class Dmop extends Mop {
     nsc.set("⍶", aa);
     nsc.set("⍺", new Variable(nsc, "⍺"));
     nsc.set("⍵", w);
-    return execLines(token, nsc);
+    var res = Main.execLines(token, nsc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
+    return res;
   }
   public Obj call(Obj aa, Value a, Value w) {
     printdbg("dmop call", a, w);
@@ -28,7 +31,10 @@ public class Dmop extends Mop {
     nsc.set("⍺", a);
     nsc.set("⍵", w);
     nsc.alphaDefined = true;
-    return execLines(token, nsc);
+    var res = Main.execLines(token, nsc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
+    return res;
   }
   public String toString() {
     return token.toRepr();

@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Indexer;
 import APL.Scope;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
@@ -11,9 +12,9 @@ public class DownArrowBuiltin extends Builtin {
   }
   
   @Override
-  public Obj call(Value w) {
-    if (!(w instanceof Arr)) return w;
-    if (w.rank <= 1) return new Arr(w);
+  public Obj call(Value w) { // TODO specials
+    if (w instanceof Primitive) return w;
+    if (w.rank <= 1) return new Rank0Arr(w);
     // TODO stupid dimensions
     int csz = w.shape[w.rank-1]; // chunk size
     int cam = w.ia/csz; // chunk amount
@@ -21,18 +22,18 @@ public class DownArrowBuiltin extends Builtin {
     for (int i = 0; i < cam; i++) {
       Value[] c = new Value[csz];
       for (int j = 0; j < csz; j++) {
-        c[j] = w.arr[i*csz + j];
+        c[j] = w.get(i*csz + j);
       }
-      res[i] = new Arr(c);
+      res[i] = new HArr(c);
     }
     int[] nsh = new int[w.rank-1];
     System.arraycopy(w.shape, 0, nsh, 0, nsh.length);
-    return new Arr(res, nsh);
+    return new HArr(res, nsh);
   }
   
-  public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
-    int IO = ((Value)sc.get("⎕IO")).toInt(this);
-    int[] shape = a.toIntArr(this);
+  public Obj call(Value a, Value w) { // FIXME ⍴⍴⍺ < ⍴⍴⍵
+    int IO = sc.IO;
+    int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
     int ia = 1;
     int[] offsets = new int[shape.length];
@@ -51,9 +52,9 @@ public class DownArrowBuiltin extends Builtin {
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
     for (int[] index : indexer) {
-      arr[i] = w.at(index, this);
+      arr[i] = w.at(index, sc.IO).squeeze();
       i++;
     }
-    return new Arr(arr, shape);
+    return Arr.create(arr, shape);
   }
 }

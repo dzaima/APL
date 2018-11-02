@@ -2,45 +2,22 @@ package APL.types;
 
 import APL.*;
 import APL.errors.DomainError;
+import APL.types.arrs.*;
 
-import java.util.*;
 import java.util.stream.*;
 
-public class Arr extends Value {
-  private static final Arr errNull = Main.toAPL("JAVANULL", new Token(TType.str, 0, "JAVANULL"));
+public abstract class Arr extends Value {
+  public Arr(int[] shape) {
+    super(shape);
+  }
+  public Arr(int[] shape, int ia, int rank) {
+    super(shape, ia, rank);
+  }
   
-  public Arr (Value prototype) {
-    this(new Value[0]);
-    this.prototype = prototype;
-  }
-  public Arr (Value[] v, int[] sh) {
-    ia = v.length;
-    shape = sh;
-    rank = sh.length;
-    arr = v;
-    if (ia >= 1) prototype = v[0] instanceof Char? Char.SPACE : Num.ZERO;
-  }
-  public Arr (Value[] v, int[] sh, Value prototype) {
-    ia = v.length;
-    shape = sh;
-    rank = sh.length;
-    arr = v;
-    this.prototype = prototype;
-  }
-  public Arr (ArrayList<Value> v) { // 1D
-    this(v.toArray(new Value[0]));
-  }
-  public Arr (Value[] v) { // 1D
-    ia = v.length;
-    shape = new int[]{ia};
-    rank = 1;
-    arr = v;
-    if (ia >= 1) prototype = v[0] instanceof Char? Char.SPACE : Num.ZERO;
-  }
   public String string(boolean quote) {
     if (rank == 1/* && shape[0] != 1*/) { // strings
       StringBuilder all = new StringBuilder();
-      for (Value v : arr) {
+      for (Value v : this) {
         if (v instanceof Char) {
           char c = ((Char)v).chr;
           if (quote && c == '\"') all.append("\"\"");
@@ -55,10 +32,10 @@ public class Arr extends Value {
   }
   public String toString() {
     if (ia == 0) {
-      if (rank == 1) return prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?";
+      if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "?";
       else {
         String s = IntStream.range(0, rank).mapToObj(i -> String.valueOf(shape[i])).collect(Collectors.joining(" "));
-        return s + "⍴" + (prototype == Num.ZERO? "⍬" : prototype instanceof Char? "''" : "?");
+        return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "?");
       }
     }
     String qs = string(Main.quotestrings || Main.noBoxing);
@@ -71,7 +48,7 @@ public class Arr extends Value {
       if (rank == 1) {
         StringBuilder res = new StringBuilder();
         var simple = true;
-        for (Value v : arr) {
+        for (Value v : this) {
           if (res.length() > 0) res.append(" ");
           if (v == null) {
             res.append("JAVANULL");
@@ -91,8 +68,8 @@ public class Arr extends Value {
         int[] heights = new int[h];
         var simple = true;
         int x=0, y=0;
-        for (Value v : arr) {
-          if (v == null) v = Arr.errNull;
+        for (Value v : this) {
+          if (v == null) v = Main.toAPL("JAVANULL");
           simple &= v.primitive();
           var c = v.toString().split("\n");
           var cw = 0;
@@ -111,7 +88,7 @@ public class Arr extends Value {
         }
         int borderSize = simple? 0 : 1;
         int rw = simple? -1 : 1,
-            rh = borderSize ; // result w&h;
+          rh = borderSize ; // result w&h;
         for (x = 0; x < w; x++) rw+= widths[x]+1;
         for (y = 0; y < h; y++) rh+= heights[y]+borderSize;
         char[][] chars = new char[rh][rw];
@@ -123,7 +100,7 @@ public class Arr extends Value {
             for (int cy = 0; cy < cobj.length; cy++) {
               String s = cobj[cy];
               char[] line = s.toCharArray();
-              int sx = arr[y*w + x] instanceof Num? rx+widths[x]-itemWidths[x][y] : rx;
+              int sx = get(y*w + x) instanceof Num? rx+widths[x]-itemWidths[x][y] : rx;
               System.arraycopy(line, 0, chars[ry + cy], sx, line.length);
             }
             ry+= heights[y]+borderSize;
@@ -169,7 +146,7 @@ public class Arr extends Value {
       } else return oneliner(new int[0]);
     }
   }
-  String oneliner(int[] where) {
+  public String oneliner(int[] where) {
     var qs = string(true);
     if (qs != null) return qs;
     StringBuilder res = new StringBuilder(where.length == 0 ? "{" : "[");
@@ -215,35 +192,56 @@ public class Arr extends Value {
     while (c < ia) {
       for (int i = 0; i < cPSec; i++) {
         for (int j = 0; j < chunkS; j++) {
-          res[c + (cPSec-i-1)*chunkS + j] = arr[c + i*chunkS + j];
+          res[c + (cPSec-i-1)*chunkS + j] = get(c + i*chunkS + j);
         }
       }
       c+= sec;
     }
-    return new Arr(res, shape);
-  }
-  @Override
-  public boolean equals(Obj o) {
-    if (!(o instanceof Value)) return false;
-    Value v = (Value) o;
-    if (!Arrays.equals(shape, v.shape)) return false;
-    assert ia == v.ia;
-    return IntStream.range(0, ia).allMatch(i -> arr[i].equals(v.arr[i]));
+    return new HArr(res, shape);
   }
   
-  public String fromAPL() {
-    if (!Arrays.stream(arr).allMatch(c -> c instanceof Char)) throw new DomainError("Converting non-char array to string");
-    return Arrays.stream(arr).map(Value::fromAPL).collect(Collectors.joining());
+  @Override
+  public Value with(Value what, int[] where) { // pls override
+    Value[] nvals = new Value[ia];
+    System.arraycopy(values(), 0, nvals, 0, ia);
+    nvals[Indexer.fromShape(shape, where, 0)] = what;
+    return new HArr(nvals, shape);
   }
   
-  private Integer hashCode;
-  @Override
-  public int hashCode() {
-    if (hashCode == null) {
-      hashCode = Arrays.hashCode(arr);
-      hashCode^= Arrays.hashCode(shape);
+  public static Arr create(Value[] v, int[] sh) {
+    if (v.length == 0) return new EmptyArr(sh);
+    if (v[0] instanceof Num) {
+      double[] da = new double[v.length];
+      for (int i = 0; i < v.length; i++) {
+        if (v[i] instanceof Num) da[i] = ((Num)v[i]).num;
+        else {
+          da = null;
+          break;
+        }
+      }
+      if (da != null) return new DoubleArr(da, sh);
     }
-    return hashCode;
+    if (v[0] instanceof Char) {
+      StringBuilder s = new StringBuilder();
+      for (Value aV : v) {
+        if (aV instanceof Char) s.append(((Char) aV).chr);
+        else {
+          s = null;
+          break;
+        }
+      }
+      if (s != null) return new ChrArr(s.toString(), sh);
+    }
+//    Value[] opt = new Value[v.length]; // do this in the caller please
+//    boolean anyBetter = false;
+//    for (int i = 0; i < v.length; i++) {
+//      Value c = v[i];
+//      Value o = c.squeeze();
+//      opt[i] = o;
+//      if (c != o) anyBetter = true;
+//    }
+//    if (anyBetter) return new HArr(opt, sh);
+//    else
+    return new HArr(v, sh);
   }
-  
 }

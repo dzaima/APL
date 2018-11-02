@@ -3,6 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.Indexer;
 import APL.Scope;
 import APL.errors.RankError;
+import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
@@ -13,8 +14,8 @@ public class UpArrowBuiltin extends Builtin {
     super("↑", 0x011, sc);
   }
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
-    int IO = ((Value)sc.get("⎕IO")).toInt(this);
-    int[] shape = a.toIntArr(this);
+    int IO = sc.IO;
+    int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
     int ia = 1;
     int[] offsets = new int[shape.length];
@@ -30,20 +31,20 @@ public class UpArrowBuiltin extends Builtin {
     Value[] arr = new Value[ia];
     int i = 0;
     for (int[] index : new Indexer(shape, offsets)) {
-      arr[i] = w.at(index, this);
+      arr[i] = w.at(index, sc.IO);
       i++;
     }
-    return new Arr(arr, shape);
+    return new HArr(arr, shape);
   }
   public Obj call(Value w) {
     if (w instanceof Arr) {
       Arr arr = (Arr) w;
-      Value[] sub = arr.arr;
+      Value[] sub = arr.values();
       if (sub.length == 0) return w; // TODO prototypes
       int[] def = new int[sub[0].rank];
       System.arraycopy(sub[0].shape, 0, def, 0, def.length);
       for (Value v : sub) {
-        if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", this, v);
+        if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
         for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
       }
       int totalIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
@@ -57,11 +58,11 @@ public class UpArrowBuiltin extends Builtin {
       for (Value v : sub) {
         for (int[] sh : new Indexer(def, 0)) {
 //          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
-          allVals[i++] = v.at(sh, v.prototype);
+          allVals[i++] = v.at(sh, v.prototype()).squeeze();
         }
       }
       
-      return new Arr(allVals, totalShape, w.prototype);
+      return Arr.create(allVals, totalShape);
     } else return w;
   }
 }

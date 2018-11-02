@@ -1,74 +1,133 @@
 package APL.types;
 
-import APL.*;
+import APL.Type;
 import APL.errors.*;
+import APL.types.arrs.*;
 
 import java.util.*;
 
 
-abstract public class Value extends Obj {
-  public int[] shape;
-  public int rank;
-  public int ia; // item amount
-  public Value[] arr;
-  public Value prototype = null;
-  protected Value() {
-    if (primitive()) {
-      shape = new int[0];
-      arr = new Value[]{this};
-      ia = 1;
-      rank = 0;
-    }
+public abstract class Value extends Obj implements Iterable<Value> {
+  final public int[] shape;
+  final public int rank;
+  final public int ia; // item amount
+  Value(int[] shape) {
+    this.shape = shape;
+    rank = shape.length;
+    int tia = 1;
+    for (int i = 0; i < rank; i++) tia*= shape[i];
+    ia = tia;
   }
-  public int[] toIntArr(Obj caller) {
-    if (rank > 1) throw new RankError("Expected rank <= 1, got " + rank, caller, this);
-    int[] res = new int[ia];
-    for (int i = 0; i < arr.length; i++) {
-      res[i] = arr[i].toInt(caller);
-    }
-    return res;
+  Value(int[] shape, int ia, int rank) {
+    this.shape = shape;
+    this.ia = ia;
+    this.rank = rank;
   }
-  public int toInt(Obj caller) {
-    if (!(this instanceof Num)) throw new DomainError("Expected a number, got "+ humanType(true), caller, this);
-    Num n = (Num)this;
-    return n.intValue();
-  }
+  public abstract int[] asIntVec();
+  public abstract int asInt();
   public boolean scalar() {
     return rank == 0;
   }
   public boolean primitive() {
-    return !(this instanceof Arr);
+    return this instanceof Primitive;
   }
   public Value first() {
-    return ia==0? prototype : arr[0];
+    return get(0);
   }
-  String oneliner(int[] where) {
-    throw Main.up;
+  public abstract Value get(int i); // WARNING: UNSAFE; doesn't need to throw for out-of-bounds
+  
+  
+  
+  public int compareTo(Value v) {
+    if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);
+    if (this instanceof Char && v instanceof Char) return ((Char) this).compareTo((Char) v);
+    if (this instanceof Num && (   v instanceof Char ||    v instanceof Arr)) return -1;
+    if (   v instanceof Num && (this instanceof Char || this instanceof Arr)) return 1;
+    if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
+      String s1 =   asString();
+      String s2 = v.asString();
+      return s1.compareTo(s2);
+    }
+    throw new DomainError("Can't compare "+v+" and "+this, this);
+  }
+  public abstract String asString();
+  public Integer[] gradeUp() {
+    if (rank != 1) throw new DomainError("grading rank ≠ 1", this);
+    Integer[] na = new Integer[ia];
+    
+    for (int i = 0; i < na.length; i++) {
+      na[i] = i;
+    }
+    Arrays.sort(na, (a, b) -> get(a).compareTo(get(b)));
+    return na;
+  }
+  public Integer[] gradeDown() {
+    if (rank != 1) throw new DomainError("grading rank ≠ 1", this);
+    Integer[] na = new Integer[ia];
+    
+    for (int i = 0; i < na.length; i++) {
+      na[i] = i;
+    }
+    Arrays.sort(na, (a, b) -> get(b).compareTo(get(a)));
+    return na;
   }
   
-  public Value at(int[] pos, Fun f) {
-    int IO = ((Num)f.sc.get("⎕IO")).toInt(f); // error here = pls take scope as arg
-    if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length, f, this);
-    int x = 0;
-    for (int i = 0; i < rank; i++) {
-      if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], f, this);
-      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], f, this);
-      x+= pos[i]-IO;
-      if (i != rank-1) x*= shape[i+1];
-    }
-    return arr[x];
+  public int[] eraseDim(int place) {
+    int[] res = new int[rank-1];
+    System.arraycopy(shape, 0, res, 0, place);
+    System.arraycopy(shape, place+1, res, place, rank-1-place);
+    return res;
   }
-  public Value at(int[] pos, Scope sc) {
-    int IO = ((Num)sc.get("⎕IO")).toInt(null);
-    if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length, null, this);
+  @Override
+  public Type type() {
+    return Type.array;
+  }
+  
+  public abstract Value prototype(); // what to append to this array
+  
+  public String oneliner(int[] where) {
+    return toString();
+  }
+  
+  protected transient Value[] vs;
+  
+  public Value[] values() {
+    if (vs == null) {
+      Value[] vs = new Value[ia];
+      for (int i = 0; i < ia; i++) vs[i] = get(i);
+      this.vs = vs;
+    }
+    return vs;
+  }
+  
+  @Override
+  public Iterator<Value> iterator() {
+    return new ValueIterator();
+  }
+  
+  class ValueIterator implements Iterator<Value> {
+    int c = 0;
+    @Override
+    public boolean hasNext() {
+      return c < ia;
+    }
+    
+    @Override
+    public Value next() {
+      return vs != null? vs[c++] : get(c++);
+    }
+  }
+  
+  public Value at(int[] pos, int IO) {
+    if (pos.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+pos.length, this);
     int x = 0;
     for (int i = 0; i < rank; i++) {
-      if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], null, this);
-      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], null, this);
+      if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], this);
+      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], this);
       x+= pos[i]-IO;
       if (i != rank-1) x*= shape[i+1];
     }
-    return arr[x];
+    return get(x);
   }
   public Value at(int[] pos, Value def) { // 0-indexed
     int x = 0;
@@ -77,7 +136,7 @@ abstract public class Value extends Obj {
       x+= pos[i];
       if (i != rank-1) x*= shape[i+1];
     }
-    return arr[x];
+    return get(x);
   }
   public Value simpleAt(int[] pos) {
     int x = 0;
@@ -85,55 +144,67 @@ abstract public class Value extends Obj {
       x+= pos[i];
       if (i != rank-1) x*= shape[i+1];
     }
-    return arr[x];
-  }
-  public int compareTo(Value v) {
-    if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);
-    if (this instanceof Char && v instanceof Char) return ((Char) this).compareTo((Char) v);
-    if (this instanceof Num && (   v instanceof Char ||    v instanceof Arr)) return -1;
-    if (   v instanceof Num && (this instanceof Char || this instanceof Arr)) return 1;
-    if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
-      String s1 =   fromAPL();
-      String s2 = v.fromAPL();
-      System.out.println(s1);
-      System.out.println(s2);
-      return s1.compareTo(s2);
-    }
-    throw new DomainError("Can't compare", v, this);
-  }
-  public String fromAPL() {
-    throw new DomainError("can't convert to string", null, this);
-  }
-  public Integer[] gradeUp(Fun f) {
-    if (rank != 1) throw new DomainError("grading rank ≠ 1", f, this);
-    Integer[] na = new Integer[ia];
-    
-    for (int i = 0; i < na.length; i++) {
-      na[i] = i;
-    }
-    Arrays.sort(na, (a, b) -> arr[a].compareTo(arr[b]));
-    return na;
-  }
-  public Integer[] gradeDown(Fun f) {
-    if (rank != 1) throw new DomainError("grading rank ≠ 1", f, this);
-    Integer[] na = new Integer[ia];
-    
-    for (int i = 0; i < na.length; i++) {
-      na[i] = i;
-    }
-    Arrays.sort(na, (a, b) -> arr[b].compareTo(arr[a]));
-    return na;
+    return get(x);
   }
   
-  public int[] eraseDim(int place) {
-    int[] res = new int[rank-1];
-    for (int i = 0; i < place; i++) res[i] = shape[i];
-    for (int i = place; i < rank-1; i++) res[i] = shape[i+1];
+  public abstract Value ofShape(int[] sh); // don't call with an empty array or unexpected things will happen!
+  public abstract Value with(Value what, int[] where);
+  public double sum() {
+    return Arrays.stream(values()).mapToDouble(Value::asInt).sum();
+  }
+  public double[] asDoubleArr() {
+    double[] res = new double[ia];
+    int i = 0;
+    for (Value c : values()) {
+      res[i++] = c.asDouble();
+    }
     return res;
   }
-  @Override
-  public Type type() {
-    return Type.array;
+  public double[] asDoubleArrClone() {
+    return asDoubleArr().clone();
   }
-  
+  public double asDouble() {
+    throw new DomainError("Using "+this.humanType(true)+" as a number", this);
+  }
+  public boolean quickDoubleArr() { // also must be 100% sure that I can actually convert to double arr
+    return false;
+  }
+  public Value squeeze() {
+    if (this instanceof Primitive) return this;
+    if (ia == 0) return this;
+    Value f = get(0);
+    if (f instanceof Num) {
+      double[] ds = new double[ia];
+      for (int i = 0; i < ia; i++) {
+        if (get(i) instanceof Num) ds[i] = get(i).asDouble();
+        else {
+          ds = null;
+          break;
+        }
+      }
+      if (ds != null) return new DoubleArr(ds, shape);
+    }
+    if (f instanceof Char) {
+      StringBuilder s = new StringBuilder();
+      for (int i = 0; i < ia; i++) {
+        if (get(i) instanceof Char) s.append(((Char) get(i)).chr);
+        else {
+          s = null;
+          break;
+        }
+      }
+      if (s != null) return new ChrArr(s.toString(), shape);
+    }
+    boolean anyBetter = false;
+    Value[] optimized = new Value[ia];
+    Value[] values = values();
+    for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
+      Value v = values[i];
+      Value vo = v.squeeze();
+      if (vo != v) anyBetter = true;
+      optimized[i] = vo;
+    }
+    if (anyBetter) return new HArr(optimized, shape);
+    return this;
+  }
 }

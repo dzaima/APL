@@ -3,6 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.*;
 import APL.errors.RankError;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class FindBuiltin extends Builtin {
@@ -11,7 +12,7 @@ public class FindBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    if (a.rank != w.rank) throw new RankError("argument ranks for ⍷ should be equal ("+a.rank+" ≠ "+w.rank+")", this, w);
+    if (a.rank != w.rank) throw new RankError("argument ranks for ⍷ should be equal ("+a.rank+" ≠ "+w.rank+")", w);
     boolean[] res = new boolean[w.ia];
     w: for (int[] inW : new Indexer(Indexer.add(Indexer.sub(w.shape, a.shape), 1), 0)) {
       for (int[] inA : new Indexer(a.shape, 0)) {
@@ -23,6 +24,6 @@ public class FindBuiltin extends Builtin {
     }
     Value[] arr = new Value[w.ia];
     for (int i = 0; i < w.ia; i++) arr[i] = res[i]? Num.ONE : Num.ZERO;
-    return new Arr(arr, w.shape);
+    return new HArr(arr, w.shape);
   }
 }

@@ -7,7 +7,7 @@
 [docs](https://github.com/dzaima/APL/blob/master/APLP5/docs)
 
 1. run `convert.py` in the folder `app`
-2. run `APLP5` in Processing
+2. run `APLP5` in [Processing](https://processing.org)
 
 To choose what file to run as APL, in `void settings` change the `args` array (or export & pass an actual argument) with the filename. Some examples are given in the folder `data`.
 

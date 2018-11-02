@@ -1,22 +1,36 @@
 package APL.types;
 
 import APL.errors.DomainError;
+import APL.types.arrs.HArr;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.stream.IntStream;
 
-public class Num extends Value {
+public class Num extends Primitive {
   
+  static DecimalFormat df;
+  public static int pp;
+  static {
+    setPrecision(14);
+  }
+  public static void setPrecision(int p) {
+    pp = p;
+    DecimalFormat cdf = new DecimalFormat("#.#");
+    cdf.setMaximumFractionDigits(p);
+    cdf.setRoundingMode(RoundingMode.HALF_UP);
+    df = cdf;
+  }
   public static final Num ZERO = new Num("0");
   public static final Num ONE = new Num("1");
   public static final Num TWO = new Num("2");
-  @SuppressWarnings("unused") // soon, it will. Soon....
   public static final Num MINUS_ONE = new Num("-1");
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
   public static final Num I1 = null; // no imaginary numbers :'(
   @SuppressWarnings("WeakerAccess") // no, bad
   public static final Num INFINITY = new Num("1e309");
-  private final double num;
+  public final double num;
   public Num(String val) {
     repr = val;
     if (val.startsWith("¯")) {
@@ -27,17 +41,14 @@ public class Num extends Value {
   public Num(int n) {
     repr = Integer.toString(n);
     num = n;
-    prototype = Num.ZERO;
   }
   public Num(long n) {
     repr = Long.toString(n);
     num = n;
-    prototype = Num.ZERO;
   }
   public Num(double val) {
     repr = Double.toString(val);
     num = val;
-    prototype = Num.ZERO;
   }
 
   public Num plus(Num w) {
@@ -64,25 +75,25 @@ public class Num extends Value {
     return new Num(d);
   }
   
-  public static Num gcd(Num[] nums) {
-    if (nums.length == 0) return Num.ZERO;
-    double res = nums[0].num;
+  public static double gcd(double... nums) {
+    if (nums.length == 0) return 0;
+    double res = nums[0];
     for (int i = 1; i < nums.length; i++) {
-      double b = nums[i].num;
+      double b = nums[i];
       while (b != 0) {
         double t = b;
         b = res % b;
         res = t;
       }
     }
-    return new Num(res);
+    return res;
   }
   
-  public static Num lcm(Num[] nums) {
-    if (nums.length == 0) return Num.ONE;
-    double res = nums[0].num;
+  public static double lcm(double... nums) {
+    if (nums.length == 0) return 1;
+    double res = nums[0];
     for (int i = 1; i < nums.length; i++) {
-      double a = nums[i].num;
+      double a = nums[i];
       double b = res;
       while (b != 0) {
         double t = b;
@@ -90,10 +101,10 @@ public class Num extends Value {
         a = t;
       }
       if (a == 0) res = 0;
-      else res = (nums[i].num * res) / a;
-      if (res == 0) return Num.ZERO;
+      else res = (nums[i] * res) / a;
+      if (res == 0) return 0;
     }
-    return new Num(res);
+    return res;
   }
   
   public Num conjugate() {
@@ -117,17 +128,17 @@ public class Num extends Value {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
-  public Num fact(Fun f) {
+  public Num fact() {
     if (num > 170) return Num.INFINITY;
-    if (num % 1 != 0) throw new DomainError("factorial of non-integer", f, this);
-    if (num < 0) throw new DomainError("factorial of negative number", f, this);
+    if (num % 1 != 0) throw new DomainError("factorial of non-integer", this);
+    if (num < 0) throw new DomainError("factorial of negative number", this);
     double res = IntStream.range(2, (int) (num+1)).asDoubleStream().reduce(1, (a, b) -> a * b);
     return new Num(res);
   }
   
-  public Num binomial(Num w, Fun f) {
-    if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", f, this);
-    if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", f, w);
+  public Num binomial(Num w) {
+    if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", this);
+    if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", w);
     if (w.num > num) return Num.ZERO;
   
     double res = 1;
@@ -179,20 +190,33 @@ public class Num extends Value {
     return n instanceof Num && ((Num) n).num == num;
   }
   
-  public int intValue() {
-    return (int)num;
-  }
-  public double doubleValue() {
+  @Override
+  public int asInt() { // warning: rounds
+    return (int) num;
+  } // TODO not round
+  public double asDouble() {
     return num;
   }
-
+  
+  @Override
+  public int[] asIntVec() { // TODO not round
+    return new int[]{(int)num};
+  }
+  
   public String toString() {
     if (num == (int)num) return Integer.toString((int)num);
-    return Double.toString(num);
+  
+    return df.format(num);
   }
-  protected String oneliner(int[] ignored) {
+  public String oneliner(int[] ignored) {
     if (num == (int)num) return Integer.toString((int)num);
-    return Double.toString(num);
+    return String.format("%.5g%n", 0.912385);
+  }
+  
+  @Override
+  public Value ofShape(int[] sh) {
+    assert sh.length != 0;
+    return new HArr(new Value[]{this}, sh);
   }
   
   public static Num max (Num a, Num b) {
@@ -202,13 +226,33 @@ public class Num extends Value {
     return a.num < b.num? a : b;
   }
   
-  public static int toInt(Obj o, Fun caller) {
-    if (!(o instanceof Num)) throw new DomainError("expected number, got "+(o).humanType(true), caller, o);
-    return ((Num) o).intValue();
-  }
-  
   @Override
   public int hashCode() {
     return Double.hashCode(num);
+  }
+  
+  @Override
+  public Value prototype() {
+    return ZERO;
+  }
+  
+  @Override
+  public Value[] values() {
+    return new Value[]{this};
+  }
+  
+  @Override
+  public double[] asDoubleArr() {
+    return new double[]{num};
+  }
+  
+  @Override
+  public double[] asDoubleArrClone() {
+    return new double[]{num};
+  }
+  
+  @Override
+  public boolean quickDoubleArr() {
+    return true;
   }
 }

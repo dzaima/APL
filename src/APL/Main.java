@@ -2,12 +2,14 @@ package APL;
 
 import APL.types.*;
 import APL.errors.*;
+import APL.types.arrs.*;
+import APL.types.functions.VarArr;
 
 import java.io.*;
 import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 public class Main {
   public static final String CODEPAGE = "\0\0\0\0\0\0\0\0\0\t\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~÷×↑↓⌈⌊≠∊⍺⍴⍵⍳∍⋾⎕⍞⌸⌺⍇⍁⍂⌻⌼⍃⍄⍈⍌⍍⍐⍓⍔⍗⍯⍰⍠⌹⊆⊇⍶⍸⍹⍘⍚⍛⍜⍊≤≥⍮ϼ⍷⍉⌽⊖⊙⌾○∘⍟⊗¨⍨⍡⍥⍩⍣⍢⍤⊂⊃∩∪⊥⊤∆∇⍒⍋⍫⍱⍲∨∧⍬⊣⊢⌷⍕⍎←→⍅⍆⍏⍖⌿⍀⍪≡≢⍦⍧⍭‽⍑∞…√";
@@ -15,12 +17,13 @@ public class Main {
   public static boolean noBoxing = false;
   public static boolean quotestrings = false;
   public static boolean colorful = true;
-  static final Arr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", null);
-  static final Arr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz", null);
+  static final ChrArr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  static final ChrArr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz");
   static int printlvl = 0;
   public static final Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
+  public static Tokenable faulty;
   public static void main(String[] args) {
     colorful = System.console() != null && System.getenv().get("TERM") != null;
     console = new Scanner(System.in);
@@ -173,9 +176,8 @@ public class Main {
                 break REPL;
               case ")TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-              case ")TYPE"        : println(Main.human(exec(rest, global).type())); break;
               case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
-              case ")CLASS"       : println(exec(rest, global).getClass().getCanonicalName()); break;
+              case ")CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
               case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
               case ")STACK":
                 if (lastError != null) {
@@ -187,14 +189,19 @@ public class Main {
             }
           } else {
             Obj r = exec(cr, global);
-            println(r.toString());
+            if (r!=null) println(r.toString());
           }
         } catch (APLError e) {
           e.print();
           lastError = e;
         } catch (Throwable e) {
-          e.printStackTrace();
           colorprint(e + ": " + e.getMessage(), 246);
+          if (faulty != null && faulty.getToken() != null) {
+            String s = IntStream.range(0, faulty.getToken().pos).mapToObj(i -> " ").collect(Collectors.joining());
+            colorprint(faulty.getToken().line, 217);
+            colorprint(s + "^", 217);
+          }
+          e.printStackTrace();
         }
         if (!silentREPL) print("> ");
       }
@@ -209,20 +216,10 @@ public class Main {
   public static void println(String s) {
     System.out.println(s);
   }
-  public static String human(Type t) {
-    switch (t) {
-      case array: return "array";
-      case var: return "variable";
-      case  fn: case  bfn: return "function";
-      case mop: case bmop: return "monadic operator";
-      case dop: case bdop: return "dyadic operator";
-      default: throw new IllegalStateException();
-    }
-  }
   public static String formatAPL (int[] ia) {
     return Arrays.stream(ia).mapToObj(String::valueOf).collect(Collectors.joining(" "));
   }
-  private static String readFile(String path) {
+  static String readFile(String path) {
     try {
       byte[] encoded = Files.readAllBytes(Paths.get(path));
       return new String(encoded, StandardCharsets.UTF_8);
@@ -266,7 +263,7 @@ public class Main {
       }
       if (guardPos >= 0) {
         var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
-        if (bool(execTok(guard, sc), sc)) {
+        if (bool(norm(execTok(guard, sc)), sc)) {
           var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
           res = execTok(expr, sc);
           if (endAfter) return res;
@@ -288,56 +285,64 @@ public class Main {
     else println(s);
   }
   
-  public static Arr toAPL(int[] arr) {
-    var va = new Value[arr.length];
+  public static DoubleArr toAPL(int[] arr) {
+    var da = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
-      va[i] = new Num(arr[i]);
+      da[i] = arr[i];
     }
-    return new Arr(va);
+    return new DoubleArr(da);
   }
   
-  public static Arr toAPL(int[] arr, int[] sh) {
-    var va = new Value[arr.length];
+  public static DoubleArr toAPL(int[] arr, int[] sh) {
+    var da = new double[arr.length];
     for (int i = 0; i < arr.length; i++) {
-      va[i] = new Num(arr[i]);
+      da[i] = arr[i];
     }
-    return new Arr(va, sh);
+    return new DoubleArr(da, sh);
   }
   
-  public static Arr toAPL(String s, Token t) {
-    var vs = new ArrayList<Value>();
-    for (char c : s.toCharArray()) {
-      Char chr = new Char(c);
-      chr.token = t;
-      vs.add(chr);
-    }
-    Arr a = new Arr(vs);
-    a.token = t;
-    a.prototype = Char.SPACE;
-    return a;
+  private static Value norm(Obj o) {
+    if (o instanceof VarArr) return ((VarArr) o).materialize();
+    if (o instanceof Settable) return (Value) ((Settable) o).get();
+    if (!(o instanceof Value)) throw new DomainError("Trying to use "+o.humanType(true)+" as array");
+    return (Value) o;
+  }
+  
+  public static ChrArr toAPL(String s) {
+    return new ChrArr(s);
   }
   public static boolean bool(Obj v, Scope sc) {
-    if (v instanceof Settable) v = ((Settable) v).get();
-    String cond = ((Arr) sc.get("⎕COND")).string(false);
-    assert cond != null;
-    if (cond.endsWith(" ")) {
+    Scope.Cond c = sc.cond;
+    if (sc.condSpaces) {
       if (v instanceof Char) {
         return ((Char) v).chr != ' ';
       }
-      cond = cond.substring(0, cond.length()-1);
     }
-    if (!(v instanceof Num)) throw new DomainError("⎕COND='01' but got type "+human(v.type()));
+    if (!(v instanceof Num)) throw new DomainError("⎕COND does not accept "+v.humanType(false));
     Num n = (Num) v;
-    switch (cond) {
-      case "01":
+    switch (c) {
+      case _01:
         if (n.equals(Num.ZERO)) return false;
         if (n.equals(Num.ONE)) return true;
-        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+n.toInt(null));
-      case ">0":
+        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+n.asInt());
+      case gt0:
         return n.compareTo(Num.ZERO)>0;
-      case "≠0":
+      case ne0:
         return n.compareTo(Num.ZERO)!=0;
-      default: throw new IllegalStateException("unknown ⎕COND "+cond);
+      default: throw new IllegalStateException("unknown ⎕COND "+c);
+    }
+  }
+  public static boolean bool(double v, Scope sc) {
+    switch (sc.cond) {
+      case _01:
+        if (v == 0) return false;
+        if (v == 1) return true;
+        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+v);
+      case gt0:
+        return v>0;
+      case ne0:
+        return v!=0;
+      default: throw new IllegalStateException("unknown ⎕COND");
     }
   }
 }

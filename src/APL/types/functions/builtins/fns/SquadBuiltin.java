@@ -13,10 +13,10 @@ public class SquadBuiltin extends Builtin {
   public Obj call(Value w) {
     if (w instanceof Arr) return w;
     if (w instanceof APLMap) return ((APLMap) w).toArr();
-    throw new DomainError("⍵ not array nor map", this, w);
+    throw new DomainError("⍵ not array nor map", w);
   }
   
   public Obj call(Value a, Value w) {
-    return w.at(a.toIntArr(this), this);
+    return w.at(a.asIntVec(), sc.IO);
   }
 }

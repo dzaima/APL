@@ -17,6 +17,7 @@ public class Dfn extends Fun {
     nsc.set("⍵", w);
     var res = Main.execLines(token, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
   public Obj call(Value a, Value w) {
@@ -27,6 +28,7 @@ public class Dfn extends Fun {
     nsc.alphaDefined = true;
     var res = Main.execLines(token, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
   public String toString() {

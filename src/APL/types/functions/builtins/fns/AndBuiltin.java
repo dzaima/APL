@@ -12,10 +12,25 @@ public class AndBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return Num.lcm(IntStream.range(0, w.ia).mapToObj(i -> (Num) w.arr[i]).toArray(Num[]::new));
+    return new Num(Num.lcm(w.asDoubleArr()));
   }
   
+  static class DNf implements DyNumVecFun {
+    public double call(double a, double w) {
+      return Num.lcm(a, w);
+    }
+    public void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) res[i] = Num.lcm(a, w[i]);
+    }
+    public void call(double[] res, double[] a, double w) {
+      for (int i = 0; i < a.length; i++) res[i] = Num.lcm(a[i], w);
+    }
+    public void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) res[i] = Num.lcm(a[i], w[i]);
+    }
+  }
+  private static DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> Num.lcm(new Num[]{(Num) a, (Num) w}), a0, w0);
+    return scalarNum(DNF, a0, w0);
   }
 }

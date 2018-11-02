@@ -14,20 +14,20 @@ public class DervDimDop extends Dop {
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;
-    else this.dim = dim - ((Num) sc.get("⎕IO")).intValue();
+    else this.dim = dim - sc.IO;
     this.token = f.token;
     
   }
   
   @Override
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
-    if (!(f instanceof DimDDop)) throw new SyntaxError("Attempt to call function dyadically that doesn't support dimension specification", f, a);
+    if (!(f instanceof DimDDop)) throw new SyntaxError("Attempt to call function dyadically that doesn't support dimension specification", a);
     return ((DimDDop) f).call(aa, ww, a, w, dim);
   }
   
   @Override
   public Obj call(Obj aa, Obj ww, Value w) {
-    if (!(f instanceof DimMDop)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", f, w);
+    if (!(f instanceof DimMDop)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", w);
     return ((DimMDop) f).call(aa, ww, w, dim);
   }
 }

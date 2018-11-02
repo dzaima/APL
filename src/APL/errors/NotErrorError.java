@@ -6,6 +6,6 @@ public class NotErrorError extends APLError {
   
   public NotErrorError(String msg, Obj cause) {
     super(msg);
-    fn = cause;
+    this.cause = cause;
   }
 }

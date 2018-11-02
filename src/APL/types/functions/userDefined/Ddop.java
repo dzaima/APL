@@ -20,7 +20,10 @@ public class Ddop extends Dop {
     nsc.set("⍹", ww);
     nsc.set("⍺", new Variable(nsc, "⍺"));
     nsc.set("⍵", w);
-    return execLines(token, nsc);
+    var res = Main.execLines(token, nsc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
+    return res;
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w) {
     printdbg("ddop call", a, w);
@@ -30,7 +33,10 @@ public class Ddop extends Dop {
     nsc.set("⍺", a);
     nsc.set("⍵", w);
     nsc.alphaDefined = true;
-    return execLines(token, nsc);
+    var res = Main.execLines(token, nsc);
+    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof Settable) return ((Settable)res).get();
+    return res;
   }
   public String toString() {
     return token.toRepr();

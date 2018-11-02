@@ -10,10 +10,40 @@ public class StileBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return numChrMap(Num::abs, c->{ throw new DomainError("|char", this, w); }, c -> new Num(c.size()), w);
+    return numChrMap(Num::abs, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
   }
   
+  static class DNf implements DyNumVecFun {
+    public double call(double a, double w) {
+      double c = w % a;
+      if (c < 0) return c + a;
+      return c;
+    }
+    public void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) {
+        double c = w[i] % a;
+        if (c < 0) res[i] = c + a;
+        else res[i] = c;
+      }
+    }
+    public void call(double[] res, double[] a, double w) {
+      if (w > 0) for (int i = 0; i < a.length; i++) res[i] = w % a[i];
+      else       for (int i = 0; i < a.length; i++) {
+        double c = w % a[i];
+        if (c < 0) res[i] = c + a[i];
+        else res[i] = c;
+      }
+    }
+    public void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) {
+        double c = w[i] % a[i];
+        if (c < 0) res[i] = c + a[i];
+        else res[i] = c;
+      }
+    }
+  }
+  private static DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> ((Num)w).mod((Num) a), a0, w0);
+    return scalarNum(DNF, a0, w0);
   }
 }

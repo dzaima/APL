@@ -1,0 +1,16 @@
+⎕io←0
+P5.size ← ,⍨500
+g←P5.G
+P5.smooth←0
+P5.draw ← {
+  n ← P5.mx
+  ⍝ n ← ⌊⍢(.5×) P5.mx ⍝ alternative n definition to exclude odd numbers - floor under division by 2
+  v ← n| ∘.×⍨ 1…n-1
+  ⍝ another interesting pattern (try different values than 3 there)
+  ⍝ v ← n| ∘.((3××) + +×-)⍨ 1…n-1
+  
+  ⍝ (0 0,P5.size) g.img P5.img -1+  {(65536×⍵)+(256×255-⍵)+255} ⌊.5+ (255÷n) × v ⍝ - a less optimized version of the below
+  (0 0,P5.size) g.img P5.img -1+  255 × 257 + 256× ⌊.5+ (255÷n) × v
+  
+  ⎕←P5.fps
+}

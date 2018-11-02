@@ -6,10 +6,8 @@ public class ValueError extends APLError {
   public ValueError (String s){
     super(s);
   }
-  public ValueError (String s, Obj fn, Obj causeObj) {
+  public ValueError (String s, Obj causeObj) {
     super(s);
-    this.fn = fn;
-    assert fn != null  ||  causeObj == null;
     this.cause = causeObj;
   }
 }

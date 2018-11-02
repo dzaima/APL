@@ -7,10 +7,34 @@ public class FloorBuiltin extends Builtin {
   public FloorBuiltin() {
     super("⌊", 0x011);
   }
-  public Obj call(Value w) {
-    return numChr(Num::floor, Char::lower, w);
+  static class Nf implements NumVecFun {
+    public Value call(Num w) {
+      return w.ceil();
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = Math.floor(a[i]);
+    }
   }
+  private static Nf NF = new Nf();
+  public Obj call(Value w) {
+    return numChr(NF, Char::lower, w);
+  }
+  static class DNf implements DyNumVecFun {
+    public double call(double a, double w) {
+      return Math.min(a, w);
+    }
+    public void call(double[] res, double a, double[] w) {
+      for (int i = 0; i < w.length; i++) res[i] = Math.min(a, w[i]);
+    }
+    public void call(double[] res, double[] a, double w) {
+      for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w);
+    }
+    public void call(double[] res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w[i]);
+    }
+  }
+  private static DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> Num.min((Num)a, (Num)w), a0, w0);
+    return scalarNum(DNF, a0, w0);
   }
 }

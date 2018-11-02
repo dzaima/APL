@@ -14,11 +14,11 @@ public class RandBuiltin extends Builtin {
     return scalar(v -> {
       Num n = (Num) v;
       if (n.equals(Num.ZERO)) return new Num(sc.rand(1d));
-      else return new Num(sc.rand(n.intValue()) + ((Num)sc.get("⎕IO")).intValue());
+      else return new Num(sc.rand(n.asInt()) + sc.IO);
     }, w);
   }
   
   public Obj call(Value a, Value w) {
-    throw new NYIError("sorry", this, a);
+    throw new NYIError("sorry", a);
   }
 }

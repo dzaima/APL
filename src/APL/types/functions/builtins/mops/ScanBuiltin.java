@@ -2,6 +2,7 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.SyntaxError;
 import APL.types.*;
+import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 public class ScanBuiltin extends Mop {
@@ -14,14 +15,14 @@ public class ScanBuiltin extends Mop {
     if (! (aa instanceof Fun)) throw new SyntaxError("\\ expects ⍶ to be a function");
     Fun f = (Fun) aa;
     if (w.ia == 0) return w;
-    Value c = w.arr[0];
+    Value c = w.get(0);
     Value[] res = new Value[w.ia];
     res[0] = c;
     for (int i = 1; i<w.ia; i++) {
-      c = (Value) f.call(c, w.arr[i]);
+      c = (Value) f.call(c, w.get(i));
       res[i] = c;
     }
-    return new Arr(res);
+    return new HArr(res);
   }
   
 //  public Obj call(Value a, Value w) {
