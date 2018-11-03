@@ -1,14 +1,14 @@
 package APL;
 
-import APL.types.*;
 import APL.errors.*;
+import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
 
 import java.io.*;
-import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.*;
 import java.util.stream.*;
 
 public class Main {

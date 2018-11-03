@@ -3,6 +3,9 @@ package APL.types.arrs;
 import APL.errors.DomainError;
 import APL.types.*;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class SingleItemArr extends Arr {
   private final Value v;
   
@@ -81,5 +84,19 @@ public class SingleItemArr extends Arr {
     Value ov = v.squeeze();
     if (ov == v) return this;
     return new SingleItemArr(v, shape);
+  }
+  
+  @Override
+  public String oneliner(int[] where) {
+    if (where.length == 0) {
+      String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
+      return (r.length() == 0? "⍬" : r) + "⍴" + v.oneliner(new int[0]);
+    }
+    return super.oneliner(where);
+  }
+  @Override
+  public String toString() {
+    String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
+    return (r.length() == 0? "⍬" : r) + "⍴" + v.oneliner(new int[0]);
   }
 }

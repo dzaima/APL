@@ -1,11 +1,8 @@
 package APL.types.functions.builtins.fns;
 
-import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
-
-import java.util.Arrays;
 
 public class CommaBarBuiltin extends Builtin {
   public CommaBarBuiltin() {
@@ -20,7 +17,6 @@ public class CommaBarBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    if (a.quickDoubleArr() && w.quickDoubleArr()) return CatBuiltin.catDA(a, w, 0);
     return CatBuiltin.cat(a, w, 0);
   }
 }
