@@ -166,7 +166,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public double asDouble() {
     throw new DomainError("Using "+this.humanType(true)+" as a number", this);
   }
-  public boolean quickDoubleArr() { // also must be 100% sure that I can actually convert to double arr
+  public boolean quickDoubleArr() { // if true, asDoubleArr must succeed
     return false;
   }
   public Value squeeze() {

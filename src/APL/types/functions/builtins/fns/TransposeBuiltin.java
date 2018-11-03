@@ -18,13 +18,13 @@ public class TransposeBuiltin extends Builtin {
       for (int i = 0; i < w.rank; i++) {
         ns[i] = w.shape[w.rank - i - 1];
       }
-      Indexer id = new Indexer(w.shape, 0);
-      for (int[] c : id) {
+      int ci = 0;
+      for (int[] c : new Indexer(w.shape, 0)) {
         int[] nc = new int[w.rank];
         for (int i = 0; i < w.rank; i++) {
           nc[i] = c[w.rank - i - 1];
         }
-        res[Indexer.fromShape(ns, nc, 0)] = dw[id.ci];
+        res[Indexer.fromShape(ns, nc, 0)] = dw[ci++];
       }
       return new DoubleArr(res, ns);
     }

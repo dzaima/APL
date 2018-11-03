@@ -8,7 +8,7 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
   private final int rank;
   private final int[] c;
   private int ia = 1;
-  public int ci = 0;
+  private int ci = 0;
   private final int[] offsets;
   
   public Indexer(int[] sh, int[] offsets) {
