@@ -148,6 +148,8 @@ class Exec {
         var jot = done.removeFirst();
         done.removeFirst();
         var fn = done.removeFirst();
+        if (fn instanceof Settable) fn = ((Settable) fn).get();
+        if (fn instanceof VarArr) fn = ((VarArr) fn).materialize();
         var TB = new TableBuiltin();
         TB.token = jot.token;
         done.addFirst(TB.derive(fn));

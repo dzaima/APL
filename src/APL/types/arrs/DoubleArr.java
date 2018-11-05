@@ -137,4 +137,12 @@ public class DoubleArr extends Arr {
     }
     return super.with(what, where);
   }
+  
+  @Override
+  public boolean equals(Obj o) {
+    if (o instanceof DoubleArr) {
+      return Arrays.equals(shape, ((DoubleArr) o).shape) && Arrays.equals(arr, ((DoubleArr) o).arr);
+    }
+    return super.equals(o);
+  }
 }

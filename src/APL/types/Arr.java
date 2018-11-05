@@ -4,11 +4,15 @@ import APL.*;
 import APL.errors.DomainError;
 import APL.types.arrs.*;
 
+import java.util.Arrays;
 import java.util.stream.*;
 
 public abstract class Arr extends Value {
   public Arr(int[] shape) {
     super(shape);
+  }
+  public Arr(int[] shape, int ia) {
+    super(shape, ia, shape.length);
   }
   public Arr(int[] shape, int ia, int rank) {
     super(shape, ia, rank);
@@ -243,5 +247,17 @@ public abstract class Arr extends Value {
 //    if (anyBetter) return new HArr(opt, sh);
 //    else
     return new HArr(v, sh);
+  }
+  
+  @Override
+  public boolean equals(Obj o) {
+    if (!(o instanceof Arr)) return false;
+    if (!Arrays.equals(shape, ((Arr) o).shape)) return false;
+    Value[] mvs = values();
+    Value[] ovs = ((Arr) o).values();
+    for (int i = 0; i < mvs.length; i++) {
+      if (!mvs[i].equals(ovs[i])) return false;
+    }
+    return true;
   }
 }
