@@ -18,6 +18,7 @@ public class RShoeUBBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
 //    return new EachBuiltin().derive(new SquadBuiltin(sc)).call(a, (Value)new LShoeBuiltin().call(w));
     if (a.ia == 0) return EmptyArr.SHAPE0;
+    if (a instanceof Primitive) return w.get((int) a.asDouble());
     if (w.quickDoubleArr()) {
       double[] wv = w.asDoubleArr();
       double[] res = new double[a.ia];

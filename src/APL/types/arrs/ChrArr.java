@@ -12,6 +12,7 @@ public class ChrArr extends Arr {
   }
   public ChrArr(String s, int[] sh) {
     super(sh, s.length(), sh.length);
+    assert sh.length != 0;
     this.s = s;
   }
   
