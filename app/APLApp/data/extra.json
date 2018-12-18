@@ -1,4 +1,4 @@
-[
+  [
   [
     {
         "col": 3,
@@ -6,25 +6,25 @@
        "down": {"chr": "B","spec": "ascii"},
       "right": {"chr": "%","spec": "graph"}
     },
-    {
-      "col": 0,
-      "def": {"chr": " "}
+    { "col": 0,
+      "def": {"chr": " "},
+      "down": {"chr": "a"}
     },
-    {
-      "col": 0,
-      "def": {"chr": " "}
+    { "col": 0,
+      "def": {"chr": " "},
+      "down": {"chr": "b"}
     },
-    {
-      "col": 0,
-      "def": {"chr": " "}
+    { "col": 0,
+      "def": {"chr": " "},
+      "down": {"chr": "c"}
     },
-    {
-      "col": 0,
-      "def": {"chr": " "}
+    { "col": 0,
+      "def": {"chr": " "},
+      "down": {"chr": "d"}
     },
-    {
-      "col": 0,
-      "def": {"chr": " "}
+    { "col": 0,
+      "def": {"chr": " "},
+      "down": {"chr": "e"}
     },
     {
       "col": 3,
@@ -71,7 +71,7 @@
     },
     {
       "col": 2,
-      "def": {"chr": " "}
+      "def": {"chr": "^C", "spec": "copy"}
     }
   ],
   [
@@ -97,7 +97,7 @@
     },
     {
       "col": 2,
-      "def": {"chr": " "}
+      "def": {"chr": "⍫"}
     },
     {
       "col": 1,
@@ -105,7 +105,7 @@
     },
     {
       "col": 2,
-      "def": {"chr": " "}
+      "def": {"chr": "^V", "spec": "paste"}
     }
   ],
   [
@@ -141,7 +141,7 @@
     },
     {
       "col": 2,
-      "def": {"chr": " "}
+      "def": {"chr": "⎕IO"}
     }
   ]
 ]

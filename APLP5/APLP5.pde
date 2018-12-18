@@ -9,7 +9,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"iKeExample"};
+  if (args == null) args = new String[]{"n7"};
   
   global = new Scope();
   String s;

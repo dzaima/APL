@@ -488,6 +488,7 @@ class Exec {
           case '⌽': return new ReverseBuiltin();
           
           case '…': return new EllipsisBuiltin();
+          case '⍮': return new SemiUBBuiltin();
           case '⍕': return new FormatBuiltin();
           case '⍎': return new EvalBuiltin(sc);
           case '⍋': return new GradeUpBuiltin(sc);
@@ -514,9 +515,11 @@ class Exec {
           case '∘': return new JotBuiltin();
           case '.': return new DotBuiltin();
           case '⍣': return new RepeatBuiltin();
+          case '⍤': return new JotDiaeresisBuiltin();
           case '⍥': return new OverBuiltin();
           case '⍢': return new DualBuiltin();
           case '@': return new AtBuiltin(sc);
+          case '⍫': return new ObserveBuiltin();
   
   
           case '⍬': return new DoubleArr(new double[0]);

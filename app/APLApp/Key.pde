@@ -194,10 +194,12 @@ class Action {
           program = program.substring(0, ppos)+"("+program.substring(ppos);
           ins(")");
         break;
-        //case "":
-        //break;
-        //case "":
-        //break;
+        case "copy":
+          copyText(program);
+        break;
+        case "paste":
+          pasteText();
+        break;
         //case "":
         //break;
         default: println("unknown special "+special);

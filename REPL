@@ -1,2 +1,2 @@
 #!/bin/bash
-rlwrap java -jar APL.jar "$@" -r
+rlwrap java -ea -jar APL.jar "$@" -r

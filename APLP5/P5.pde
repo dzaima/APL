@@ -18,7 +18,7 @@ class P5 extends APLMap {
       case "keyrelease"     : case "kr" : kr      = (Fun) v; break;
       case "modrelease"     : case "mr" : mr      = (Fun) v; break;
       // settings
-      
+      case "fps": case "framerate": frameRate(((Value) v).asInt());
       case "smooth": smooth(((Value)v).asInt()); return;
       case "size": {
         XY p = new XY(v);

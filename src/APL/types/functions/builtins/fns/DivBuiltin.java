@@ -10,7 +10,7 @@ public class DivBuiltin extends Builtin {
   
   static class Nf implements NumVecFun {
     public Value call(Num w) {
-      return new Num(w.compareTo(Num.ZERO));
+      return Num.ONE.divide(w);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = 1/a[i];

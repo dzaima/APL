@@ -2,7 +2,7 @@ LL<Point> points = new LL<Point>();
 PQ<Double, Point> pq = new PQ<Double, Point>();
 double[] b;
 Fun fn;
-int pts = 200000;
+int pts = 20000;
 double scale = 10;
 
 
@@ -17,6 +17,17 @@ void initFn() {
 }
 void functionGrapher() {
   bounds();
+  Obj s = global.get("dxy");
+  boolean joined = true;
+  float ph = height/200f;
+  if (s == null) {
+    pts = 1000;
+  } else {
+    pts = ((Value)s).get(0).asInt();
+    joined = ((Value)s).get(1).asDouble() != 0;
+    ph = (float) ((Value)s).get(2).asDouble();
+  }
+  ph/= (float)fullS;
   double sCut = b[0]-b[2];
   double eCut = b[1]+b[2];
   double sEnd = b[0]+b[2];
@@ -60,37 +71,44 @@ void functionGrapher() {
   
   noFill();
   stroke(0xffd2d2d2);
-  strokeWeight(height/200f / (float)fullS);
+  strokeWeight(ph);
   n = points.first();
+  if (joined) {
   boolean drawing = false;
-  while (n != points.end) {
-    if (n.v.y==null || Double.isNaN(n.v.y)) {
-      if (drawing) {
-        drawing = false;
-        endShape();
+    while (n != points.end) {
+      if (Double.isNaN(n.v.y)) {
+        if (drawing) {
+          drawing = false;
+          endShape();
+        }
+      } else if (n.v.y==Double.POSITIVE_INFINITY) {
+        if (drawing) {
+          vertex((float) (n.prev.v.x*scale), (float) fullY);
+          drawing = false;
+          endShape();
+        }
+      } else if (n.v.y==Double.NEGATIVE_INFINITY) {
+        if (drawing) {
+          vertex((float) (n.prev.v.x*scale), (float) (fullY + height/fullS));
+          drawing = false;
+          endShape();
+        }
+      } else {
+        if (!drawing) {
+          drawing = true;
+          beginShape();
+        }
+        vertex((float)(n.v.x*scale), -(float)(n.v.y*scale));
       }
-    } else if (n.v.y==Double.POSITIVE_INFINITY) {
-      if (drawing) {
-        vertex((float) (n.prev.v.x*scale), (float) fullY);
-        drawing = false;
-        endShape();
-      }
-    } else if (n.v.y==Double.NEGATIVE_INFINITY) {
-      if (drawing) {
-        vertex((float) (n.prev.v.x*scale), (float) (fullY + height/fullS));
-        drawing = false;
-        endShape();
-      }
-    } else {
-      if (!drawing) {
-        drawing = true;
-        beginShape();
-      }
-      vertex((float)(n.v.x*scale), -(float)(n.v.y*scale));
+      n = n.next;
     }
-    n = n.next;
+    if (drawing) endShape();
+  } else {
+    while (n != points.end) {
+      ellipse((float)(n.v.x*scale), -(float)(n.v.y*scale), ph, ph);
+      n = n.next;
+    }
   }
-  if (drawing) endShape();
   popMatrix();
   stroke(0xff666666);
   strokeWeight(height/200f);
@@ -103,9 +121,9 @@ void functionGrapher() {
 void add(double pos, LLNode<Point> l) {
   Double res;
   try {
-    res = ((Num) fn.call(new Num(pos))).doubleValue();
+    res = ((Num) fn.call(new Num(pos))).asDouble();
   } catch (Throwable e) {
-    res = null;
+    res = Double.NaN;
   }
   Point p = new Point(pos, res);
   LLNode<Point> r = l.next;
@@ -229,10 +247,10 @@ class LLNode<T> {
 
 class Point {
   double x;
-  Double y;
+  double y;
   LLNode<Point> pnode;
   PQNode pqr;
-  Point (double x, Double y) {
+  Point (double x, double y) {
     this.x = x;
     this.y = y;
   }

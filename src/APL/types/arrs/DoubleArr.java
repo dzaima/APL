@@ -1,6 +1,6 @@
 package APL.types.arrs;
 
-import APL.Indexer;
+import APL.*;
 import APL.errors.*;
 import APL.types.*;
 
@@ -10,7 +10,7 @@ public class DoubleArr extends Arr {
   final public double[] arr;
   public DoubleArr(double[] arr, int[] sh) {
     super(sh);
-    assert sh.length != 0;
+    assert Main.enclosePrimitives || sh.length != 0;
     this.arr = arr;
   }
   public DoubleArr(double[] arr) { // 1D
@@ -59,6 +59,8 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    if (sh.length == 0 && !Main.enclosePrimitives) return new Num(arr[0]);
     return new DoubleArr(arr, sh);
   }
   

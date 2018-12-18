@@ -168,7 +168,7 @@ class PQNode<M extends Comparable<? super M>, V> {
     pq.S[  Sl][  Sp] = this;
     pq.S[n.Sl][n.Sp] = n;
   }
-   //<>//
+  
   String toString() {
     return m+"";
   }

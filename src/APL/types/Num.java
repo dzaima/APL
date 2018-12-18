@@ -1,10 +1,12 @@
 package APL.types;
 
+import APL.Main;
 import APL.errors.DomainError;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Num extends Primitive {
@@ -215,8 +217,9 @@ public class Num extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert sh.length != 0;
-    return new HArr(new Value[]{this}, sh);
+    if (sh.length == 0 && !Main.enclosePrimitives) return this;
+    assert Arrays.stream(sh).reduce(1, (a, b) -> a*b) == 1;
+    return new SingleItemArr(this, sh);
   }
   
   public static Num max (Num a, Num b) {

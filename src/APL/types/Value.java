@@ -147,7 +147,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return get(x);
   }
   
-  public abstract Value ofShape(int[] sh); // don't call with an empty array or unexpected things will happen!
+  public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape!
   public abstract Value with(Value what, int[] where);
   public double sum() {
     return Arrays.stream(values()).mapToDouble(Value::asInt).sum();

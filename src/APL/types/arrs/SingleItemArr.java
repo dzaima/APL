@@ -7,21 +7,16 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class SingleItemArr extends Arr {
-  private final Value v;
+  private final Value item;
   
-  public SingleItemArr(Value v, int[] shape) {
+  public SingleItemArr(Value item, int[] shape) {
     super(shape);
-    this.v = v;
-  }
-  
-  public SingleItemArr(Value v, int[] shape, int ia, int rank) {
-    super(shape, ia, rank);
-    this.v = v;
+    this.item = item;
   }
   
   @Override
   public int[] asIntVec() {
-    int vi = v.asInt();
+    int vi = item.asInt();
     int[] a = new int[ia];
     for (int i = 0; i < ia; i++) a[i] = vi;
     return a;
@@ -34,14 +29,14 @@ public class SingleItemArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return v;
+    return item;
   }
   
   @Override
   public String asString() {
     if (rank >= 2) throw new DomainError("using rank≥2 array as string");
-    if (! (v instanceof Char)) throw new DomainError("using non-char array as string");
-    char c = ((Char) v).chr;
+    if (! (item instanceof Char)) throw new DomainError("using non-char array as string");
+    char c = ((Char) item).chr;
     StringBuilder s = new StringBuilder();
     for (int i = 0; i < ia; i++) s.append(c);
     return s.toString();
@@ -49,27 +44,28 @@ public class SingleItemArr extends Arr {
   
   @Override
   public Value prototype() {
-    return v.prototype();
+    return item.prototype();
   }
   
   @Override
   public Value ofShape(int[] sh) {
-    return new SingleItemArr(v, sh);
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    return new SingleItemArr(item, sh);
   }
   
   @Override
   public boolean quickDoubleArr() {
-    return v instanceof Num;
+    return item instanceof Num;
   }
   public Value[] values() {
     Value[] vs = new Value[ia];
-    for (int i = 0; i < ia; i++) vs[i] = v;
+    for (int i = 0; i < ia; i++) vs[i] = item;
     return vs;
   }
   @Override
   public double[] asDoubleArr() {
     double[] res = new double[ia];
-    double n = v.asDouble();
+    double n = item.asDouble();
     for (int i = 0; i < ia; i++) res[i] = n;
     return res;
   }
@@ -81,22 +77,22 @@ public class SingleItemArr extends Arr {
   
   @Override
   public Value squeeze() {
-    Value ov = v.squeeze();
-    if (ov == v) return this;
-    return new SingleItemArr(v, shape);
+    Value ov = item.squeeze();
+    if (ov == item) return this;
+    return new SingleItemArr(item, shape);
   }
   
   @Override
   public String oneliner(int[] where) {
     if (where.length == 0) {
       String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-      return (r.length() == 0? "⍬" : r) + "⍴" + v.oneliner(new int[0]);
+      return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
     }
     return super.oneliner(where);
   }
   @Override
   public String toString() {
     String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-    return (r.length() == 0? "⍬" : r) + "⍴" + v.oneliner(new int[0]);
+    return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
   }
 }

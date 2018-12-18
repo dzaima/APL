@@ -76,6 +76,7 @@ public class HArr extends Arr {
     return arr;
   }
   public Value ofShape(int[] sh) {
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
     return new HArr(arr, sh);
   }
   

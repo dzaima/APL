@@ -49,6 +49,9 @@ public class Scope {
         IO = ((Value) val).asInt();
         nIO = IO==0? Num.ZERO : Num.ONE;
       break;
+      case "⎕BOXSIMPLE":
+        Main.enclosePrimitives = ((Value) val).asInt() == 1;
+      break;
       case "⎕COND":
         String s = ((Arr) val).asString();
         if (s == null) throw new DomainError("⎕COND must be set to a character vector");

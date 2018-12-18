@@ -3,6 +3,8 @@ package APL.types;
 import APL.Main;
 import APL.types.arrs.HArr;
 
+import java.util.Arrays;
+
 public abstract class APLMap extends Primitive {
   
   public MapPointer get(Value k) {
@@ -48,10 +50,8 @@ public abstract class APLMap extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    int ia = 1;
-    for (int c : sh) ia*= c;
-    Value[] vs = new Value[ia];
-    for (int i = 0; i < ia; i++) vs[i] = this;
-    return new HArr(vs, sh);
+    if (sh.length == 0 && Main.enclosePrimitives) return this;
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    return new HArr(new Value[]{this}, sh);
   }
 }

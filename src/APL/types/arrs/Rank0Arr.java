@@ -3,6 +3,8 @@ package APL.types.arrs;
 import APL.errors.DomainError;
 import APL.types.*;
 
+import java.util.Arrays;
+
 public class Rank0Arr extends Arr {
   final static int[] SHAPE = new int[0];
   Value item;
@@ -40,7 +42,8 @@ public class Rank0Arr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    return null;
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    return new SingleItemArr(item, sh);
   }
   
   @Override

@@ -4,6 +4,8 @@ import APL.errors.*;
 import APL.errors.ImplementationError;
 import APL.types.*;
 
+import java.util.Arrays;
+
 public class EmptyArr extends Arr {
   public static EmptyArr SHAPE0 = new EmptyArr(new int[]{0});
   public EmptyArr(int[] sh) {
@@ -39,6 +41,7 @@ public class EmptyArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
     return new EmptyArr(sh);
   }
   

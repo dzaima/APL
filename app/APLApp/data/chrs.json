@@ -49,11 +49,12 @@
     },
     { "col": 2,
       "def": {"chr": "7"},
-      "down": {"chr": "∘"}, "left": {"chr": "⍨"}, "right": {"chr": "~"}
+      "down": {"chr": "∘"}, "left": {"chr": "⍨"}, "right": {"chr": "~"}, "up": {"chr": "⍢"}
     },
     { "col": 2,
       "def": {"chr": "8"},
-      "left": {"chr": "⍶"}, "right": {"chr": "⍹"}
+      "left": {"chr": "⍶"}, "right": {"chr": "⍹"},
+      "up": {"chr": "⍤"}, "down": {"chr": "⍥"}
     },
     { "col": 2,
       "def": {"chr": "9"},
@@ -65,13 +66,14 @@
     },
     { "col": 1,
       "def": {"chr": "×"},
-      "up": {"chr": "*"}, "down": {"chr": "∧"}
+      "up": {"chr": "*"}, "down": {"chr": "∧"},
+      "right": {"chr": "⊢"}, "left": {"chr": "⊣"}
     },
     { "col": 3,
        "def": {"chr": "⏎", "type": "\n", "sd": true},
         "up": {"chr": "⊥"},
       "down": {"chr": "⊤"},
-      "left": {"chr": " "}
+      "left": {"chr": "⍝"}
     }
   ],
   [
@@ -133,27 +135,28 @@
     },
     { "col": 2,
       "def": {"chr": "1"},
-      "up": {"chr": "…"}, "down": {"chr": " "}, "left": {"chr": "⍳"}, "right": {"chr": "⍸"}
+      "up": {"chr": "…"}, "left": {"chr": "⍳"}, "right": {"chr": "⍸"}
     },
     { "col": 2,
       "def": {"chr": "2"},
-      "down": {"chr": " "}, "left": {"chr": "⊣"}, "right": {"chr": "⊢"}
+      "up"  : {"chr": "@"},
+      "left": {"chr": "⊇"}, "right": {"chr": "⊆"}
     },
     { "col": 2,
-      "def": {"chr": "3"},
-      "down": {"chr": " "}, "left": {"chr": "⍷"}, "right": {"chr": "∊"}
+      "def" : {"chr": "3"},
+      "left": {"chr": "⍷"}, "right": {"chr": "∊"}
     },
     { "col": 2,
       "def": {"chr": "0"},
-      "up": {"chr": "F","spec": "extra"}, "down": {"chr": " "}, "left": {"chr": "?"}, "right": {"chr": "⍬"}
+      "up": {"chr": "F","spec": "extra"}, "left": {"chr": "?"}, "right": {"chr": "⍬"}
     },
     { "col": 2,
       "def": {"chr": "."},
-      "up": {"chr": "'"}, "down": {"chr": " "}, "left": {"chr": ","}, "right": {"chr": "⍪"}
+      "up": {"chr": "'"}, "left": {"chr": ","}, "right": {"chr": "⍪"}
     },
     { "col": 1,
       "def": {"chr": "¨"},
-      "down": {"chr": " "}, "left": {"chr": "⍝"}
+      "left": {"chr": "⍮"}
     }
   ]
 ]

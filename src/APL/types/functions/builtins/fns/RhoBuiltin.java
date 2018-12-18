@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
@@ -43,7 +44,8 @@ public class RhoBuiltin extends Builtin {
     } else if (ia == w.ia) return w.ofShape(sh);
     if (w.ia == 0) {
       return new SingleItemArr(w.prototype(), sh);
-    } else if (w instanceof DoubleArr) {
+    } else if (w.quickDoubleArr()) {
+      if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
       double[] inp = w.asDoubleArr();
       double[] res = new double[ia];
       int p = 0;
@@ -52,9 +54,10 @@ public class RhoBuiltin extends Builtin {
         if (p == w.ia) p = 0;
       }
       return new DoubleArr(res, sh);
-    } else if (w instanceof Primitive) {
+    } else if (w.scalar()) {
       return new SingleItemArr(w, sh);
     } else {
+      if (sh.length == 0 && w.get(0).primitive() && !Main.enclosePrimitives) return w.get(0);
       Value[] arr = new Value[ia];
       int index = 0;
       for (int i = 0; i < ia; i++) {

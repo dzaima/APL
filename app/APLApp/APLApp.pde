@@ -1,3 +1,7 @@
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.Toolkit;
 import java.util.Arrays;
 
 private static final int[] index = {0x00ffffff, 0xFF134ADB, 0xFF282828, 0xFF353535};
@@ -128,16 +132,53 @@ class FT{
 public void settings() {
   size(700, 400);
 }
+void copyText(final String s) {
+  StringSelection selection = new StringSelection(s);
+  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  clipboard.setContents(selection, selection);
+}
+String gottenClip = null;
+void pasteText() {
+  try {
+    String text = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+    gottenClip = text;
+  } catch (Throwable e) {
+    res = e.toString();
+  }
+}
 void draw() {
   FT[] touches = mousePressed? new FT[]{ new FT(mouseX, mouseY) } : new FT[0];
   
   /*/
+import android.content.Context;
+import android.content.ClipboardManager;
 void setup2() { }
+void copyText(final String s) {
+  getActivity().runOnUiThread(new Runnable() {
+    public void run() {
+      ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE); 
+      clipboard.setText(s);
+    }
+  });
+}
+String gottenClip = null;
+void pasteText() {
+  getActivity().runOnUiThread(new Runnable() {
+    public void run() {
+      ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE); 
+      gottenClip = clipboard.getText().toString();
+    }
+  });
+}
 @Override
 public void settings() {
   fullScreen();
 }
 void draw() {
+  if (gottenClip != null) {
+    ins(gottenClip);
+    gottenClip = null;
+  }
   mousePressed = touches.length>0;
   //*/
   if (mode != 0) {
@@ -179,15 +220,15 @@ void draw() {
           mode = 0;
           return;
         }
-        if (arr.arr[0] instanceof Num) {
+        if (arr.get(0) instanceof Num) {
           float x = 0;
           int jmp = 10;
           noFill();
           beginShape();
           stroke(0xffd2d2d2);
           strokeWeight(height/200f / (float)fullS);
-          for (Value v : arr.arr) {
-            float y = -(float) ((Num) v).doubleValue()*jmp;
+          for (double v : arr.asDoubleArr()) {
+            float y = -(float) v*jmp;
             vertex(x, y);
             x+=jmp;
           }
@@ -249,10 +290,10 @@ void draw() {
     else started = null;
   }
   
-  if (pmousePressed && !mousePressed) {
-    if (started != null) started.click(cx-xp, cy-yp);
+  if (pmousePressed && !mousePressed && started != null) {
+    started.click(cx-xp, cy-yp);
   }
-  if (millis() - stouch > 400 && mousePressed) {
+  if (millis() - stouch > 400 && mousePressed && started != null) {
     started.repeat(cx-xp, cy-yp);
     lastTouch = millis();
     stouch += 50;

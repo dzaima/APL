@@ -1,6 +1,9 @@
 package APL.types;
 
+import APL.Main;
 import APL.types.arrs.ChrArr;
+
+import java.util.Arrays;
 
 import static APL.Main.quotestrings;
 
@@ -43,11 +46,10 @@ public class Char extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert sh.length != 0;
-    int ia = 1;
-    for (int c : sh) ia*= c;
+    if (sh.length == 0 && !Main.enclosePrimitives) return this;
+    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
     StringBuilder s = new StringBuilder();
-    for(int i=0;i<ia;i++) s.append(chr);
+    for (int i = 0; i < ia; i++) s.append(chr);
     return new ChrArr(s.toString(), sh);
   }
   
