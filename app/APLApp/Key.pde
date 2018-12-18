@@ -160,18 +160,18 @@ class Action {
         break;
         case "graph":
           mode = 2;
-          fullX = -width/2;
-          fullY = -height/2;
-          fullS = 1;
+          fullX = -width/20;
+          fullY = -height/20;
+          fullS = 10;
           if (resVal instanceof VarArr) resVal = ((VarArr)resVal).materialize();
           if (resVal instanceof Variable) resVal = ((Variable)resVal).get();
           if (resVal instanceof Fun) initFn();
         break;
         case "ascii":
           mode = 1;
-          fullX = -width/2;
-          fullY = -height/2;
-          fullS = 1;
+          fullX = -width/20;
+          fullY = -height/20;
+          fullS = 10;
         break;
         case "extra":
           chars = Echars;

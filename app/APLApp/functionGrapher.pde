@@ -3,7 +3,7 @@ PQ<Double, Point> pq = new PQ<Double, Point>();
 double[] b;
 Fun fn;
 int pts = 20000;
-double scale = 10;
+double scale = 1;
 
 
 
@@ -60,7 +60,7 @@ void functionGrapher() {
     } else break;
     if (System.nanoTime()-nt > 5E6) break;
   }
-  println(points.size, ptsadded, ptsadded*1f/(System.nanoTime()-nt)*1E9, frameRate);
+  //println(points.size, ptsadded, ptsadded*1f/(System.nanoTime()-nt)*1E9, frameRate);
   
   while (pq.size() > 0) {
     PQNode<Double, Point> sm = pq.smallest(); // can't be PQ<Double, Point>.Item because Processing :|
@@ -74,7 +74,7 @@ void functionGrapher() {
   strokeWeight(ph);
   n = points.first();
   if (joined) {
-  boolean drawing = false;
+    boolean drawing = false;
     while (n != points.end) {
       if (Double.isNaN(n.v.y)) {
         if (drawing) {
@@ -110,12 +110,6 @@ void functionGrapher() {
     }
   }
   popMatrix();
-  stroke(0xff666666);
-  strokeWeight(height/200f);
-  float hl = (float)(-fullY*fullS);
-  line(0, hl, width, hl);
-  float vl = (float)(-fullX*fullS);
-  line(vl, 0, vl, height);
 }
 
 void add(double pos, LLNode<Point> l) {
@@ -161,8 +155,8 @@ void remove(LLNode<Point> n) {
 
 void bounds() {
   b = new double[] {
-    fullX/scale,
-    (fullX + width/fullS)/scale,
+    fullX/scale, // starting visible x
+    (fullX + width/fullS)/scale, // ending visible x
     (width/fullS)/scale / pts,
   };
 }

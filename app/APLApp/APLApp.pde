@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
@@ -130,7 +131,7 @@ class FT{
 }
 @Override
 public void settings() {
-  size(700, 400);
+  size(1600, 700, P2D);
 }
 void copyText(final String s) {
   StringSelection selection = new StringSelection(s);
@@ -172,7 +173,7 @@ void pasteText() {
 }
 @Override
 public void settings() {
-  fullScreen();
+  fullScreen(P2D);
 }
 void draw() {
   if (gottenClip != null) {
@@ -202,10 +203,63 @@ void draw() {
         fullY += (pmouseY - mouseY)/fullS;
       }
     }
+    
+    background(16);
+    
+    
+
+    //float hl = (float)(-fullY*fullS);
+    //line(0, hl, width, hl);
+    //float vl = (float)(-fullX*fullS);
+    //line(vl, 0, vl, height);
+    
+    
     pushMatrix();
     translate((int)(-fullX * fullS), (int)(-fullY * fullS));
     scale((float)fullS);
-    background(16);
+    
+    stroke(0xff666666);
+    strokeWeight(1 / (float)fullS);
+                 
+    int freq = 10;
+    
+    float sx = (float) (fullX/scale);
+    float ex = (float) ((fullX + width/fullS)/scale);
+    
+    float sy = (float) (fullY/scale);
+    float ey = (float) ((fullY + height/fullS)/scale);
+    
+    float rsz = log((ex-sx)/freq)/log(10);
+    float sz = pow(10, floor(rsz));
+    float m1 = rsz % 1;
+    if (m1 < 0) m1+= 1;
+    if (m1 > .6) sz*= 5;
+    else if (m1 > .3) sz*= 2;
+    
+    textAlign(LEFT, BOTTOM);
+    fill(0xffd2d2d2);
+    float ts = width/70f / (float)fullS;
+    textSize(ts);
+    DecimalFormat df = new DecimalFormat("#.0");
+    
+    int dgs = ceil(log(1/sz)/log(10));
+    df.setMaximumFractionDigits(dgs);
+    df.setMinimumFractionDigits(dgs);
+    
+    
+    for (float x = (float)Math.floor(sx/sz) * sz; x < ex; x+= sz) {
+      line(x, sy, x, ey);
+      float off = ts*1.5;
+      float ty = sy>-off? sy+off : ey<0? ey : 0;
+      text(df.format(x), x, ty);
+    }
+    for (float y = (float)Math.floor(sy/sz) * sz; y < ey; y+= sz) {
+      line(sx, y, ex, y);
+      float off = ts*3;
+      float tx = sx>0? sx : ex < off? ex-off : 0;
+      text(df.format(y), tx, y);
+    }
+    
     
     if (mode == 1) {
       textAlign(LEFT, TOP);
@@ -213,32 +267,31 @@ void draw() {
       text(res, 0, h / 10f);
       popMatrix();
     } else if (mode == 2) {
-      if (resVal instanceof APL.types.Arr) {
-        Arr arr = (Arr)resVal;
-        if (arr.ia == 0) {
-          res = "no points to draw";
-          mode = 0;
-          return;
-        }
-        if (arr.get(0) instanceof Num) {
+      
+      
+      if (resVal instanceof Value) {
+        try {
           float x = 0;
-          int jmp = 10;
           noFill();
           beginShape();
           stroke(0xffd2d2d2);
           strokeWeight(height/200f / (float)fullS);
-          for (double v : arr.asDoubleArr()) {
-            float y = -(float) v*jmp;
+          for (double v : ((Value) resVal).asDoubleArr()) {
+            float y = -(float) v;
             vertex(x, y);
-            x+=jmp;
+            x++;
           }
           endShape();
           popMatrix();
+        } catch (Throwable e) {
+          res = e.getMessage();
+          popMatrix();
+          mode = 0;
         }
       } else if (resVal instanceof APL.types.Fun) {
         functionGrapher();
       } else {
-        res = "not array";
+        res = "can't graph the given";
         mode = 0;
         popMatrix();
       }
