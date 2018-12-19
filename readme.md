@@ -18,7 +18,7 @@ Uses The fonts [APL385](http://apl385.com/fonts/index.htm) and [DejaVu Sans Mono
 
 To build the APL Android app, 
 1. run `convert.py` in the folder `app`
-2. Open `app/APLApp` in Processing, change mode to android and change line 109 in `APLApp` to `/*`
+2. Open `app/APLApp` in Processing, change mode to android and change line 113 in `APLApp` to `/*`
 3. Export from Processing to change the minimum SDK version to 24; For IntelliJ IDEA:
     - open with "use auto-import" checked
     - file → project structure → Project SDK = 1.8

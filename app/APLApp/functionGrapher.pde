@@ -15,6 +15,49 @@ void initFn() {
   add(b[0], points.start);
   add(b[1], points.last());
 }
+
+class Line {
+  ArrayList<Double> ptsx = new ArrayList<Double>();
+  ArrayList<Double> ptsy = new ArrayList<Double>();
+  void add(double x, double y) {
+    ptsx.add(x);
+    ptsy.add(y);
+  }
+  void draw() {
+    boolean drawing = false;
+    int len = ptsx.size();
+    for (int i = 0; i < len; i++) {
+      double x = ptsx.get(i);
+      double y = ptsy.get(i);
+      if (Double.isNaN(y)) {
+        if (drawing) {
+          drawing = false;
+          endShape();
+        }
+      } else if (y == Double.POSITIVE_INFINITY) {
+        if (drawing) {
+          vertex((float) (x*scale), (float) fullY);
+          drawing = false;
+          endShape();
+        }
+      } else if (y==Double.NEGATIVE_INFINITY) {
+        if (drawing) {
+          vertex((float) (x*scale), (float) (fullY + height/fullS));
+          drawing = false;
+          endShape();
+        }
+      } else {
+        if (!drawing) {
+          drawing = true;
+          beginShape();
+        }
+        vertex((float)(x*scale), -(float)(y*scale));
+      }
+    }
+    if (drawing) endShape();
+  }
+}
+
 void functionGrapher() {
   bounds();
   Obj s = global.get("dxy");
@@ -73,51 +116,47 @@ void functionGrapher() {
   stroke(0xffd2d2d2);
   strokeWeight(ph);
   n = points.first();
-  if (joined) {
-    boolean drawing = false;
+  if (joined && n != points.end && n.next != points.end) {
+    ArrayList<Line> lns = new ArrayList<Line>();
+    n = n.next;
     while (n != points.end) {
-      if (Double.isNaN(n.v.y)) {
-        if (drawing) {
-          drawing = false;
-          endShape();
-        }
-      } else if (n.v.y==Double.POSITIVE_INFINITY) {
-        if (drawing) {
-          vertex((float) (n.prev.v.x*scale), (float) fullY);
-          drawing = false;
-          endShape();
-        }
-      } else if (n.v.y==Double.NEGATIVE_INFINITY) {
-        if (drawing) {
-          vertex((float) (n.prev.v.x*scale), (float) (fullY + height/fullS));
-          drawing = false;
-          endShape();
+      LLNode<Point> p = n.prev;
+      double[] na = n.v.y;
+      if (lns.size() == na.length) {
+        for (int i = 0; i < na.length; i++) {
+          lns.get(i).add(n.v.x, na[i]);
         }
       } else {
-        if (!drawing) {
-          drawing = true;
-          beginShape();
+        for(Line l : lns) l.draw();
+        lns.clear();
+        for(double y : na) {
+          Line ln = new Line();
+          ln.add(n.v.x, y);
+          lns.add(ln);
         }
-        vertex((float)(n.v.x*scale), -(float)(n.v.y*scale));
       }
       n = n.next;
     }
-    if (drawing) endShape();
+    for(Line l : lns) l.draw();
   } else {
+    //beginShape(POINTS);
+    //strokeWeight(ph);
     while (n != points.end) {
-      ellipse((float)(n.v.x*scale), -(float)(n.v.y*scale), ph, ph);
+      //vertex((float)(n.v.x*scale), -(float)(n.v.y*scale));
+      for (double y : n.v.y) ellipse((float)(n.v.x*scale), -(float)(y*scale), ph, ph);
       n = n.next;
     }
+    //endShape();
   }
   popMatrix();
 }
 
 void add(double pos, LLNode<Point> l) {
-  Double res;
+  double[] res;
   try {
-    res = ((Num) fn.call(new Num(pos))).asDouble();
+    res = ((Value) fn.call(new Num(pos))).asDoubleArr();
   } catch (Throwable e) {
-    res = Double.NaN;
+    res = new double[0];
   }
   Point p = new Point(pos, res);
   LLNode<Point> r = l.next;
@@ -241,10 +280,10 @@ class LLNode<T> {
 
 class Point {
   double x;
-  double y;
+  double[] y;
   LLNode<Point> pnode;
   PQNode pqr;
-  Point (double x, double y) {
+  Point (double x, double[] y) {
     this.x = x;
     this.y = y;
   }

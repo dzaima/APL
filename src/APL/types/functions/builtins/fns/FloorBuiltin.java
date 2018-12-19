@@ -9,7 +9,7 @@ public class FloorBuiltin extends Builtin {
   }
   static class Nf implements NumVecFun {
     public Value call(Num w) {
-      return w.ceil();
+      return w.floor();
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.floor(a[i]);
