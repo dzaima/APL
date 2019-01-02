@@ -9,7 +9,7 @@ public class DepthBuiltin extends Builtin {
   }
   public Obj call(Value w) {
     int depth = 0;
-    while (!w.primitive()) {
+    while (!(w instanceof Primitive)) {
       w = w.first();
       depth++;
     }

@@ -6,8 +6,8 @@ import APL.types.*;
 import java.util.Arrays;
 
 public class Rank0Arr extends Arr {
-  final static int[] SHAPE = new int[0];
-  Value item;
+  private final static int[] SHAPE = new int[0];
+  public Value item;
   
   public Rank0Arr(Value item) {
     super(SHAPE, 1, 0);

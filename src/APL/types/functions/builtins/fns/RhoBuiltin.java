@@ -37,14 +37,21 @@ public class RhoBuiltin extends Builtin {
         else throw new DomainError("shape contained multiple undefined dimension sizes", v);
       } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), v);
     }
+    
     if (emptyPos != null) {
       if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", w);
       sh[emptyPos] = w.ia/ia;
       return w.ofShape(sh);
     } else if (ia == w.ia) return w.ofShape(sh);
+    
     if (w.ia == 0) {
       return new SingleItemArr(w.prototype(), sh);
+      
+    } else if (w.scalar()) {
+      return new SingleItemArr(w.first(), sh);
+    
     } else if (w.quickDoubleArr()) {
+      assert !(w instanceof Primitive);
       if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
       double[] inp = w.asDoubleArr();
       double[] res = new double[ia];
@@ -54,10 +61,8 @@ public class RhoBuiltin extends Builtin {
         if (p == w.ia) p = 0;
       }
       return new DoubleArr(res, sh);
-    } else if (w.scalar()) {
-      return new SingleItemArr(w, sh);
     } else {
-      if (sh.length == 0 && w.get(0).primitive() && !Main.enclosePrimitives) return w.get(0);
+      if (sh.length == 0 && w.first() instanceof Primitive && !Main.enclosePrimitives) return w.get(0);
       Value[] arr = new Value[ia];
       int index = 0;
       for (int i = 0; i < ia; i++) {

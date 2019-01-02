@@ -3,7 +3,7 @@ package APL.types.arrs;
 import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SingleItemArr extends Arr {
@@ -94,5 +94,19 @@ public class SingleItemArr extends Arr {
   public String toString() {
     String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
     return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
+  }
+  
+  @Override public Iterator<Value> iterator() {
+    return new Iterator<>() {
+      int i = 0;
+      @Override public boolean hasNext() {
+        return i < ia;
+      }
+  
+      @Override public Value next() {
+        i++;
+        return item;
+      }
+    };
   }
 }

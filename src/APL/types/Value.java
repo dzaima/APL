@@ -28,9 +28,6 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public boolean scalar() {
     return rank == 0;
   }
-  public boolean primitive() {
-    return this instanceof Primitive;
-  }
   public Value first() {
     return get(0);
   }
@@ -152,7 +149,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public double sum() {
     return Arrays.stream(values()).mapToDouble(Value::asInt).sum();
   }
-  public double[] asDoubleArr() {
+  public double[] asDoubleArr() { // warning: also succeeds on a primitive number
     double[] res = new double[ia];
     int i = 0;
     for (Value c : values()) {
@@ -166,11 +163,10 @@ public abstract class Value extends Obj implements Iterable<Value> {
   public double asDouble() {
     throw new DomainError("Using "+this.humanType(true)+" as a number", this);
   }
-  public boolean quickDoubleArr() { // if true, asDoubleArr must succeed
+  public boolean quickDoubleArr() { // if true, asDoubleArr must succeed; warning: also succeeds on a primitive number
     return false;
   }
   public Value squeeze() {
-    if (this instanceof Primitive) return this;
     if (ia == 0) return this;
     Value f = get(0);
     if (f instanceof Num) {

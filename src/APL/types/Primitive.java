@@ -39,4 +39,8 @@ public abstract class Primitive extends Value {
     if (where.length == 0) return what;
     throw new DomainError("trying to set an item in a scalar at "+ Arrays.toString(where));
   }
+  
+  @Override public Value squeeze() { // primitives are already pretty squeezed
+    return this;
+  }
 }

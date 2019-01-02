@@ -79,6 +79,7 @@ public class Scope {
         case "⎕HTIME": return new Timer(this, false);
         case "⎕EX": return new Ex(this);
         case "⎕A": return Main.alphabet;
+        case "⎕D": return Main.digits;
         case "⎕L": return Main.lowercaseAlphabet;
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser(this);

@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.*;
 import APL.types.arrs.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 @SuppressWarnings({"unused", "Convert2streamapi"}) // class for getting overridden & being fast so no streams
 public abstract class Fun extends Scopeable {
@@ -44,7 +44,7 @@ public abstract class Fun extends Scopeable {
     Value call(Value w);
   }
   public Value scalar (VecFun f, Value w) {
-    if (w.primitive()) {
+    if (w instanceof Primitive) {
       return f.call(w);
     } else {
       Arr o = (Arr) w;
@@ -62,6 +62,7 @@ public abstract class Fun extends Scopeable {
     default double call(double w) {
       return call(new Num(w)).asDouble();
     }
+    @SuppressWarnings("Java8ArraySetAll")
     default void call(double[] res, double[] a) {
       for (int i = 0; i < res.length; i++) res[i] = call(a[i]);
     }
@@ -77,6 +78,7 @@ public abstract class Fun extends Scopeable {
   public interface MapVecFun {
     Value call(APLMap w);
   }
+  
   protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
     if (w instanceof Arr) {
       if (w instanceof DoubleArr) {
@@ -84,7 +86,7 @@ public abstract class Fun extends Scopeable {
         nf.call(res, w.asDoubleArr());
         return new DoubleArr(res, w.shape);
       }
-      if (w instanceof ChrArr) return cf.call((ChrArr   ) w);
+      if (w instanceof ChrArr) return cf.call((ChrArr) w);
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
@@ -129,35 +131,46 @@ public abstract class Fun extends Scopeable {
     Value call(Value a, Value w);
   }
   protected Value scalar(DyVecFun f, Value a, Value w) {
-    if (a instanceof Primitive) {
-      if (w instanceof Primitive) {
-        return f.call(a, w);
+    if (a instanceof Primitive && w instanceof Primitive) return f.call(a, w);
+  
+    if (a.scalar()) {
+      Value fst_a = a.first();
+      
+      if (w.scalar()) {
+        return new Rank0Arr(scalar(f, fst_a, w.first()));
+    
       } else {
-        Arr ow = (Arr) w;
-        Value[] arr = new Value[ow.ia];
-        for (int i = 0; i < ow.ia; i++) {
-          arr[i] = scalar(f, a, ow.get(i));
+        Value[] arr = new Value[w.ia];
+        Iterator<Value> iterator = w.iterator();
+        for (int i = 0; i < w.ia; i++) {
+          arr[i] = scalar(f, fst_a, iterator.next());
         }
-        return new HArr(arr, ow.shape);
+        return new HArr(arr, w.shape);
+        
       }
     } else {
-      if (w instanceof Primitive) {
-        Arr oa = (Arr) a;
-        Value[] arr = new Value[oa.ia];
-        for (int i = 0; i < oa.ia; i++) {
-          arr[i] = scalar(f, oa.get(i), w);
+      if (w.scalar()) {
+      
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> iterator = a.iterator();
+        Value fst_w = w.first();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = scalar(f, iterator.next(), fst_w);
         }
-        return new HArr(arr, oa.shape);
+        return new HArr(arr, a.shape);
+        
       } else {
-        Arr oa = (Arr) a;
-        Arr ow = (Arr) w;
-        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: "+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")", w);
-        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match ("+ Main.formatAPL(oa.shape)+" vs "+ Main.formatAPL(ow.shape) +")", w);
-        Value[] arr = new Value[oa.ia];
-        for (int i = 0; i < oa.ia; i++) {
-          arr[i] = scalar(f, oa.get(i), ow.get(i));
+        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        assert a.ia == w.ia;
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> ai = a.iterator();
+        Iterator<Value> wi = w.iterator();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = scalar(f, ai.next(), wi.next());
         }
-        return new HArr(arr, oa.shape);
+        return new HArr(arr, a.shape);
+        
       }
     }
   }
@@ -181,51 +194,63 @@ public abstract class Fun extends Scopeable {
     }
   }
   protected Value scalarNum(DyNumVecFun f, Value a, Value w) {
-    if (a instanceof DoubleArr && w instanceof Num) {
+    if (a.quickDoubleArr() && !a.scalar() && w instanceof Num) {
       double[] res = new double[a.ia];
       f.call(res, a.asDoubleArr(), w.asDouble());
       return new DoubleArr(res, a.shape);
     }
-    if (a instanceof Num && w instanceof DoubleArr) {
+    if (a instanceof Num && w.quickDoubleArr() && !w.scalar()) {
       double[] res = new double[w.ia];
       f.call(res, a.asDouble(), w.asDoubleArr());
       return new DoubleArr(res, w.shape);
     }
-    if (a instanceof DoubleArr && w instanceof DoubleArr) {
-      if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes of ⍺ & ⍵ don't match", w);
+    if (a.quickDoubleArr() && w.quickDoubleArr() && !a.scalar() && !w.scalar()) {
+      if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
       double[] res = new double[w.ia];
       f.call(res, a.asDoubleArr(), w.asDoubleArr());
       return new DoubleArr(res, a.shape);
     }
-    if (a instanceof Primitive) {
-      if (w instanceof Primitive) {
-        return new Num(f.call(a.asDouble(), w.asDouble()));
+    
+    if (a instanceof Num && w instanceof Num) return new Num(f.call(a.asDouble(), w.asDouble()));
+    
+    
+    if (a.scalar()) {
+      Value fst_a = a.first();
+  
+      if (w.scalar()) {
+        return new Rank0Arr(scalarNum(f, fst_a, w.first()));
+    
       } else {
-        Arr ow = (Arr) w;
-        Value[] arr = new Value[ow.ia];
-        for (int i = 0; i < ow.ia; i++) {
-          arr[i] = scalarNum(f, a, ow.get(i));
+        Value[] arr = new Value[w.ia];
+        Iterator<Value> iterator = w.iterator();
+        for (int i = 0; i < w.ia; i++) {
+          arr[i] = scalarNum(f, fst_a, iterator.next());
         }
-        return new HArr(arr, ow.shape);
+        return new HArr(arr, w.shape);
+        
       }
     } else {
-      if (w instanceof Primitive) {
-        Arr oa = (Arr) a;
-        Value[] arr = new Value[oa.ia];
-        for (int i = 0; i < oa.ia; i++) {
-          arr[i] = scalarNum(f, oa.get(i), w);
+      if (w.scalar()) {
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> iterator = a.iterator();
+        Value fst_w = w.first();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = scalarNum(f, iterator.next(), fst_w);
         }
-        return new HArr(arr, oa.shape);
+        return new HArr(arr, a.shape);
+        
       } else {
-        Arr oa = (Arr) a;
-        Arr ow = (Arr) w;
-        if (oa.rank != ow.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(oa.shape) + " vs " + Main.formatAPL(ow.shape) + ")", w);
-        if (!Arrays.equals(oa.shape, ow.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(oa.shape) + " vs " + Main.formatAPL(ow.shape) + ")", w);
-        Value[] arr = new Value[oa.ia];
-        for (int i = 0; i < oa.ia; i++) {
-          arr[i] = scalarNum(f, oa.get(i), ow.get(i));
+        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        assert a.ia == w.ia;
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> ai = a.iterator();
+        Iterator<Value> wi = w.iterator();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = scalarNum(f, ai.next(), wi.next());
         }
-        return new HArr(arr, oa.shape);
+        return new HArr(arr, a.shape);
+        
       }
     }
   }

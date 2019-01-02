@@ -48,7 +48,7 @@ public abstract class Arr extends Value {
       if (rank == 0) return "⊂" + oneliner(new int[0]);
       return oneliner(new int[0]);
     } else {
-      if (rank == 0 && !primitive()) return "⊂"+first().toString();
+      if (rank == 0) return "⊂"+first().toString();
       if (rank == 1) {
         StringBuilder res = new StringBuilder();
         var simple = true;
@@ -57,7 +57,7 @@ public abstract class Arr extends Value {
           if (v == null) {
             res.append("JAVANULL");
           } else {
-            simple &= v.primitive();
+            simple &= v instanceof Primitive;
             res.append(v.toString());
           }
         }
@@ -74,7 +74,7 @@ public abstract class Arr extends Value {
         int x=0, y=0;
         for (Value v : this) {
           if (v == null) v = Main.toAPL("JAVANULL");
-          simple &= v.primitive();
+          simple &= v instanceof Primitive;
           var c = v.toString().split("\n");
           var cw = 0;
           for (var ln : c) {
