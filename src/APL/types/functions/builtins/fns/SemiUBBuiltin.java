@@ -11,7 +11,7 @@ public class SemiUBBuiltin extends Builtin {
   
   @Override
   public Obj call(Value w) {
-    return new Shape1Arr(new Rank0Arr(w));
+    return new Shape1Arr(w);
   }
   
   public Obj call(Value a, Value w) {

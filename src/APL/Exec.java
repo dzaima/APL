@@ -514,7 +514,7 @@ class Exec {
           // dops
           case '∘': return new JotBuiltin();
           case '.': return new DotBuiltin();
-          case '⍣': return new RepeatBuiltin();
+          case '⍣': return new RepeatBuiltin(sc);
           case '⍤': return new JotDiaeresisBuiltin();
           case '⍥': return new OverBuiltin();
           case '⍢': return new DualBuiltin();
