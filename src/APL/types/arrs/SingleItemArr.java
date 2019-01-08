@@ -1,6 +1,6 @@
 package APL.types.arrs;
 
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 
 import java.util.*;
@@ -16,6 +16,7 @@ public class SingleItemArr extends Arr {
   
   @Override
   public int[] asIntVec() {
+    if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
     int vi = item.asInt();
     int[] a = new int[ia];
     for (int i = 0; i < ia; i++) a[i] = vi;
@@ -86,7 +87,7 @@ public class SingleItemArr extends Arr {
   public String oneliner(int[] where) {
     if (where.length == 0) {
       String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-      return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
+      return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner();
     }
     return super.oneliner(where);
   }

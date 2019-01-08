@@ -28,7 +28,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public int[] asIntVec() {
-    if (rank >= 2) throw new RankError("trying to use a rank "+rank+" number array as vector", this);
+    if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
       if (arr[i] != (int) arr[i]) throw new DomainError("using a fractional number as integer", this);

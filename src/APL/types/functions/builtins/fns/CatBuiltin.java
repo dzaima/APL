@@ -26,7 +26,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
   }
   static Obj cat(Value a, Value w, int k) {
     boolean aScalar = a.scalar(), wScalar = w.scalar();
-    if (aScalar && wScalar) return cat(new Shape1Arr(a.get(0)), w, 0);
+    if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0);
     if (!aScalar && !wScalar) {
       if (a.rank != w.rank) throw new RankError("ranks not matchable", w);
       for (int i = 0; i < a.rank; i++) {

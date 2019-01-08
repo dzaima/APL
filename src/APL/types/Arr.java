@@ -45,8 +45,8 @@ public abstract class Arr extends Value {
     String qs = string(Main.quotestrings || Main.noBoxing);
     if (qs != null) return qs;
     if (Main.noBoxing) {
-      if (rank == 0) return "⊂" + oneliner(new int[0]);
-      return oneliner(new int[0]);
+      if (rank == 0) return "⊂" + oneliner();
+      return oneliner();
     } else {
       if (rank == 0) return "⊂"+first().toString();
       if (rank == 1) {
@@ -147,7 +147,7 @@ public abstract class Arr extends Value {
           next = true;
         }
         return res.toString();
-      } else return oneliner(new int[0]);
+      } else return oneliner();
     }
   }
   public String oneliner(int[] where) {
@@ -155,14 +155,14 @@ public abstract class Arr extends Value {
     if (qs != null) return qs;
     StringBuilder res = new StringBuilder(where.length == 0 ? "{" : "[");
     if (rank == 0) {
-      return first().oneliner(new int[0]);
+      return first().oneliner();
     } else if (where.length == rank-1) {
       int[] pos = new int[rank];
       System.arraycopy(where, 0, pos, 0, where.length);
       for (int i = 0; i < shape[where.length]; i++) {
         pos[rank-1] = i;
         if (i != 0) res.append(", ");
-        res.append(simpleAt(pos).oneliner(new int[0]));
+        res.append(simpleAt(pos).oneliner());
       }
     } else {
       int[] pos = new int[where.length+1];

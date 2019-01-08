@@ -15,18 +15,22 @@ public abstract class Primitive extends Value {
   public Value get(int i) {
     return this;
   }
+  
+  public Value first() {
+    return this;
+  }
   @Override
   public int[] asIntVec() {
-    throw new DomainError("using " + this + " as integer vector", this);
+    throw new DomainError("using " + this.oneliner() + " as integer vector", this);
   }
   @Override
   public int asInt() {
-    throw new DomainError("using "+this+" as integer", this);
+    throw new DomainError("using " + this.oneliner() + " as integer", this);
   }
   
   @Override
   public String asString() {
-    throw new DomainError("using "+this+" as string", this);
+    throw new DomainError("using " + this.oneliner() + " as string", this);
   }
   
   @Override

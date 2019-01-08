@@ -86,6 +86,11 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return toString();
   }
   
+  private final static int[] int0 = new int[0];
+  public String oneliner() {
+    return oneliner(int0);
+  }
+  
   protected transient Value[] vs;
   
   public Value[] values() {
