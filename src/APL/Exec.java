@@ -256,7 +256,7 @@ class Exec {
         }
         continue;
       }
-      if (is(".|[FN]FF", end, false)) {
+      if (is("D!|[FN]FF", end, false)) {
         if (Main.debug) printlvl("f g h");
         var h = lastObj();
         var g = lastFun();
