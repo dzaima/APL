@@ -11,8 +11,13 @@ public class GradeDownBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
+    double[] res = new double[w.ia];
+    int IO = sc.IO;
     Integer[] na = w.gradeDown();
-    return new DoubleArr(na);
+    for (int i = 0; i < na.length; i++) {
+      res[i] = na[i]+IO;
+    }
+    return new DoubleArr(res);
   }
   
 //  public Obj call(Value a, Value w) {

@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Scope;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class GradeUpBuiltin extends Builtin {
@@ -11,13 +11,13 @@ public class GradeUpBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    Integer[] na = w.gradeUp();
-    Num[] res = new Num[w.ia];
+    double[] res = new double[w.ia];
     int IO = sc.IO;
+    Integer[] na = w.gradeUp();
     for (int i = 0; i < na.length; i++) {
-      res[i] = new Num(na[i]+IO);
+      res[i] = na[i]+IO;
     }
-    return new HArr(res);
+    return new DoubleArr(res);
   }
   
 //  public Obj call(Value a, Value w) {
