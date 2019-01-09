@@ -2,7 +2,6 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.LengthError;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Mop;
 
 import java.util.Arrays;

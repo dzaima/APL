@@ -6,8 +6,8 @@ import APL.types.*;
 import APL.types.functions.Mop;
 
 public class DervDimMop extends Mop {
-  private Mop f;
-  private int dim;
+  private final Mop f;
+  private final int dim;
   
   public DervDimMop(Mop f, Integer dim, Scope sc) {
     super(f.repr+"["+dim+"]", f.valid, sc);

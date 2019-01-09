@@ -3,7 +3,6 @@ package APL.types.functions.builtins;
 import APL.Type;
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 public class SetBuiltin extends Builtin {

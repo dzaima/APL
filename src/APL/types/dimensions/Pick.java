@@ -8,9 +8,9 @@ import java.util.Arrays;
 public class Pick extends Settable {
   
   
-  private int[] pos;
-  private Variable variable;
-  private Scope sc;
+  private final int[] pos;
+  private final Variable variable;
+  private final Scope sc;
   
   public Pick(Variable v, Brackets where, Scope sc) {
     super(v.getAt(where.val.asIntVec(), sc));

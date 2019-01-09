@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.dimensions.DimMFn;
 import APL.types.functions.Builtin;
 

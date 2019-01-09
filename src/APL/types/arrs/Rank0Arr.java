@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Rank0Arr extends Arr {
   private final static int[] SHAPE = new int[0];
-  public Value item;
+  public final Value item;
   
   public Rank0Arr(Value item) {
     super(SHAPE, 1, 0);

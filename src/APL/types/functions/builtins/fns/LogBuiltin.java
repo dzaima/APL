@@ -16,7 +16,7 @@ public class LogBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(a[i]);
     }
   }
-  private static Nf NF = new Nf();
+  private static final Nf NF = new Nf();
   public Obj call(Value w) {
     return num(NF, w);
   }
@@ -37,7 +37,7 @@ public class LogBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(w[i]) / Math.log(a[i]);
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return scalarNum(DNF, a0, w0);
   }

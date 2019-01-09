@@ -5,8 +5,8 @@ import APL.errors.SyntaxError;
 import APL.types.*;
 
 public class DervDimFn extends Fun {
-  private Fun f;
-  private int dim;
+  private final Fun f;
+  private final int dim;
   
   public DervDimFn(Fun f, Integer dim, Scope sc) {
     super(f.valid, sc);

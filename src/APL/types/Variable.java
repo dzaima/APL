@@ -2,7 +2,6 @@ package APL.types;
 
 import APL.*;
 import APL.errors.ValueError;
-import APL.types.arrs.HArr;
 
 public class Variable extends Settable {
   

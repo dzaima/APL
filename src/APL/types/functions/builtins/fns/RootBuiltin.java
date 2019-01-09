@@ -16,7 +16,7 @@ public class RootBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.sqrt(a[i]);
     }
   }
-  private static Nf NF = new Nf();
+  private static final Nf NF = new Nf();
   public Obj call(Value w) {
     return num(NF, w);
   }
@@ -36,7 +36,7 @@ public class RootBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(w[i], 1/a[i]);
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return scalarNum(DNF, a0, w0);
   }

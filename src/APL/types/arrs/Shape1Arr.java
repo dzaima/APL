@@ -6,8 +6,8 @@ import APL.types.*;
 import java.util.Arrays;
 
 public class Shape1Arr extends Arr {
-  private static int[] SHAPE = new int[]{1};
-  private Value item;
+  private static final int[] SHAPE = new int[]{1};
+  private final Value item;
   
   public Shape1Arr(Value item) {
     super(SHAPE, 1, 1);

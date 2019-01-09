@@ -16,7 +16,7 @@ public class StarBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.exp(a[i]);
     }
   }
-  private static Nf NF = new Nf();
+  private static final Nf NF = new Nf();
   public Obj call(Value w) {
     return num(NF, w);
   }
@@ -35,7 +35,7 @@ public class StarBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w[i]);
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   public Obj call(Value a, Value w) {
     return scalarNum(DNF, a, w);
   }

@@ -4,10 +4,8 @@ import APL.*;
 import APL.types.*;
 
 public class QuoteQuad extends Settable {
-  private final Scope sc;
-  public QuoteQuad(Scope sc) {
+  public QuoteQuad() {
     super(null);
-    this.sc = sc;
   }
   
   public void set(Obj v) {

@@ -17,9 +17,9 @@ import java.util.*;
 import static APL.Main.*;
 
 class Exec {
-  private Scope sc;
-  private List<Token> tokens;
-  private Token allToken;
+  private final Scope sc;
+  private final List<Token> tokens;
+  private final Token allToken;
   Exec(Token ln, Scope sc) {
     tokens = ln.tokens;
     allToken = ln;
@@ -524,7 +524,7 @@ class Exec {
   
           case '⍬': return new DoubleArr(new double[0]);
           case '⎕': return new Quad(sc);
-          case '⍞': return new QuoteQuad(sc);
+          case '⍞': return new QuoteQuad();
           case '⍺': return sc.get("⍺");
           case '⍵': return sc.get("⍵");
           case '⍶': return sc.get("⍶");

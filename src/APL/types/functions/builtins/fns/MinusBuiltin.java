@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 public class MinusBuiltin extends Builtin {
@@ -17,7 +16,7 @@ public class MinusBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = -a[i];
     }
   }
-  private static Nf NF = new Nf();
+  private static final Nf NF = new Nf();
   
   public Obj call(Value w) {
     return numChr(NF, Char::swap, w);
@@ -37,7 +36,7 @@ public class MinusBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = a[i] - w[i];
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   
   public Obj call(Value a0, Value w0) {
     return scalarNum(DNF, a0, w0);

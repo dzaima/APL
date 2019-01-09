@@ -31,7 +31,7 @@ public class PlusBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = a[i] + w[i];
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return scalarNum(DNF, a0, w0);
   }

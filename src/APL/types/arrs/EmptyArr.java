@@ -1,13 +1,12 @@
 package APL.types.arrs;
 
 import APL.errors.*;
-import APL.errors.ImplementationError;
 import APL.types.*;
 
 import java.util.Arrays;
 
 public class EmptyArr extends Arr {
-  public static EmptyArr SHAPE0 = new EmptyArr(new int[]{0});
+  public static final EmptyArr SHAPE0 = new EmptyArr(new int[]{0});
   public EmptyArr(int[] sh) {
     super(sh, 0, sh.length);
   }
@@ -45,10 +44,10 @@ public class EmptyArr extends Arr {
     return new EmptyArr(sh);
   }
   
-  private static final Value[] NOVALUES = new Value[0];
+  private static final Value[] NO_VALUES = new Value[0];
   @Override
   public Value[] values() {
-    return NOVALUES;
+    return NO_VALUES;
   }
   
   @Override

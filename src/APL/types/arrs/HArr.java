@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.*;
 
 public class HArr extends Arr {
-  private Value[] arr;
+  private final Value[] arr;
   public HArr(Value[] v, int[] sh) {
     super(sh, v.length, sh.length);
     arr = v;

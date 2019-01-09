@@ -20,7 +20,7 @@ public class Main {
   public static boolean colorful = true;
   static final ChrArr alphabet = toAPL("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
   static final ChrArr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz");
-  public static ChrArr digits = toAPL("0123456789");
+  public static final ChrArr digits = toAPL("0123456789");
   static int printlvl = 0;
   public static final Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
   static final long startingMillis = System.currentTimeMillis();

@@ -13,7 +13,7 @@ public class EllipsisBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     double[] arr = new double[((Num)w).minus((Num)a).abs().asInt()+1];
-    double s = ((Num) a).asDouble();
+    double s = a.asDouble();
     Arrays.setAll(arr, i -> s+i);
     return new DoubleArr(arr);
   }

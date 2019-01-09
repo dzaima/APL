@@ -15,7 +15,7 @@ public class FloorBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.floor(a[i]);
     }
   }
-  private static Nf NF = new Nf();
+  private static final Nf NF = new Nf();
   public Obj call(Value w) {
     return numChr(NF, Char::lower, w);
   }
@@ -33,7 +33,7 @@ public class FloorBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w[i]);
     }
   }
-  private static DNf DNF = new DNf();
+  private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return scalarNum(DNF, a0, w0);
   }

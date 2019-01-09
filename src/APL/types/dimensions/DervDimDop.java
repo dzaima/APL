@@ -6,8 +6,8 @@ import APL.types.*;
 import APL.types.functions.Dop;
 
 public class DervDimDop extends Dop {
-  private Dop f;
-  private int dim;
+  private final Dop f;
+  private final int dim;
   
   public DervDimDop(Dop f, Integer dim, Scope sc) {
     super(f.repr+"["+dim+"]", f.valid, sc);
