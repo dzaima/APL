@@ -9,6 +9,10 @@ public class MulBuiltin extends Builtin {
     super("×", 0x011);
   }
   
+  public Value identity() {
+    return Num.ONE;
+  }
+  
   static class Nf implements NumVecFun {
     public Value call(Num w) {
       return new Num(w.compareTo(Num.ZERO));

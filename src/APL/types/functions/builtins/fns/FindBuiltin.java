@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.*;
 import APL.errors.RankError;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class FindBuiltin extends Builtin {
@@ -22,8 +22,8 @@ public class FindBuiltin extends Builtin {
       }
       res[Indexer.fromShape(w.shape, inW, 0)] = true;
     }
-    Value[] arr = new Value[w.ia];
-    for (int i = 0; i < w.ia; i++) arr[i] = res[i]? Num.ONE : Num.ZERO;
-    return new HArr(arr, w.shape);
+    double[] arr = new double[w.ia];
+    for (int i = 0; i < w.ia; i++) arr[i] = res[i]? 1 : 0;
+    return new DoubleArr(arr, w.shape);
   }
 }

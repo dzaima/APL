@@ -38,14 +38,14 @@ public class IotaBuiltin extends Builtin {
     if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
     if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
     int IO = sc.IO;
-    Value[] res = new Value[w.ia];
+    int[] res = new int[w.ia];
     for (int i = 0; i < w.ia; i++) {
       int j = 0;
       for (var c = w.get(i); j < a.ia; j++) {
         if (a.get(j).equals(c)) break;
       }
-      res[i] = new Num(j+IO);
+      res[i] = j+IO;
     }
-    return new HArr(res);
+    return new DoubleArr(res);
   }
 }

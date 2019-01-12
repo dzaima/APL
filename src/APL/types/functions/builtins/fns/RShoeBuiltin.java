@@ -26,7 +26,7 @@ public class RShoeBuiltin extends Builtin {
         for (int i = 0; i < a.ia; i++) {
           arr[i] = (Value) map.getRaw(a.get(i));
         }
-        return new HArr(arr, a.shape);
+        return Arr.create(arr, a.shape);
       }
       return map.getRaw(a);
     }

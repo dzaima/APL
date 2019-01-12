@@ -21,6 +21,6 @@ public class SemiUBBuiltin extends Builtin {
     if (a instanceof Char && w instanceof Char) {
       return new ChrArr(((Char) a).chr +""+ ((Char) w).chr);
     }
-    return new HArr(new Value[]{a, w});
+    return Arr.create(new Value[]{a, w});
   }
 }

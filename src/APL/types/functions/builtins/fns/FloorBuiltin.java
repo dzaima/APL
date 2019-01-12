@@ -7,6 +7,11 @@ public class FloorBuiltin extends Builtin {
   public FloorBuiltin() {
     super("⌊", 0x011);
   }
+  
+  public Value identity() {
+    return Num.POSINF;
+  }
+  
   static class Nf implements NumVecFun {
     public Value call(Num w) {
       return w.floor();

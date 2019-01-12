@@ -11,6 +11,8 @@ import java.util.stream.IntStream;
 
 public class Num extends Primitive {
   
+  public static final Num NEGINF = new Num(Double.NEGATIVE_INFINITY);
+  public static final Num POSINF = new Num(Double.POSITIVE_INFINITY);
   static DecimalFormat df;
   public static int pp;
   static {

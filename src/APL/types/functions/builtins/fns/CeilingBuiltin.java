@@ -7,6 +7,11 @@ public class CeilingBuiltin extends Builtin {
   public CeilingBuiltin() {
     super("⌈", 0x011);
   }
+  
+  public Value identity() {
+    return Num.NEGINF;
+  }
+  
   static class Nf implements NumVecFun {
     public Value call(Num w) {
       return w.ceil();

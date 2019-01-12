@@ -182,10 +182,10 @@ public class Scope {
       else {
         double t = end-start;
         t/= n;
-        if (t < 1000) return Main.toAPL(t+" nanos");
+        if (t < 1000) return Main.toAPL(new Num(t)+" nanos");
         t/= 1e6;
-        if (t > 500) return Main.toAPL((t/1000d)+" seconds");
-        return Main.toAPL(t+" millis");
+        if (t > 500) return Main.toAPL(new Num(t/1000d)+" seconds");
+        return Main.toAPL(new Num(t)+" millis");
       }
     }
   }

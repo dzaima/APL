@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class ReplicateBuiltin extends Builtin {
         Value[] res = new Value[w.ia*-sz];
         Value n = w.first() instanceof Char? Char.SPACE : Num.ZERO;
         Arrays.fill(res, n);
-        return new HArr(res);
+        return Arr.create(res);
       }
       Value[] res = new Value[w.ia*sz];
       int ptr = 0;
@@ -31,7 +31,7 @@ public class ReplicateBuiltin extends Builtin {
           res[ptr++] = c;
         }
       }
-      return new HArr(res);
+      return Arr.create(res);
     }
     if (a.ia != w.ia) throw new LengthError("⍺ & ⍵ should have equal lengths for ⌿", w);
     int total = 0;
@@ -39,19 +39,39 @@ public class ReplicateBuiltin extends Builtin {
     for (int i = 0; i < a.ia; i++) {
       total+= Math.abs(sizes[i]);
     }
-    int ptr = 0;
-    Value[] res = new Value[total];
-    for (int i = 0; i < a.ia; i++) {
-      Value c = w.get(i);
-      int am = sizes[i];
-      if (sizes[i] < 0) {
-        am = -am;
-        c = c.prototype();
+    
+    if (w.quickDoubleArr()) {
+      int ptr = 0;
+      double[] wi = w.asDoubleArr();
+      double[] res = new double[total];
+      for (int i = 0; i < a.ia; i++) {
+        double c = wi[i];
+        int am = sizes[i];
+        if (sizes[i] < 0) {
+          am = -am;
+          c = 0;
+        }
+        for (int j = 0; j < am; j++) {
+          res[ptr++] = c;
+        }
       }
-      for (int j = 0; j < am; j++) {
-        res[ptr++] = c;
+      return new DoubleArr(res);
+      
+    } else {
+      int ptr = 0;
+      Value[] res = new Value[total];
+      for (int i = 0; i < a.ia; i++) {
+        Value c = w.get(i);
+        int am = sizes[i];
+        if (sizes[i] < 0) {
+          am = -am;
+          c = c.prototype();
+        }
+        for (int j = 0; j < am; j++) {
+          res[ptr++] = c;
+        }
       }
+      return Arr.create(res);
     }
-    return new HArr(res);
   }
 }

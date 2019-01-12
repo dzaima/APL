@@ -64,13 +64,14 @@ public class Token implements Tokenable {
         }
         return res + (type==TType.usr? "}" : ")");
 
-      case name:case op:case number: return repr;
+      case name:  case op: case number: return repr;
       case set: return "←";
       case guard: return ":";
       case errGuard: return "::";
+      case chr: return "'" + repr + "'";
+      case str: return "\"" + repr + "\"";
       default:
-        res = new StringBuilder(type + "");
-        return res.toString();
+        return type + "";
     }
   }
   

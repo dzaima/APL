@@ -149,12 +149,12 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return get(x);
   }
   
-  public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape!
+  public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape! ()
   public abstract Value with(Value what, int[] where);
   public double sum() {
     return Arrays.stream(values()).mapToDouble(Value::asInt).sum();
   }
-  public double[] asDoubleArr() { // warning: also succeeds on a primitive number
+  public double[] asDoubleArr() { // warning: also succeeds on a primitive number; don't modify
     double[] res = new double[ia];
     int i = 0;
     for (Value c : values()) {

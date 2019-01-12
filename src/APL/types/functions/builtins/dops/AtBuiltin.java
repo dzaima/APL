@@ -27,7 +27,7 @@ public class AtBuiltin extends Dop {
         for (int i = 0; i < ia; i++) {
           if (ba[i]) matching[ptr++] = w.get(i);
         }
-        aaa = (Value) ((Fun) aa).call(new HArr(matching));
+        aaa = (Value) ((Fun) aa).call(Arr.create(matching));
       } else aaa = (Value) aa;
       Value[] ra = new Value[ia];
       if (aaa.rank == 0) {
@@ -43,7 +43,7 @@ public class AtBuiltin extends Dop {
           else ra[i] = w.get(i);
         }
       }
-      return new HArr(ra, w.shape);
+      return Arr.create(ra, w.shape);
     } else {
       Value wwa = (Value) ww;
       int matchingCount = wwa.ia;
@@ -55,12 +55,12 @@ public class AtBuiltin extends Dop {
           indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
           matching[i] = w.get(indexes[i]);
         }
-        Value[] replacement = ((Value) ((Fun) aa).call(new HArr(matching))).values();
+        Value[] replacement = ((Value) ((Fun) aa).call(Arr.create(matching))).values();
         System.arraycopy(w.values(), 0, ra, 0, ia);
         for (int i = 0; i < matchingCount; i++) {
           ra[indexes[i]] = replacement[i];
         }
-        return new HArr(ra, w.shape);
+        return Arr.create(ra, w.shape);
       } else {
         for (int i = 0; i < matchingCount; i++) {
           indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
@@ -77,7 +77,7 @@ public class AtBuiltin extends Dop {
             ra[indexes[i]] = aaa.get(i);
           }
         }
-        return new HArr(ra, w.shape);
+        return Arr.create(ra, w.shape);
       }
     }
   }

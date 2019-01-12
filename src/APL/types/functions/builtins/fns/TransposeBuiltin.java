@@ -40,7 +40,7 @@ public class TransposeBuiltin extends Builtin {
       }
       arr[Indexer.fromShape(ns, nc, 0)] = w.simpleAt(c);
     }
-    return new HArr(arr, ns);
+    return Arr.create(arr, ns);
   }
   
 //  public Obj call(Value a, Value w) {

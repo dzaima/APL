@@ -69,7 +69,7 @@ public class RhoBuiltin extends Builtin {
         arr[i] = w.get(index++);
         if (index == w.ia) index = 0;
       }
-      return new HArr(arr, sh);
+      return Arr.create(arr, sh);
     }
   }
 }

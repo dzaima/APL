@@ -32,6 +32,6 @@ public class TildeBuiltin extends Builtin {
         res[pos++] = a.get(i);
       }
     }
-    return new HArr(res);
+    return Arr.create(res);
   }
 }

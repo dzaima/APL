@@ -10,7 +10,9 @@ import java.util.*;
 public abstract class Fun extends Scopeable {
   public final int valid; // 0x niladic dyadic monadic
   
-  public Value identity = null;
+  public Value identity() {
+    return null;
+  }
   
   protected Fun(int valid, Scope sc) {
     super(sc);

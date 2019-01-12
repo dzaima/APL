@@ -22,7 +22,7 @@ public class ScanBuiltin extends Mop {
       c = (Value) f.call(c, w.get(i));
       res[i] = c;
     }
-    return new HArr(res);
+    return Arr.create(res);
   }
   
 //  public Obj call(Value a, Value w) {

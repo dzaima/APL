@@ -16,14 +16,14 @@ public class VarArr extends Obj {
     this.arr = arr;
   }
   
-  public HArr materialize() {
+  public Arr materialize() {
     if (this.token != null) Main.faulty = this;
     Value[] res = new Value[arr.size()];
     for (int i = 0; i < ia; i++) {
       Obj c = arr.get(i);
       res[i] = c instanceof VarArr? ((VarArr) c).materialize() : (Value) (c instanceof Value? c : ((Settable) c).get());
     }
-    return new HArr(res);
+    return Arr.create(res);
   }
   
   @Override

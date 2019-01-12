@@ -84,6 +84,6 @@ public class HArr extends Arr {
   public Value with(Value what, int[] where) {
     Value[] nvals = arr.clone();
     nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return new HArr(nvals, shape);
+    return Arr.create(nvals, shape);
   }
 }

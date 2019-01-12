@@ -38,6 +38,6 @@ public class RShoeUBBuiltin extends Builtin {
     for (int i = 0; i < a.ia; i++) {
       res[i] = w.at(a.get(i).asIntVec(), sc.IO);
     }
-    return new HArr(res, a.shape);
+    return Arr.create(res, a.shape);
   }
 }

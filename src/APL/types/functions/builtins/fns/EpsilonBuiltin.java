@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 import java.util.*;
@@ -15,7 +14,7 @@ public class EpsilonBuiltin extends Builtin {
   public Obj call(Value w) {
     var res = new ArrayList<Value>();
     rec(res, w);
-    return new HArr(res);
+    return Arr.create(res.toArray(new Value[0]));
   }
   
   private void rec(ArrayList<Value> arr, Value v) {
@@ -32,6 +31,6 @@ public class EpsilonBuiltin extends Builtin {
       Value av = a.get(i);
       res[i] = Arrays.stream(w.values()).anyMatch(v -> v.equals(av))? Num.ONE : Num.ZERO;
     }
-    return new HArr(res, a.shape);
+    return Arr.create(res, a.shape);
   }
 }

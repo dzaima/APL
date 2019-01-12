@@ -6,7 +6,10 @@ import APL.types.functions.Builtin;
 public class AndBuiltin extends Builtin {
   public AndBuiltin() {
     super("∧", 0x011);
-    identity = Num.ONE;
+  }
+  
+  public Value identity() {
+    return Num.ONE;
   }
   
   public Obj call(Value w) {

@@ -9,7 +9,11 @@ public class PlusBuiltin extends Builtin {
   public PlusBuiltin() {
     super("+", 0x011);
   }
-
+  
+  public Value identity() {
+    return Num.ZERO;
+  }
+  
   public Obj call(Value w) {
     return scalar(v -> {
       if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", w); // TODO decide whether this should exist

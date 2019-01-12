@@ -52,7 +52,7 @@ public class DTackBuiltin extends Builtin {
       }
       return new DoubleArr(res, sh);
     }
-    if (!(w instanceof Num)) throw new DomainError("non-scalar number not implemented", w);
+    if (!(w instanceof Num)) throw new NYIError("non-scalar number not implemented", w);
     double base = a.asDouble();
     double num = w.asDouble();
     if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", w);

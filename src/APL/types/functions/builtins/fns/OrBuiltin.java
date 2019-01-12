@@ -6,7 +6,10 @@ import APL.types.functions.Builtin;
 public class OrBuiltin extends Builtin {
   public OrBuiltin() {
     super("∨", 0x011);
-    identity = Num.ZERO;
+  }
+  
+  public Value identity() {
+    return Num.ZERO;
   }
   
   public Obj call(Value w) {

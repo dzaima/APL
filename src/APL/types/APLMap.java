@@ -1,7 +1,7 @@
 package APL.types;
 
 import APL.Main;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 import java.util.Arrays;
 
@@ -52,6 +52,6 @@ public abstract class APLMap extends Primitive {
   public Value ofShape(int[] sh) {
     if (sh.length == 0 && Main.enclosePrimitives) return this;
     assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
-    return new HArr(new Value[]{this}, sh);
+    return new SingleItemArr(this, sh);
   }
 }

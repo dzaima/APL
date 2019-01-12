@@ -24,7 +24,7 @@ public class DownArrowBuiltin extends Builtin {
       for (int j = 0; j < csz; j++) {
         c[j] = w.get(i*csz + j);
       }
-      res[i] = new HArr(c);
+      res[i] = Arr.create(c);
     }
     int[] nsh = new int[w.rank-1];
     System.arraycopy(w.shape, 0, nsh, 0, nsh.length);

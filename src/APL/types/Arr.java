@@ -23,7 +23,7 @@ public abstract class Arr extends Value {
       StringBuilder all = new StringBuilder();
       for (Value v : this) {
         if (v instanceof Char) {
-          char c = ((Char)v).chr;
+          char c = ((Char) v).chr;
           if (quote && c == '\"') all.append("\"\"");
           else all.append(c);
         } else return null;
@@ -49,7 +49,7 @@ public abstract class Arr extends Value {
       return oneliner();
     } else {
       if (rank == 0) return "⊂"+first().toString();
-      if (rank == 1) {
+      if (rank == 1) { // simple vectors
         StringBuilder res = new StringBuilder();
         var simple = true;
         for (Value v : this) {
@@ -63,7 +63,29 @@ public abstract class Arr extends Value {
         }
         if (simple) return res.toString();
       }
-      if (rank < 3) {
+      
+      if (rank == 2) {
+        boolean charmat = true;
+        if (!(this instanceof ChrArr)) {
+          for (Value v : this) {
+            if (!(v instanceof Char)) {
+              charmat = false;
+            }
+          }
+        }
+        
+        if (charmat) {
+          StringBuilder b = new StringBuilder();
+          int i = 0;
+          for (Value v : this) {
+            if (i++ % shape[1] == 0 && i!=1) b.append('\n');
+            b.append(((Char) v).chr);
+          }
+          return b.toString();
+        }
+      }
+      
+      if (rank < 3) { // boxed arrays
         int w = rank==1? shape[0] : shape[1];
         int h = rank==1? 1 : shape[0];
         String[][][] stringified = new String[w][h][];
@@ -201,7 +223,7 @@ public abstract class Arr extends Value {
       }
       c+= sec;
     }
-    return new HArr(res, shape);
+    return Arr.create(res, shape);
   }
   
   @Override
@@ -209,10 +231,14 @@ public abstract class Arr extends Value {
     Value[] nvals = new Value[ia];
     System.arraycopy(values(), 0, nvals, 0, ia);
     nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return new HArr(nvals, shape);
+    return Arr.create(nvals, shape);
   }
   
-  public static Arr create(Value[] v, int[] sh) {
+  public static Arr create(Value[] v) {
+    return create(v, new int[]{v.length});
+  }
+  
+  public static Arr create(Value[] v, int[] sh) { // note, doesn't attempt individual item squeezing
     if (v.length == 0) return new EmptyArr(sh);
     if (v[0] instanceof Num) {
       double[] da = new double[v.length];
@@ -260,4 +286,8 @@ public abstract class Arr extends Value {
     }
     return true;
   }
+  
+  // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.
+  private class delete_new_pls extends Exception{}
+  public class create extends Main {create(Object...FO) throws delete_new_pls{}}
 }

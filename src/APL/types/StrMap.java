@@ -27,12 +27,12 @@ public class StrMap extends APLMap {
   
   @Override
   public Arr toArr() {
-    Object[] a = map.values().toArray();
+    Obj[] a = map.values().toArray(new Obj[0]);
     var items = new ArrayList<Value>();
-    for (Object o : a) {
+    for (Obj o : a) {
       if (o instanceof Value) items.add((Value) o);
     }
-    return new HArr(items);
+    return Arr.create(items.toArray(new Value[0]));
   }
   
   @Override

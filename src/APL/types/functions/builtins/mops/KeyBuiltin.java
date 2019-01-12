@@ -20,7 +20,7 @@ public class KeyBuiltin extends Mop {
         for (int i = 0; i < w.ia; i++) {
           arr[i] = (Value) ((APLMap) aa).getRaw(w.get(i));
         }
-        return new HArr(arr, w.shape);
+        return Arr.create(arr, w.shape);
       }
       return ((APLMap) aa).getRaw(w);
     }
@@ -42,7 +42,7 @@ public class KeyBuiltin extends Mop {
       var res = new Value[order.size()];
       i = 0;
       for (var c : order) {
-        res[i++] = (Value) ((Fun)aa).call(c, new HArr(vals.get(c)));
+        res[i++] = (Value) ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
       }
       return new HArr(res);
     }

@@ -5,6 +5,7 @@ import APL.types.*;
 import APL.types.arrs.HArr;
 import APL.types.dimensions.DimMMop;
 import APL.types.functions.Mop;
+import APL.types.functions.builtins.fns.*;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   public ReduceBuiltin() {
@@ -17,17 +18,29 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   }
   
   public Obj call(Obj f, Value w) {
+    Fun ff = (Fun) f;
     if (w.rank >= 2) {
-      return ngnReduce(w, -1, (Fun) f);
+      return ngnReduce(w, -1, ff);
+    }
+    if (f instanceof PlusBuiltin && w.quickDoubleArr()) {
+      double s = 0;
+      for (double d : w.asDoubleArr()) s+= d;
+      return new Num(s);
+    }
+    if (f instanceof MulBuiltin && w.quickDoubleArr()) {
+      double p = 0;
+      for (double d : w.asDoubleArr()) p*= d;
+      return new Num(p);
     }
     Value[] a = w.values();
     if (a.length == 0) {
-      if (((Fun)f).identity == null) throw new DomainError("No identity defined for "+f.name(), f);
-      return ((Fun)f).identity;
+      Value id = ff.identity();
+      if (id == null) throw new DomainError("No identity defined for "+f.name(), f);
+      return id;
     }
     Value last = a[a.length-1];
     for (int i = a.length-2; i >= 0; i--) {
-      last = (Value)((Fun)f).call(a[i], last);
+      last = (Value) ff.call(a[i], last);
     }
     return last.squeeze();
   }
@@ -56,7 +69,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         ra[i] = r;
       }
     }
-    return HArr.create(ra, new int[]{ra.length});
+    return Arr.create(ra);
   }
   
   private Value ngnReduce(Value x, int axis, Fun f) { // https://chat.stackexchange.com/transcript/message/47158587#47158587

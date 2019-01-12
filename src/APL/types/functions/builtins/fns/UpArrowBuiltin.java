@@ -34,7 +34,7 @@ public class UpArrowBuiltin extends Builtin {
       arr[i] = w.at(index, sc.IO);
       i++;
     }
-    return new HArr(arr, shape);
+    return Arr.create(arr, shape);
   }
   public Obj call(Value w) {
     if (w instanceof Arr) {
