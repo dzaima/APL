@@ -26,6 +26,6 @@ public class NEBuiltin extends Builtin {
   private static final DNf DNF = new DNf();
   
   public Obj call(Value a, Value w) {
-    return numD(DNF, a, w);
+    return numChrD(DNF, (ca, cw) -> ca!=cw? Num.ONE : Num.ZERO, (ca, cw) -> Num.ZERO, a, w);
   }
 }

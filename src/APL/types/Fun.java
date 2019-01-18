@@ -212,6 +212,7 @@ public abstract class Fun extends Scopeable {
     }
   }
   
+  
   protected Value numD(NumDV f, Value a, Value w) {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
@@ -273,6 +274,68 @@ public abstract class Fun extends Scopeable {
     }
   }
   
+  
+  protected Value numChrD(NumDV n, ChrDV c, AllDV def, Value a, Value w) {
+    if (a.scalar()) {
+      if (w.scalar()) { // ⊃⍺ ⊃⍵
+        if (a instanceof Primitive & w instanceof Primitive) {
+          if (a instanceof Num & w instanceof Num) return new Num(n.call(((Num) a).num, ((Num) w).num));
+          else if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
+          else return def.call(a, w);
+        } else return new Rank0Arr(numChrD(n, c, def, a.first(), w.first()));
+        
+      } else { // ⍺¨ ⍵
+        if (w.quickDoubleArr() && a instanceof Primitive) {
+          double[] res = new double[w.ia];
+          n.call(res, a.asDouble(), w.asDoubleArr());
+          return new DoubleArr(res, w.shape);
+        }
+        Value af = a.first();
+        Iterator<Value> wi = w.iterator();
+        Value[] vs = new Value[w.ia];
+        for (int i = 0; i < w.ia; i++) {
+          vs[i] = numChrD(n, c, def, af, wi.next());
+        }
+        return new HArr(vs, w.shape);
+        
+      }
+    } else {
+      if (w.scalar()) { // ⍺ ⍵¨
+        if (a.quickDoubleArr() && w instanceof Primitive) {
+          double[] res = new double[a.ia];
+          n.call(res, a.asDoubleArr(), w.asDouble());
+          return new DoubleArr(res, a.shape);
+        }
+        Value wf = w.first();
+        Iterator<Value> ai = a.iterator();
+        Value[] vs = new Value[a.ia];
+        for (int i = 0; i < a.ia; i++) {
+          vs[i] = numChrD(n, c, def, ai.next(), wf);
+        }
+        
+        return new HArr(vs, a.shape);
+        
+      } else { // ⍺ ¨ ⍵
+        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        
+        if (a.quickDoubleArr() && w.quickDoubleArr()) {
+          double[] res = new double[w.ia];
+          n.call(res, a.asDoubleArr(), w.asDoubleArr());
+          return new DoubleArr(res, a.shape);
+        }
+        
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> ai = a.iterator();
+        Iterator<Value> wi = w.iterator();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = numChrD(n, c, def, ai.next(), wi.next());
+        }
+        return new HArr(arr, a.shape);
+        
+      }
+    }
+  }
   
   @Override
   public Type type() {
