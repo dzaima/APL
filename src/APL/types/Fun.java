@@ -211,57 +211,56 @@ public abstract class Fun extends Scopeable {
       }
     }
   }
-  protected Value numD(NumDV f, Value a, Value w) {
-    if (a.quickDoubleArr() && !a.scalar() && w instanceof Num) {
-      double[] res = new double[a.ia];
-      f.call(res, a.asDoubleArr(), w.asDouble());
-      return new DoubleArr(res, a.shape);
-    }
-    if (a instanceof Num && w.quickDoubleArr() && !w.scalar()) {
-      double[] res = new double[w.ia];
-      f.call(res, a.asDouble(), w.asDoubleArr());
-      return new DoubleArr(res, w.shape);
-    }
-    if (a.quickDoubleArr() && w.quickDoubleArr() && !a.scalar() && !w.scalar()) {
-      if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-      double[] res = new double[w.ia];
-      f.call(res, a.asDoubleArr(), w.asDoubleArr());
-      return new DoubleArr(res, a.shape);
-    }
-    
-    if (a instanceof Num && w instanceof Num) return new Num(f.call(a.asDouble(), w.asDouble()));
-    
-    
-    if (a.scalar()) {
-      Value fst_a = a.first();
   
-      if (w.scalar()) {
-        if (w instanceof Primitive) throw new DomainError("calling a number-only function with "+w.humanType(true));
-        return new Rank0Arr(numD(f, fst_a, w.first()));
-    
-      } else {
-        Value[] arr = new Value[w.ia];
-        Iterator<Value> iterator = w.iterator();
-        for (int i = 0; i < w.ia; i++) {
-          arr[i] = numD(f, fst_a, iterator.next());
+  protected Value numD(NumDV f, Value a, Value w) {
+    if (a.scalar()) {
+      if (w.scalar()) { // ⊃⍺ ⊃⍵
+        if (a instanceof Primitive & w instanceof Primitive) {
+          if (a instanceof Num & w instanceof Num) return new Num(f.call(((Num) a).num, ((Num) w).num));
+          else throw new DomainError("calling a number-only function with "+w.humanType(true));
+        } else return new Rank0Arr(numD(f, a.first(), w.first()));
+        
+      } else { // ⍺¨ ⍵
+        if (w.quickDoubleArr() && a instanceof Primitive) {
+          double[] res = new double[w.ia];
+          f.call(res, a.asDouble(), w.asDoubleArr());
+          return new DoubleArr(res, w.shape);
         }
-        return new HArr(arr, w.shape);
+        Value af = a.first();
+        Iterator<Value> wi = w.iterator();
+        Value[] vs = new Value[w.ia];
+        for (int i = 0; i < w.ia; i++) {
+          vs[i] = numD(f, af, wi.next());
+        }
+        return new HArr(vs, w.shape);
         
       }
     } else {
-      if (w.scalar()) {
-        Value[] arr = new Value[a.ia];
-        Iterator<Value> iterator = a.iterator();
-        Value fst_w = w.first();
-        for (int i = 0; i < a.ia; i++) {
-          arr[i] = numD(f, iterator.next(), fst_w);
+      if (w.scalar()) { // ⍺ ⍵¨
+        if (a.quickDoubleArr() && w instanceof Primitive) {
+          double[] res = new double[a.ia];
+          f.call(res, a.asDoubleArr(), w.asDouble());
+          return new DoubleArr(res, a.shape);
         }
-        return new HArr(arr, a.shape);
+        Value wf = w.first();
+        Iterator<Value> ai = a.iterator();
+        Value[] vs = new Value[a.ia];
+        for (int i = 0; i < a.ia; i++) {
+          vs[i] = numD(f, ai.next(), wf);
+        }
+  
+        return new HArr(vs, a.shape);
         
-      } else {
+      } else { // ⍺ ¨ ⍵
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        assert a.ia == w.ia;
+        
+        if (a.quickDoubleArr() && w.quickDoubleArr()) {
+          double[] res = new double[w.ia];
+          f.call(res, a.asDoubleArr(), w.asDoubleArr());
+          return new DoubleArr(res, a.shape);
+        }
+        
         Value[] arr = new Value[a.ia];
         Iterator<Value> ai = a.iterator();
         Iterator<Value> wi = w.iterator();
@@ -273,6 +272,7 @@ public abstract class Fun extends Scopeable {
       }
     }
   }
+  
   
   @Override
   public Type type() {

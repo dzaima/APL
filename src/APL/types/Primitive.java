@@ -12,11 +12,11 @@ public abstract class Primitive extends Value {
   }
   
   @Override
-  public Value get(int i) {
+  public final Value get(int i) {
     return this;
   }
   
-  public Value first() {
+  public final Value first() {
     return this;
   }
   @Override
