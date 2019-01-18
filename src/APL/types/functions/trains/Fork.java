@@ -10,7 +10,6 @@ public class Fork extends Fun {
   private final Fun g;
   private final Obj f, h;
   public Fork(Obj f, Fun g, Obj h) {
-    super();
     this.f = f;
     this.g = g;
     this.h = h;
