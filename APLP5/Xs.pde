@@ -34,12 +34,19 @@ int col(Obj v) {
   }
   throw new DomainError("bad color "+v);
 }
-
+class FnD {
+  float[] fa;
+  double[] da;
+  FnD(float[] f, double[] d) {
+    fa = f;
+    da = d;
+  }
+}
 abstract class ForFA extends Fun {
   
   ForFA() { super(0x011); }
   
-  abstract void draw(float[] fa);
+  abstract void draw(double[] fa);
   void setup(Value a) { }
   void finish() { }
   //public Obj call(Value a, Value w) {
@@ -52,34 +59,28 @@ abstract class ForFA extends Fun {
   public Obj call(Value w) { // TODO input is 2D arr
     this.w = w;
     setup(null);
-    for (float[] fa : f2D(w)) draw(fa);
+    for (double[] fa : f2D(w)) draw(fa);
     finish();
     return w;
   }
   public Obj call(Value a, Value w) { // TODO input is 2D arr
     setup(a);
-    for (float[] fa : f2D(w)) draw(fa);
+    for (double[] fa : f2D(w)) draw(fa);
     finish();
     return w;
   }
 }
 
-float[][] emptyF2D = new float[0][0];
+double[][] emptyF2D = new double[0][0];
 
-float[][] f2D(Value v) {
+double[][] f2D(Value v) {
   if (v.ia==0) return emptyF2D;
   if (v.get(0) instanceof Num) v = new Shape1Arr(v);
-  float[][] res = new float[v.ia][];
+  double[][] res = new double[v.ia][];
   for (int i = 0; i < res.length; i++) {
     Value c = v.get(i);
-    float[] cr = new float[c.ia];
-    if (c.quickDoubleArr()) {
-      double[] da = c.asDoubleArr();
-      for (int j = 0; j < cr.length; j++) cr[j] = (float) da[j];
-    } else {
-      for (int j = 0; j < cr.length; j++) cr[j] = (float)(c.get(j)).asDouble();
-    }
-    res[i] = cr;
+    double[] da = c.asDoubleArr();
+    res[i] = da;
   }
   return res;
 }

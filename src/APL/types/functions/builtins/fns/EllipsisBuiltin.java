@@ -14,7 +14,9 @@ public class EllipsisBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     double[] arr = new double[((Num)w).minus((Num)a).abs().asInt()+1];
     double s = a.asDouble();
-    Arrays.setAll(arr, i -> s+i);
+    for (int i = 0; i < arr.length; i++) {
+      arr[i] = i+s;
+    }
     return new DoubleArr(arr);
   }
 }

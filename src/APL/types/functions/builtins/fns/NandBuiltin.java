@@ -11,7 +11,7 @@ public class NandBuiltin extends Builtin {
   }
   
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> (Main.bool(a, sc) & Main.bool(w, sc))? Num.ZERO : Num.ONE, a0, w0);
+    return allM((a, w) -> (Main.bool(a, sc) & Main.bool(w, sc))? Num.ZERO : Num.ONE, a0, w0);
   }
   public Obj call(Value w) {
     if (w instanceof DoubleArr) {

@@ -16,7 +16,7 @@ public class AndBuiltin extends Builtin {
     return new Num(Num.lcm(w.asDoubleArr()));
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return Num.lcm(a, w);
     }
@@ -32,6 +32,6 @@ public class AndBuiltin extends Builtin {
   }
   private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+    return numD(DNF, a0, w0);
   }
 }

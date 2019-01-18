@@ -98,7 +98,8 @@ public class SingleItemArr extends Arr {
   }
   
   @Override public Iterator<Value> iterator() {
-    return new Iterator<>() {
+    //noinspection Convert2Diamond java 8
+    return new Iterator<Value>() {
       int i = 0;
       @Override public boolean hasNext() {
         return i < ia;

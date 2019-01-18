@@ -68,12 +68,12 @@ class APLGraphics extends APLMap {
             case  "center": g.rectMode(CENTER ); break;
           }
         }
-        public void draw(float[] fa) {
+        public void draw(double[] fa) {
           if (fa.length >= 5) {
             g.fill((int)(long)fa[4]);
             if (fa.length >= 6) g.stroke((int)(long)fa[5]);
           }
-          g.rect(fa[0], fa[1], fa[2], fa[3]);
+          g.rect((float)fa[0], (float)fa[1], (float)fa[2], (float)fa[3]);
         }
       };
       case "ellipse": return new ForFA() {
@@ -86,8 +86,8 @@ class APLGraphics extends APLMap {
             case  "center": g.ellipseMode(CENTER ); break;
           }
         }
-        public void draw(float[] fa) {
-          g.ellipse(fa[0], fa[1], fa[2], fa[3]);
+        public void draw(double[] fa) {
+          g.ellipse((float)fa[0], (float)fa[1], (float)fa[2], (float)fa[3]);
         }
       };
       case "circle": return new ForFA() {
@@ -97,16 +97,16 @@ class APLGraphics extends APLMap {
             case  "radius": g.ellipseMode(RADIUS ); break;
             case  "center": g.ellipseMode(CENTER ); break;
           }}
-        public void draw(float[] fa) {
-          g.ellipse(fa[0], fa[1], fa[2], fa[2]);
+        public void draw(double[] fa) {
+          g.ellipse((float)fa[0], (float)fa[1], (float)fa[2], (float)fa[2]);
         }
       };
       case "point": case "pt": return new ForFA() {
-        public void draw(float[] fa) {
+        public void draw(double[] fa) {
           if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
           if (fa.length > 4) {
             g.beginShape(POINTS);
-            for (int i = 0; i < fa.length; i+= 2) g.vertex(fa[i], fa[i+1]);
+            for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);
             g.endShape();
           }
         }
@@ -116,11 +116,11 @@ class APLGraphics extends APLMap {
           g.strokeWeight(a == null? 1 : a.asInt());
           g.noFill();
         }
-        public void draw(float[] fa) {
+        public void draw(double[] fa) {
           if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
           if (fa.length >= 4) {
             g.beginShape();
-            for (int i = 0; i < fa.length; i+= 2) g.vertex(fa[i], fa[i+1]);
+            for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);
             g.endShape();
           }
         }
@@ -129,11 +129,11 @@ class APLGraphics extends APLMap {
         public void setup(Value a) {
           g.strokeWeight(a == null? 1 : a.asInt());
         }
-        public void draw(float[] fa) {
+        public void draw(double[] fa) {
           if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
           if (fa.length > 2) {
             g.beginShape();
-            for (int i = 0; i < fa.length; i+= 2) g.vertex(fa[i], fa[i+1]);
+            for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);
             g.endShape(CLOSE);
           }
         }

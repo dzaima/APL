@@ -2,7 +2,6 @@ package APL.types.functions.builtins.fns;
 
 import APL.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class TildeBuiltin extends Builtin {
@@ -10,8 +9,18 @@ public class TildeBuiltin extends Builtin {
     super("~", 0x011, sc);
   }
   
+  class Nf implements NumMV {
+    public Value call(Num w) {
+      return Main.bool(w.num, sc)? Num.ZERO : Num.ONE;
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = Main.bool(a[i], sc)? 0 : 1;
+    }
+  }
+  private final Nf NF = new Nf();
+  
   public Obj call(Value w) {
-    return scalar(v -> Main.bool(v, sc)? Num.ZERO : Num.ONE, w);
+    return numM(NF, w);
   }
   
   public Obj call(Value a, Value w) {

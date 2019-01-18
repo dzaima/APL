@@ -9,7 +9,7 @@ public class LEBuiltin extends Builtin {
     super("≤", 0x010);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return a <= w? 1 : 0;
     }
@@ -26,6 +26,6 @@ public class LEBuiltin extends Builtin {
   private static final DNf DNF = new DNf();
   
   public Obj call(Value a, Value w) {
-    return scalarNum(DNF, a, w);
+    return numD(DNF, a, w);
   }
 }

@@ -12,10 +12,25 @@ public class DownArrowBuiltin extends Builtin {
   }
   
   @Override
-  public Obj call(Value w) { // TODO specials
+  public Obj call(Value w) {
     if (w instanceof Primitive) return w;
     if (w.rank <= 1) return new Rank0Arr(w);
     // TODO stupid dimensions
+    if (w.quickDoubleArr()) {
+      double[] dw = w.asDoubleArr();
+      int csz = w.shape[w.rank-1]; // chunk size
+      int cam = w.ia/csz; // chunk amount
+      Value[] res = new Value[cam];
+      for (int i = 0; i < cam; i++) {
+        double[] c = new double[csz];
+        System.arraycopy(dw, i*csz, c, 0, csz);
+        // ↑ ≡ for (int j = 0; j < csz; j++) c[j] = dw[i * csz + j];
+        res[i] = new DoubleArr(c);
+      }
+      int[] nsh = new int[w.rank-1];
+      System.arraycopy(w.shape, 0, nsh, 0, nsh.length);
+      return new HArr(res, nsh);
+    }
     int csz = w.shape[w.rank-1]; // chunk size
     int cam = w.ia/csz; // chunk amount
     Value[] res = new Value[cam];

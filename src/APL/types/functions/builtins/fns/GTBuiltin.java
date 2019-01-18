@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 import java.util.*;
@@ -12,7 +11,7 @@ public class GTBuiltin extends Builtin {
     super(">", 0x010);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return a > w? 1 : 0;
     }
@@ -29,7 +28,7 @@ public class GTBuiltin extends Builtin {
   private static final DNf DNF = new DNf();
   
   public Obj call(Value a, Value w) {
-    return scalarNum(DNF, a, w);
+    return numD(DNF, a, w);
   }
   
   public Obj call(Value w) {

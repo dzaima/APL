@@ -8,7 +8,7 @@ public class MinusBuiltin extends Builtin {
     super("-", 0x011);
   }
   
-  static class Nf implements NumVecFun {
+  static class Nf implements NumMV {
     public Value call(Num w) {
       return w.negate();
     }
@@ -19,10 +19,10 @@ public class MinusBuiltin extends Builtin {
   private static final Nf NF = new Nf();
   
   public Obj call(Value w) {
-    return numChr(NF, Char::swap, w);
+    return numChrM(NF, Char::swap, w);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return a - w;
     }
@@ -39,7 +39,7 @@ public class MinusBuiltin extends Builtin {
   private static final DNf DNF = new DNf();
   
   public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+    return numD(DNF, a0, w0);
   }
   public Obj callInv(Value w) { return call(w); }
   public Obj callInvW(Value a, Value w) { return call(a, w); }

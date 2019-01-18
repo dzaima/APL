@@ -10,12 +10,22 @@ public class RandBuiltin extends Builtin {
     super("?", 0x011, sc);
   }
   
+  class Nf implements NumMV {
+    @Override public Value call(Num v) {
+      if (v.equals(Num.ZERO)) return new Num(sc.rand(1d));
+      else return new Num(sc.rand(v.asInt()) + sc.IO);
+    }
+  
+    @Override public void call(double[] res, double[] a) {
+      for (int i = 0; i < res.length; i++) {
+        res[i] = a[i]==0? sc.rand(1d) : sc.rand((int) a[i]) + sc.IO;
+      }
+    }
+  }
+  private final Nf nf = new Nf();
+  
   public Obj call(Value w) {
-    return scalar(v -> {
-      Num n = (Num) v;
-      if (n.equals(Num.ZERO)) return new Num(sc.rand(1d));
-      else return new Num(sc.rand(n.asInt()) + sc.IO);
-    }, w);
+    return numM(nf, w);
   }
   
   public Obj call(Value a, Value w) {

@@ -9,7 +9,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"n7"};
+  if (args == null) args = new String[]{"rects"};
   
   global = new Scope();
   String s;
@@ -34,6 +34,8 @@ void setup() {
 void exec(String s) {
   try {
     APL.Main.exec(s, global);
+  } catch(APLError e) {
+    e.print();
   } catch (Throwable e) {
     e.printStackTrace();
     throw e;

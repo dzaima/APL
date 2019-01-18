@@ -1,9 +1,8 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Indexer;
-import APL.Scope;
+import APL.*;
 import APL.errors.RankError;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
@@ -38,28 +37,55 @@ public class UpArrowBuiltin extends Builtin {
   }
   public Obj call(Value w) {
     if (w instanceof Arr) {
-      Arr arr = (Arr) w;
-      Value[] sub = arr.values();
-      if (sub.length == 0) return w; // TODO prototypes
-      int[] def = new int[sub[0].rank];
-      System.arraycopy(sub[0].shape, 0, def, 0, def.length);
-      for (Value v : sub) {
+      Value[] subs = w.values();
+      if (subs.length == 0) return w; // TODO prototypes
+      
+      int[] def = new int[subs[0].rank];
+      System.arraycopy(subs[0].shape, 0, def, 0, def.length);
+      for (Value v : subs) {
         if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
         for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
       }
-      int totalIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
-      totalIA *= Arrays.stream(arr.shape).reduce(1, (a, b) -> a * b);
-      int[] totalShape = new int[def.length + arr.rank];
-      System.arraycopy(arr.shape, 0, totalShape, 0, arr.rank);
-      System.arraycopy(def, 0, totalShape, arr.rank, def.length);
+      int subIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
+      int totalIA = subIA * Arrays.stream(w.shape).reduce(1, (a, b) -> a * b);
+      int[] totalShape = new int[def.length + w.rank];
+      System.arraycopy(w.shape, 0, totalShape, 0, w.rank);
+      System.arraycopy(def, 0, totalShape, w.rank, def.length);
+      
+      boolean allNums = true;
+      for (Value v : subs) {
+        if (!v.quickDoubleArr()) {
+          allNums = false;
+          break;
+        }
+      }
+      if (allNums) {
+        double[] allVals = new double[totalIA];
+  
+        int i = 0;
+        for (Value v : subs) {
+          double[] c = v.asDoubleArr();
+          int ia = c.length;
+          int k = 0;
+          for (int j : new SimpleIndexer(def, v.shape)) {
+            allVals[i+j] = c[k++];
+          }
+          // automatic zero padding
+          i+= subIA;
+        }
+  
+        return new DoubleArr(allVals, totalShape);
+      }
       Value[] allVals = new Value[totalIA];
   
       int i = 0;
-      for (Value v : sub) {
+      for (Value v : subs) {
+        Value proto = v.prototype();
         for (int[] sh : new Indexer(def, 0)) {
 //          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
-          allVals[i++] = v.at(sh, v.prototype()).squeeze();
+          allVals[i++] = v.at(sh, proto);
         }
+        i+= subIA;
       }
       
       return Arr.create(allVals, totalShape);

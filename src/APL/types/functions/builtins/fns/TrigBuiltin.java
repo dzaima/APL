@@ -9,11 +9,21 @@ public class TrigBuiltin extends Builtin {
     super("○", 0x011);
   }
   
+  static class Nf implements NumMV {
+    public Value call(Num w) {
+      return new Num(Math.PI * w.num);
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = Math.PI * a[i];
+    }
+  }
+  private static final Nf NF = new Nf();
+  
   public Obj call(Value w) {
-    return scalar(v -> Num.PI.times((Num) v), w);
+    return numM(NF, w);
   }
   public Obj call(Value a0, Value w0) {
-    return scalar((a, w) -> {
+    return allM((a, w) -> {
       Num n = (Num) w;
       switch(a.asInt()) {
         case  1: return n.sin();

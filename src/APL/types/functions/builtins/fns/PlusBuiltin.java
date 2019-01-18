@@ -15,13 +15,13 @@ public class PlusBuiltin extends Builtin {
   }
   
   public Obj call(Value w) {
-    return scalar(v -> {
+    return allM(v -> {
       if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", w); // TODO decide whether this should exist
       return ((Num)v).conjugate();
     }, w);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return a + w;
     }
@@ -37,7 +37,7 @@ public class PlusBuiltin extends Builtin {
   }
   private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+    return numD(DNF, a0, w0);
   }
   public Obj callInv(Value w) { return call(w); }
   public Obj callInvW(Value a, Value w) {

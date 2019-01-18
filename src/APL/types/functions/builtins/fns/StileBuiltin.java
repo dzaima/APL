@@ -9,11 +9,21 @@ public class StileBuiltin extends Builtin {
     super("|", 0x011);
   }
   
+  static class Nf implements NumMV {
+    public Value call(Num w) {
+      return w.abs();
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = Math.abs(a[i]);
+    }
+  }
+  private static final Nf NF = new Nf();
+  
   public Obj call(Value w) {
-    return numChrMap(Num::abs, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
+    return numChrMapM(NF, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       double c = w % a;
       if (c < 0) return c + a;
@@ -44,6 +54,6 @@ public class StileBuiltin extends Builtin {
   }
   private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+    return numD(DNF, a0, w0);
   }
 }

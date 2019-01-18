@@ -174,12 +174,26 @@ public class Scope {
       return call(Num.ONE, w);
     }
     public Obj call(Value a, Value w) {
-      int n = a.asInt();
+      int[] options = a.asIntVec();
+      int n = options[0];
+      
+      boolean testTokenizing = true;
+      if (options.length >= 2) {
+        testTokenizing = options[1] != 0;
+      }
+      
+      String test = w.asString();
       long start = System.nanoTime();
-      for (int i = 0; i < n; i++) Main.exec(w.asString(), sc);
+      if (testTokenizing) {
+        for (int i = 0; i < n; i++) Main.exec(test, sc);
+      } else {
+        Token testTokenized = Tokenizer.tokenize(test);
+        for (int i = 0; i < n; i++) Main.execLines(testTokenized, sc);
+      }
       long end = System.nanoTime();
-      if (simple) return new Num((end-start)/n);
-      else {
+      if (simple) {
+        return new Num((end-start)/n);
+      } else {
         double t = end-start;
         t/= n;
         if (t < 1000) return Main.toAPL(new Num(t)+" nanos");
@@ -205,7 +219,15 @@ public class Scope {
     }
     
     public Obj call(Value w) {
-      return numChr(c->new Char((char)c.asInt()), c->new Num(c.chr), w);
+      return numChrM(new NumMV() {
+        @Override public Value call(Num c) {
+          return new Char((char) c.asInt());
+        }
+  
+        @Override public boolean retNum() {
+          return false;
+        }
+      }, c->new Num(c.chr), w);
     }
   }
   

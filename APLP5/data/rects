@@ -31,7 +31,7 @@ LM.c ← {
 }
 LM.r ← {
   ~click: {
-     ∧ 20 < +/ | LM.s-P5.mpos: rs,←⊂ (sort LM.s , P5.mpos), P5.col 'd2'
+     ∧ 2 < ⌊/ | LM.s-P5.mpos: rs,←⊂ (sort LM.s , P5.mpos), P5.col 'd2'
   }⍬
 }
 RM.c ← {

@@ -42,25 +42,14 @@ public abstract class Fun extends Scopeable {
   }
   
   
-  public interface VecFun {
+  public interface AllMV {
     Value call(Value w);
   }
-  public Value scalar (VecFun f, Value w) {
-    if (w instanceof Primitive) {
-      return f.call(w);
-    } else {
-      Arr o = (Arr) w;
-      Value[] arr = new Value[o.ia];
-      for (int i = 0; i < o.ia; i++) {
-        arr[i] = scalar(f, o.get(i));
-      }
-      return new HArr(arr, o.shape);
-    }
-  }
-  
-  
-  public interface NumVecFun {
+  public interface NumMV {
     Value call(Num w);
+    default boolean retNum() {
+      return true;
+    }
     default double call(double w) {
       return call(new Num(w)).asDouble();
     }
@@ -69,7 +58,7 @@ public abstract class Fun extends Scopeable {
       for (int i = 0; i < res.length; i++) res[i] = call(a[i]);
     }
   }
-  public interface ChrVecFun {
+  public interface ChrMV {
     Value call(Char w);
     default Arr call(ChrArr a) {
       Value[] res = new Value[a.ia];
@@ -77,13 +66,43 @@ public abstract class Fun extends Scopeable {
       return new HArr(res, a.shape);
     }
   }
-  public interface MapVecFun {
+  public interface MapMV {
     Value call(APLMap w);
   }
   
-  protected Value numChr(NumVecFun nf, ChrVecFun cf, Value w) {
+  
+  protected Value allM(AllMV f, Value w) {
+    if (w instanceof Primitive) {
+      return f.call(w);
+    } else {
+      Arr o = (Arr) w;
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = allM(f, o.get(i));
+      }
+      return new HArr(arr, o.shape);
+    }
+  }
+  protected Value numM(NumMV nf, Value w) {
     if (w instanceof Arr) {
-      if (w instanceof DoubleArr) {
+      if (w.quickDoubleArr()) {
+        double[] res = new double[w.ia];
+        nf.call(res, w.asDoubleArr());
+        return new DoubleArr(res, w.shape);
+      }
+      Arr o = (Arr) w;
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = numM(nf, o.get(i));
+      }
+      return new HArr(arr, o.shape);
+    } else if (w instanceof Num) return nf.call((Num) w);
+    else throw new DomainError("Expected number, got "+w.humanType(false), w);
+  }
+  
+  protected Value numChrM(NumMV nf, ChrMV cf, Value w) {
+    if (w instanceof Arr) {
+      if (w instanceof DoubleArr && nf.retNum()) {
         double[] res = new double[w.ia];
         nf.call(res, w.asDoubleArr());
         return new DoubleArr(res, w.shape);
@@ -92,16 +111,17 @@ public abstract class Fun extends Scopeable {
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        arr[i] = numChr(nf, cf, o.get(i));
+        arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
     } else if (w instanceof Char) return cf.call((Char)w);
     else if (w instanceof Num) return nf.call((Num) w);
     else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), w);
   }
-  protected Value num(NumVecFun nf, Value w) {
+  
+  protected Value numChrMapM(NumMV nf, ChrMV cf, MapMV mf, Value w) {
     if (w instanceof Arr) {
-      if (w instanceof DoubleArr) {
+      if (w.quickDoubleArr()) {
         double[] res = new double[w.ia];
         nf.call(res, w.asDoubleArr());
         return new DoubleArr(res, w.shape);
@@ -109,18 +129,7 @@ public abstract class Fun extends Scopeable {
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        arr[i] = num(nf, o.get(i));
-      }
-      return new HArr(arr, o.shape);
-    } else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected number, got "+w.humanType(false), w);
-  }
-  protected Value numChrMap(NumVecFun nf, ChrVecFun cf, MapVecFun mf, Value w) {
-    if (w instanceof Arr) {
-      Arr o = (Arr) w;
-      Value[] arr = new Value[o.ia];
-      for (int i = 0; i < o.ia; i++) {
-        arr[i] = numChr(nf, cf, o.get(i));
+        arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
     } else if (w instanceof Char  ) return cf.call((Char  ) w);
@@ -129,55 +138,16 @@ public abstract class Fun extends Scopeable {
     else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), w);
   }
   
-  public interface DyVecFun {
+  
+  
+  
+  
+  
+  
+  public interface AllDV {
     Value call(Value a, Value w);
   }
-  protected Value scalar(DyVecFun f, Value a, Value w) {
-    if (a instanceof Primitive && w instanceof Primitive) return f.call(a, w);
-  
-    if (a.scalar()) {
-      Value fst_a = a.first();
-      
-      if (w.scalar()) {
-        return new Rank0Arr(scalar(f, fst_a, w.first()));
-    
-      } else {
-        Value[] arr = new Value[w.ia];
-        Iterator<Value> iterator = w.iterator();
-        for (int i = 0; i < w.ia; i++) {
-          arr[i] = scalar(f, fst_a, iterator.next());
-        }
-        return new HArr(arr, w.shape);
-        
-      }
-    } else {
-      if (w.scalar()) {
-      
-        Value[] arr = new Value[a.ia];
-        Iterator<Value> iterator = a.iterator();
-        Value fst_w = w.first();
-        for (int i = 0; i < a.ia; i++) {
-          arr[i] = scalar(f, iterator.next(), fst_w);
-        }
-        return new HArr(arr, a.shape);
-        
-      } else {
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        assert a.ia == w.ia;
-        Value[] arr = new Value[a.ia];
-        Iterator<Value> ai = a.iterator();
-        Iterator<Value> wi = w.iterator();
-        for (int i = 0; i < a.ia; i++) {
-          arr[i] = scalar(f, ai.next(), wi.next());
-        }
-        return new HArr(arr, a.shape);
-        
-      }
-    }
-  }
-  
-  public interface DyNumVecFun {
+  public interface NumDV {
     double call(double a, double w);
     default void call(double[] res, double a, double[] w) {
       for (int i = 0; i < w.length; i++) {
@@ -195,7 +165,56 @@ public abstract class Fun extends Scopeable {
       }
     }
   }
-  protected Value scalarNum(DyNumVecFun f, Value a, Value w) {
+  public interface ChrDV {
+    Value call(char a, char w);
+  }
+  
+  
+  protected Value allM(AllDV f, Value a, Value w) {
+    if (a instanceof Primitive && w instanceof Primitive) return f.call(a, w);
+  
+    if (a.scalar()) {
+      Value fst_a = a.first();
+      
+      if (w.scalar()) {
+        return new Rank0Arr(allM(f, fst_a, w.first()));
+    
+      } else {
+        Value[] arr = new Value[w.ia];
+        Iterator<Value> iterator = w.iterator();
+        for (int i = 0; i < w.ia; i++) {
+          arr[i] = allM(f, fst_a, iterator.next());
+        }
+        return new HArr(arr, w.shape);
+        
+      }
+    } else {
+      if (w.scalar()) {
+        Value fst_w = w.first();
+  
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> iterator = a.iterator();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = allM(f, iterator.next(), fst_w);
+        }
+        return new HArr(arr, a.shape);
+        
+      } else {
+        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        assert a.ia == w.ia;
+        Value[] arr = new Value[a.ia];
+        Iterator<Value> ai = a.iterator();
+        Iterator<Value> wi = w.iterator();
+        for (int i = 0; i < a.ia; i++) {
+          arr[i] = allM(f, ai.next(), wi.next());
+        }
+        return new HArr(arr, a.shape);
+        
+      }
+    }
+  }
+  protected Value numD(NumDV f, Value a, Value w) {
     if (a.quickDoubleArr() && !a.scalar() && w instanceof Num) {
       double[] res = new double[a.ia];
       f.call(res, a.asDoubleArr(), w.asDouble());
@@ -220,13 +239,14 @@ public abstract class Fun extends Scopeable {
       Value fst_a = a.first();
   
       if (w.scalar()) {
-        return new Rank0Arr(scalarNum(f, fst_a, w.first()));
+        if (w instanceof Primitive) throw new DomainError("calling a number-only function with "+w.humanType(true));
+        return new Rank0Arr(numD(f, fst_a, w.first()));
     
       } else {
         Value[] arr = new Value[w.ia];
         Iterator<Value> iterator = w.iterator();
         for (int i = 0; i < w.ia; i++) {
-          arr[i] = scalarNum(f, fst_a, iterator.next());
+          arr[i] = numD(f, fst_a, iterator.next());
         }
         return new HArr(arr, w.shape);
         
@@ -237,7 +257,7 @@ public abstract class Fun extends Scopeable {
         Iterator<Value> iterator = a.iterator();
         Value fst_w = w.first();
         for (int i = 0; i < a.ia; i++) {
-          arr[i] = scalarNum(f, iterator.next(), fst_w);
+          arr[i] = numD(f, iterator.next(), fst_w);
         }
         return new HArr(arr, a.shape);
         
@@ -249,7 +269,7 @@ public abstract class Fun extends Scopeable {
         Iterator<Value> ai = a.iterator();
         Iterator<Value> wi = w.iterator();
         for (int i = 0; i < a.ia; i++) {
-          arr[i] = scalarNum(f, ai.next(), wi.next());
+          arr[i] = numD(f, ai.next(), wi.next());
         }
         return new HArr(arr, a.shape);
         

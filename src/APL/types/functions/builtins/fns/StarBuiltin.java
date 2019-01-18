@@ -8,7 +8,7 @@ public class StarBuiltin extends Builtin {
     super("*", 0x011);
   }
   
-  static class Nf implements NumVecFun {
+  static class Nf implements NumMV {
     public Value call(Num w) {
       return Num.E.pow(w);
     }
@@ -18,10 +18,10 @@ public class StarBuiltin extends Builtin {
   }
   private static final Nf NF = new Nf();
   public Obj call(Value w) {
-    return num(NF, w);
+    return numM(NF, w);
   }
   
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return Math.pow(a, w);
     }
@@ -37,6 +37,6 @@ public class StarBuiltin extends Builtin {
   }
   private static final DNf DNF = new DNf();
   public Obj call(Value a, Value w) {
-    return scalarNum(DNF, a, w);
+    return numD(DNF, a, w);
   }
 }

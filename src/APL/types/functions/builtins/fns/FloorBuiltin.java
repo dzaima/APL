@@ -12,7 +12,7 @@ public class FloorBuiltin extends Builtin {
     return Num.POSINF;
   }
   
-  static class Nf implements NumVecFun {
+  static class Nf implements NumMV {
     public Value call(Num w) {
       return w.floor();
     }
@@ -22,9 +22,9 @@ public class FloorBuiltin extends Builtin {
   }
   private static final Nf NF = new Nf();
   public Obj call(Value w) {
-    return numChr(NF, Char::lower, w);
+    return numChrM(NF, Char::lower, w);
   }
-  static class DNf implements DyNumVecFun {
+  static class DNf implements NumDV {
     public double call(double a, double w) {
       return Math.min(a, w);
     }
@@ -40,6 +40,6 @@ public class FloorBuiltin extends Builtin {
   }
   private static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
-    return scalarNum(DNF, a0, w0);
+    return numD(DNF, a0, w0);
   }
 }
