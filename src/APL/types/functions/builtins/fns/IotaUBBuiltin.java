@@ -10,7 +10,7 @@ import APL.types.functions.builtins.mops.ReduceBuiltin;
 public class IotaUBBuiltin extends Builtin {
   private static final Fun fn = new ReduceBuiltin().derive(new CeilingBuiltin());
   public IotaUBBuiltin(Scope sc) {
-    super("⍸", 0x011, sc);
+    super("⍸", sc);
   }
   
   public Obj call(Value w) {

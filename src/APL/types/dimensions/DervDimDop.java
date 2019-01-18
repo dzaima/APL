@@ -10,7 +10,7 @@ public class DervDimDop extends Dop {
   private final int dim;
   
   public DervDimDop(Dop f, Integer dim, Scope sc) {
-    super(f.repr+"["+dim+"]", f.valid, sc);
+    super(f.repr+"["+dim+"]", sc);
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;

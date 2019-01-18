@@ -5,7 +5,7 @@ import APL.types.functions.Dop;
 
 public class ObserveBuiltin extends Dop {
   public ObserveBuiltin() {
-    super("⍫", 0x011);
+    super("⍫");
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     return ((Fun) aa).call(w);

@@ -5,8 +5,8 @@ import APL.types.*;
 public class DerivedMop extends Builtin {
   private final Obj aa;
   private final Mop op;
-  DerivedMop(String s, Obj aa, Mop op, int valid) {
-    super(s, valid);
+  DerivedMop(String s, Obj aa, Mop op) {
+    super(s);
     this.aa = aa;
     this.op = op;
     token = op.token;

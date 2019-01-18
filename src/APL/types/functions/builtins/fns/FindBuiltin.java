@@ -8,7 +8,7 @@ import APL.types.functions.Builtin;
 
 public class FindBuiltin extends Builtin {
   public FindBuiltin() {
-    super("⍷", 0x010);
+    super("⍷");
   }
   
   public Obj call(Value a, Value w) {

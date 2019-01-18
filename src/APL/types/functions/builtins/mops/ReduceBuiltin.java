@@ -2,14 +2,13 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.dimensions.DimMMop;
 import APL.types.functions.Mop;
 import APL.types.functions.builtins.fns.*;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   public ReduceBuiltin() {
-    super("/", 0x010);
+    super("/");
   }
   
   @Override

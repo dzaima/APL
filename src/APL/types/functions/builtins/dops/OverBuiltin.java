@@ -5,7 +5,7 @@ import APL.types.functions.Dop;
 
 public class OverBuiltin extends Dop {
   public OverBuiltin() {
-    super("⍥", 0x010);
+    super("⍥");
   }
   
   public Obj call(Obj aa, Obj ww, Value a, Value w) {

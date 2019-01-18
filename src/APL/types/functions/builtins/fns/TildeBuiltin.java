@@ -6,7 +6,7 @@ import APL.types.functions.Builtin;
 
 public class TildeBuiltin extends Builtin {
   public TildeBuiltin(Scope sc) {
-    super("~", 0x011, sc);
+    super("~", sc);
   }
   
   class Nf implements NumMV {

@@ -131,7 +131,7 @@ public class Scope {
   
   static class DeathLogger extends Builtin {
     DeathLogger() {
-      super("⎕DEATHLOGGER", 0x001);
+      super("⎕DEATHLOGGER");
     }
   
     @Override
@@ -167,7 +167,7 @@ public class Scope {
   static class Timer extends Builtin {
     final boolean simple;
     Timer(Scope sc, boolean simple) {
-      super("⎕TIME", 0x001, sc);
+      super("⎕TIME", sc);
       this.simple = simple;
     }
     public Obj call(Value w) {
@@ -205,7 +205,7 @@ public class Scope {
   }
   static class Eraser extends Builtin {
     Eraser(Scope sc) {
-      super("⎕ERASE", 0x001, sc);
+      super("⎕ERASE", sc);
     }
     
     public Obj call(Value w) {
@@ -215,7 +215,7 @@ public class Scope {
   }
   static class UCS extends Builtin {
     UCS(Scope sc) {
-      super("⎕UCS", 0x001, sc);
+      super("⎕UCS", sc);
     }
     
     public Obj call(Value w) {
@@ -281,7 +281,7 @@ public class Scope {
   private static class MapGen extends Builtin {
   
     MapGen() {
-      super("⎕MAP", 0x011);
+      super("⎕MAP");
     }
   
     @Override
@@ -309,7 +309,7 @@ public class Scope {
   
   private class Optimizer extends Builtin {
     Optimizer(Scope sc) {
-      super("⎕OPTIMIZE", 0x001, sc);
+      super("⎕OPTIMIZE", sc);
     }
     @Override
     public Obj call(Value w) {
@@ -324,7 +324,7 @@ public class Scope {
   }
   private class ClassGetter extends Builtin {
     ClassGetter() {
-      super("⎕CLASS", 0x001);
+      super("⎕CLASS");
     }
     @Override
     public Obj call(Value w) {
@@ -334,7 +334,7 @@ public class Scope {
   
   static private class Ex extends Builtin {
     Ex(Scope scope) {
-      super("⎕EX", 0x001, scope);
+      super("⎕EX", scope);
     }
   
     @Override

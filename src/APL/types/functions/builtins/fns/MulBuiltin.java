@@ -6,7 +6,7 @@ import APL.types.functions.Builtin;
 
 public class MulBuiltin extends Builtin {
   public MulBuiltin() {
-    super("×", 0x011);
+    super("×");
   }
   
   public Value identity() {

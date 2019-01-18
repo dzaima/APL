@@ -2,12 +2,11 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.SyntaxError;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 public class ScanBuiltin extends Mop {
   public ScanBuiltin() {
-    super("\\", 0x001);
+    super("\\");
   }
   
   public Obj call(Obj aa, Value w) {

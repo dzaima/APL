@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class NandBuiltin extends Builtin {
   public NandBuiltin(Scope sc) {
-    super("⍲", 0x010, sc);
+    super("⍲", sc);
   }
   
   public Obj call(Value a0, Value w0) {

@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class CatBuiltin extends Builtin implements DimDFn {
   public CatBuiltin() {
-    super(",", 0x011);
+    super(",");
   }
   public Obj call(Value w) {
     if (w instanceof Primitive) return new Shape1Arr(w);

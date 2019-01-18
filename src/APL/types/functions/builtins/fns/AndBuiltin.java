@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class AndBuiltin extends Builtin {
   public AndBuiltin() {
-    super("∧", 0x011);
+    super("∧");
   }
   
   public Value identity() {

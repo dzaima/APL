@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class ExclBuiltin extends Builtin {
   public ExclBuiltin() {
-    super("!", 0x011);
+    super("!");
   }
   static double[] cache = new double[172];
   static {

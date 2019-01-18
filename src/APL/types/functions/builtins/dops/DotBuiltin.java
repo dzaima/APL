@@ -8,7 +8,7 @@ import static APL.Main.up;
 
 public class DotBuiltin extends Dop {
   public DotBuiltin() {
-    super(".", 0x011);
+    super(".");
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     throw up;

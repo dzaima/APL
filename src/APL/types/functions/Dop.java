@@ -6,16 +6,13 @@ import APL.*;
 
 @SuppressWarnings("UnusedParameters")
 public class Dop extends Scopeable {
-  public final int valid;
   
-  protected Dop(String repr, int valid, Scope sc) {
+  protected Dop(String repr, Scope sc) {
     super(sc);
-    this.valid = valid;
     this.repr = repr;
   }
-  protected Dop(String repr, int valid) {
+  protected Dop(String repr) {
     super(null);
-    this.valid = valid;
     this.repr = repr;
   }
   
@@ -25,7 +22,7 @@ public class Dop extends Scopeable {
   }
   
   public DerivedDop derive(Obj aa, Obj ww) {
-    return new DerivedDop(repr, aa, ww, this, valid);
+    return new DerivedDop(repr, aa, ww, this);
   }
   public Obj call(Obj aa, Obj ww) {
     throw new IncorrectArgsException("derived dop called niladically", this);

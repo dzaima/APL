@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class LTBuiltin extends Builtin {
   public LTBuiltin() {
-    super("<", 0x010);
+    super("<");
   }
   
   static class DNf implements NumDV {

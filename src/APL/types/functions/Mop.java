@@ -6,16 +6,13 @@ import APL.*;
 
 @SuppressWarnings("UnusedParameters")
 public class Mop extends Scopeable {
-  public final int valid;
   
-  protected Mop(String repr, int valid, Scope sc) {
+  protected Mop(String repr, Scope sc) {
     super(sc);
-    this.valid = valid;
     this.repr = repr;
   }
-  protected Mop(String repr, int valid) {
+  protected Mop(String repr) {
     super(null);
-    this.valid = valid;
     this.repr = repr;
   }
   
@@ -25,7 +22,7 @@ public class Mop extends Scopeable {
   }
   
   public DerivedMop derive (Obj aa) {
-    return new DerivedMop(repr, aa, this, valid);
+    return new DerivedMop(repr, aa, this);
   }
   public Obj call(Obj f) {
     throw new IncorrectArgsException(" derived mop called niladically", this);

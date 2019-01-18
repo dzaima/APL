@@ -10,7 +10,7 @@ import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
   public RhoBuiltin() {
-    super("⍴", 0x011);
+    super("⍴");
   }
   public Obj call(Value w) {
 

@@ -8,7 +8,7 @@ import java.util.*;
 
 public class EpsilonBuiltin extends Builtin {
   public EpsilonBuiltin() {
-    super("∊", 0x011);
+    super("∊");
   }
   
   public Obj call(Value w) {

@@ -4,11 +4,9 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.util.Arrays;
-
 public class EllipsisBuiltin extends Builtin {
   public EllipsisBuiltin() {
-    super("…", 0x010);
+    super("…");
   }
   
   public Obj call(Value a, Value w) {

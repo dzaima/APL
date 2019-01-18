@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class DepthBuiltin extends Builtin {
   public DepthBuiltin() {
-    super("≡", 0x011);
+    super("≡");
   }
   public Obj call(Value w) {
     int depth = 0;

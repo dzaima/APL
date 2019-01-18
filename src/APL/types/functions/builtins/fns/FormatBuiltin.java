@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class FormatBuiltin extends Builtin {
   public FormatBuiltin() {
-    super("⍕", 0x011);
+    super("⍕");
   }
   
   public Obj call(Value w) {

@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class EachBuiltin extends Mop {
   public EachBuiltin() {
-    super("¨", 0x011);
+    super("¨");
   }
 
   public Obj call(Obj f, Value w) {

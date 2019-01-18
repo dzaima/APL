@@ -6,7 +6,7 @@ import APL.types.functions.Dop;
 
 public class RepeatBuiltin extends Dop {
   public RepeatBuiltin(Scope sc) {
-    super("⍣", 0x011, sc);
+    super("⍣", sc);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     Fun f = (Fun) aa;

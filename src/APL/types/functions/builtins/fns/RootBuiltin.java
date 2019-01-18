@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class RootBuiltin extends Builtin {
   public RootBuiltin() {
-    super("√", 0x11);
+    super("√");
   }
   
   static class Nf implements NumMV {

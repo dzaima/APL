@@ -10,7 +10,7 @@ import static APL.Main.*;
 public class Ddop extends Dop {
   private final Token token;
   Ddop(Token t, Scope sc) {
-    super(t.toRepr(), 0x011, sc);
+    super(t.toRepr(), sc);
     token = t;
   }
   public Obj call(Obj aa, Obj ww, Value w) {

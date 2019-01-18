@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class OrBuiltin extends Builtin {
   public OrBuiltin() {
-    super("∨", 0x011);
+    super("∨");
   }
   
   public Value identity() {

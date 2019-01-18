@@ -7,7 +7,7 @@ import APL.types.functions.VarArr;
 public class Dfn extends Fun {
   private final Token token;
   Dfn(Token t, Scope sc) {
-    super( 0x011, sc);
+    super(sc);
     token = t;
   }
   public Obj call(Value w) {

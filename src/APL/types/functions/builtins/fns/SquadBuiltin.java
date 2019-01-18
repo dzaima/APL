@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class SquadBuiltin extends Builtin {
   public SquadBuiltin(Scope sc) {
-    super("⌷", 0x011, sc);
+    super("⌷", sc);
   }
   
   public Obj call(Value w) {

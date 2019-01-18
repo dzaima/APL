@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class CRepeatBuiltin extends Dop {
   public CRepeatBuiltin(Scope sc) {
-    super("⍡", 0x001, sc);
+    super("⍡", sc);
   }
   
   @Override public Obj call(Obj aa, Obj ww, Value w) {

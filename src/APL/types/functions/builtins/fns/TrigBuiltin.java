@@ -6,7 +6,7 @@ import APL.types.functions.Builtin;
 
 public class TrigBuiltin extends Builtin {
   public TrigBuiltin() {
-    super("○", 0x011);
+    super("○");
   }
   
   static class Nf implements NumMV {

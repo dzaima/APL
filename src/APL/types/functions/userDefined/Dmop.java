@@ -10,7 +10,7 @@ import static APL.Main.*;
 public class Dmop extends Mop {
   private final Token token;
   Dmop(Token t, Scope sc) {
-    super(t.toRepr(), 0x011, sc);
+    super(t.toRepr(), sc);
     token = t;
   }
   public Obj call(Obj aa, Value w) {

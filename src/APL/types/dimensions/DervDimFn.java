@@ -9,7 +9,7 @@ public class DervDimFn extends Fun {
   private final int dim;
   
   public DervDimFn(Fun f, Integer dim, Scope sc) {
-    super(f.valid, sc);
+    super(sc);
     this.repr = f.repr+"["+dim+"]";
     this.f = f;
     if (dim == null) this.dim = 0;

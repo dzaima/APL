@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class CompareBuiltin extends Builtin {
   public CompareBuiltin () {
-    super("⌺", 0x010);
+    super("⌺");
   }
   public Obj call(Value a, Value w) {
     return new Num(a.compareTo(w));

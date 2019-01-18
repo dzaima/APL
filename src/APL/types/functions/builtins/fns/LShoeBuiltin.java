@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class LShoeBuiltin extends Builtin {
   public LShoeBuiltin() {
-    super("⊂", 0x011);
+    super("⊂");
   }
 
   public Obj call(Value w) {

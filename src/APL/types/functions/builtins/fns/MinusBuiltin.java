@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class MinusBuiltin extends Builtin {
   public MinusBuiltin() {
-    super("-", 0x011);
+    super("-");
   }
   
   static class Nf implements NumMV {

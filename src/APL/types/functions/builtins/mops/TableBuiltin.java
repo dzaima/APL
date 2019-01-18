@@ -6,7 +6,7 @@ import APL.types.functions.Mop;
 
 public class TableBuiltin extends Mop {
   public TableBuiltin() {
-    super("⌾", 0x010);
+    super("⌾");
   }
   public Obj call(Obj f, Value a, Value w) {
     int[] shape = new int[a.rank+w.rank];

@@ -5,7 +5,7 @@ import APL.types.functions.Dop;
 
 public class JotDiaeresisBuiltin extends Dop {
   public JotDiaeresisBuiltin() {
-    super("⍤", 0x010);
+    super("⍤");
   }
   
   @Override

@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class CeilingBuiltin extends Builtin {
   public CeilingBuiltin() {
-    super("⌈", 0x011);
+    super("⌈");
   }
   
   public Value identity() {

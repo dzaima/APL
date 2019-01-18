@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class RTackBuiltin extends Builtin {
   public RTackBuiltin () {
-    super("⊢", 0x011);
+    super("⊢");
   }
   
   public Obj call(Value w) { return w; }

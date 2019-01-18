@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 import java.util.*;
@@ -9,7 +8,7 @@ import java.util.*;
 @SuppressWarnings("Convert2Diamond") // convert.py chokes if not
 public class DShoeBuiltin extends Builtin {
   public DShoeBuiltin() {
-    super("∪", 0x011);
+    super("∪");
   }
   
   public Obj call(Value w) {

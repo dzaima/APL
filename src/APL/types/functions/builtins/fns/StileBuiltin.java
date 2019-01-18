@@ -6,7 +6,7 @@ import APL.types.functions.Builtin;
 
 public class StileBuiltin extends Builtin {
   public StileBuiltin() {
-    super("|", 0x011);
+    super("|");
   }
   
   static class Nf implements NumMV {

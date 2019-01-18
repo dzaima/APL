@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class StarBuiltin extends Builtin {
   public StarBuiltin() {
-    super("*", 0x011);
+    super("*");
   }
   
   static class Nf implements NumMV {

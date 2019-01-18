@@ -8,19 +8,16 @@ import java.util.*;
 
 @SuppressWarnings({"unused", "Convert2streamapi"}) // class for getting overridden & being fast so no streams
 public abstract class Fun extends Scopeable {
-  public final int valid; // 0x niladic dyadic monadic
   
   public Value identity() {
     return null;
   }
   
-  protected Fun(int valid, Scope sc) {
+  protected Fun(Scope sc) {
     super(sc);
-    this.valid = valid;
   }
-  protected Fun(int valid) {
+  protected Fun() {
     super(null);
-    this.valid = valid;
   }
   public Obj call() {
     throw new IncorrectArgsException("function "+toString()+" called niladically", this);

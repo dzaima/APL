@@ -13,7 +13,7 @@ import static APL.Main.*;
 
 public class IotaBuiltin extends Builtin {
   public IotaBuiltin(Scope sc) {
-    super("⍳", 0x011, sc);
+    super("⍳", sc);
   }
   public Obj call(Value w) {
     int IO = sc.IO;

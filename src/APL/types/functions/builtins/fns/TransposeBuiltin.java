@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class TransposeBuiltin extends Builtin {
   public TransposeBuiltin() {
-    super("⍉", 0x011);
+    super("⍉");
   }
   
   public Obj call(Value w) {

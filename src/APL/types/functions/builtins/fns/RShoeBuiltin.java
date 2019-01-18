@@ -3,12 +3,11 @@ package APL.types.functions.builtins.fns;
 import APL.Scope;
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.Builtin;
 
 public class RShoeBuiltin extends Builtin {
   public RShoeBuiltin(Scope sc) {
-    super("⊃", 0x011, sc);
+    super("⊃", sc);
   }
   
   public Obj call(Value w) {

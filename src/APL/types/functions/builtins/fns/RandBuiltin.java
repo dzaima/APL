@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class RandBuiltin extends Builtin {
   public RandBuiltin(Scope sc) {
-    super("?", 0x011, sc);
+    super("?", sc);
   }
   
   class Nf implements NumMV {

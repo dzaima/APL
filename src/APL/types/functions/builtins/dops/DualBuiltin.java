@@ -7,7 +7,7 @@ import APL.types.functions.Dop;
 
 public class DualBuiltin extends Dop {
   public DualBuiltin() {
-    super("⍢", 0x011);
+    super("⍢");
   }
   
   public Obj call(Obj aa, Obj ww, Value w) {

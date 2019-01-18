@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class FloorBuiltin extends Builtin {
   public FloorBuiltin() {
-    super("⌊", 0x011);
+    super("⌊");
   }
   
   public Value identity() {

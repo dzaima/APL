@@ -8,7 +8,7 @@ import java.util.*;
 
 public class GTBuiltin extends Builtin {
   public GTBuiltin() {
-    super(">", 0x010);
+    super(">");
   }
   
   static class DNf implements NumDV {

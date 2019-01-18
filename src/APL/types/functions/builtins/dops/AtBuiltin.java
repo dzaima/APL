@@ -2,12 +2,11 @@ package APL.types.functions.builtins.dops;
 
 import APL.*;
 import APL.types.*;
-import APL.types.arrs.HArr;
 import APL.types.functions.*;
 
 public class AtBuiltin extends Dop {
   public AtBuiltin(Scope sc) {
-    super("@", 0x001, sc);
+    super("@", sc);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     int IO = sc.IO;

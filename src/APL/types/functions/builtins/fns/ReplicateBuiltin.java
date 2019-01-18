@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class ReplicateBuiltin extends Builtin {
   public ReplicateBuiltin() {
-    super("⌿", 0x010);
+    super("⌿");
   }
   
   public Obj call(Value a, Value w) {

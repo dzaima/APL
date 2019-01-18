@@ -7,7 +7,7 @@ import APL.types.functions.Builtin;
 
 public class PlusBuiltin extends Builtin {
   public PlusBuiltin() {
-    super("+", 0x011);
+    super("+");
   }
   
   public Value identity() {

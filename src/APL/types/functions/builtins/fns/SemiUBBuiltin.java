@@ -6,7 +6,7 @@ import APL.types.functions.Builtin;
 
 public class SemiUBBuiltin extends Builtin {
   public SemiUBBuiltin() {
-    super("⍮", 0x01);
+    super("⍮");
   }
   
   @Override

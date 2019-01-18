@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class DTackBuiltin extends Builtin {
   static final DTackBuiltin copy = new DTackBuiltin();
   public DTackBuiltin() {
-    super("⊤", 0x011);
+    super("⊤");
   }
   
   public Obj call(Value w) {
