@@ -23,38 +23,36 @@ public class TrigBuiltin extends Builtin {
     return numM(NF, w);
   }
   public Obj call(Value a0, Value w0) {
-    return allM((a, w) -> {
-      Num n = (Num) w;
-      switch(a.asInt()) {
-        case  1: return n.sin();
-        case  2: return n.cos();
-        case  3: return n.tan();
-        case  4: return n.pow(Num.TWO).plus(Num.ONE).root(Num.TWO);
-        case  5: return n.sinh();
-        case  6: return n.cosh();
-        case  7: return n.tanh();
-        case  8: return n.pow(Num.TWO).plus(Num.ONE).negate().root(Num.TWO);
-        case  9: return n.real();
-        case 10: return n.abs();
-        case 11: return n.imag();
-        case 12: throw new DomainError("what is phase", a);
-        
-        case  0: return Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
-        
-        case  -1: return n.asin();
-        case  -2: return n.acos();
-        case  -3: return n.atan();
-        case  -4: return n.pow(Num.TWO).minus(Num.ONE).root(Num.TWO);
-        case  -5: return n.asinh();
-        case  -6: return n.acosh();
-        case  -7: return n.atanh();
-        case  -8: return n.pow(Num.TWO).plus(Num.ONE).negate().root(Num.TWO).negate();
-        case  -9: return n;
-        case -10: return n.conjugate();
-        case -11: return n.times(Num.I1);
-        case -12: return Num.E.pow(n.times(Num.I1));
+    return numD((a, w) -> {
+      switch((int) a) {
+        case  1: return Math.sin(w);
+        case  2: return Math.cos(w);
+        case  3: return Math.tan(w);
+        case  4: return Math.sqrt(w*w + 1);
+        case  5: return Math.sinh(w);
+        case  6: return Math.cosh(w);
+        case  7: return Math.tanh(w);
+        case  8: return Double.NaN; // pointless
+        case  9: return w; // pointless
+        case 10: return Math.abs(w); // pointless
+        case 11: return 0; // also pointless
+        case 12: throw new DomainError("what even is phase");
+
+        case  0: return Math.sqrt(1-w*w); //Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
+        case  -1: return Math.asin(w);
+        case  -2: return Math.acos(w);
+        case  -3: return Math.atan(w);
+        case  -4: return Math.sqrt(w*w-1);
+        case  -5: throw new NYIError("inverse hyperbolic functions"); // return Math.asinh(w);
+        case  -6: throw new NYIError("inverse hyperbolic functions"); // return Math.acosh(w);
+        case  -7: throw new NYIError("inverse hyperbolic functions"); // return Math.atanh(w);
+        case  -8: return Double.NaN; // pooointleeeessssss
+        case  -9: return w; // again, pointless pointless pointless
+        case -10: return w;
+        case -11: throw new DomainError("no complex numbers :/");
+        case -12: throw new DomainError("no complex numbers no idea why this is even special-cased");
       }
-      throw new DomainError("⍺ of ○ out of bounds", a);
+      throw new DomainError("⍺ of ○ out of bounds");
     }, a0, w0);
   }
 }

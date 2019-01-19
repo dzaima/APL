@@ -31,6 +31,16 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (double d : w.asDoubleArr()) p*= d;
       return new Num(p);
     }
+    if (f instanceof FloorBuiltin && w.quickDoubleArr()) {
+      double p = Double.MAX_VALUE;
+      for (double d : w.asDoubleArr()) p = Math.min(p, d);
+      return new Num(p);
+    }
+    if (f instanceof CeilingBuiltin && w.quickDoubleArr()) {
+      double p = Double.MIN_VALUE;
+      for (double d : w.asDoubleArr()) p = Math.max(p, d);
+      return new Num(p);
+    }
     Value[] a = w.values();
     if (a.length == 0) {
       Value id = ff.identity();

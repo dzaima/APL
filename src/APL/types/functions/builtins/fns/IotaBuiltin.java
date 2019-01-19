@@ -7,7 +7,7 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.util.Arrays;
+import java.util.*;
 
 import static APL.Main.*;
 
@@ -38,14 +38,33 @@ public class IotaBuiltin extends Builtin {
     if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
     if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
     int IO = sc.IO;
-    int[] res = new int[w.ia];
-    for (int i = 0; i < w.ia; i++) {
-      int j = 0;
-      for (var c = w.get(i); j < a.ia; j++) {
-        if (a.get(j).equals(c)) break;
+    if (w.ia > 20 && a.ia > 20) {
+      HashMap<Value, Integer> map = new HashMap<>();
+      int ctr = 0;
+      for (Value v : a) {
+        map.putIfAbsent(v, ctr);
+        ctr++;
       }
-      res[i] = j+IO;
+      double[] res = new double[w.ia];
+      ctr = 0;
+      double notfound = IO + a.ia;
+      for (Value v : w) {
+        Integer f = map.get(v);
+        res[ctr] = f==null? notfound : f + IO;
+        ctr++;
+      }
+      return new DoubleArr(res, w.shape);
     }
-    return new DoubleArr(res);
+    double[] res = new double[w.ia];
+    int i = 0;
+    for (Value wv : w) {
+      int j = 0;
+      for (Value av : a) {
+        if (av.equals(wv)) break;
+        j++;
+      }
+      res[i++] = j+IO;
+    }
+    return new DoubleArr(res, w.shape);
   }
 }

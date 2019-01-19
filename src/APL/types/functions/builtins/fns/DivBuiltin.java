@@ -41,4 +41,8 @@ public class DivBuiltin extends Builtin {
   
   public Obj callInv(Value w) { return call(w); }
   public Obj callInvW(Value a, Value w) { return call(a, w); }
+  
+  @Override public Obj callInvA(Value a, Value w) {
+    return numD((ca, cw) -> ca*cw, a, w);
+  }
 }

@@ -171,28 +171,28 @@ public abstract class Fun extends Scopeable {
     if (a instanceof Primitive && w instanceof Primitive) return f.call(a, w);
   
     if (a.scalar()) {
-      Value fst_a = a.first();
+      Value af = a.first();
       
       if (w.scalar()) {
-        return new Rank0Arr(allM(f, fst_a, w.first()));
+        return new Rank0Arr(allM(f, af, w.first()));
     
       } else {
         Value[] arr = new Value[w.ia];
-        Iterator<Value> iterator = w.iterator();
+        Iterator<Value> wi = w.iterator();
         for (int i = 0; i < w.ia; i++) {
-          arr[i] = allM(f, fst_a, iterator.next());
+          arr[i] = allM(f, af, wi.next());
         }
         return new HArr(arr, w.shape);
         
       }
     } else {
       if (w.scalar()) {
-        Value fst_w = w.first();
+        Value wf = w.first();
   
         Value[] arr = new Value[a.ia];
-        Iterator<Value> iterator = a.iterator();
+        Iterator<Value> ai = a.iterator();
         for (int i = 0; i < a.ia; i++) {
-          arr[i] = allM(f, iterator.next(), fst_w);
+          arr[i] = allM(f, ai.next(), wf);
         }
         return new HArr(arr, a.shape);
         

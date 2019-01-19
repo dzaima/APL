@@ -41,4 +41,8 @@ public class LogBuiltin extends Builtin {
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
+  
+  @Override public Obj callInvW(Value a, Value w) {
+    return numD(Math::pow, a, w);
+  }
 }

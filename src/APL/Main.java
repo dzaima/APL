@@ -275,6 +275,7 @@ public class Main {
         if (endAfter) return res;
       }
     }
+    if (res instanceof Settable) return ((Settable) res).get();
     return res;
   }
   
