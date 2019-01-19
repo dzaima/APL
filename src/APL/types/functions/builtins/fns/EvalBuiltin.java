@@ -6,8 +6,12 @@ import APL.types.Value;
 import APL.types.functions.Builtin;
 
 public class EvalBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⍎";
+  }
+  
   public EvalBuiltin(Scope sc) {
-    super("⍎", sc);
+    super(sc);
   }
   
   public Obj call(Value w) {

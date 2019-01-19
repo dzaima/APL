@@ -6,8 +6,12 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class RShoeBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⊃";
+  }
+  
   public RShoeBuiltin(Scope sc) {
-    super("⊃", sc);
+    super(sc);
   }
   
   public Obj call(Value w) {

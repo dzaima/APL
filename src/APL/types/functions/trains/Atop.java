@@ -31,12 +31,11 @@ public class Atop extends Fun {
     return ((Fun) g).call((Value) h.call(a, w));
   }
   
-  public String toString() {
+  @Override public String repr() {
     return "("+g+" "+h+")";
   }
   
-  @Override
-  public Type type() {
+  @Override public Type type() {
     return Type.fn;
   }
 }

@@ -6,9 +6,11 @@ import APL.types.functions.Builtin;
 import java.util.Arrays;
 
 public class ExclBuiltin extends Builtin {
-  public ExclBuiltin() {
-    super("!");
+  @Override public String repr() {
+    return "!";
   }
+  
+  
   static double[] cache = new double[172];
   static {
     double r = 1;

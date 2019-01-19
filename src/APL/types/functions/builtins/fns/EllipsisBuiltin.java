@@ -5,9 +5,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class EllipsisBuiltin extends Builtin {
-  public EllipsisBuiltin() {
-    super("…");
+  @Override public String repr() {
+    return "…";
   }
+  
+  
   
   public Obj call(Value a, Value w) {
     double[] arr = new double[((Num)w).minus((Num)a).abs().asInt()+1];

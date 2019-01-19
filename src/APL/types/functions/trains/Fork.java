@@ -37,7 +37,7 @@ public class Fork extends Fun {
     return g.call(left, right);
   }
   
-  public String toString() {
+  @Override public String repr() {
     return "("+f+" "+g+" "+h+")";
   }
 }

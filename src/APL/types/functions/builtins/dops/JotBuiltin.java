@@ -5,9 +5,11 @@ import APL.types.*;
 import APL.types.functions.Dop;
 
 public class JotBuiltin extends Dop {
-  public JotBuiltin() {
-    super("∘");
+  @Override public String repr() {
+    return "∘";
   }
+  
+  
   public Obj call(Obj aa, Obj ww, Value w) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {

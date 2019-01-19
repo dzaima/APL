@@ -7,9 +7,11 @@ import APL.types.functions.Mop;
 import java.util.Arrays;
 
 public class EachBuiltin extends Mop {
-  public EachBuiltin() {
-    super("¨");
+  @Override public String repr() {
+    return "¨";
   }
+  
+  
 
   public Obj call(Obj f, Value w) {
     if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w) : f;

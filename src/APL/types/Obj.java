@@ -8,7 +8,6 @@ import APL.types.functions.VarArr;
 public abstract class Obj implements Tokenable {
   public Token token;
   
-  public String repr;
   public boolean isObj() {
     return type()==Type.array || type() == Type.var;
   }

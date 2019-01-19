@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class DivBuiltin extends Builtin {
-  public DivBuiltin() {
-    super("÷");
+  @Override public String repr() {
+    return "÷";
   }
+  
+  
   
   static class Nf implements NumMV {
     public Value call(Num w) {

@@ -5,15 +5,13 @@ import APL.types.*;
 import APL.*;
 
 @SuppressWarnings("UnusedParameters")
-public class Mop extends Scopeable {
+public abstract class Mop extends Scopeable {
   
-  protected Mop(String repr, Scope sc) {
+  protected Mop(Scope sc) {
     super(sc);
-    this.repr = repr;
   }
-  protected Mop(String repr) {
+  protected Mop() {
     super(null);
-    this.repr = repr;
   }
   
   @Override
@@ -22,7 +20,7 @@ public class Mop extends Scopeable {
   }
   
   public DerivedMop derive (Obj aa) {
-    return new DerivedMop(repr, aa, this);
+    return new DerivedMop(aa, this);
   }
   public Obj call(Obj f) {
     throw new IncorrectArgsException(" derived mop called niladically", this);
@@ -39,7 +37,9 @@ public class Mop extends Scopeable {
   public Obj callInvW(Obj f, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", w);
   }
+  
   public String toString() {
-    return repr;
+    return repr();
   }
+  public abstract String repr();
 }

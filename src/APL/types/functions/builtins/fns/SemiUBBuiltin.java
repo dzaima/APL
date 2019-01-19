@@ -5,9 +5,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class SemiUBBuiltin extends Builtin {
-  public SemiUBBuiltin() {
-    super("⍮");
+  @Override public String repr() {
+    return "⍮";
   }
+  
+  
   
   @Override
   public Obj call(Value w) {

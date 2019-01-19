@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class CeilingBuiltin extends Builtin {
-  public CeilingBuiltin() {
-    super("⌈");
+  @Override public String repr() {
+    return "⌈";
   }
+  
+  
   
   public Value identity() {
     return Num.NEGINF;

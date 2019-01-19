@@ -9,8 +9,12 @@ import APL.types.*;
 import java.util.Arrays;
 
 public class UpArrowBuiltin extends Builtin {
+  @Override public String repr() {
+    return "↑";
+  }
+  
   public UpArrowBuiltin(Scope sc) {
-    super("↑", sc);
+    super(sc);
   }
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;

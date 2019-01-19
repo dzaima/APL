@@ -8,9 +8,11 @@ import java.util.*;
 
 
 public class GTBuiltin extends Builtin {
-  public GTBuiltin() {
-    super(">");
+  @Override public String repr() {
+    return ">";
   }
+  
+  
   
   static class DNf implements NumDV {
     public double call(double a, double w) {

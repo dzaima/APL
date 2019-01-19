@@ -6,9 +6,11 @@ import APL.types.functions.Builtin;
 
 
 public class PlusBuiltin extends Builtin {
-  public PlusBuiltin() {
-    super("+");
+  @Override public String repr() {
+    return "+";
   }
+  
+  
   
   public Value identity() {
     return Num.ZERO;

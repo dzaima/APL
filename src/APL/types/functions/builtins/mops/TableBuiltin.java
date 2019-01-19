@@ -5,9 +5,11 @@ import APL.types.arrs.DoubleArr;
 import APL.types.functions.Mop;
 
 public class TableBuiltin extends Mop {
-  public TableBuiltin() {
-    super("⌾");
+  @Override public String repr() {
+    return "⌾";
   }
+  
+  
   public Obj call(Obj f, Value a, Value w) {
     int[] shape = new int[a.rank+w.rank];
     System.arraycopy(a.shape, 0, shape, 0, a.rank);

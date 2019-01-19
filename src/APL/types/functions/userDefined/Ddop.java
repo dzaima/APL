@@ -9,8 +9,13 @@ import static APL.Main.*;
 
 public class Ddop extends Dop {
   private final Token token;
+  
+  @Override public String repr() {
+    return token.toRepr();
+  }
+  
   Ddop(Token t, Scope sc) {
-    super(t.toRepr(), sc);
+    super(sc);
     token = t;
   }
   public Obj call(Obj aa, Obj ww, Value w) {

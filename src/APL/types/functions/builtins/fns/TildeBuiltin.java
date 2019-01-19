@@ -5,8 +5,12 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class TildeBuiltin extends Builtin {
+  @Override public String repr() {
+    return "~";
+  }
+  
   public TildeBuiltin(Scope sc) {
-    super("~", sc);
+    super(sc);
   }
   
   class Nf implements NumMV {

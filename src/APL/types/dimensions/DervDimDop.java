@@ -9,8 +9,12 @@ public class DervDimDop extends Dop {
   private final Dop f;
   private final int dim;
   
+  @Override public String repr() {
+    return f.repr()+"["+dim+"]";
+  }
+  
   public DervDimDop(Dop f, Integer dim, Scope sc) {
-    super(f.repr+"["+dim+"]", sc);
+    super(sc);
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;

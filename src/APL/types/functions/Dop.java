@@ -5,15 +5,13 @@ import APL.types.*;
 import APL.*;
 
 @SuppressWarnings("UnusedParameters")
-public class Dop extends Scopeable {
+public abstract class Dop extends Scopeable {
   
-  protected Dop(String repr, Scope sc) {
+  protected Dop(Scope sc) {
     super(sc);
-    this.repr = repr;
   }
-  protected Dop(String repr) {
+  protected Dop() {
     super(null);
-    this.repr = repr;
   }
   
   @Override
@@ -22,7 +20,7 @@ public class Dop extends Scopeable {
   }
   
   public DerivedDop derive(Obj aa, Obj ww) {
-    return new DerivedDop(repr, aa, ww, this);
+    return new DerivedDop(aa, ww, this);
   }
   public Obj call(Obj aa, Obj ww) {
     throw new IncorrectArgsException("derived dop called niladically", this);
@@ -39,7 +37,9 @@ public class Dop extends Scopeable {
   public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", w);
   }
+  
   public String toString() {
-    return repr;
+    return repr();
   }
+  public abstract String repr();
 }

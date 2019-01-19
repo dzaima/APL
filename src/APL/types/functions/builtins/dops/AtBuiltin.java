@@ -5,8 +5,12 @@ import APL.types.*;
 import APL.types.functions.*;
 
 public class AtBuiltin extends Dop {
+  @Override public String repr() {
+    return "@";
+  }
+  
   public AtBuiltin(Scope sc) {
-    super("@", sc);
+    super(sc);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     int IO = sc.IO;

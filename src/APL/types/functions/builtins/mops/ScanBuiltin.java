@@ -5,8 +5,8 @@ import APL.types.*;
 import APL.types.functions.*;
 
 public class ScanBuiltin extends Mop {
-  public ScanBuiltin() {
-    super("\\");
+  @Override public String repr() {
+    return "\\";
   }
   
   public Obj call(Obj aa, Value w) {

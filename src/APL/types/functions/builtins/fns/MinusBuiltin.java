@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class MinusBuiltin extends Builtin {
-  public MinusBuiltin() {
-    super("-");
+  @Override public String repr() {
+    return "-";
   }
+  
+  
   
   static class Nf implements NumMV {
     public Value call(Num w) {

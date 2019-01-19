@@ -9,9 +9,11 @@ import APL.types.functions.Builtin;
 import java.util.Arrays;
 
 public class CatBuiltin extends Builtin implements DimDFn {
-  public CatBuiltin() {
-    super(",");
+  @Override public String repr() {
+    return ",";
   }
+  
+  
   public Obj call(Value w) {
     if (w instanceof Primitive) return new Shape1Arr(w);
     return w.ofShape(new int[]{w.ia});

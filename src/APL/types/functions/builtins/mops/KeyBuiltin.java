@@ -9,8 +9,12 @@ import APL.types.functions.*;
 import java.util.*;
 
 public class KeyBuiltin extends Mop {
+  @Override public String repr() {
+    return "⌸";
+  }
+  
   public KeyBuiltin(Scope sc) {
-    super("⌸", sc);
+    super(sc);
   }
   
   public Obj call(Obj aa, Value w) {

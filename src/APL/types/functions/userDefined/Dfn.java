@@ -31,7 +31,7 @@ public class Dfn extends Fun {
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
-  public String toString() {
+  public String repr() {
     return token.toRepr();
   }
   

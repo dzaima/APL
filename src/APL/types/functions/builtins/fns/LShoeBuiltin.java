@@ -6,9 +6,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class LShoeBuiltin extends Builtin {
-  public LShoeBuiltin() {
-    super("⊂");
+  @Override public String repr() {
+    return "⊂";
   }
+  
+  
 
   public Obj call(Value w) {
     if (!Main.enclosePrimitives && w instanceof Primitive) return w;

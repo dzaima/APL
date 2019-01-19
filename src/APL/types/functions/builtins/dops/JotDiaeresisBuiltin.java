@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Dop;
 
 public class JotDiaeresisBuiltin extends Dop {
-  public JotDiaeresisBuiltin() {
-    super("⍤");
+  @Override public String repr() {
+    return "⍤";
   }
+  
+  
   
   @Override
   public Obj call(Obj aa, Obj ww, Value a, Value w) {

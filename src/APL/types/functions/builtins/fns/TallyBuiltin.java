@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class TallyBuiltin extends Builtin {
-  public TallyBuiltin() {
-    super("≢");
+  @Override public String repr() {
+    return "≢";
   }
+  
+  
   public Obj call(Value w) {
     if (w.scalar()) return Num.ONE;
     return new Num(w.shape[0]);

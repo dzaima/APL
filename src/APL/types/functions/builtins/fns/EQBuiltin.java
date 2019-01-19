@@ -5,9 +5,11 @@ import APL.types.functions.Builtin;
 
 
 public class EQBuiltin extends Builtin {
-  public EQBuiltin() {
-    super("=");
+  @Override public String repr() {
+    return "=";
   }
+  
+  
   
   static class DNf implements NumDV {
     public double call(double a, double w) {

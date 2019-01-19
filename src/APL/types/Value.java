@@ -91,14 +91,10 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return oneliner(int0);
   }
   
-  protected transient Value[] vs;
   
   public Value[] values() {
-    if (vs == null) {
-      Value[] vs = new Value[ia];
-      for (int i = 0; i < ia; i++) vs[i] = get(i);
-      this.vs = vs;
-    }
+    Value[] vs = new Value[ia];
+    for (int i = 0; i < ia; i++) vs[i] = get(i);
     return vs;
   }
   
@@ -116,7 +112,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     
     @Override
     public Value next() {
-      return vs != null? vs[c++] : get(c++);
+      return get(c++);
     }
   }
   

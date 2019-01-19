@@ -96,16 +96,13 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value squeeze() {
-    vs = null;
     return this;
   }
   
   @Override
   public Value[] values() {
-    if (vs != null) return vs;
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = new Num(arr[i]);
-    this.vs = vs;
     return vs;
   }
   

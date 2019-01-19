@@ -130,8 +130,8 @@ public class Scope {
   } // with ⎕IO←0
   
   static class DeathLogger extends Builtin {
-    DeathLogger() {
-      super("⎕DEATHLOGGER");
+    @Override public String repr() {
+      return "⎕DEATHLOGGER";
     }
   
     @Override
@@ -166,8 +166,11 @@ public class Scope {
   }
   static class Timer extends Builtin {
     final boolean simple;
+    @Override public String repr() {
+      return "⎕TIME";
+    }
     Timer(Scope sc, boolean simple) {
-      super("⎕TIME", sc);
+      super(sc);
       this.simple = simple;
     }
     public Obj call(Value w) {
@@ -204,8 +207,11 @@ public class Scope {
     }
   }
   static class Eraser extends Builtin {
+    @Override public String repr() {
+      return "⎕ERASE";
+    }
     Eraser(Scope sc) {
-      super("⎕ERASE", sc);
+      super(sc);
     }
     
     public Obj call(Value w) {
@@ -214,8 +220,11 @@ public class Scope {
     }
   }
   static class UCS extends Builtin {
+    @Override public String repr() {
+      return "⎕UCS";
+    }
     UCS(Scope sc) {
-      super("⎕UCS", sc);
+      super(sc);
     }
     
     public Obj call(Value w) {
@@ -279,11 +288,10 @@ public class Scope {
   }
   
   private static class MapGen extends Builtin {
-  
-    MapGen() {
-      super("⎕MAP");
+    @Override public String repr() {
+      return "⎕MAP";
     }
-  
+    
     @Override
     public Obj call(Value w) {
       var map = new StrMap();
@@ -308,8 +316,11 @@ public class Scope {
   }
   
   private class Optimizer extends Builtin {
+    @Override public String repr() {
+      return "⎕OPTIMIZE";
+    }
     Optimizer(Scope sc) {
-      super("⎕OPTIMIZE", sc);
+      super(sc);
     }
     @Override
     public Obj call(Value w) {
@@ -323,8 +334,8 @@ public class Scope {
     }
   }
   private class ClassGetter extends Builtin {
-    ClassGetter() {
-      super("⎕CLASS");
+    @Override public String repr() {
+      return "⎕CLASS";
     }
     @Override
     public Obj call(Value w) {
@@ -333,8 +344,11 @@ public class Scope {
   }
   
   static private class Ex extends Builtin {
-    Ex(Scope scope) {
-      super("⎕EX", scope);
+    @Override public String repr() {
+      return "⎕EX";
+    }
+    Ex(Scope sc) {
+      super(sc);
     }
   
     @Override

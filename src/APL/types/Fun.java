@@ -341,4 +341,11 @@ public abstract class Fun extends Scopeable {
   public Type type() {
     return Type.fn;
   }
+  
+  
+  public abstract String repr();
+  
+  @Override public String toString() {
+    return repr();
+  }
 }

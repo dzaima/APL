@@ -10,7 +10,7 @@ public class DervDimMop extends Mop {
   private final int dim;
   
   public DervDimMop(Mop f, Integer dim, Scope sc) {
-    super(f.repr+"["+dim+"]", sc);
+    super(sc);
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;
@@ -19,15 +19,17 @@ public class DervDimMop extends Mop {
     
   }
   
-  @Override
-  public Obj call(Obj aa, Value a, Value w) {
+  @Override public Obj call(Obj aa, Value a, Value w) {
     if (!(f instanceof DimDMop)) throw new SyntaxError("Attempt to call function dyadically that doesn't support dimension specification", a);
     return ((DimDMop) f).call(aa, a, w, dim);
   }
   
-  @Override
-  public Obj call(Obj aa, Value w) {
+  @Override public Obj call(Obj aa, Value w) {
     if (!(f instanceof DimMMop)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", w);
     return ((DimMMop) f).call(aa, w, dim);
+  }
+  
+  @Override public String repr() {
+    return f.repr()+"["+dim+"]";
   }
 }

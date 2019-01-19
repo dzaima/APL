@@ -6,8 +6,12 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class RShoeUBBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⊇";
+  }
+  
   public RShoeUBBuiltin(Scope sc) {
-    super("⊇", sc);
+    super(sc);
   }
   
   public Obj call(Value w) {

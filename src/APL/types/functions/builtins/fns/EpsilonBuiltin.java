@@ -7,9 +7,11 @@ import java.util.*;
 
 
 public class EpsilonBuiltin extends Builtin {
-  public EpsilonBuiltin() {
-    super("∊");
+  @Override public String repr() {
+    return "∊";
   }
+  
+  
   
   public Obj call(Value w) {
     var res = new ArrayList<Value>();
@@ -29,7 +31,14 @@ public class EpsilonBuiltin extends Builtin {
     Value[] res = new Value[a.ia];
     for (int i = 0; i < a.ia; i++) {
       Value av = a.get(i);
-      res[i] = Arrays.stream(w.values()).anyMatch(v -> v.equals(av))? Num.ONE : Num.ZERO;
+      Num b = Num.ZERO;
+      for (Value v : w) {
+        if (v.equals(av)) {
+          b = Num.ONE;
+          break;
+        }
+      }
+      res[i] = b;
     }
     return Arr.create(res, a.shape);
   }

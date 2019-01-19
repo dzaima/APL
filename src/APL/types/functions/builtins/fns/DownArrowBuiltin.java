@@ -7,8 +7,12 @@ import APL.types.functions.Builtin;
 import APL.types.*;
 
 public class DownArrowBuiltin extends Builtin {
+  @Override public String repr() {
+    return "↓";
+  }
+  
   public DownArrowBuiltin(Scope sc) {
-    super("↓", sc);
+    super(sc);
   }
   
   @Override

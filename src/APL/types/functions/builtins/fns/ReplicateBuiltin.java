@@ -8,9 +8,11 @@ import APL.types.functions.Builtin;
 import java.util.Arrays;
 
 public class ReplicateBuiltin extends Builtin {
-  public ReplicateBuiltin() {
-    super("⌿");
+  @Override public String repr() {
+    return "⌿";
   }
+  
+  
   
   public Obj call(Value a, Value w) {
     if (a.rank > 1) throw new RankError("⍺ for ⌿ should have rank ≤1", a);

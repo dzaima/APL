@@ -5,8 +5,7 @@ import APL.types.*;
 public class DerivedDop extends Builtin {
   private final Obj aa, ww;
   private final Dop op;
-  DerivedDop(String s, Obj aa, Obj ww, Dop op) {
-    super(s);
+  DerivedDop(Obj aa, Obj ww, Dop op) {
     this.aa = aa;
     this.ww = ww;
     this.op = op;
@@ -25,7 +24,7 @@ public class DerivedDop extends Builtin {
   public Obj call(Value a, Value w) {
     return op.call(aa, ww, a, w);
   }
-  public String toString() {
-    return aa.toString()+op.toString()+ww.toString();
+  @Override public String repr() {
+    return aa.toString()+op.repr()+ww.toString();
   }
 }

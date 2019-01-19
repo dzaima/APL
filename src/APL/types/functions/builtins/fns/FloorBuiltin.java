@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class FloorBuiltin extends Builtin {
-  public FloorBuiltin() {
-    super("⌊");
+  @Override public String repr() {
+    return "⌊";
   }
+  
+  
   
   public Value identity() {
     return Num.POSINF;

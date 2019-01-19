@@ -9,9 +9,11 @@ import java.util.ArrayList;
 
 public class DTackBuiltin extends Builtin {
   static final DTackBuiltin copy = new DTackBuiltin();
-  public DTackBuiltin() {
-    super("⊤");
+  @Override public String repr() {
+    return "⊤";
   }
+  
+  
   
   public Obj call(Value w) {
     return call(Num.TWO, w);

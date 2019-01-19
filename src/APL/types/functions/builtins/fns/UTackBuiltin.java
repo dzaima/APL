@@ -6,9 +6,11 @@ import APL.types.functions.Builtin;
 
 public class UTackBuiltin extends Builtin {
   static final UTackBuiltin copy = new UTackBuiltin();
-  public UTackBuiltin() {
-    super("⊥");
+  @Override public String repr() {
+    return "⊥";
   }
+  
+  
   
   public Obj call(Value w) {
     return call(Num.TWO, w);

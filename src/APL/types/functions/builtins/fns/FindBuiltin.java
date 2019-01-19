@@ -7,9 +7,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class FindBuiltin extends Builtin {
-  public FindBuiltin() {
-    super("⍷");
+  @Override public String repr() {
+    return "⍷";
   }
+  
+  
   
   public Obj call(Value a, Value w) {
     if (a.rank != w.rank) throw new RankError("argument ranks for ⍷ should be equal ("+a.rank+" ≠ "+w.rank+")", w);

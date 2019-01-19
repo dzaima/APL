@@ -6,8 +6,12 @@ import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 public class NandBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⍲";
+  }
+  
   public NandBuiltin(Scope sc) {
-    super("⍲", sc);
+    super(sc);
   }
   
   public Obj call(Value a0, Value w0) {

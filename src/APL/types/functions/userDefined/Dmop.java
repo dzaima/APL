@@ -9,8 +9,13 @@ import static APL.Main.*;
 
 public class Dmop extends Mop {
   private final Token token;
+  
+  @Override public String repr() {
+    return token.toRepr();
+  }
+  
   Dmop(Token t, Scope sc) {
-    super(t.toRepr(), sc);
+    super(sc);
     token = t;
   }
   public Obj call(Obj aa, Value w) {

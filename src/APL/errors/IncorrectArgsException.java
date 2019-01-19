@@ -8,7 +8,7 @@ public class IncorrectArgsException extends APLError {
     super(s);
     this.cause = cause;
   }
-  public IncorrectArgsException (String s, Obj fn){
+  public IncorrectArgsException(String s, Obj fn){
     super(s);
   }
 }

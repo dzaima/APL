@@ -3,16 +3,11 @@ package APL.types.functions;
 import APL.*;
 import APL.types.*;
 
-public class Builtin extends Fun {
-  protected Builtin(String repr, Scope sc) {
+public abstract class Builtin extends Fun {
+  protected Builtin(Scope sc) {
     super(sc);
-    this.repr = repr;
   }
-  protected Builtin(String repr) {
+  protected Builtin() {
     super(null);
-    this.repr = repr;
-  }
-  public String toString() {
-    return repr;
   }
 }

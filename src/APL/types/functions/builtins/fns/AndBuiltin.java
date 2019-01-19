@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class AndBuiltin extends Builtin {
-  public AndBuiltin() {
-    super("∧");
+  @Override public String repr() {
+    return "∧";
   }
+  
+  
   
   public Value identity() {
     return Num.ONE;

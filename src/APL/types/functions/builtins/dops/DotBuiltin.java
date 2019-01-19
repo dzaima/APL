@@ -7,9 +7,11 @@ import APL.types.functions.builtins.mops.ReduceBuiltin;
 import static APL.Main.up;
 
 public class DotBuiltin extends Dop {
-  public DotBuiltin() {
-    super(".");
+  @Override public String repr() {
+    return ".";
   }
+  
+  
   public Obj call(Obj aa, Obj ww, Value w) {
     throw up;
   }

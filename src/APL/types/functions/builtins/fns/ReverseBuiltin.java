@@ -5,9 +5,11 @@ import APL.types.dimensions.DimMFn;
 import APL.types.functions.Builtin;
 
 public class ReverseBuiltin extends Builtin implements DimMFn {
-  public ReverseBuiltin() {
-    super("⌽");
+  @Override public String repr() {
+    return "⌽";
   }
+  
+  
   @Override
   public Obj call(Value w, int dim) {
     return ((Arr) w).reverseOn(-dim-1);

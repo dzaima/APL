@@ -7,9 +7,11 @@ import APL.types.functions.Mop;
 import APL.types.functions.builtins.fns.*;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
-  public ReduceBuiltin() {
-    super("/");
+  @Override public String repr() {
+    return "/";
   }
+  
+  
   
   @Override
   public Obj call(Obj f, Value w, int dim) {

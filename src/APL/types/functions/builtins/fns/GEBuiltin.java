@@ -6,9 +6,11 @@ import APL.types.functions.Builtin;
 
 
 public class GEBuiltin extends Builtin {
-  public GEBuiltin() {
-    super("≥");
+  @Override public String repr() {
+    return "≥";
   }
+  
+  
   
   static class DNf implements NumDV {
     public double call(double a, double w) {

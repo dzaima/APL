@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Mop;
 
 public class SelfieBuiltin extends Mop {
-  public SelfieBuiltin() {
-    super("⍨");
+  @Override public String repr() {
+    return "⍨";
   }
+  
+  
 
   public Obj call(Obj f, Value w) {
     return ((Fun)f).call(w, w);

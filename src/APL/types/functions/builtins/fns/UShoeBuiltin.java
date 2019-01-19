@@ -6,9 +6,11 @@ import APL.types.functions.Builtin;
 import java.util.*;
 
 public class UShoeBuiltin extends Builtin {
-  public UShoeBuiltin() {
-    super("∩");
+  @Override public String repr() {
+    return "∩";
   }
+  
+  
   
   public Obj call(Value a, Value w) {
     var res = new ArrayList<Value>();

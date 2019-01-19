@@ -5,9 +5,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class TrigBuiltin extends Builtin {
-  public TrigBuiltin() {
-    super("○");
+  @Override public String repr() {
+    return "○";
   }
+  
+  
   
   static class Nf implements NumMV {
     public Value call(Num w) {

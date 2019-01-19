@@ -6,9 +6,11 @@ import APL.types.*;
 import APL.types.functions.*;
 
 public class SetBuiltin extends Builtin {
-  public SetBuiltin() {
-    super("←");
+  @Override public String repr() {
+    return "←";
   }
+  
+  
   
   @Override
   public Obj call(Value a, Value w) {

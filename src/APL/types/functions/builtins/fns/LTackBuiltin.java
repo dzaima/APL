@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class LTackBuiltin extends Builtin {
-  public LTackBuiltin () {
-    super("⊣");
+  @Override public String repr() {
+    return "⊣";
   }
+  
+  
   
   public Obj call(Value w) { return w; }
   public Obj call(Value a, Value w) { return a; }

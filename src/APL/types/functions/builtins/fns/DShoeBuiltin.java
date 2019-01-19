@@ -7,9 +7,11 @@ import java.util.*;
 
 @SuppressWarnings("Convert2Diamond") // convert.py chokes if not
 public class DShoeBuiltin extends Builtin {
-  public DShoeBuiltin() {
-    super("∪");
+  @Override public String repr() {
+    return "∪";
   }
+  
+  
   
   public Obj call(Value w) {
     var res = new LinkedHashSet<Value>(Arrays.asList(w.values()));

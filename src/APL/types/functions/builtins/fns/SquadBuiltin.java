@@ -6,8 +6,12 @@ import APL.types.*;
 import APL.types.functions.Builtin;
 
 public class SquadBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⌷";
+  }
+  
   public SquadBuiltin(Scope sc) {
-    super("⌷", sc);
+    super(sc);
   }
   
   public Obj call(Value w) {

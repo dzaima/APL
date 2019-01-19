@@ -5,9 +5,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class CommaBarBuiltin extends Builtin {
-  public CommaBarBuiltin() {
-    super("⍪");
+  @Override public String repr() {
+    return "⍪";
   }
+  
+  
   
   public Obj call(Value w) {
     if (w.rank==1 && w.shape[0]==0) return new EmptyArr(new int[]{0, 1});

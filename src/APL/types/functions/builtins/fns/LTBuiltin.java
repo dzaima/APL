@@ -8,9 +8,11 @@ import java.util.Arrays;
 
 
 public class LTBuiltin extends Builtin {
-  public LTBuiltin() {
-    super("<");
+  @Override public String repr() {
+    return "<";
   }
+  
+  
   
   static class DNf implements NumDV {
     public double call(double a, double w) {

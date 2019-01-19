@@ -7,8 +7,12 @@ import APL.types.functions.Dop;
 import java.util.ArrayList;
 
 public class CRepeatBuiltin extends Dop {
+  @Override public String repr() {
+    return "⍡";
+  }
+  
   public CRepeatBuiltin(Scope sc) {
-    super("⍡", sc);
+    super(sc);
   }
   
   @Override public Obj call(Obj aa, Obj ww, Value w) {

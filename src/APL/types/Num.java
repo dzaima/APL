@@ -36,22 +36,18 @@ public class Num extends Primitive {
   public static final Num INFINITY = new Num("1e309");
   public final double num;
   public Num(String val) {
-    repr = val;
     if (val.startsWith("¯")) {
       num = -Double.parseDouble(val.substring(1));
     } else num = Double.parseDouble(val);
   }
 
   public Num(int n) {
-    repr = Integer.toString(n);
     num = n;
   }
   public Num(long n) {
-    repr = Long.toString(n);
     num = n;
   }
   public Num(double val) {
-    repr = Double.toString(val);
     num = val;
   }
 

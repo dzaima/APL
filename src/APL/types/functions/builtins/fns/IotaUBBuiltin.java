@@ -9,8 +9,12 @@ import APL.types.functions.builtins.mops.ReduceBuiltin;
 
 public class IotaUBBuiltin extends Builtin {
   private static final Fun fn = new ReduceBuiltin().derive(new CeilingBuiltin());
+  @Override public String repr() {
+    return "⍸";
+  }
+  
   public IotaUBBuiltin(Scope sc) {
-    super("⍸", sc);
+    super(sc);
   }
   
   public Obj call(Value w) {

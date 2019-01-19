@@ -6,9 +6,11 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class TransposeBuiltin extends Builtin {
-  public TransposeBuiltin() {
-    super("⍉");
+  @Override public String repr() {
+    return "⍉";
   }
+  
+  
   
   public Obj call(Value w) {
     if (w instanceof DoubleArr) {

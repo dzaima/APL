@@ -9,9 +9,11 @@ import APL.types.functions.Builtin;
 import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
-  public RhoBuiltin() {
-    super("⍴");
+  @Override public String repr() {
+    return "⍴";
   }
+  
+  
   public Obj call(Value w) {
 
     int[] sh = w.shape;

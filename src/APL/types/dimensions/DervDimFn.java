@@ -8,9 +8,12 @@ public class DervDimFn extends Fun {
   private final Fun f;
   private final int dim;
   
+  @Override public String repr() {
+    return f.repr()+"["+dim+"]";
+  }
+  
   public DervDimFn(Fun f, Integer dim, Scope sc) {
     super(sc);
-    this.repr = f.repr+"["+dim+"]";
     this.f = f;
     if (dim == null) this.dim = 0;
     else if (dim < 0) this.dim = dim;
@@ -29,10 +32,5 @@ public class DervDimFn extends Fun {
   public Obj call(Value w) {
     if (!(f instanceof DimMFn)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", w);
     return ((DimMFn) f).call(w, dim);
-  }
-  
-  @Override
-  public String toString() {
-    return this.repr;
   }
 }

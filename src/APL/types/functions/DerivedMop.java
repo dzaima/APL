@@ -5,8 +5,7 @@ import APL.types.*;
 public class DerivedMop extends Builtin {
   private final Obj aa;
   private final Mop op;
-  DerivedMop(String s, Obj aa, Mop op) {
-    super(s);
+  DerivedMop(Obj aa, Mop op) {
     this.aa = aa;
     this.op = op;
     token = op.token;
@@ -24,7 +23,8 @@ public class DerivedMop extends Builtin {
   public Obj call(Value a, Value w) {
     return op.call(aa, a, w);
   }
-  public String toString() {
-    return aa.toString()+op.toString();
+  
+  @Override public String repr() {
+    return aa.toString()+op.repr();
   }
 }

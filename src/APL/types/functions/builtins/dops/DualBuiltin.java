@@ -6,9 +6,11 @@ import APL.types.Value;
 import APL.types.functions.Dop;
 
 public class DualBuiltin extends Dop {
-  public DualBuiltin() {
-    super("⍢");
+  @Override public String repr() {
+    return "⍢";
   }
+  
+  
   
   public Obj call(Obj aa, Obj ww, Value w) {
     Fun under = (Fun) ww;

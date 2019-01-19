@@ -5,8 +5,12 @@ import APL.types.*;
 import APL.types.functions.Dop;
 
 public class RepeatBuiltin extends Dop {
+  @Override public String repr() {
+    return "⍣";
+  }
+  
   public RepeatBuiltin(Scope sc) {
-    super("⍣", sc);
+    super(sc);
   }
   public Obj call(Obj aa, Obj ww, Value w) {
     Fun f = (Fun) aa;

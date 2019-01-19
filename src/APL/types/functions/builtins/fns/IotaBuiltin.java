@@ -12,8 +12,12 @@ import java.util.*;
 import static APL.Main.*;
 
 public class IotaBuiltin extends Builtin {
+  @Override public String repr() {
+    return "⍳";
+  }
+  
   public IotaBuiltin(Scope sc) {
-    super("⍳", sc);
+    super(sc);
   }
   public Obj call(Value w) {
     int IO = sc.IO;

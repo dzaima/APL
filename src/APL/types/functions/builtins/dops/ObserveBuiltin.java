@@ -4,9 +4,11 @@ import APL.types.*;
 import APL.types.functions.Dop;
 
 public class ObserveBuiltin extends Dop {
-  public ObserveBuiltin() {
-    super("⍫");
+  @Override public String repr() {
+    return "⍫";
   }
+  
+  
   public Obj call(Obj aa, Obj ww, Value w) {
     return ((Fun) aa).call(w);
   }
