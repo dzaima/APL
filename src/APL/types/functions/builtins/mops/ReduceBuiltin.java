@@ -29,7 +29,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       return new Num(s);
     }
     if (f instanceof MulBuiltin && w.quickDoubleArr()) {
-      double p = 0;
+      double p = 1;
       for (double d : w.asDoubleArr()) p*= d;
       return new Num(p);
     }
