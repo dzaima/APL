@@ -89,7 +89,6 @@ public class UpArrowBuiltin extends Builtin {
 //          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
           allVals[i++] = v.at(sh, proto);
         }
-        i+= subIA;
       }
       
       return Arr.create(allVals, totalShape);
