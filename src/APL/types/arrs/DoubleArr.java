@@ -55,6 +55,11 @@ public class DoubleArr extends Arr {
     return new Num(arr[i]);
   }
   
+  @Override public Value first() {
+    if (ia > 0) return new Num(arr[0]);
+    return Num.ZERO;
+  }
+  
   @Override
   public String asString() {
     throw new DomainError("using double array as string", this);

@@ -33,6 +33,10 @@ public class ChrArr extends Arr {
     return new Char(s.charAt(i));
   }
   
+  @Override public Value first() {
+    if (ia > 0) return new Char(s.charAt(0));
+    return Char.SPACE;
+  }
   @Override
   public String asString() {
     return s;
