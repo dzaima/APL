@@ -15,6 +15,7 @@ public class Dfn extends Fun {
     Scope nsc = new Scope(sc);
     nsc.set("⍺", new Variable(nsc, "⍺"));
     nsc.set("⍵", w);
+    nsc.set("∇", this);
     var res = Main.execLines(token, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();
     if (res instanceof Settable) return ((Settable)res).get();
@@ -25,6 +26,7 @@ public class Dfn extends Fun {
     Scope nsc = new Scope(sc);
     nsc.set("⍺", a);
     nsc.set("⍵", w);
+    nsc.set("∇", this);
     nsc.alphaDefined = true;
     var res = Main.execLines(token, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();

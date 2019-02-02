@@ -528,6 +528,7 @@ class Exec {
           case '⍞': return new QuoteQuad();
           case '⍺': return sc.get("⍺");
           case '⍵': return sc.get("⍵");
+          case '∇': return sc.get("∇");
           case '⍶': return sc.get("⍶");
           case '⍹': return sc.get("⍹");
           default: throw new NYIError("no built-in " + t.repr + " defined in exec");
