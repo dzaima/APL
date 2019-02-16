@@ -73,18 +73,20 @@ class P5 extends APLMap {
       case "key": return new Char(key);
       case "fps": case "framerate": return new Num(frameRate);
       case "fc": case "framecount": return new Num(frameCount);
-      case "color": case "col": return new Fun(0x001) {
+      case "color": case "col": return new Fun() {
         public Obj call(Value w) {
           return new Num(col(w));
         }
+        public String repr() {return "P5.bg"; }
       };
-      case "exit": return new Fun(0x001) {
+      case "exit": return new Fun() {
         public Obj call(Value w) {
           System.exit(w.asInt());
           return null;
         }
+        public String repr() {return "P5.exit"; }
       };
-      case "noise": return new Fun(0x001) {
+      case "noise": return new Fun() {
         public Obj call(Value w) {
           double[] da = w.asDoubleArr();
           double res = 0;
@@ -93,20 +95,23 @@ class P5 extends APLMap {
           if (da.length == 3) res = noise((float)da[0], (float)da[1], (float)da[2]);
           return new Num(res);
         }
+        public String repr() {return "P5.noise"; }
       };
       // files
       
-      case "bytes": return new Fun(0x001) {
+      case "bytes": return new Fun() {
         public Obj call(Value w) {
           return APL(loadBytes(w.asString()));
         }
+        public String repr() {return "P5.bytes"; }
       };
-      case "lines": return new Fun(0x001) {
+      case "lines": return new Fun() {
         public Obj call(Value w) {
           return APL(loadStrings(w.asString()));
         }
+        public String repr() {return "P5.lines"; }
       };
-      case "image": case "img": return new Fun(0x001) {
+      case "image": case "img": return new Fun() {
         public Obj call(Value w) {
           if (w.rank == 2) {
             int[] pixels = new int[w.ia];
@@ -120,6 +125,7 @@ class P5 extends APLMap {
             return new APLImg(loadImage(w.asString()));
           }
         }
+        public String repr() {return "P5.img"; }
       };
       default: return NULL;
     }

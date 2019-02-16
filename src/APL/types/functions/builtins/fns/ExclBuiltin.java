@@ -19,7 +19,6 @@ public class ExclBuiltin extends Builtin {
       r*= i;
       cache[i] = r;
     }
-    System.out.println(Arrays.toString(cache));
   }
   
   static class Nf implements NumMV {

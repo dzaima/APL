@@ -26,20 +26,22 @@ class APLGraphics extends APLMap {
     String s = k.asString().toLowerCase();
     if (g == null) throw new DomainError(this == mainGraphics? "Make P5.G calls in P5.setup/draw" : "object not yet initialized");
     switch (s) {
-      case "background": case "bg": return new Fun(0x001) {
+      case "background": case "bg": return new Fun() {
         public Obj call(Value w) {
           g.background(col(w));
           return w;
         }
+        public String repr() {return "P5.G.bg"; }
       };
-      case "text": return new Fun(0x010) {
+      case "text": return new Fun() {
         public Obj call(Value a, Value w) {
           XY p = new XY(a);
           g.text(w.asString(), (float)p.x, (float)p.y);
           return w;
         }
+        public String repr() {return "P5.G.text"; }
       };
-      case "textalign": case "ta": return new Fun(0x011) {
+      case "textalign": case "ta": return new Fun() {
         public Obj call(Value w) {
           String hs = w.asString();
           Integer h = hs.equals("center")? (Integer)CENTER : hs.equals("left")? (Integer)LEFT : hs.equals("right")? (Integer)RIGHT : null;
@@ -57,6 +59,7 @@ class APLGraphics extends APLMap {
           g.textAlign(h, v);
           return w;
         }
+        public String repr() {return "P5.G.ta"; }
       };
       case "rect": return new ForFA() {
         public void setup(Value a) {
@@ -104,7 +107,7 @@ class APLGraphics extends APLMap {
       case "point": case "pt": return new ForFA() {
         public void draw(double[] fa) {
           if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
-          if (fa.length > 4) {
+          if (fa.length >= 2) {
             g.beginShape(POINTS);
             for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);
             g.endShape();
@@ -138,7 +141,7 @@ class APLGraphics extends APLMap {
           }
         }
       };
-      case "img": case "image": return new Fun(0x010) {
+      case "img": case "image": return new Fun() {
         public Obj call(Value a, Value w) {
           float[] fa = f1D(a);
           PImage img = ((APLImg) w).img;
@@ -153,6 +156,7 @@ class APLGraphics extends APLMap {
           }
           return w;
         }
+        public String repr() {return "P5.G.img"; }
       };
       default: return NULL;
     }

@@ -44,8 +44,6 @@ class FnD {
 }
 abstract class ForFA extends Fun {
   
-  ForFA() { super(0x011); }
-  
   abstract void draw(double[] fa);
   void setup(Value a) { }
   void finish() { }
@@ -69,6 +67,8 @@ abstract class ForFA extends Fun {
     finish();
     return w;
   }
+  
+  public String repr() {return "fn for float array"; }
 }
 
 double[][] emptyF2D = new double[0][0];
