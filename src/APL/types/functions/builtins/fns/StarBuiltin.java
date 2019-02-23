@@ -31,7 +31,8 @@ public class StarBuiltin extends Builtin {
       for (int i = 0; i < w.length; i++) res[i] = Math.pow(a, w[i]);
     }
     public void call(double[] res, double[] a, double w) {
-      for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w);
+      if (w == 2) for (int i = 0; i < a.length; i++) res[i] = a[i]*a[i];
+      else for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w);
     }
     public void call(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w[i]);

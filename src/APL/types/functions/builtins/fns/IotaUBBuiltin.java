@@ -16,17 +16,18 @@ public class IotaUBBuiltin extends Builtin {
   public IotaUBBuiltin(Scope sc) {
     super(sc);
   }
-  
   public Obj call(Value w) {
+    int IO = sc.IO;
     if (w.rank == 1) {
       int sum = (int)w.sum();
       var sub = new double[sum];
       var da = w.asDoubleArr();
       int p = 0;
       for (int i = 0; i < w.ia; i++) {
-        if (da[i] < 0) throw new DomainError("⍸ received negative ⍵", w);
-        for (int j = 0; j < da[i]; j++) {
-          sub[p++] = (double) i + sc.IO;
+        int v = (int) da[i];
+        if (v < 0) throw new DomainError("⍸ received negative ⍵", w);
+        for (int j = 0; j < v; j++) {
+          sub[p++] = i + IO;
         }
       }
       return new DoubleArr(sub);
@@ -34,8 +35,8 @@ public class IotaUBBuiltin extends Builtin {
       int sum = (int)w.sum();
       var sub = new Value[sum];
       int ap = 0;
-      for (int[] p : new Indexer(w.shape, sc.IO)) {
-        Num n = (Num) w.at(p, sc.IO);
+      for (int[] p : new Indexer(w.shape, IO)) {
+        Num n = (Num) w.at(p, IO);
         if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", n);
         for (int i = 0, nint = n.asInt(); i < nint; i++) {
           sub[ap++] = Main.toAPL(p);

@@ -32,10 +32,31 @@ public class StileBuiltin extends Builtin {
       return c;
     }
     public void call(double[] res, double a, double[] w) {
-      for (int i = 0; i < w.length; i++) {
-        double c = w[i] % a;
-        if (c < 0) res[i] = c + a;
-        else res[i] = c;
+      int ia = (int) a;
+      if (a == ia) {
+        if (ia > 0 && (ia & ia-1) == 0) {
+          // power of 2 ⍺
+          int mask = ia-1;
+          for (int i = 0; i < w.length; i++) {
+            int intv = (int) w[i];
+            if (intv == w[i]) res[i] = (intv & mask) + w[i]-intv;
+            else res[i] = w[i]%ia;
+          }
+        } else {
+          // integer ⍺
+          for (int i = 0; i < w.length; i++) {
+            double c = w[i]%ia;
+            if (c < 0) res[i] = c + a;
+            else res[i] = c;
+          }
+        }
+      } else {
+        // arbitrary double ⍺
+        for (int i = 0; i < w.length; i++) {
+          double c = w[i]%a;
+          if (c < 0) res[i] = c + a;
+          else res[i] = c;
+        }
       }
     }
     public void call(double[] res, double[] a, double w) {
