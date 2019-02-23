@@ -1,6 +1,7 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Scope;
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
@@ -16,7 +17,7 @@ public class RhoBarBuiltin extends Builtin {
   
   public Obj call(Value w) {
     int IO = sc.IO;
-    if (w.rank != 1) throw new Error("argument to ϼ must be a vector");
+    if (w.rank != 1) throw new DomainError("argument to ϼ must be a vector");
     int dim = w.ia;
     int[] shape = w.asIntVec();
     int prod = 1;
