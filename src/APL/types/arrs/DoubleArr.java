@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.*;
 import APL.types.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class DoubleArr extends Arr {
   final public double[] arr;
@@ -30,6 +30,16 @@ public class DoubleArr extends Arr {
     double[] a = new double[ia];
     for (int i = 0; i < ia; i++) {
       a[i] = arr[i];
+    }
+    this.arr = a;
+  }
+  
+  public DoubleArr(ArrayList<Double> arr) {
+    super(new int[]{arr.size()});
+    double[] a = new double[ia];
+    Double[] da = arr.toArray(new Double[0]);
+    for (int i = 0; i < a.length; i++) {
+      a[i] = da[i];
     }
     this.arr = a;
   }

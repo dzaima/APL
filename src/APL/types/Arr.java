@@ -36,10 +36,10 @@ public abstract class Arr extends Value {
   }
   public String toString() {
     if (ia == 0) {
-      if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "?";
+      if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬";
       else {
         String s = IntStream.range(0, rank).mapToObj(i -> String.valueOf(shape[i])).collect(Collectors.joining(" "));
-        return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "?");
+        return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬");
       }
     }
     String qs = string(Main.quotestrings || Main.noBoxing);

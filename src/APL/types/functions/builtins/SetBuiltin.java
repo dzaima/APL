@@ -19,7 +19,7 @@ public class SetBuiltin extends Builtin {
   
   public Obj call(Obj a, Obj w, boolean update) {
     if (a instanceof Settable) {
-      if (update) {
+      if (update && a instanceof Variable) {
         ((Variable) a).update(w);
       } else {
         ((Settable) a).set(w);
@@ -44,7 +44,7 @@ public class SetBuiltin extends Builtin {
   }
 
   public Obj call(Fun f, Obj a, Value b) {
-    return call(a, f.call((Value) ((Variable) a).get(), b), true);
+    return call(a, f.call((Value) ((Settable) a).get(), b), true);
   }
   
   @Override
