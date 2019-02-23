@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
 public class EpsilonBuiltin extends Builtin {
@@ -28,6 +28,14 @@ public class EpsilonBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
+    if (a instanceof Primitive) {
+      for (Value v : w) {
+        if (v.equals(a)) {
+          return Num.ONE;
+        }
+      }
+      return Num.ZERO;
+    }
     Value[] res = new Value[a.ia];
     for (int i = 0; i < a.ia; i++) {
       Value av = a.get(i);
