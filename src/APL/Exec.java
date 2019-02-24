@@ -511,6 +511,7 @@ class Exec {
           case '⍨': return new SelfieBuiltin();
           case '⌾': return new TableBuiltin();
           case '⌸': return new KeyBuiltin(sc);
+          case '⍁': return new ObliqueBuiltin();
   
           // dops
           case '∘': return new JotBuiltin();

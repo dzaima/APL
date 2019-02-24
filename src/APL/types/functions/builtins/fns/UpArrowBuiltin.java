@@ -65,7 +65,7 @@ public class UpArrowBuiltin extends Builtin {
       }
       if (allNums) {
         double[] allVals = new double[totalIA];
-  
+        
         int i = 0;
         for (Value v : subs) {
           double[] c = v.asDoubleArr();
@@ -77,11 +77,11 @@ public class UpArrowBuiltin extends Builtin {
           // automatic zero padding
           i+= subIA;
         }
-  
+        
         return new DoubleArr(allVals, totalShape);
       }
       Value[] allVals = new Value[totalIA];
-  
+      
       int i = 0;
       for (Value v : subs) {
         Value proto = v.prototype();
@@ -94,4 +94,56 @@ public class UpArrowBuiltin extends Builtin {
       return Arr.create(allVals, totalShape);
     } else return w;
   }
+  
+  static public Value merge(Value[] w) {
+    int[] def = new int[w[0].rank];
+    System.arraycopy(w[0].shape, 0, def, 0, def.length);
+    for (Value v : w) {
+      if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
+      for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
+    }
+    int subIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
+    int totalIA = subIA * w.length;
+    int[] totalShape = new int[def.length + 1];
+    totalShape[0] = w.length;
+    System.arraycopy(def, 0, totalShape, 1, def.length);
+  
+    boolean allNums = true;
+    for (Value v : w) {
+      if (!v.quickDoubleArr()) {
+        allNums = false;
+        break;
+      }
+    }
+    if (allNums) {
+      double[] allVals = new double[totalIA];
+      
+      int i = 0;
+      for (Value v : w) {
+        double[] c = v.asDoubleArr();
+        int k = 0;
+        for (int j : new SimpleIndexer(def, v.shape)) {
+          allVals[i+j] = c[k++];
+        }
+        // automatic zero padding
+        i+= subIA;
+      }
+      
+      return new DoubleArr(allVals, totalShape);
+    } else {
+      Value[] allVals = new Value[totalIA];
+  
+      int i = 0;
+      for (Value v : w) {
+        Value proto = v.prototype();
+        for (int[] sh : new Indexer(def, 0)) {
+//          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
+          allVals[i++] = v.at(sh, proto);
+        }
+      }
+      return Arr.create(allVals, totalShape);
+    }
+  }
+  
+  
 }
