@@ -62,7 +62,8 @@
     },
     { "col": 1,
       "def": {"chr": "÷"},
-      "up": {"chr": "|"}, "down": {"chr": "√"}
+      "up": {"chr": "|"}, "down": {"chr": "√"},
+      "right": {"chr": "⍁"}
     },
     { "col": 1,
       "def": {"chr": "×"},
@@ -105,6 +106,7 @@
     { "col": 2,
       "def": {"chr": "6"},
       "up": {"chr": "⍴"},
+      "down": {"chr": "ϼ", "sd":true},
        "left": {"chr": "≡"},
       "right": {"chr": "≢"}
     },
