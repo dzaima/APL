@@ -15,7 +15,7 @@ public class Variable extends Settable {
   }
   
   public Obj get() {
-    if (v == null) throw new ValueError("tying to get value of non-existing variable "+name);
+    if (v == null) throw new ValueError("trying to get value of non-existing variable "+name);
     return v;
   }
   
