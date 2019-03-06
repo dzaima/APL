@@ -1,14 +1,14 @@
 package APL.errors;
 
 import APL.*;
-import APL.types.Obj;
+import APL.types.*;
 
 import java.util.stream.*;
 
 import static APL.Main.colorprint;
 
 public class APLError extends Error {
-  public Obj cause;
+  public Tokenable cause;
   
   APLError (String msg) {
     super(msg);
@@ -19,9 +19,9 @@ public class APLError extends Error {
     else colorprint(ns[ns.length - 1] + ": " + getMessage(), 246);
     String oline = null;
     int opos = 0;
-    if (cause != null && cause.token != null) {
-      oline = cause.token.line;
-      opos = cause.token.pos;
+    if (cause != null && cause.getToken() != null) {
+      oline = cause.getToken().line;
+      opos = cause.getToken().pos;
     }
     if (Main.faulty == null || Main.faulty.getToken() == null) { // fn bad
       if (oline == null) return; // both bad

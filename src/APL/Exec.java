@@ -541,6 +541,28 @@ class Exec {
       case set:    return new SetBuiltin();
       case name:   return sc.getVar(t.repr);
       case expr:   return Main.execTok(t, sc);
+      case list: {
+        List<Token> ts = t.tokens;
+        if (ts.size() == 0) return new StrMap();
+        Token fst = ts.get(0);
+        if (fst.tokens != null && fst.colonPos() != -1) {
+          StrMap map = new StrMap();
+          for (Token ct : ts) {
+            Token name = ct.tokens.get(0);
+            if (ct.colonPos() ==-1)      SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
+            if (ct.colonPos() != 1)      SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
+            if (name.type != TType.name) SyntaxError.direct("expected a key name, got " + name.type, name);
+            List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
+            map.setStr(name.repr, Main.execTok(TType.expr, tokens, sc));
+          }
+          return map;
+        } else {
+          if (ts.size() == 1) {
+           return Main.execTok(fst, sc);
+          }
+          return Main.execTok(t, sc); // todo think about whether this should be a thing
+        }
+      }
       case usr:    return UserDefined.of(t, sc);
       case pick:   return new Brackets(t, sc);
       default: throw new NYIError("Unknown type: " + t.type);

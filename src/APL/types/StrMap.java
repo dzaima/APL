@@ -25,6 +25,11 @@ public class StrMap extends APLMap {
     else map.put(k.asString(), v);
   }
   
+  public void setStr(String k, Obj v) {
+    if (v == Null.NULL) map.remove(k);
+    else map.put(k, v);
+  }
+  
   @Override
   public Arr toArr() {
     Obj[] a = map.values().toArray(new Obj[0]);

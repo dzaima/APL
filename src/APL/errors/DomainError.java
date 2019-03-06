@@ -1,12 +1,12 @@
 package APL.errors;
 
-import APL.types.Obj;
+import APL.types.*;
 
 public class DomainError extends APLError {
   public DomainError(String s){
     super(s);
   }
-  public DomainError(String s, Obj causeObj) {
+  public DomainError(String s, Tokenable causeObj) {
     super(s);
     this.cause = causeObj;
   }

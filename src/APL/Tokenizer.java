@@ -58,7 +58,7 @@ class Tokenizer {
         if (c != closed.b) throw new SyntaxError("mismatched parentheses of "+c+" and "+closed.b);
         TType type;
         switch(c) {
-          case ')': type = TType.expr; break;
+          case ')': type = TType.list; break;
           case '}': type = TType. usr; break;
           case ']': type = TType.pick; break;
           default: throw new Error("this should really not happen");

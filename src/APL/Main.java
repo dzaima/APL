@@ -251,7 +251,7 @@ public class Main {
     assert (lines.type == TType.lines || lines.type == TType.usr);
     Obj res = null;
     for (Token ln : lines.tokens) {
-      List<Token> tokens = ln.tokens;
+      List<Token> tokens = ln.tokens; // TODO use colonPos
       int guardPos = -1;
       boolean endAfter = tokens.size() > 0 && tokens.get(0).type == TType.set;
       if (endAfter) tokens = tokens.subList(1, tokens.size());
@@ -281,6 +281,10 @@ public class Main {
   
   public static Obj execTok(Token ln, Scope sc) {
     return new Exec(ln, sc).exec();
+  }
+  
+  public static Obj execTok(TType type, List<Token> ts, Scope sc) { // TODO
+    return new Exec(new Token(type, ts, ts.isEmpty()? null : ts.get(0)), sc).exec();
   }
   
   public static void colorprint(String s, int col) {

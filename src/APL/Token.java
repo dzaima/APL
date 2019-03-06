@@ -5,7 +5,7 @@ import APL.types.Tokenable;
 import java.util.*;
 
 
-public class Token implements Tokenable {
+public class Token implements Tokenable { // todo redo in OOP
   public TType type;
   public String repr;
   public List<Token> tokens;
@@ -73,6 +73,19 @@ public class Token implements Tokenable {
       default:
         return type + "";
     }
+  }
+  Integer colonPos;
+  int colonPos() {
+    if (colonPos == null) {
+      colonPos = -1;
+      for (int i = 0; i < tokens.size(); i++) {
+        if (tokens.get(i).type == TType.guard) {
+          colonPos = i;
+          break;
+        }
+      }
+    }
+    return colonPos;
   }
   
   @Override
