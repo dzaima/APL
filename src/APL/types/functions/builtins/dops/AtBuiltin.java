@@ -46,6 +46,7 @@ public class AtBuiltin extends Dop {
           else ra[i] = w.get(i);
         }
       }
+      if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
       return Arr.create(ra, w.shape);
     } else {
       Value wwa = (Value) ww;
@@ -80,6 +81,7 @@ public class AtBuiltin extends Dop {
             ra[indexes[i]] = aaa.get(i);
           }
         }
+        if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
         return Arr.create(ra, w.shape);
       }
     }

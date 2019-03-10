@@ -74,7 +74,7 @@ public class Token implements Tokenable { // todo redo in OOP
         return type + "";
     }
   }
-  Integer colonPos;
+  private Integer colonPos;
   int colonPos() {
     if (colonPos == null) {
       colonPos = -1;
@@ -86,6 +86,19 @@ public class Token implements Tokenable { // todo redo in OOP
       }
     }
     return colonPos;
+  }
+  private Integer eguardPos;
+  int eguardPos() {
+    if (eguardPos == null) {
+      eguardPos = -1;
+      for (int i = 0; i < tokens.size(); i++) {
+        if (tokens.get(i).type == TType.errGuard) {
+          eguardPos = i;
+          break;
+        }
+      }
+    }
+    return eguardPos;
   }
   
   @Override

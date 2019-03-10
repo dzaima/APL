@@ -58,6 +58,7 @@ public class HArr extends Arr {
   
   @Override
   public Value prototype() {
+    if (ia == 0) return EmptyArr.SHAPE0;
     return get(0) instanceof Primitive? get(0).prototype() : EmptyArr.SHAPE0;
   }
   

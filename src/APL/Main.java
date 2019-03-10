@@ -247,35 +247,56 @@ public class Main {
     print("\n");
   }
   
+  enum EType {
+    all
+  }
+  
   static public Obj execLines(Token lines, Scope sc) {
     assert (lines.type == TType.lines || lines.type == TType.usr);
     Obj res = null;
-    for (Token ln : lines.tokens) {
-      List<Token> tokens = ln.tokens; // TODO use colonPos
-      int guardPos = -1;
-      boolean endAfter = tokens.size() > 0 && tokens.get(0).type == TType.set;
-      if (endAfter) tokens = tokens.subList(1, tokens.size());
-      else for (int i = 0; i < tokens.size(); i++) {
-        if (tokens.get(i).type == TType.guard ) {
-          guardPos = i;
-          if (i == tokens.size()-1) throw new SyntaxError("Guard without success expression");
-          if (tokens.get(i+1).type == TType.set) endAfter = true;
-          break;
+    HashMap<EType, Token> eGuards = new HashMap<>();
+    try {
+      for (Token ln : lines.tokens) {
+        List<Token> tokens = ln.tokens; // TODO use colonPos
+        int guardPos = ln.colonPos();
+        int eguardPos = ln.eguardPos();
+        if (guardPos != -1 && eguardPos != -1) throw new SyntaxError("both : and :: found in line");
+        boolean endAfter = tokens.size() > 0 && tokens.get(0).type == TType.set;
+        if (endAfter) tokens = tokens.subList(1, tokens.size());
+        else if (guardPos != -1) {
+          if (guardPos == tokens.size()-1) throw new SyntaxError("Guard without success expression");
+          if (tokens.get(guardPos+1).type == TType.set) endAfter = true;
+        } else if (eguardPos != -1) {
+          if (eguardPos == tokens.size()-1) throw new SyntaxError("Error guard without success expression");
         }
-      }
-      if (guardPos >= 0) {
-        var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
-        if (bool(norm(execTok(guard, sc)), sc)) {
-          var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
-          res = execTok(expr, sc);
+        if (guardPos != -1) {
+          var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
+          if (bool(norm(execTok(guard, sc)), sc)) {
+            var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
+            res = execTok(expr, sc);
+            if (endAfter) return res;
+          }
+        } else if (eguardPos != -1) {
+          var guard = new Token(ln.type, tokens.subList(0, eguardPos), lines);
+          Value r = norm(execTok(guard, sc));
+          EType t;
+          if (r.equals(Num.ZERO)) t = EType.all;
+          else throw new DomainError("guard "+r+" not supported");
+          var expr = new Token(ln.type, tokens.subList(eguardPos+(endAfter? 2 : 1), tokens.size()), lines);
+          eGuards.put(t, expr);
+        } else {
+          res = execTok(endAfter? new Token(ln.type, tokens, lines) : ln, sc);
           if (endAfter) return res;
         }
-      } else {
-        res = execTok(endAfter? new Token(ln.type, tokens, lines) : ln, sc);
-        if (endAfter) return res;
       }
+      if (res instanceof Settable) return ((Settable) res).get();
+    } catch (Throwable e) {
+      for (Map.Entry<EType, Token> entry : eGuards.entrySet()) {
+        EType t = entry.getKey();
+        if (t == EType.all) return norm(execTok(entry.getValue(), sc));
+      }
+      throw e;
     }
-    if (res instanceof Settable) return ((Settable) res).get();
     return res;
   }
   
