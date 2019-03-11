@@ -1,12 +1,14 @@
 package APL.types.functions.userDefined;
 
 import APL.*;
+import APL.tokenizer.Token;
+import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.VarArr;
 
 public class Dfn extends Fun {
-  private final Token token;
-  Dfn(Token t, Scope sc) {
+  private final DfnTok token;
+  Dfn(DfnTok t, Scope sc) {
     super(sc);
     token = t;
   }

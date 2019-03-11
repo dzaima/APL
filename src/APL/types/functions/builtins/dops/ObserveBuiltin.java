@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.dops;
 
 import APL.types.*;
-import APL.types.functions.Dop;
+import APL.types.functions.*;
 
 public class ObserveBuiltin extends Dop {
   @Override public String repr() {
@@ -9,10 +9,10 @@ public class ObserveBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     return ((Fun) aa).call(w);
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w) {
+  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     return ((Fun) aa).call(a, w);
   }
   

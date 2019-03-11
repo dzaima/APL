@@ -2,6 +2,7 @@ package APL.types;
 
 import APL.*;
 import APL.errors.NYIError;
+import APL.tokenizer.Token;
 import APL.types.dimensions.*;
 import APL.types.functions.VarArr;
 

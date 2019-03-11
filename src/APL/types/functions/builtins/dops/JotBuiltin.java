@@ -2,7 +2,7 @@ package APL.types.functions.builtins.dops;
 
 import APL.errors.SyntaxError;
 import APL.types.*;
-import APL.types.functions.Dop;
+import APL.types.functions.*;
 
 public class JotBuiltin extends Dop {
   @Override public String repr() {
@@ -10,7 +10,7 @@ public class JotBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
         return ((Fun)aa).call((Value)((Fun)ww).call(w));
@@ -34,7 +34,7 @@ public class JotBuiltin extends Dop {
       throw new SyntaxError("arr∘arr makes no sense", w);
     }
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w) {
+  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     boolean af = aa instanceof Fun;
     boolean wf = ww instanceof Fun;
     if (!af || !wf) throw new SyntaxError("strictly monadic derived function called dyadically", a);

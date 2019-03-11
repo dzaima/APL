@@ -1,6 +1,8 @@
 package APL;
 
 import APL.errors.*;
+import APL.tokenizer.*;
+import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
@@ -232,7 +234,7 @@ public class Main {
   
   @SuppressWarnings("WeakerAccess")
   public static Obj exec(String s, Scope sc) {
-    Token t = Tokenizer.tokenize(s);
+    BasicLines t = Tokenizer.tokenize(s);
     printdbg(t);
     return execLines(t, sc);
   }
@@ -247,65 +249,62 @@ public class Main {
     print("\n");
   }
   
+  public static String explain(Token tok) {
+    return tok.toRepr();
+  }
+  
   enum EType {
     all
   }
-  
-  static public Obj execLines(Token lines, Scope sc) {
-    assert (lines.type == TType.lines || lines.type == TType.usr);
+  public static Obj exec(LineTok s, Scope sc) {
+    return new Exec(s, sc).exec();
+  }
+  static public Obj execLines(TokArr<LineTok> lines, Scope sc) {
     Obj res = null;
-    HashMap<EType, Token> eGuards = new HashMap<>();
+    HashMap<EType, LineTok> eGuards = new HashMap<>();
     try {
-      for (Token ln : lines.tokens) {
-        List<Token> tokens = ln.tokens; // TODO use colonPos
+      for (LineTok ln : lines.tokens) {
+        List<Token> tokens = ln.tokens;
         int guardPos = ln.colonPos();
         int eguardPos = ln.eguardPos();
         if (guardPos != -1 && eguardPos != -1) throw new SyntaxError("both : and :: found in line");
-        boolean endAfter = tokens.size() > 0 && tokens.get(0).type == TType.set;
+        boolean endAfter = tokens.size() > 0 && tokens.get(0) instanceof SetTok;
         if (endAfter) tokens = tokens.subList(1, tokens.size());
         else if (guardPos != -1) {
           if (guardPos == tokens.size()-1) throw new SyntaxError("Guard without success expression");
-          if (tokens.get(guardPos+1).type == TType.set) endAfter = true;
+          if (tokens.get(guardPos+1) instanceof SetTok) endAfter = true;
         } else if (eguardPos != -1) {
           if (eguardPos == tokens.size()-1) throw new SyntaxError("Error guard without success expression");
         }
         if (guardPos != -1) {
-          var guard = new Token(ln.type, tokens.subList(0, guardPos), lines);
-          if (bool(norm(execTok(guard, sc)), sc)) {
-            var expr = new Token(ln.type, tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()), lines);
-            res = execTok(expr, sc);
+          var guard = LineTok.inherit(tokens.subList(0, guardPos));
+          if (bool(norm(exec(guard, sc)), sc)) {
+            var expr = LineTok.inherit(tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()));
+            res = exec(expr, sc);
             if (endAfter) return res;
           }
         } else if (eguardPos != -1) {
-          var guard = new Token(ln.type, tokens.subList(0, eguardPos), lines);
-          Value r = norm(execTok(guard, sc));
+          var guard = LineTok.inherit(tokens.subList(0, eguardPos));
+          Value r = norm(exec(guard, sc));
           EType t;
           if (r.equals(Num.ZERO)) t = EType.all;
           else throw new DomainError("guard "+r+" not supported");
-          var expr = new Token(ln.type, tokens.subList(eguardPos+(endAfter? 2 : 1), tokens.size()), lines);
+          var expr = LineTok.inherit(tokens.subList(eguardPos+(endAfter? 2 : 1), tokens.size()));
           eGuards.put(t, expr);
         } else {
-          res = execTok(endAfter? new Token(ln.type, tokens, lines) : ln, sc);
+          res = exec(endAfter? LineTok.inherit(tokens) : ln, sc);
           if (endAfter) return res;
         }
       }
       if (res instanceof Settable) return ((Settable) res).get();
     } catch (Throwable e) {
-      for (Map.Entry<EType, Token> entry : eGuards.entrySet()) {
+      for (Map.Entry<EType, LineTok> entry : eGuards.entrySet()) {
         EType t = entry.getKey();
-        if (t == EType.all) return norm(execTok(entry.getValue(), sc));
+        if (t == EType.all) return norm(exec(entry.getValue(), sc));
       }
       throw e;
     }
     return res;
-  }
-  
-  public static Obj execTok(Token ln, Scope sc) {
-    return new Exec(ln, sc).exec();
-  }
-  
-  public static Obj execTok(TType type, List<Token> ts, Scope sc) { // TODO
-    return new Exec(new Token(type, ts, ts.isEmpty()? null : ts.get(0)), sc).exec();
   }
   
   public static void colorprint(String s, int col) {

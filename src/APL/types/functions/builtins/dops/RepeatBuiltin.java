@@ -2,7 +2,7 @@ package APL.types.functions.builtins.dops;
 
 import APL.*;
 import APL.types.*;
-import APL.types.functions.Dop;
+import APL.types.functions.*;
 
 public class RepeatBuiltin extends Dop {
   @Override public String repr() {
@@ -12,7 +12,7 @@ public class RepeatBuiltin extends Dop {
   public RepeatBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
       Fun g = (Fun) ww;
@@ -36,7 +36,7 @@ public class RepeatBuiltin extends Dop {
       return w;
     }
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w) {
+  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     int am = ((Num)ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {

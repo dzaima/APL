@@ -22,13 +22,10 @@ public abstract class Mop extends Scopeable {
   public DerivedMop derive (Obj aa) {
     return new DerivedMop(aa, this);
   }
-  public Obj call(Obj f) {
-    throw new IncorrectArgsException(" derived mop called niladically", this);
-  }
-  public Obj call(Obj f, Value w) {
+  public Obj call(Obj f, Value w, DerivedMop derv) {
     throw new IncorrectArgsException(" derived mop called monadically with " + w, w);
   }
-  public Obj call(Obj f, Value a, Value w) {
+  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
     throw new IncorrectArgsException(" derived mop called dyadically", a);
   }
   public Obj callInv(Obj f, Value w) {

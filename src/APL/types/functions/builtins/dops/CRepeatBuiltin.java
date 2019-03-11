@@ -2,7 +2,7 @@ package APL.types.functions.builtins.dops;
 
 import APL.*;
 import APL.types.*;
-import APL.types.functions.Dop;
+import APL.types.functions.*;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ public class CRepeatBuiltin extends Dop {
     super(sc);
   }
   
-  @Override public Obj call(Obj aa, Obj ww, Value w) {
+  @Override public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     Fun aaf = (Fun) aa;
     ArrayList<Value> res = new ArrayList<>();
     if (ww instanceof Fun) {

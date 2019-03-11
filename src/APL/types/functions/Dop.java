@@ -22,13 +22,10 @@ public abstract class Dop extends Scopeable {
   public DerivedDop derive(Obj aa, Obj ww) {
     return new DerivedDop(aa, ww, this);
   }
-  public Obj call(Obj aa, Obj ww) {
-    throw new IncorrectArgsException("derived dop called niladically", this);
-  }
-  public Obj call(Obj aa, Obj ww, Value w) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     throw new IncorrectArgsException("derived dop called monadically", w);
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w) {
+  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     throw new IncorrectArgsException("derived dop called dyadically", a);
   }
   public Obj callInv(Obj aa, Obj ww, Value w) {

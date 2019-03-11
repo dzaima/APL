@@ -2,7 +2,7 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.LengthError;
 import APL.types.*;
-import APL.types.functions.Mop;
+import APL.types.functions.*;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class EachBuiltin extends Mop {
   
   
 
-  public Obj call(Obj f, Value w) {
+  public Obj call(Obj f, Value w, DerivedMop derv) {
     if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w) : f;
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
@@ -23,7 +23,7 @@ public class EachBuiltin extends Mop {
     }
     return Arr.create(n, w.shape);
   }
-  public Obj call(Obj f, Value a, Value w) {
+  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
     if (w.scalar()) {
       if (a.scalar()) return ((Fun)f).call(a, w);
       Value[] n = new Value[a.ia];

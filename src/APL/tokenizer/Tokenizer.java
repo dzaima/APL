@@ -1,41 +1,74 @@
-package APL;
+package APL.tokenizer;
 
 import java.util.*;
-import APL.errors.*;
 
-class Tokenizer {
+import APL.*;
+import APL.errors.*;
+import APL.tokenizer.types.*;
+
+public class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_".toCharArray();
   private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢∆⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞…"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
   private static boolean validName(char i) {
     for (char c : validNames) if (c == i) return true;
     return false;
   }
-  static class Expr {
-    final ArrayList<ArrayList<Token>> a;
+  static class Line {
+    final ArrayList<Token> ts;
+    final String line;
+    final int pos;
+  
+    Line(String line, int pos, ArrayList<Token> ts) {
+      this.ts = ts;
+      this.line = line;
+      this.pos = pos;
+    }
+  
+    Line(String line, int pos) {
+      this(line, pos, new ArrayList<>());
+    }
+  
+    public int size() {
+      return ts.size();
+    }
+  
+    public void add(Token r) {
+      ts.add(r);
+    }
+  }
+  static class Block { // temp storage of multiple lines
+    final ArrayList<Line> a;
     final char b;
-    Expr(ArrayList<ArrayList<Token>> a, char b) {
+    private final String line;
+    private final int pos;
+  
+    Block(ArrayList<Line> a, char b, String line, int pos) {
       this.a = a;
       this.b = b;
+      this.line = line;
+      this.pos = pos;
     }
     public String toString() {
       return "<"+a+","+b+">";
     }
   }
-  static Token tokenize(String s) {
-    Token uexpr = new Token(TType.expr, s, 0, s);
-    var levels = new ArrayList<Expr>();
-    levels.add(new Expr(new ArrayList<>(), '⋄'));
-    levels.get(0).a.add(new ArrayList<>());
+  public static BasicLines tokenize(String s) {
     int li = 0;
     int len = s.length();
-    String[] rlines = s.split("\n", -1);
-    String crline = rlines[0];
-    int crlinei = 0;
-    int reprpos = 0;
+    String[] rLines = s.split("\n", -1);
+    if (rLines.length == 0) return new BasicLines(s, 0, new ArrayList<>());
+    String cL = rLines[0]; // current line
+    int cLP = 0; // current lines index in rLines
+    int cP = 0; // current pos in line
+  
+    var levels = new ArrayList<Block>();
+    levels.add(new Block(new ArrayList<>(), '⋄', rLines[0], 0));
+    levels.get(0).a.add(new Line(null, 0, new ArrayList<>()));
+
     for (int i = 0; i < len; li = i) {
-      var expr = levels.get(levels.size()-1);
-      var lines = expr.a;
-      var tokens = lines.get(lines.size()-1);
+      Block expr = levels.get(levels.size()-1);
+      ArrayList<Line> lines = expr.a;
+      Line tokens = lines.get(lines.size()-1);
       char c = s.charAt(i);
       char next = i+1<len? s.charAt(i+1) : ' ';
       String cS = String.valueOf(c);
@@ -47,35 +80,35 @@ class Tokenizer {
           case '[': match = ']'; break;
           default: throw new Error("this should really not happen");
         }
-        levels.add(new Expr(new ArrayList<>(),match));
+        levels.add(new Block(new ArrayList<>(),match, cL, cP));
         lines = levels.get(levels.size()-1).a;
-        lines.add(new ArrayList<>());
-        //lines = new ArrayList();
+        lines.add(new Line(cL, cP));
+
         i++;
       } else if (c == ')' || c == '}' || c == ']') {
         if (lines.size() > 0 && lines.get(lines.size()-1).size() == 0) lines.remove(lines.size()-1); // no trailing empties!!
-        Expr closed = levels.remove(levels.size()-1);
+        Block closed = levels.remove(levels.size()-1);
         if (c != closed.b) throw new SyntaxError("mismatched parentheses of "+c+" and "+closed.b);
-        TType type;
+        
+        var lineTokens = new ArrayList<LineTok>();
+        for (var ta : closed.a) lineTokens.add(new LineTok(ta.line, ta.pos, ta.ts));
+        Token r;
         switch(c) {
-          case ')': type = TType.list; break;
-          case '}': type = TType. usr; break;
-          case ']': type = TType.pick; break;
+          case ')': r = new ParenTok  (s, closed.pos, lineTokens); break;
+          case '}': r = new DfnTok    (s, closed.pos, lineTokens); break;
+          case ']': r = new BracketTok(s, closed.pos, lineTokens); break;
           default: throw new Error("this should really not happen");
         }
-        var lineTokens = new ArrayList<Token>();
-        for (var ta : closed.a) lineTokens.add(new Token(TType.expr, ta, uexpr));
-        Token t = new Token(type, lineTokens, uexpr);
         lines = levels.get(levels.size()-1).a;
         tokens = lines.get(lines.size()-1);
-        tokens.add(t);
+        tokens.add(r);
         i++;
       } else if (validName(c)  ||  c=='⎕' && validName(next)) {
         i++;
         while (i < len && (validName(s.charAt(i))  ||  s.charAt(i)>='0' && s.charAt(i)<='9')) i++;
         var name = s.substring(li, i);
         if (c == '⎕') name = name.toUpperCase();
-        tokens.add(new Token(TType.name, name, reprpos, crline));
+        tokens.add(new NameTok(cL, cP, name));
       } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
         i++;
         boolean foundPoint = false;
@@ -83,18 +116,18 @@ class Tokenizer {
           if (c == '.') foundPoint = true;
           i++;
         }
-        tokens.add(new Token(TType.number, s.substring(li, i), reprpos, crline));
+        tokens.add(new NumTok(cL, cP, s.substring(li, i)));
       } else if (ops.contains(cS)) {
-        tokens.add(new Token(TType.op, cS, reprpos, crline));
+        tokens.add(new OpTok(cL, cP, cS));
         i++;
       } else if (c == '←') {
-        tokens.add(new Token(TType.set, reprpos, crline));
+        tokens.add(new SetTok(cL, cP));
         i++;
       } else if (c == ':') {
         if (next == ':') {
-          tokens.add(new Token(TType.errGuard, reprpos, crline));
+          tokens.add(new DColonTok(cL, cP));
           i++;
-        } else tokens.add(new Token(TType.guard, reprpos, crline));
+        } else tokens.add(new ColonTok(cL, cP));
         i++;
       } else if (c == '\'') {
         StringBuilder str = new StringBuilder();
@@ -110,7 +143,7 @@ class Tokenizer {
           if (i >= len) throw new SyntaxError("unfinished string");
         }
         i++;
-        tokens.add(new Token(TType.chr, str.toString(), reprpos, crline));
+        tokens.add(new ChrTok(cL, cP, str.toString()));
       } else if (c == '"') {
         StringBuilder str = new StringBuilder();
         i++;
@@ -125,17 +158,17 @@ class Tokenizer {
           if (i >= len) throw new SyntaxError("unfinished string");
         }
         i++;
-        tokens.add(new Token(TType.str, str.toString(), reprpos, crline));
+        tokens.add(new StrTok(cL, cP, str.toString()));
       } else if (c == '\n' || c == '⋄' || c == '\r' || c == ';') {
   
-        if (c == ';') tokens.add(new Token(TType.semi, reprpos, crline));
+        if (c == ';') tokens.add(new SemiTok(cL, cP));
         
         if (tokens.size() > 0) {
-          lines.add(new ArrayList<>());
+          lines.add(new Line(cL, cP));
         }
         if (c == '\n') {
-          reprpos = -1;
-          crline = rlines[++crlinei];
+          cP = -1;
+          cL = rLines[++cLP];
         }
         i++;
       } else if (c == '⍝') {
@@ -150,15 +183,15 @@ class Tokenizer {
       //  printdbg("curr: "+join(levels, "|"));
       //}
       assert li < i; // nothing changed!
-      reprpos+= i-li;
+      cP+= i-li;
     }
     if (levels.size() != 1) throw new SyntaxError("error matching parentheses"); // or too many
     var lines = levels.get(0).a;
     if (lines.size() > 0 && lines.get(lines.size()-1).size() == 0) lines.remove(lines.size()-1); // no trailing empties!!
-    var expressions = new ArrayList<Token>();
-    for (ArrayList<Token> line : lines) {
-      expressions.add(new Token(TType.expr, line, uexpr));
+    var expressions = new ArrayList<LineTok>();
+    for (Line line : lines) {
+      expressions.add(new LineTok(line.line, line.pos, line.ts));
     }
-    return new Token(TType.lines, expressions, uexpr);
+    return new BasicLines(rLines[0], 0, expressions);
   }
 }

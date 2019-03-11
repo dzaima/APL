@@ -12,7 +12,7 @@ public class DerivedMop extends Builtin {
   }
 
   public Obj call(Value w) {
-    return op.call(aa, w);
+    return op.call(aa, w, this);
   }
   public Obj callInv(Value w) {
     return op.callInv(aa, w);
@@ -21,7 +21,7 @@ public class DerivedMop extends Builtin {
     return op.callInvW(aa, a, w);
   }
   public Obj call(Value a, Value w) {
-    return op.call(aa, a, w);
+    return op.call(aa, a, w, this);
   }
   
   @Override public String repr() {

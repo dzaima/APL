@@ -1,8 +1,10 @@
 package APL;
 
 import APL.errors.*;
+import APL.tokenizer.Token;
+import APL.tokenizer.types.*;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.DoubleArr;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
@@ -19,13 +21,13 @@ import static APL.Main.*;
 class Exec {
   private final Scope sc;
   private final List<Token> tokens;
-  private final Token allToken;
-  Exec(Token ln, Scope sc) {
+  private final LineTok allToken;
+  Exec(LineTok ln, Scope sc) {
     tokens = ln.tokens;
     allToken = ln;
     this.sc = sc;
   }
-
+  
   private void printlvl(Object... args) {
     if (!Main.debug) return;
     for (int i = 0; i < Main.printlvl; i++) print("  ");
@@ -35,8 +37,8 @@ class Exec {
   private Stack<Token> left;
   Obj exec() {
     if (tokens.size() > 0) Main.faulty = tokens.get(0);
-    else if (allToken != null) Main.faulty = allToken;
-    if (sc.alphaDefined && tokens.size() >= 2 && "⍺".equals(tokens.get(0).repr) && tokens.get(1).type == TType.set) {
+    else Main.faulty = allToken;
+    if (sc.alphaDefined && tokens.size() >= 2 && tokens.get(0) instanceof OpTok && ((OpTok) tokens.get(0)).op.equals("⍺") && tokens.get(1) instanceof SetTok) {
       if (Main.debug) printlvl("skipping cuz it's ⍺←");
       return null;
     }
@@ -55,27 +57,26 @@ class Exec {
     while (left.size() > 0) {
       Token t = left.pop();
       Obj c;
-      if (t.type == TType.name && left.size() >= 2
-        && left.peek().type == TType.op
-        && left.peek().repr.equals(".")
-        && left.get(left.size() - 2).type == TType.name) {
+      if (t instanceof NameTok && left.size() >= 2
+        && left.peek() instanceof OpTok
+        && ((OpTok) left.peek()).op.equals(".")
+        && left.get(left.size() - 2) instanceof NameTok) {
         int ptr = left.size() - 2;
         while (ptr >= 2) {
-          if (left.get(ptr - 1).type == TType.op
-           && left.get(ptr - 1).repr.equals(".")
-           && left.get(ptr - 2).type == TType.name) ptr -= 2;
+          if (left.get(ptr - 1) instanceof OpTok
+            && ((OpTok) left.get(ptr - 1)).op.equals(".")
+            && left.get(ptr - 2) instanceof NameTok) ptr -= 2;
           else break;
         }
         String[] names = new String[(left.size() - ptr >> 1) + 1];
-        names[names.length - 1] = t.repr;
+        names[names.length - 1] = ((NameTok) t).name;
         for (int i = names.length - 2; i >= 0; i--) {
-          Token dot = left.pop();
-          assert dot.repr.equals(".");
-          Token name = left.pop();
-          assert name.type == TType.name;
-          names[i] = name.repr;
+          OpTok dot = (OpTok) left.pop();
+          assert dot.op.equals(".");
+          NameTok name = (NameTok) left.pop();
+          names[i] = name.name;
         }
-  
+        
         if (Main.debug) printlvl("dotnot", Arrays.toString(names));
         Obj d = null;
         Settable r = sc.getVar(names[0]);
@@ -138,7 +139,7 @@ class Exec {
     }
     return done.get(0);
   }
-
+  
   private void update(boolean end) {
     if (done.size() == 1 && done.get(0) == null) return;
     while (true) {
@@ -339,7 +340,7 @@ class Exec {
   
   
   private int barPtr = 0;
-
+  
   private boolean is(String pt, boolean everythingDone, boolean fromStart) {
     barPtr = 0;
     if (pt.contains(",")) {
@@ -375,7 +376,6 @@ class Exec {
         int si = i;
         while (pt.charAt(i) != '[') i--;
         any = pt.substring(i + 1, si);
-//        i--;
         } else if (p == '[') { // reverse
         int si = i;
         while (pt.charAt(i) != ']') i++;
@@ -429,7 +429,7 @@ class Exec {
     }
     return true;
   }
-
+  
   private Obj valueOf(Token t) {
     Obj o = valueOfRaw(t);
     o.token = t;
@@ -437,135 +437,140 @@ class Exec {
   }
   
   private Obj valueOfRaw(Token t) {
-    switch (t.type) {
-      case op:
-        switch (t.repr.charAt(0)) {
-          // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
-          // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤
-          // fns
-          case '+': return new PlusBuiltin();
-          case '-': return new MinusBuiltin();
-          case '×': return new MulBuiltin();
-          case '÷': return new DivBuiltin();
-          case '*': return new StarBuiltin();
-          case '⍟': return new LogBuiltin();
-          case '√': return new RootBuiltin();
-          case '⌈': return new CeilingBuiltin();
-          case '⌊': return new FloorBuiltin();
-          case '|': return new StileBuiltin();
-          case '∧': return new AndBuiltin();
-          case '∨': return new OrBuiltin();
-          case '⍲': return new NandBuiltin(sc);
-          case '⍱': return new NorBuiltin(sc);
-          case '⊥': return new UTackBuiltin();
-          case '⊤': return new DTackBuiltin();
-          case '~': return new TildeBuiltin(sc);
-          case '○': return new TrigBuiltin();
-          case '!': return new ExclBuiltin();
-  
-          case '∊': return new EpsilonBuiltin();
-          case '⍷': return new FindBuiltin();
-          case '⊂': return new LShoeBuiltin();
-          case '⊇': return new RShoeUBBuiltin(sc);
-          case '⊃': return new RShoeBuiltin(sc);
-          case '∪': return new DShoeBuiltin();
-          case '∩': return new UShoeBuiltin();
-          case '⌷': return new SquadBuiltin(sc);
-          case '⍳': return new IotaBuiltin(sc);
-          case '⍸': return new IotaUBBuiltin(sc);
-          case '⍴': return new RhoBuiltin();
-          case ',': return new CatBuiltin();
-          case '≢': return new TallyBuiltin();
-          case '≡': return new DepthBuiltin();
-          case '⊢': return new RTackBuiltin();
-          case '⊣': return new LTackBuiltin();
-          case '↑': return new UpArrowBuiltin(sc);
-          case '↓': return new DownArrowBuiltin(sc);
-          case '?': return new RandBuiltin(sc);
-          case '⍪': return new CommaBarBuiltin();
-          case '⍉': return new TransposeBuiltin();
-          case '⊖': return new FlipBuiltin();
-          case '⌽': return new ReverseBuiltin();
-          case 'ϼ': return new RhoBarBuiltin(sc);
-          
-          case '…': return new EllipsisBuiltin();
-          case '⍮': return new SemiUBBuiltin();
-          case '⍕': return new FormatBuiltin();
-          case '⍎': return new EvalBuiltin(sc);
-          case '⍋': return new GradeUpBuiltin(sc);
-          case '⍒': return new GradeDownBuiltin(sc);
-          case '⌿': return new ReplicateBuiltin();
-          
-          // comparisons
-          case '<': return new LTBuiltin();
-          case '≤': return new LEBuiltin();
-          case '=': return new EQBuiltin();
-          case '≥': return new GEBuiltin();
-          case '>': return new GTBuiltin();
-          case '≠': return new NEBuiltin();
-  
-          // mops
-          case '/': return new ReduceBuiltin();
-          case '\\':return new ScanBuiltin();
-          case '¨': return new EachBuiltin();
-          case '⍨': return new SelfieBuiltin();
-          case '⌾': return new TableBuiltin();
-          case '⌸': return new KeyBuiltin(sc);
-          case '⍁': return new ObliqueBuiltin();
-  
-          // dops
-          case '∘': return new JotBuiltin();
-          case '.': return new DotBuiltin();
-          case '⍣': return new RepeatBuiltin(sc);
-          case '⍡': return new CRepeatBuiltin(sc);
-          case '⍤': return new JotDiaeresisBuiltin();
-          case '⍥': return new OverBuiltin();
-          case '⍢': return new DualBuiltin();
-          case '@': return new AtBuiltin(sc);
-          case '⍫': return new ObserveBuiltin();
-  
-  
-          case '⍬': return new DoubleArr(new double[0]);
-          case '⎕': return new Quad(sc);
-          case '⍞': return new QuoteQuad();
-          case '⍺': return sc.get("⍺");
-          case '⍵': return sc.get("⍵");
-          case '∇': return sc.get("∇");
-          case '⍶': return sc.get("⍶");
-          case '⍹': return sc.get("⍹");
-          default: throw new NYIError("no built-in " + t.repr + " defined in exec");
-        }
-      case number: return new Num(t.repr);
-      case chr:    return t.repr.length() == 1? new Char(t.repr) : Main.toAPL(t.repr);
-      case str:    return                                          Main.toAPL(t.repr);
-      case set:    return new SetBuiltin();
-      case name:   return sc.getVar(t.repr);
-      case expr:   return Main.execTok(t, sc);
-      case list: {
-        List<Token> ts = t.tokens;
-        if (ts.size() == 0) return new StrMap();
-        Token fst = ts.get(0);
-        if (fst.tokens != null && fst.colonPos() != -1) {
-          StrMap map = new StrMap();
-          for (Token ct : ts) {
-            Token name = ct.tokens.get(0);
-            if (ct.colonPos() ==-1)      SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
-            if (ct.colonPos() != 1)      SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
-            if (name.type != TType.name) SyntaxError.direct("expected a key name, got " + name.type, name);
-            List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
-            map.setStr(name.repr, Main.execTok(TType.expr, tokens, sc));
-          }
-          return map;
-        } else {
-          if (ts.size() == 1) {
-           return Main.execTok(fst, sc);
-          }
-          return Main.execTok(t, sc); // todo think about whether this should be a thing
-        }
+    if (t instanceof OpTok) {
+      OpTok t1 = (OpTok) t;
+      switch (t1.op.charAt(0)) {
+        // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
+        // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤
+        // fns
+        case '+': return new PlusBuiltin();
+        case '-': return new MinusBuiltin();
+        case '×': return new MulBuiltin();
+        case '÷': return new DivBuiltin();
+        case '*': return new StarBuiltin();
+        case '⍟': return new LogBuiltin();
+        case '√': return new RootBuiltin();
+        case '⌈': return new CeilingBuiltin();
+        case '⌊': return new FloorBuiltin();
+        case '|': return new StileBuiltin();
+        case '∧': return new AndBuiltin();
+        case '∨': return new OrBuiltin();
+        case '⍲': return new NandBuiltin(sc);
+        case '⍱': return new NorBuiltin(sc);
+        case '⊥': return new UTackBuiltin();
+        case '⊤': return new DTackBuiltin();
+        case '~': return new TildeBuiltin(sc);
+        case '○': return new TrigBuiltin();
+        case '!': return new ExclBuiltin();
+        
+        case '∊': return new EpsilonBuiltin();
+        case '⍷': return new FindBuiltin();
+        case '⊂': return new LShoeBuiltin();
+        case '⊇': return new RShoeUBBuiltin(sc);
+        case '⊃': return new RShoeBuiltin(sc);
+        case '∪': return new DShoeBuiltin();
+        case '∩': return new UShoeBuiltin();
+        case '⌷': return new SquadBuiltin(sc);
+        case '⍳': return new IotaBuiltin(sc);
+        case '⍸': return new IotaUBBuiltin(sc);
+        case '⍴': return new RhoBuiltin();
+        case ',': return new CatBuiltin();
+        case '≢': return new TallyBuiltin();
+        case '≡': return new DepthBuiltin();
+        case '⊢': return new RTackBuiltin();
+        case '⊣': return new LTackBuiltin();
+        case '↑': return new UpArrowBuiltin(sc);
+        case '↓': return new DownArrowBuiltin(sc);
+        case '?': return new RandBuiltin(sc);
+        case '⍪': return new CommaBarBuiltin();
+        case '⍉': return new TransposeBuiltin();
+        case '⊖': return new FlipBuiltin();
+        case '⌽': return new ReverseBuiltin();
+        case 'ϼ': return new RhoBarBuiltin(sc);
+        
+        case '…': return new EllipsisBuiltin();
+        case '⍮': return new SemiUBBuiltin();
+        case '⍕': return new FormatBuiltin();
+        case '⍎': return new EvalBuiltin(sc);
+        case '⍋': return new GradeUpBuiltin(sc);
+        case '⍒': return new GradeDownBuiltin(sc);
+        case '⌿': return new ReplicateBuiltin();
+        
+        // comparisons
+        case '<': return new LTBuiltin();
+        case '≤': return new LEBuiltin();
+        case '=': return new EQBuiltin();
+        case '≥': return new GEBuiltin();
+        case '>': return new GTBuiltin();
+        case '≠': return new NEBuiltin();
+        
+        // mops
+        case '/': return new ReduceBuiltin();
+        case '\\':return new ScanBuiltin();
+        case '¨': return new EachBuiltin();
+        case '⍨': return new SelfieBuiltin();
+        case '⌾': return new TableBuiltin();
+        case '⌸': return new KeyBuiltin(sc);
+        case '⍁': return new ObliqueBuiltin();
+        
+        // dops
+        case '∘': return new JotBuiltin();
+        case '.': return new DotBuiltin();
+        case '⍣': return new RepeatBuiltin(sc);
+        case '⍡': return new CRepeatBuiltin(sc);
+        case '⍤': return new JotDiaeresisBuiltin();
+        case '⍥': return new OverBuiltin();
+        case '⍢': return new DualBuiltin();
+        case '@': return new AtBuiltin(sc);
+        case '⍫': return new ObserveBuiltin();
+        
+        
+        case '⍬': return new DoubleArr(new double[0]);
+        case '⎕': return new Quad(sc);
+        case '⍞': return new QuoteQuad();
+        case '⍺': return sc.get("⍺");
+        case '⍵': return sc.get("⍵");
+        case '∇': return sc.get("∇");
+        case '⍶': return sc.get("⍶");
+        case '⍹': return sc.get("⍹");
+        default: throw new NYIError("no built-in " + ((OpTok) t).op + " defined in exec");
       }
-      case usr:    return UserDefined.of(t, sc);
-      case pick:   return new Brackets(t, sc);
-      default: throw new NYIError("Unknown type: " + t.type);
     }
+    if (t instanceof NumTok) return ((NumTok) t).num;
+    if (t instanceof ChrTok) return ((ChrTok) t).val;
+    if (t instanceof StrTok) return ((StrTok) t).val;
+    if (t instanceof SetTok) return SetBuiltin.inst;
+    if (t instanceof NameTok) return sc.getVar(((NameTok) t).name);
+    if (t instanceof LineTok) return Main.exec((LineTok) t, sc);
+    if (t instanceof ParenTok) {
+      List<LineTok> ts = ((ParenTok) t).tokens;
+      if (ts.size() == 0) return new StrMap();
+      LineTok fst = ts.get(0);
+      if (fst.tokens != null && fst.colonPos() != -1) {
+        StrMap map = new StrMap();
+        for (LineTok ct : ts) {
+          Token name = ct.tokens.get(0);
+          if (ct.colonPos() ==-1)         SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
+          if (ct.colonPos() != 1)         SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
+          if (!(name instanceof NameTok)) SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
+          List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
+          //noinspection ConstantConditions no?
+          map.setStr(((NameTok) name).name, Main.exec(LineTok.inherit(tokens), sc));
+        }
+        return map;
+      } else {
+        if (ts.size() == 1) {
+         return Main.exec(fst, sc);
+        }
+        List<Token> sts = new ArrayList<>();
+        for (Token st : ((ParenTok) t).tokens) {
+          sts.add(LineTok.inherit(st));
+        }
+        return Main.exec(LineTok.inherit(sts), sc); // todo think about whether this should be a thing
+      }
+    }
+    if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
+    if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
+    throw new NYIError("Unknown type: " + Main.explain(t));
   }
 }

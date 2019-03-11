@@ -9,7 +9,7 @@ public class ScanBuiltin extends Mop {
     return "\\";
   }
   
-  public Obj call(Obj aa, Value w) {
+  public Obj call(Obj aa, Value w, DerivedMop derv) {
     // TODO ranks
     if (! (aa instanceof Fun)) throw new SyntaxError("\\ expects ⍶ to be a function");
     Fun f = (Fun) aa;

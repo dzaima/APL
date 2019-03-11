@@ -2,7 +2,7 @@ package APL.types.functions.builtins.mops;
 
 import APL.types.*;
 import APL.types.arrs.DoubleArr;
-import APL.types.functions.Mop;
+import APL.types.functions.*;
 
 public class TableBuiltin extends Mop {
   @Override public String repr() {
@@ -10,7 +10,7 @@ public class TableBuiltin extends Mop {
   }
   
   
-  public Obj call(Obj f, Value a, Value w) {
+  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
     int[] shape = new int[a.rank+w.rank];
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
@@ -42,6 +42,7 @@ public class TableBuiltin extends Mop {
         }
       }
       if (allNums) {
+        if (shape.length == 0) return new Num(dres[0]);
         return new DoubleArr(dres, shape);
       } else { // i points to the place the failure should be
         Value[] res = new Value[a.ia*w.ia];
@@ -61,6 +62,7 @@ public class TableBuiltin extends Mop {
             res[i++] = (Value) ff.call(va, vw);
           }
         }
+        if (shape.length == 0 && res[0] instanceof Primitive) return res[0];
         return Arr.create(res, shape);
       }
     }
@@ -75,7 +77,7 @@ public class TableBuiltin extends Mop {
         }
       }
     }
-    if (shape.length == 0) return arr[0];
+    if (shape.length == 0 && arr[0] instanceof Primitive) return arr[0];
     return Arr.create(arr, shape);
   }
 }

@@ -6,6 +6,8 @@ import APL.types.*;
 import APL.types.functions.*;
 
 public class SetBuiltin extends Builtin {
+  public static SetBuiltin inst = new SetBuiltin();
+  
   @Override public String repr() {
     return "←";
   }

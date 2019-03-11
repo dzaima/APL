@@ -3,7 +3,7 @@ package APL.types.functions.builtins.mops;
 import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.arrs.*;
-import APL.types.functions.Mop;
+import APL.types.functions.*;
 import APL.types.functions.builtins.fns.UpArrowBuiltin;
 
 public class ObliqueBuiltin extends Mop {
@@ -13,7 +13,7 @@ public class ObliqueBuiltin extends Mop {
   
   
 
-  public Obj call(Obj f, Value w) {
+  public Obj call(Obj f, Value w, DerivedMop derv) {
     if (w.rank != 2) throw new DomainError("⍁ requires a rank-2 ⍵");
     Fun ff = (Fun) f;
     int[] sz = w.shape;

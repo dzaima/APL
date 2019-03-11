@@ -17,7 +17,7 @@ public class KeyBuiltin extends Mop {
     super(sc);
   }
   
-  public Obj call(Obj aa, Value w) {
+  public Obj call(Obj aa, Value w, DerivedMop derv) {
     if (aa instanceof APLMap) {
       if (w.rank > 1) {
         Value[] arr = new Value[w.ia];
@@ -53,7 +53,7 @@ public class KeyBuiltin extends Mop {
     throw new DomainError("⌸ ⍶ not map nor function");
   }
   
-  public Obj call(Obj aa, Value a, Value w) {
+  public Obj call(Obj aa, Value a, Value w, DerivedMop derv) {
     if (aa instanceof APLMap) {
       ((APLMap)aa).set(a, w);
       return w;

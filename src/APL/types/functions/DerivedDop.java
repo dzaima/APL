@@ -13,7 +13,7 @@ public class DerivedDop extends Builtin {
   }
   
   public Obj call(Value w) {
-    return op.call(aa, ww, w);
+    return op.call(aa, ww, w, this);
   }
   public Obj callInv(Value w) {
     return op.callInv(aa, ww, w);
@@ -22,7 +22,7 @@ public class DerivedDop extends Builtin {
     return op.callInvW(aa, ww, a, w);
   }
   public Obj call(Value a, Value w) {
-    return op.call(aa, ww, a, w);
+    return op.call(aa, ww, a, w, this);
   }
   @Override public String repr() {
     return aa.toString()+op.repr()+ww.toString();

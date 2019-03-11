@@ -3,7 +3,7 @@ package APL.types.functions.builtins.mops;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.dimensions.DimMMop;
-import APL.types.functions.Mop;
+import APL.types.functions.*;
 import APL.types.functions.builtins.fns.*;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
@@ -18,7 +18,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     return ngnReduce(w, dim, (Fun)f);
   }
   
-  public Obj call(Obj f, Value w) {
+  public Obj call(Obj f, Value w, DerivedMop derv) {
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
       return ngnReduce(w, -1, ff);
@@ -56,7 +56,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     return last.squeeze();
   }
   
-  public Obj call(Obj f, Value a, Value w) {
+  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
     if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", w);
     if (!(f instanceof Fun)) throw new DomainError("operand to / must be a function");
     int n = a.asInt();

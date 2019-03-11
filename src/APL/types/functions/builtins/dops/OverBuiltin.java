@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.dops;
 
 import APL.types.*;
-import APL.types.functions.Dop;
+import APL.types.functions.*;
 
 public class OverBuiltin extends Dop {
   @Override public String repr() {
@@ -10,7 +10,7 @@ public class OverBuiltin extends Dop {
   
   
   
-  public Obj call(Obj aa, Obj ww, Value a, Value w) {
+  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     var WW = (Fun) ww;
     return ((Fun)aa).call((Value) WW.call(a), (Value) WW.call(w));
   }

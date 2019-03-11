@@ -12,7 +12,7 @@ public class AtBuiltin extends Dop {
   public AtBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     int IO = sc.IO;
     int ia = w.ia;
     if (ww instanceof Fun) {

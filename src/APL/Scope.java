@@ -1,6 +1,8 @@
 package APL;
 
 import APL.errors.*;
+import APL.tokenizer.*;
+import APL.tokenizer.types.BasicLines;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
@@ -190,7 +192,7 @@ public class Scope {
       if (testTokenizing) {
         for (int i = 0; i < n; i++) Main.exec(test, sc);
       } else {
-        Token testTokenized = Tokenizer.tokenize(test);
+        BasicLines testTokenized = Tokenizer.tokenize(test);
         for (int i = 0; i < n; i++) Main.execLines(testTokenized, sc);
       }
       long end = System.nanoTime();
