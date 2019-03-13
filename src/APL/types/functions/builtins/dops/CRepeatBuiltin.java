@@ -34,8 +34,7 @@ public class CRepeatBuiltin extends Dop {
     } else {
       int n = ((Value) ww).asInt();
       Value curr = w;
-      res.add(curr);
-      for (int i = 0; i < n-1; i++) {
+      for (int i = 0; i < n; i++) {
         curr = (Value) aaf.call(curr);
         res.add(curr);
       }
