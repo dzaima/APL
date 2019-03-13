@@ -30,6 +30,8 @@ P5
   pmousepos | pmpos: array of previous mouse X & Y
   
   key: last key pressed
+  pressed key: check whether key is currently pressed. check key names with P5.lm←{⎕←⍵}
+  A (p lerp) B: lerp colors. p→0 prefers A, p→1 prefers B. vectorizes A & B
   
   fps|framerate : framerate
    fc|framecount: frame count since starting

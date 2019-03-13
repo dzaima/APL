@@ -127,6 +127,34 @@ class P5 extends APLMap {
         }
         public String repr() {return "P5.img"; }
       };
+      case "lerp": return new Mop() {
+        float p;
+        @Override public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+          p = (float) ((Value) f).asDouble();
+          return new Fn().rec(DNF, a, w);
+        }
+        class Fn extends Builtin {
+          Obj rec(DNf f, Value a, Value w) {
+            return numD(f, a, w);
+          }
+          public String repr(){return "";}
+        }
+        DNf DNF = new DNf();
+        class DNf implements NumDV {
+          public double call(double a, double w) {
+            int ai = (int) (long) a;
+            int wi = (int) (long) w;
+            return lerpColor(ai, wi, p);
+          }
+        }
+        public String repr() {return "P5.lerp"; }
+      };
+      case "pressed": return new Fun() {
+        public Obj call(Value w) {
+          return pressedKeys.contains(w.asString())? Num.ONE : Num.ZERO;
+        }
+        public String repr() {return "P5.lines"; }
+      };
       default: return NULL;
     }
   }
@@ -169,14 +197,14 @@ Arr MENU  = Main.toAPL("menu" );
 
 
 void keyPressed(KeyEvent e) {// println("press");
-  keyHandle(e, key, kp, mp);
+  keyHandle(e, key, kp, mp, true);
   keyCode = key = 0; // bad processing and your tendency to close the sketch :|
 }
 void keyReleased(KeyEvent e) {// println("release", kr, mr);
-  keyHandle(e, key, kr, mr);
+  keyHandle(e, key, kr, mr, false);
 }
-
-void keyHandle(KeyEvent e, char key, Fun kp, Fun mp) {
+HashSet<String> pressedKeys = new HashSet();
+void keyHandle(KeyEvent e, char key, Fun kp, Fun mp, boolean press) {
   if (e.getNative() instanceof java.awt.event.KeyEvent) {
     java.awt.event.KeyEvent ne = (java.awt.event.KeyEvent) e.getNative();
     String skey = java.awt.event.KeyEvent.getKeyText(e.getKeyCode());
@@ -203,7 +231,8 @@ void keyHandle(KeyEvent e, char key, Fun kp, Fun mp) {
           }
         }
         call(kp, arr(ctrl, shift, alt, altgr, meta), v);
-        
+        if (press) pressedKeys.add(v.asString());
+        else pressedKeys.remove(v.asString());
     }
   }
 }

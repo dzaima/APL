@@ -32,7 +32,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
     if (!aScalar && !wScalar) {
       if (a.rank != w.rank) throw new RankError("ranks not matchable", w);
       for (int i = 0; i < a.rank; i++) {
-        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable", w);
+        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable ("+new DoubleArr(a.shape)+" vs "+new DoubleArr(w.shape)+")", w);
       }
     }
     int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result
