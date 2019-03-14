@@ -103,6 +103,19 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return new ValueIterator();
   }
   
+  public Value ind(double[][] ind, int id, int IO) {
+    if (ind.length != rank) throw new RankError("array rank was "+rank+", tried to get item at rank "+ind.length, this);
+    int x = 0;
+    for (int i = 0; i < rank; i++) {
+      double c = ind[i][id];
+      if (c < IO) throw new DomainError("Tried to access item at position " + c, this);
+      if (c >= shape[i]+IO) throw new DomainError("Tried to access item at position " + c + " while max was " + shape[i], this);
+      x+= c-IO;
+      if (i != rank-1) x*= shape[i+1];
+    }
+    return get(x);
+  }
+  
   class ValueIterator implements Iterator<Value> {
     int c = 0;
     @Override

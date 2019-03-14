@@ -6,6 +6,7 @@ import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
+import jdk.jfr.Experimental;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -13,9 +14,11 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 
+@SuppressWarnings("WeakerAccess") // for use as a library
 public class Main {
   public static final String CODEPAGE = "\0\0\0\0\0\0\0\0\0\t\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~÷×↑↓⌈⌊≠∊⍺⍴⍵⍳∍⋾⎕⍞⌸⌺⍇⍁⍂⌻⌼⍃⍄⍈⍌⍍⍐⍓⍔⍗⍯⍰⍠⌹⊆⊇⍶⍸⍹⍘⍚⍛⍜⍊≤≥⍮ϼ⍷⍉⌽⊖⊙⌾○∘⍟⊗¨⍨⍡⍥⍩⍣⍢⍤⊂⊃∩∪⊥⊤∆∇⍒⍋⍫⍱⍲∨∧⍬⊣⊢⌷⍕⍎←→⍅⍆⍏⍖⌿⍀⍪≡≢⍦⍧⍭‽⍑∞…√";
   public static boolean debug = false;
+  public static boolean vind = false; // vector indexing
   public static boolean noBoxing = false;
   public static boolean quotestrings = false;
   public static boolean enclosePrimitives = false;
@@ -55,6 +58,7 @@ public class Main {
                   println("-q     : enable quoting of strings");
                   println("-b     : disable boxing");
                   println("-c     : disable colorful printing");
+                  println("-q     : define quads in the next argument");
                   println("-D file: run the file as SBCS");
                   println("-E a b : encode the file A in the SBCS, save as B");
                   println("If given no arguments, an implicit -r will be added");

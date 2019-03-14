@@ -10,4 +10,8 @@ public class DomainError extends APLError {
     super(s);
     this.cause = causeObj;
   }
+  
+  public static void must(boolean b, String msg) {
+    if (!b) throw new DomainError(msg);
+  }
 }

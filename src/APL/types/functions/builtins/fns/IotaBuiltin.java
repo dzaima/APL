@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Indexer;
-import APL.Scope;
+import APL.*;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
@@ -19,6 +18,7 @@ public class IotaBuiltin extends Builtin {
   public IotaBuiltin(Scope sc) {
     super(sc);
   }
+    
   public Obj call(Value w) {
     int IO = sc.IO;
     if (w instanceof Primitive) {
@@ -26,6 +26,7 @@ public class IotaBuiltin extends Builtin {
       for (int i = 0; i < res.length; i++) res[i] = i + IO;
       return new DoubleArr(res);
     }
+    if (Main.vind) return new RhoBarBuiltin(sc).call(w);
     int[] shape = w.asIntVec();
     int ia = Arrays.stream(shape).reduce(1, (a, b) -> a * b);
     Value[] arr = new Value[ia];

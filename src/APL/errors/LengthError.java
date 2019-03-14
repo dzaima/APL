@@ -10,4 +10,8 @@ public class LengthError extends APLError {
     super(s);
     this.cause = cause;
   }
+  
+  public static void must(boolean b, String msg) {
+      if (!b) throw new LengthError(msg);
+  }
 }

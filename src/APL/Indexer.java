@@ -1,6 +1,10 @@
 package APL;
 
 
+import APL.errors.*;
+import APL.types.*;
+import APL.types.arrs.Shape1Arr;
+
 import java.util.Iterator;
 
 public class Indexer implements Iterable<int[]>, Iterator<int[]> {
@@ -32,6 +36,7 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
       c[i] = offsets[i];
     }
   }
+  
   public boolean hasNext() {
     return ci < ia;
   }
@@ -79,6 +84,39 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
       if (i != shape.length-1) x*= shape[i+1];
     }
     return x;
+  }
+  
+  public static int ind(int[] shape, double[][] ds, int id, int IO) {
+    int x = 0;
+    for (int i = 0; i < shape.length; i++) {
+      x+= ds[i][id] - IO;
+      if (i != shape.length-1) x*= shape[i+1];
+    }
+    return x;
+  }
+  private static final double[][] EDAA = new double[0][0]; // empty double array array
+  public static double[][] inds(Obj ov) { // ⎕VI←1 indexes to double[][]
+    SyntaxError.must(ov instanceof Value, "expected array for index array");
+    Value v = (Value) ov;
+    if (v instanceof Primitive) return new double[][]{{v.asDouble()}};
+    DomainError.must(v.rank == 1, "rank of index array must be 1");
+    if (v.ia == 0) return EDAA;
+    if (v.get(0) instanceof Primitive) v = new Shape1Arr(v);
+    double[][] res = new double[v.ia][];
+    for (int i = 0; i < v.ia; i++) {
+      res[i] = v.get(i).asDoubleArr();
+    }
+    return res;
+  }
+  private static final int[] i1 = new int[1];
+  private static final int[] i0 = new int[0];
+  public static final int[] indsh(Obj ov) { // must be called after inds(ov)
+    Value v = (Value) ov;
+    if (v instanceof Primitive) return i1;
+    if (v.ia == 0) return i0;
+    Value fst = v.get(0);
+    if (fst instanceof Primitive) return v.shape;
+    return fst.shape;
   }
   
   @SuppressWarnings("NullableProblems") // not using @NotNull for non-intelliJ compilers

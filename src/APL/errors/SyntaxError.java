@@ -21,4 +21,8 @@ public class SyntaxError extends APLError {
     Main.faulty = t;
     throw new SyntaxError(msg);
   }
+  
+  public static void must(boolean b, String msg) {
+    if (!b) throw new SyntaxError(msg);
+  }
 }
