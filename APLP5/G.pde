@@ -59,12 +59,12 @@ class APLGraphics extends APLMap {
           g.textAlign(h, v);
           return w;
         }
-        public String repr() {return "P5.G.ta"; }
+        public String repr() { return "P5.G.ta"; }
       };
       case "rect": return new ForFA() {
         public void setup(Value a) {
           if (a == null) {  g.rectMode(CORNERS); return; }
-          switch(a.asString().toLowerCase()) { default: throw new DomainError("⍺ for G.ellipse can't be "+a);
+          switch(a.asString().toLowerCase()) { default: throw new DomainError("⍺ for G.rect can't be "+a);
             case  "corner": g.rectMode(CORNER ); break;
             case "corners": g.rectMode(CORNERS); break;
             case  "radius": g.rectMode(RADIUS ); break;

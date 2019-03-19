@@ -1,3 +1,5 @@
+import java.util.HashSet;
+import APL.types.Fun.NumDV;
 import java.io.UnsupportedEncodingException;
 static final Null NULL = Null.NULL;
 Scope global;
@@ -50,6 +52,7 @@ void call(Fun f, Value a, Value w) {
     e.printStackTrace();
     throw e;
   } catch (Throwable e) {
+    new NotErrorError("last known function:", null).print();
     e.printStackTrace();
     throw e;
   }

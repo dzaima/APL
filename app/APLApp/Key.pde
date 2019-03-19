@@ -171,7 +171,7 @@ class Action {
           mode = 1;
           fullX = -width/20;
           fullY = -height/20;
-          fullS = 10;
+          fullS = 1;
         break;
         case "extra":
           chars = Echars;

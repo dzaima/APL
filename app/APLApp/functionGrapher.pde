@@ -63,12 +63,14 @@ void functionGrapher() {
   Obj s = global.get("dxy");
   boolean joined = true;
   float ph = height/200f;
+  float mul = 1;
   if (s == null) {
     pts = 1000;
   } else {
     pts = ((Value)s).get(0).asInt();
     joined = ((Value)s).get(1).asDouble() != 0;
     ph = (float) ((Value)s).get(2).asDouble();
+    mul = ((Value)s).get(3).asInt();
   }
   ph/= (float)fullS;
   double sCut = b[0]-b[2];
@@ -96,10 +98,40 @@ void functionGrapher() {
   int ptsadded = 0;
   while (pq.size() > 0) {
     PQNode<Double, Point> bg = pq.biggest();
-    if (((Double) bg.m) > b[2]) {
-      Point p = (Point) bg.v;
-      add((p.x + p.pnode.next.v.x)/2,  p.pnode);
-      ptsadded++;
+    if (bg.m > b[2]) {
+      Point p = bg.v;
+      if (mul > 1) {
+        
+        ArrayList<Point> ps = new ArrayList<Point>();
+        ps.add(split((p.x + p.pnode.next.v.x)/2, p.pnode, null));
+        while (pq.size() > 0 && ps.size() < mul) {
+          bg = pq.biggest();
+          if (bg.m <= b[2]) break;
+          p = bg.v;
+          ps.add(split((p.x + p.pnode.next.v.x)/2, p.pnode, null));
+        }
+        double[] ds = new double[ps.size()];
+        for (int i = 0; i < ds.length; i++) {
+          p = ps.get(i);
+          ds[i] = p.x;
+        }
+        Value res;
+        try {
+          res = (Value) fn.call(new DoubleArr(ds));
+        } catch (Throwable e) { res = null; e.printStackTrace(); }
+        
+        for (int i = 0; i < ds.length; i++) {
+          if (res == null) ps.get(i).y = new double[0];
+          else ps.get(i).y = res.get(i).asDoubleArr();
+        }
+        ptsadded+= ds.length;
+        
+        
+        
+      } else {
+        add((p.x + p.pnode.next.v.x)/2,  p.pnode);
+        ptsadded++;
+      }
     } else break;
     if (System.nanoTime()-nt > 5E6) break;
   }
@@ -139,11 +171,13 @@ void functionGrapher() {
     }
     for(Line l : lns) l.draw();
   } else {
+    fill(0xffd2d2d2);
+    noStroke();
     //beginShape(POINTS);
     //strokeWeight(ph);
     while (n != points.end) {
-      //vertex((float)(n.v.x*scale), -(float)(n.v.y*scale));
-      for (double y : n.v.y) ellipse((float)(n.v.x*scale), -(float)(y*scale), ph, ph);
+      //for (double y : n.v.y) vertex ((float)(n.v.x*scale), -(float)(y*scale));
+        for (double y : n.v.y) ellipse((float)(n.v.x*scale), -(float)(y*scale), ph, ph);
       n = n.next;
     }
     //endShape();
@@ -158,6 +192,10 @@ void add(double pos, LLNode<Point> l) {
   } catch (Throwable e) {
     res = new double[0];
   }
+  split(pos, l, res);
+}
+
+Point split(double pos, LLNode<Point> l, double[] res) {
   Point p = new Point(pos, res);
   LLNode<Point> r = l.next;
   LLNode<Point> c = l.addAfter(p);
@@ -170,6 +208,7 @@ void add(double pos, LLNode<Point> l) {
     addPQ(l, c);
   }
   if (r != points.end) addPQ(c, r);
+  return p;
 }
 void addPQ(LLNode<Point> l, LLNode<Point> r) {
   double d = r.v.x - l.v.x;

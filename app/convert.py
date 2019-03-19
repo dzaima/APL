@@ -19,7 +19,7 @@ for filename in glob.iglob('APL/src/APL/**/*.java', recursive=True):
   with open(filename, 'w') as myfile:
     myfile.write(data)
 print('replaced')
-for i in range(5):
+for i in range(3):
 
 
   os.system('APL/build -Xdiags:verbose 2> err');

@@ -94,7 +94,11 @@ double lerp(double x, double y, double sc) {
 }
 
 public void keyPressed(KeyEvent e) {
-  //println(fullX, fullY, fullS);
+  if (key == 27) {
+    key = 0;
+    onBackPressed();
+  }
+  println(+key, keyCode/*, raw.getKeyChar(), raw.getKeyCode()*/);
   lastTouch = millis();
   if (key == 27) {
     if (mode != 0) {
@@ -110,7 +114,7 @@ public void keyPressed(KeyEvent e) {
 }
 static Key started;
 // change line below to //* for PC mode and /* for android
-//*
+/*
 void setup2() {
   surface.setResizable(true);
 }
@@ -131,7 +135,7 @@ class FT{
 }
 @Override
 public void settings() {
-  size(1600, 700, P2D);
+  size(1200, 600, P2D);
 }
 void copyText(final String s) {
   StringSelection selection = new StringSelection(s);
@@ -144,6 +148,7 @@ void pasteText() {
     String text = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
     gottenClip = text;
   } catch (Throwable e) {
+    e.printStackTrace();
     res = e.toString();
   }
 }
@@ -176,15 +181,15 @@ public void settings() {
   fullScreen(P2D);
 }
 void draw() {
+  mousePressed = touches.length>0;
+  //*/
   if (gottenClip != null) {
     ins(gottenClip);
     gottenClip = null;
   }
-  mousePressed = touches.length>0;
-  //*/
   if (mode != 0) {
     if (touches.length == 2) {
-      float ow = dist(touches[0].x, touches[0].y, touches[1].x, touches[0].y);
+      float ow = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
       double sc = ow/fullow;
       if (fullow != 0) {
         double avgX = (touches[0].x + touches[1].x) / 2f;
@@ -213,51 +218,52 @@ void draw() {
     //float vl = (float)(-fullX*fullS);
     //line(vl, 0, vl, height);
     
-    
     pushMatrix();
     translate((int)(-fullX * fullS), (int)(-fullY * fullS));
     scale((float)fullS);
     
     stroke(0xff666666);
     strokeWeight(1 / (float)fullS);
-                 
-    int freq = 10;
-    
-    float sx = (float) (fullX/scale);
-    float ex = (float) ((fullX + width/fullS)/scale);
-    
-    float sy = (float) (fullY/scale);
-    float ey = (float) ((fullY + height/fullS)/scale);
-    
-    float rsz = log((ex-sx)/freq)/log(10);
-    float sz = pow(10, floor(rsz));
-    float m1 = rsz % 1;
-    if (m1 < 0) m1+= 1;
-    if (m1 > .6) sz*= 5;
-    else if (m1 > .3) sz*= 2;
-    
-    textAlign(LEFT, BOTTOM);
-    fill(0xffd2d2d2);
-    float ts = width/70f / (float)fullS;
-    textSize(ts);
-    DecimalFormat df = new DecimalFormat("#.0");
-    
-    int dgs = ceil(log(1/sz)/log(10));
-    df.setMaximumFractionDigits(dgs);
-    df.setMinimumFractionDigits(dgs);
-    
-    
-    for (float x = (float)Math.floor(sx/sz) * sz; x < ex; x+= sz) {
-      line(x, sy, x, ey);
-      float off = ts*1.5;
-      float ty = sy>-off? sy+off : ey<0? ey : 0;
-      text(df.format(x), x, ty);
-    }
-    for (float y = (float)Math.floor(sy/sz) * sz; y < ey; y+= sz) {
-      line(sx, y, ex, y);
-      float off = ts*3;
-      float tx = sx>0? sx : ex < off? ex-off : 0;
-      text(df.format(y), tx, y);
+    if (mode == 2) {
+                   
+      int freq = 10;
+      
+      float sx = (float) (fullX/scale);
+      float ex = (float) ((fullX + width/fullS)/scale);
+      
+      float sy = (float) (fullY/scale);
+      float ey = (float) ((fullY + height/fullS)/scale);
+      
+      float rsz = log((ex-sx)/freq)/log(10);
+      float sz = pow(10, floor(rsz));
+      float m1 = rsz % 1;
+      if (m1 < 0) m1+= 1;
+      if (m1 > .6) sz*= 5;
+      else if (m1 > .3) sz*= 2;
+      
+      textAlign(LEFT, BOTTOM);
+      fill(0xffd2d2d2);
+      float ts = width/70f / (float)fullS;
+      textSize(ts);
+      DecimalFormat df = new DecimalFormat("#.0");
+      
+      int dgs = ceil(log(1/sz)/log(10));
+      df.setMaximumFractionDigits(dgs);
+      df.setMinimumFractionDigits(dgs);
+      
+      
+      for (float x = (float)Math.floor(sx/sz) * sz; x < ex; x+= sz) {
+        line(x, sy, x, ey);
+        float off = ts*1.5;
+        float ty = sy>-off? sy+off : ey<0? ey : 0;
+        text(df.format(x), x, ty);
+      }
+      for (float y = (float)Math.floor(sy/sz) * sz; y < ey; y+= sz) {
+        line(sx, y, ex, y);
+        float off = ts*3;
+        float tx = sx>0? sx : ex < off? ex-off : 0;
+        text(df.format(-y), tx, y);
+      }
     }
     
     
