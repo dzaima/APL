@@ -14,7 +14,7 @@ public class EachBuiltin extends Mop {
   
 
   public Obj call(Obj f, Value w, DerivedMop derv) {
-    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w) : f;
+    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : f;
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
       n[i] = (f instanceof Fun ?

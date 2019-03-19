@@ -555,7 +555,7 @@ class Exec {
           if (!(name instanceof NameTok)) SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
           //noinspection ConstantConditions no?
-          map.setStr(((NameTok) name).name, Main.exec(LineTok.inherit(tokens), sc));
+          map.setStr(((NameTok) name).name, Main.oexec(LineTok.inherit(tokens), sc));
         }
         return map;
       } else {

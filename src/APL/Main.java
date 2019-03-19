@@ -6,7 +6,6 @@ import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
-import jdk.jfr.Experimental;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -263,6 +262,25 @@ public class Main {
   public static Obj exec(LineTok s, Scope sc) {
     return new Exec(s, sc).exec();
   }
+  
+  
+  
+  public static Obj oexec(LineTok s, Scope sc) {
+    Obj val = Main.exec(s, sc);
+    if (val instanceof VarArr) val = ((VarArr) val).materialize();
+    if (val instanceof Settable) val = ((Settable) val).get();
+    return val;
+  }
+  
+  public static Obj vexec(LineTok s, Scope sc) {
+    Obj val = Main.exec(s, sc);
+    if (val instanceof VarArr) val = ((VarArr) val).materialize();
+    if (val instanceof Settable) val = ((Settable) val).get();
+    if (val instanceof Value) return val;
+    throw new SyntaxError("expected array, got " + val.humanType(true));
+  }
+  
+  
   static public Obj execLines(TokArr<LineTok> lines, Scope sc) {
     Obj res = null;
     HashMap<EType, LineTok> eGuards = new HashMap<>();
@@ -272,7 +290,7 @@ public class Main {
         int guardPos = ln.colonPos();
         int eguardPos = ln.eguardPos();
         if (guardPos != -1 && eguardPos != -1) throw new SyntaxError("both : and :: found in line");
-        boolean endAfter = tokens.size() > 0 && tokens.get(0) instanceof SetTok;
+        boolean endAfter = tokens.size() > 1 && tokens.get(0) instanceof SetTok;
         if (endAfter) tokens = tokens.subList(1, tokens.size());
         else if (guardPos != -1) {
           if (guardPos == tokens.size()-1) throw new SyntaxError("Guard without success expression");
