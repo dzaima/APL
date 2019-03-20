@@ -1,0 +1,139 @@
+⎕IO←0
+G←P5.G
+W ← 10
+vH ← 20 ⍝ visible height
+oH ← 5  ⍝ extra height on the top of the map
+H ← oH+vH
+sz ← H W
+csz ← 30    ⍝ cell size
+sideW ← 100 ⍝ extra space to sides
+P5.size← (sideW×2) 0 + csz×W vH
+
+ttd←,¨/    ⍝ convert two arrays to array of 2s; aka convert good format to bad
+pcs ← ( ⍝ tetromino definitions I T O L J S Z
+  ⍬
+  ¯1 0 1  2 ⍝ I
+   0 0 0 ¯1 ⍝ T
+   0 1 0  1 ⍝ O
+  ¯1 0 1  1 ⍝ L
+  ¯1 0 1  1 ⍝ J
+   0 0 1  1 ⍝ S
+   0 0 1  1 ⍝ Z
+) (
+  ⍬
+   0  0 0  0 ⍝ I
+   0 ¯1 1  0 ⍝ T
+   0  0 1  1 ⍝ O
+   0  0 0  1 ⍝ L
+   0  0 0 ¯1 ⍝ J
+   1  0 0 ¯1 ⍝ S
+  ¯1  0 0  1 ⍝ Z
+) 
+rand ← {1+?⍵⍴¯1+≢⊃pcs}
+rot ← { ⍝ ⍺ - dir, ⍵ - xarr yarr
+  y x←⍵
+  ⍺=0:← ⍵
+  ⍺=1:← x (-y)
+  ⍺=2:← (-y) (-x)
+  ⍺=3:← (-x) y
+}
+colors ← P5.col¨ '000000' '00fdff' 'ff00ff' 'ffff00' 'ff8000' '0000ff' '00ff00' 'ff0000'
+cs ← ⍬ ⍝ board
+
+oT ← 0 ⍝ offhand type
+
+nT ← rand 4 ⍝ preview pieces
+
+hT ← 0   ⍝ held type
+hP ← 0 0 ⍝ held pos
+hD ← 0   ⍝ held dir
+
+newGame ← {
+  cs⊢← sz⍴0
+}
+newH ← { ⍝ new held; return old type
+  old ← hT
+  hD⊢← 0
+  hT⊢← ⍵⍝N
+  hP⊢← (⌊W÷2) oH
+  old
+}
+newH rand⍬
+newGame⍬
+keys ← (
+  (k: "Down" ⋄ t:0 ⋄ s:0 ⋄ f:{tr 1  0} ⋄ d:2)
+  (k: "Left" ⋄ t:0 ⋄ s:7 ⋄ f:{tr 0 ¯1} ⋄ d:4)
+  (k:"Right" ⋄ t:0 ⋄ s:7 ⋄ f:{tr 0  1} ⋄ d:4)
+)
+piece ← { ⍝ ⍺ - coords, ⍵ - type; draw piece
+  sz ← csz×.7
+  ⍵≡0:←0
+  pos ← ⌽sz×⍵⊃¨pcs
+  pos ← (⊢-.5×⌈/+⌊/)¨pos
+  'center' G.rect (ttd ⍺+pos),¨⊂sz sz (⍵⊃colors)
+}
+next ← {
+  old ← newH ⊃nT
+  nT↓⍨←1
+  nT,←rand⍬
+  old
+}
+P5.draw ← {
+  G.bg '2'
+  0=30|P5.fc: tr 1 0
+  G.stroke←'333333'
+  d ← cs⊇colors ⍝ board
+  d ← ((hT⊃colors)@(ttd hP + hD rot hT⊃¨pcs)) d ⍝ held piece
+  phP ← hP
+  ⊢⍣(~tr)⊢1 0
+  d ← ({⍵ (.3 P5.lerp) hT⊃colors}@(ttd hP + hD rot hT⊃¨pcs)) d ⍝ ghost
+  hP⊢← phP
+  {
+    t←⍵.t
+    ⍵.t ← (P5.pressed ⍵.k) × t+1
+    ((t=1) ∨ t>⍵.s) ∧ 1=⍵.d|t: (⍵.f) ⍬
+  }¨ keys
+  'corner' G.rect (((csz×⌽¨⍳sz) + ⊂sideW (-csz×oH)),¨⊂csz csz),¨d
+  (2⍴ .5× sideW) piece oT
+  (⍳≢nT) { ((W×csz)+sideW×1.5) (sideW×⍺+.5) piece ⍵}¨nT
+}
+OOB ← { ⍝ out of bounds
+  ∨∊⍵<0 :← 1
+  ∨∊⍵≥sz:← 1
+  0
+}
+tr ← {
+  nps ← ⍵ + hP + hD rot hT⊃¨pcs
+  OOB nps:← 0
+  ∨ 0≠ (ttd nps)⊇cs:← 0
+  hP+← ⍵
+  1
+}
+rotH ← { ⍝ ⍵ - ∆hD
+  nhD ← 4|hD+⍵
+  nps ← hP + nhD rot hT⊃¨pcs
+  OOB nps:← 0
+  ∨ 0≠ (ttd nps)⊇cs:← 0
+  hD⊢← nhD
+  1
+}
+place ← {
+  ⊢⍣(~tr) 1 0
+  cs⊢← hT @ (ttd hP + hD rot hT⊃¨pcs) ⊢ cs
+  next⍬
+  N ← (∨/0=cs)⌿↓cs
+  cs⊢← ((H - ≢N) W⍴0) ⍪ ↑N
+  ⎕←cs
+}
+P5.kp ← {
+  ⍵≡"Up": rotH 1
+  ⍵≡"z" : rotH 3
+  ⍵≡" " : place ⍬
+  ⍵≡"c" : {
+    oT≡0:← {
+      oT⊢← newH ⊃nT
+      next⍬
+    }⍬
+    oT⊢← newH oT
+  }⍬
+}
