@@ -1,7 +1,5 @@
 package APL.types;
 
-import APL.types.arrs.HArr;
-
 import java.util.*;
 
 public class StrMap extends APLMap {

@@ -4,6 +4,8 @@ import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 
+import java.util.Arrays;
+
 public class ChrArr extends Arr {
   public String s;
   
@@ -62,5 +64,14 @@ public class ChrArr extends Arr {
   @Override
   public Value squeeze() {
     return this;
+  }
+  
+  @Override
+  public int hashCode() {
+    int r = 0;
+    for (char c : s.toCharArray()) {
+      r = r*31 + c;
+    }
+    return r;
   }
 }

@@ -287,6 +287,15 @@ public abstract class Arr extends Value {
     return true;
   }
   
+  @Override
+  public int hashCode() {
+    int r = 0;
+    for (Value v : this) {
+      r = r*31 + v.hashCode();
+    }
+    return r;
+  }
+  
   // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.
   private class delete_new_pls extends Exception{}
   public class create extends Main {create(Object...FO) throws delete_new_pls{}}

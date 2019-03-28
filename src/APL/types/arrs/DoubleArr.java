@@ -167,4 +167,12 @@ public class DoubleArr extends Arr {
     }
     return super.equals(o);
   }
+  
+  @Override public int hashCode() {
+    int r = 0;
+    for (double d : arr) {
+      r = r*31 + Double.hashCode(d);
+    }
+    return r;
+  }
 }

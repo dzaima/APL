@@ -94,6 +94,7 @@ public class Scope {
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕UCS": return new UCS(this);
+        case "⎕HASH": return new Hasher();
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
         case "⎕PP": return new Num(Num.pp);
@@ -322,7 +323,7 @@ public class Scope {
   
   private class Optimizer extends Builtin {
     @Override public String repr() {
-      return "⎕OPTIMIZE";
+      return "⎕OPT";
     }
     Optimizer(Scope sc) {
       super(sc);
@@ -355,11 +356,21 @@ public class Scope {
     Ex(Scope sc) {
       super(sc);
     }
-  
+    
     @Override
     public Obj call(Value w) {
       String path = w.asString();
       return Main.exec(Main.readFile(path), sc);
     }
   }
+  static private class Hasher extends Builtin {
+    @Override public String repr() {
+      return "⎕HASH";
+    }
+    @Override
+    public Obj call(Value w) {
+      return new Num(w.hashCode());
+    }
+  }
+  
 }

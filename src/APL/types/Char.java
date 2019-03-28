@@ -68,7 +68,7 @@ public class Char extends Primitive {
   
   @Override
   public int hashCode() {
-    return Character.hashCode(chr);
+    return chr;
   }
   
   @Override

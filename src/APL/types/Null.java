@@ -24,4 +24,8 @@ public class Null extends Primitive {
     assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
     return new SingleItemArr(this, sh);
   }
+  
+  @Override public int hashCode() {
+    return 387678968; // random yay
+  }
 }

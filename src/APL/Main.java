@@ -165,7 +165,7 @@ public class Main {
           if (cr.startsWith(")")) {
             String[] parts = cr.split(" ");
             String t = parts[0].toUpperCase();
-            String rest = cr.substring(t.length());
+            String rest = parts.length==1? "" : cr.substring(t.length()+1);
             switch (t) {
               case ")EX":
                 exec(readFile(parts[1]), global);
@@ -185,6 +185,7 @@ public class Main {
               case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
               case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
               case ")CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
+              case ")UOPT"        : var e = (Arr)global.get(rest); global.set(rest, new HArr(e.values(), e.shape)); break;
               case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
               case ")STACK":
                 if (lastError != null) {

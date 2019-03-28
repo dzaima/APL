@@ -62,16 +62,6 @@ public class HArr extends Arr {
     return get(0) instanceof Primitive? get(0).prototype() : EmptyArr.SHAPE0;
   }
   
-  private Integer hashCode;
-  @Override
-  public int hashCode() {
-    if (hashCode == null) {
-      hashCode = Arrays.hashCode(arr);
-      hashCode^= Arrays.hashCode(shape);
-    }
-    return hashCode;
-  }
-  
   @Override
   public Value[] values() {
     return arr;
