@@ -229,6 +229,7 @@ public class Num extends Primitive {
   
   @Override
   public int hashCode() {
+    if (num == 0d) return 0;
     return Double.hashCode(num);
   }
   

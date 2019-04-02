@@ -278,22 +278,25 @@ public abstract class Arr extends Value {
   @Override
   public boolean equals(Obj o) {
     if (!(o instanceof Arr)) return false;
-    if (!Arrays.equals(shape, ((Arr) o).shape)) return false;
+    Arr a = (Arr) o;
+    if (!Arrays.equals(shape, a.shape)) return false;
+    if (hash!=0 && a.hash!=0 && hash != a.hash) return false;
     Value[] mvs = values();
-    Value[] ovs = ((Arr) o).values();
+    Value[] ovs = a.values();
     for (int i = 0; i < mvs.length; i++) {
       if (!mvs[i].equals(ovs[i])) return false;
     }
     return true;
   }
-  
+  private int hash;
   @Override
   public int hashCode() {
-    int r = 0;
+    if (hash != 0) return hash;
+    // hash = 0;
     for (Value v : this) {
-      r = r*31 + v.hashCode();
+      hash = hash*31 + v.hashCode();
     }
-    return r;
+    return hash;
   }
   
   // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.

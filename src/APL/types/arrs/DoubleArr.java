@@ -163,16 +163,23 @@ public class DoubleArr extends Arr {
   @Override
   public boolean equals(Obj o) {
     if (o instanceof DoubleArr) {
-      return Arrays.equals(shape, ((DoubleArr) o).shape) && Arrays.equals(arr, ((DoubleArr) o).arr);
+      DoubleArr da = (DoubleArr) o;
+      if ((hash!=0 && da.hash!=0 && hash != da.hash) || !Arrays.equals(shape, da.shape)) return false;
+      for (int i = 0; i < ia; i++) {
+        if (arr[i] != da.arr[i]) return false;
+      }
+      return true;
     }
     return super.equals(o);
   }
-  
+  int hash;
   @Override public int hashCode() {
-    int r = 0;
+    if (hash != 0) return hash;
+    // hash = 0;
     for (double d : arr) {
-      r = r*31 + Double.hashCode(d);
+      hash = hash*31;
+      if (d != 0d) hash+= Double.hashCode(d);
     }
-    return r;
+    return hash;
   }
 }

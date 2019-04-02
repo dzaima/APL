@@ -45,8 +45,9 @@ public class SetBuiltin extends Builtin {
     }
   }
 
-  public Obj call(Fun f, Obj a, Value b) {
-    return call(a, f.call((Value) ((Settable) a).get(), b), true);
+  public Obj call(Fun f, Obj a, Value w) {
+    call(a, f.call((Value) ((Settable) a).get(), w), true);
+    return w;
   }
   
   @Override
