@@ -114,7 +114,7 @@ public void keyPressed(KeyEvent e) {
 }
 static Key started;
 // change line below to //* for PC mode and /* for android
-/*
+//*
 void setup2() {
   surface.setResizable(true);
 }
