@@ -30,11 +30,11 @@ public class Main {
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
   public static Tokenable faulty;
+  private static Throwable lastError = null;
   public static void main(String[] args) {
     colorful = System.console() != null && System.getenv().get("TERM") != null;
     console = new Scanner(System.in);
     Scope global = new Scope();
-    Throwable lastError = null;
     boolean REPL = false;
     boolean silentREPL = false;
     if (args.length > 0) {
@@ -158,51 +158,22 @@ public class Main {
     }
     if (args.length == 0 || REPL) {
       if (!silentREPL) print("> ");
-      REPL: while (console.hasNext()) {
+      while (console.hasNext()) {
         try {
           String cr = console.nextLine();
           if (cr.equals("exit")) break;
           if (cr.startsWith(")")) {
-            String[] parts = cr.split(" ");
-            String t = parts[0].toUpperCase();
-            String rest = parts.length==1? "" : cr.substring(t.length()+1);
-            switch (t) {
-              case ")EX":
-                exec(readFile(parts[1]), global);
-                break;
-              case ")DEBUG":
-                debug = !debug;
-                break;
-              case ")QUOTE":
-                quotestrings = !quotestrings;
-                break;
-              case ")ONELINE":
-                noBoxing = !noBoxing;
-                break;
-              case ")OFF": case ")EXIT": case ")STOP":
-                break REPL;
-              case ")TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
-              case ")TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-              case ")ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
-              case ")CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
-              case ")UOPT"        : var e = (Arr)global.get(rest); global.set(rest, new HArr(e.values(), e.shape)); break;
-              case ")ATYPE"       : println(exec(rest, global).humanType(false)); break;
-              case ")STACK":
-                if (lastError != null) {
-                  lastError.printStackTrace();
-                }
-                break;
-              default:
-                throw new SyntaxError("Undefined user command");
-            }
+            if (")OFF".equals(cr) || ")EXIT".equals(cr) || ")STOP".equals(cr)) break /* REPL */;
+            ucmd(global, cr.substring(1));
           } else {
             Obj r = exec(cr, global);
             if (r!=null) println(r.toString());
           }
         } catch (APLError e) {
-          e.print();
           lastError = e;
+          e.print();
         } catch (Throwable e) {
+          lastError = e;
           colorprint(e + ": " + e.getMessage(), 246);
           if (faulty != null && faulty.getToken() != null) {
             String s = IntStream.range(0, faulty.getToken().pos).mapToObj(i -> " ").collect(Collectors.joining());
@@ -213,6 +184,41 @@ public class Main {
         }
         if (!silentREPL) print("> ");
       }
+    }
+  }
+  
+  
+  
+  private static void ucmd(Scope global, String cr) {
+    String[] parts = cr.split(" ");
+    String t = parts[0].toUpperCase();
+    String rest = parts.length==1? "" : cr.substring(t.length()+1);
+    switch (t) {
+      case "EX":
+        exec(readFile(parts[1]), global);
+        break;
+      case "DEBUG":
+        debug = !debug;
+        break;
+      case "QUOTE":
+        quotestrings = !quotestrings;
+        break;
+      case "ONELINE":
+        noBoxing = !noBoxing;
+        break;
+      case "TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
+      case "TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
+      case "ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
+      case "CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
+      case "UOPT"        : var e = (Arr)global.get(rest); global.set(rest, new HArr(e.values(), e.shape)); break;
+      case "ATYPE"       : println(exec(rest, global).humanType(false)); break;
+      case "STACK":
+        if (lastError != null) {
+          lastError.printStackTrace();
+        }
+        break;
+      default:
+        throw new SyntaxError("Undefined user command");
     }
   }
   
@@ -236,7 +242,6 @@ public class Main {
     }
   }
   
-  @SuppressWarnings("WeakerAccess")
   public static Obj exec(String s, Scope sc) {
     BasicLines t = Tokenizer.tokenize(s);
     printdbg(t);
