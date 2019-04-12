@@ -1,33 +1,64 @@
+import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
+import java.net.URLConnection;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Optional;
 ArrayList<Drawable> screen = new ArrayList();
 Keyboard kb;
 TextReciever textInput;
-
-TextReciever testRec = new TextReciever() {
-  String ln = "";
-  void append(String str) {
-    ln+= str;
-    print(str);
-  }
-  void delete() {
-    if (ln.length() == 0) return;
-    println("\nignore that");
-    ln = ln.substring(0, ln.length()-1);
-    print(ln);
-  }
-  void clear() {
-    println("\nignore ALL that...");
-    ln = "";
-  }
-  String allText() {
-    return ln;
-  }
-};
+ROText REPLH;
 void setup() {
   //size(800, 450);
+  //size(450, 800);
+  //size(550, 560);
+  size(540, 830);
+  //fullScreen();
   background(#0a0a0a);
   textFont(createFont("APL385+.ttf", 48));
-  textInput = testRec;
+  REPLH = new ROText(0, 0, width, 340);
+  APLField f = new APLField(0, 350, width, 40) {
+    Interpreter it = new Dyalog();
+    
+    void eval() {
+      textln("  "+line+"\n");
+      if (line.startsWith(":")) {
+        String cmd = line.substring(1);
+        int i = cmd.indexOf(" "); 
+        String nm = i==-1? cmd : cmd.substring(0, i);
+        String arg = i==-1? "" : cmd.substring(i+1);
+        String argl = arg.toLowerCase();
+        if (nm.equals(":")) it.special(line.substring(1));
+        else if (nm.equals("sz")) REPLH.setSize(int(arg));
+        else if (nm.equals("i")) {
+          if (argl.equals("dyalog")) {
+            it = new Dyalog();
+          }
+          if (argl.equals("dzaima")) {
+            it = new DzaimaAPL();
+          }
+        } else if (nm.equals("clear")) {
+          REPLH.set(new ArrayList());
+        } else textln("Command "+nm+" not found");
+        //else if (nm.equals(""))
+        return;
+      }
+      String[] res = it.get(line);
+      for (String ln : res) {
+        textln(ln);
+      }
+    }
+    void textln(String ln) {
+      REPLH.append(ln);
+    }
+    void newline() {
+      eval();
+      clear();
+    }
+  };
+  textInput = f;
   resize(width, height);
 }
 boolean redraw;
@@ -49,22 +80,43 @@ void draw() {
     smouseY = mouseY;
     mouseStart = millis();
   }
+  if (mouseButton == RIGHT) resize(width, height);
   for (Drawable d : screen) {
     d.tick();
   }
   if (redraw) {
     background(#101010);
-    kb.redraw();
+    for (Drawable d : screen) {
+      d.redraw();
+    }
     redraw = false;
   }
-  fill(#101010);
-  rect(0, 0, width, 100);
-  textAlign(LEFT, TOP);
-  fill(#D2D2D2);
-  textSize(min(width, height)/20);
-  text(testRec.allText(), 0, 0);
+  //fill(#101010);
+  //rect(0, 0, width, 100);
+  //textAlign(LEFT, TOP);
+  //fill(#D2D2D2);
+  //textSize(min(width, height)/20);
+  //text(testRec.allText(), 0, 0);
   pmousePressed = mousePressed;
 }
+/*
+65535 38
+65535 37
+65535 40
+65535 39
+*/
 void keyPressed() {
-  resize(height, width);
+  if (key == 65535) {
+         if (keyCode == 38) textInput.special("up");
+    else if (keyCode == 37) textInput.special("left");
+    else if (keyCode == 40) textInput.special("down");
+    else if (keyCode == 39) textInput.special("right");
+  } else {
+    if (key == 8) textInput.backspace();
+    else if (key == 26 && keyCode == 90) textInput.special("undo");
+    else if (key == 25 && keyCode == 89) textInput.special("redo");
+    else textInput.append(Character.toString(key));
+  }
+  //println(+key, keyCode);
+  //resize(height, width);
 }

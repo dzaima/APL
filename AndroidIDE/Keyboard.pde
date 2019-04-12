@@ -42,25 +42,33 @@ class Keyboard extends Drawable {
   Key start;
   
   void tick() {
-    if (!pmousePressed && mousePressed && mouseInMe()) {
+    if (!pmousePressed && mousePressed && dragged()) {
       int mx = (mouseX-x) / kw;
       int my = (mouseY-y) / kh;
-      if (mx >= 0 && my >= 0 && mx < xam && my < yam) start = keys[my][mx];
+      if (mx >= 0 && my >= 0 && mx < xam && my < yam) {
+        start = keys[my][mx];
+        start.redraw();
+      }
     }
     if (pmousePressed && !mousePressed && start != null) {
       Action a = findAction();
+      Key t = start;
       start = null;
+      t.redraw();
       if (a != null) a.call();
     }
     if (start != null) {
-      if (millis() - mouseStart > 200) {
-        Action a = findAction();
-        if (a != null && a.rep) a.call();
+      Action a = findAction();
+      if (a != null) {
+        a.k.redraw(a);
+        if (millis() - mouseStart > 200) {
+          if (a.rep && frameCount%2==1) a.call();
+        }
       }
     }
   }
   Action findAction() {
-    if (dist(mouseX, mouseY, smouseX, smouseY) > kh) { // gesture
+    if (dist(mouseX, mouseY, smouseX, smouseY) > kh/3) { // gesture
       int dx = mouseX - smouseX;
       int dy = mouseY - smouseY;
       if (Math.abs(dx) > Math.abs(dy)) {
@@ -91,6 +99,13 @@ static final float[][] offsets = {
   {.2, .5 }, // left
   {.8, .5 }, // right
 };
+static final float[][] corners = {
+  null,
+  {0, 0, 1, 0},
+  {0, 1, 1, 1},
+  {0, 0, 0, 1},
+  {1, 0, 1, 1},
+};
 
 class Key extends Drawable {
   Keyboard b;
@@ -104,11 +119,25 @@ class Key extends Drawable {
   }
   
   void redraw() {
-    fill(col);
+    redraw(null);
+  }
+  
+  void redraw(Action hl) { // highlight
+    fill(b.start == this && (hl == actions[0])? lerpColor(col, #aaaaaa, .1) : col);
     noStroke();
     int px = b.x + x*w;
     int py = b.y + y*h;
     rect(px, py, w, h);
+    if (hl != null) {
+      for(int i = 1; i < 5; i++) {
+        Action a = actions[i];
+        if (a == hl) {
+          fill(lerpColor(col, #aaaaaa, .1));
+          triangle(px+w/2, py+h/2, px + w*corners[i][0], py + h*corners[i][1], px + w*corners[i][2], py + h*corners[i][3]);
+          break;
+        }
+      }
+    }
     for(int i = 0; i < 5; i++) {
       Action a = actions[i];
       float[] offs = offsets[i];
@@ -124,14 +153,14 @@ class Key extends Drawable {
           textSize(h*.33f);
           yoff = h/20f;
         } else {
-          textSize(h*.5f);
+          textSize(h*.4f);
         }
       } else {
         if (a.sd) {
-          textSize(h*.1f);
+          textSize(h*.08f);
           yoff = h/40f;
         } else {
-          textSize(h*.2f);
+          textSize(h*.16f);
         }
       }
       
@@ -142,7 +171,7 @@ class Key extends Drawable {
     for (int i = 0; i < 5; i++) {
       JSONObject c = o.getJSONObject(dirs[i]);
       if (c == null) actions[i] = null;
-      else actions[i] = new Action(c, b);
+      else actions[i] = new Action(c, b, this);
     }
     col = o.hasKey("col")? b.cols[o.getInt("col")] : b.defcol;
   }
@@ -150,19 +179,22 @@ class Key extends Drawable {
 
 
 class Action {
-  final String chr, spec, type;
+  final String chr, spec, type, gotof;
   final boolean rep, sd;
   final Keyboard b;
-  Action (JSONObject o, Keyboard b) {
+  final Key k;
+  Action (JSONObject o, Keyboard b, Key k) {
     chr = o.getString("chr");
     String type = o.getString("type");
     if (type == null) this.type = chr;
     else this.type = type;
     
     spec = o.getString("spec");
+    gotof = o.getString("goto");
     rep = o.hasKey("rep")? o.getBoolean("rep") : false;
     sd = o.hasKey("sd")? o.getBoolean("sd") : false;
     this.b = b;
+    this.k = k;
   }
   void call() {
     if (textInput == null) return;
@@ -178,19 +210,21 @@ class Action {
       textInput.append(toType);
       return;
     }
-    if (spec.startsWith("goto_")) {
-      b.loadLayout(spec.substring(5));
-      return;
+    if (gotof != null) {
+      b.loadLayout(gotof);
     }
     switch(spec) {
-      case "del": textInput.delete(); return;
+      case "none": return;
+      case "del": textInput.backspace(); return;
       case "clear": textInput.clear(); return;
+      case "enter": textInput.append("\n"); return;
       case "shift": 
         b.shiftMode++;
         if (b.shiftMode > 2) b.shiftMode = 0;
         b.redraw();
         return;
     }
-    println("unknown type "+spec);
+    textInput.special(spec);
+    //println("unknown type "+spec);
   }
 }

@@ -1,4 +1,10 @@
+#!/usr/bin/env node
 fs=require('fs');
+if (!process.argv[2]) {
+  console.error(`Usage: ${process.argv[1]} [layout.txt]
+`);
+  process.exit();
+}
 function chunks(arr, len) {
   let res = [];
   let i = 0;
@@ -14,11 +20,14 @@ function parse(chr, mods) {
   let o = {chr: chr};
   if (mods[chr]) {
     for (let mod of mods[chr]) {
-      if (mod == 'sd') o.sd = true;
-      else if (mod == 'rep') o.rep = true;
+      if (mod === 'sd') o.sd = true;
+      else if (mod === 'rep') o.rep = true;
       else {
-        let [key, val] = mod.split("=");
-        if (key == 'spec') o.spec = val;
+        let [key, val] = mod.split(/(?<!=)=/);
+        if (key === 'spec') o.spec = val;
+        else if (key === 'goto') o.goto = val;
+        else if (key === 'chr') o.chr = val;
+        else if (key === 'type') o.type = val;
         else throw "unknown mod "+mod;
       }
     }
@@ -76,7 +85,7 @@ fs.readFile(process.argv[2], 'utf8', (e,c) => {
   for (let layout of layoutArr) {
     fs.writeFile(layout.name+".json", 
       JSON.stringify({
-        "colors": ["00ffffff", "FF134ADB", "FF282828", "FF353535"],
+        "colors": ["ff101010", "FF134ADB", "FF282828", "FF353535"],
         "defcol": 1,
         ...layout.obj
       }), e=>console.log(e)
