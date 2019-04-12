@@ -189,7 +189,7 @@ public class Main {
   
   
   
-  private static void ucmd(Scope global, String cr) {
+  public static void ucmd(Scope global, String cr) {
     String[] parts = cr.split(" ");
     String t = parts[0].toUpperCase();
     String rest = parts.length==1? "" : cr.substring(t.length()+1);
