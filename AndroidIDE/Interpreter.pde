@@ -1,6 +1,6 @@
 abstract class Interpreter {
   abstract String[] get(String code);
-  abstract void special(String ex);
+  abstract String[] special(String ex);
 }
 class Dyalog extends Interpreter {
   String[] get(String code) {
@@ -44,17 +44,68 @@ class Dyalog extends Interpreter {
   void setLink(String s) {
     l = s;
   }
-  void special(String s) {
+  String[] special(String s) {
     setLink(s);
+    return new String[0];
   }
 }
 Scope dzaimaSC = new Scope();
+static {
+  Main.colorful = false;
+}
 class DzaimaAPL extends Interpreter {
   String[] get(String code) {
-    Obj v = Main.exec(code, dzaimaSC);
-    return v.toString().split("\n");
+    try {
+      Obj v = Main.exec(code, dzaimaSC);
+      return v.toString().split("\n");
+    } catch (APLError e) {
+      TPs nSout = new TPs();
+      e.print();
+      return nSout.end().split("\n");
+    } catch (Throwable e) {
+      ArrayList<String> lns = new ArrayList();
+      lns.add(e + ": " + e.getMessage());
+      if (Main.faulty != null && Main.faulty.getToken() != null) {
+        String s = repeat(" ", Main.faulty.getToken().pos);
+        lns.add(Main.faulty.getToken().line);
+        lns.add(s + "^");
+      }
+      e.printStackTrace();
+      return lns.toArray(new String[0]);
+    }
   }
-  void special(String ex) {
-    
+  class TPs extends OutputStream {
+    PrintStream oSout;
+    TPs() {
+      oSout = System.out;
+      System.setOut(new PrintStream(this));
+    }
+    ArrayList<Byte> bs = new ArrayList<Byte>();
+    void write(int i) {
+      bs.add((byte)(i&0xff));
+    }
+    String all() {
+      byte[] ba = new byte[bs.size()];
+      int i = 0;
+      for (byte b : bs) {
+        ba[i] = b;
+        i++;
+      }
+      return new String(ba);
+    }
+    String end() {
+      System.out.flush();
+      System.setOut(oSout);
+      return this.all();
+    }
+  }
+  String[] special(String ex) {
+    TPs nSout = new TPs();
+    try {
+      Main.ucmd(dzaimaSC, ex);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+    return nSout.end().split("\n");
   }
 }

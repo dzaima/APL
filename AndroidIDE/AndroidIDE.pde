@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
 import java.net.URLConnection;
@@ -30,8 +31,7 @@ void setup() {
         String nm = i==-1? cmd : cmd.substring(0, i);
         String arg = i==-1? "" : cmd.substring(i+1);
         String argl = arg.toLowerCase();
-        if (nm.equals(":")) it.special(line.substring(1));
-        else if (nm.equals("sz")) REPLH.setSize(int(arg));
+        if (nm.equals("sz")) REPLH.setSize(int(arg));
         else if (nm.equals("i")) {
           if (argl.equals("dyalog")) {
             it = new Dyalog();
@@ -43,6 +43,11 @@ void setup() {
           REPLH.set(new ArrayList());
         } else textln("Command "+nm+" not found");
         //else if (nm.equals(""))
+        return;
+      }
+      
+      if (line.startsWith(")")) {
+        for (String s : it.special(line.substring(1))) textln(s);
         return;
       }
       String[] res = it.get(line);

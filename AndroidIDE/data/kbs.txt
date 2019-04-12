@@ -53,10 +53,10 @@ C        U        D        col      L        R
 PART ABC3 P
 C      U      D      col    L      R
 =   ⌫#|      |      |300033|    C |      |
-«»   ⏎|12345▲|67890▼|332223| ↶    | ↷    |
+«»  ←⏎|12345▲|67890▼|332223| ↶    | ↷    |
 {}aei⎕|      |      |112222| ⍺bdg | ⍵cfh |
 ()lnr.|[]    |      |112222|  jmp |  koq |
-  twx⇧|     L|      |222223|  svy |  u z |
+':twx⇧|     L|      |222223|  svy |  u z |
 
 
 PART ABC2 P

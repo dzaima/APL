@@ -13,3 +13,8 @@ Iterable<Character> sit(final String s) { // String iterator
     }
   };
 }
+String repeat(String s, int am) {
+  StringBuilder r = new StringBuilder();
+  for (int i = 0; i < am; i++) r.append(s);
+  return r.toString();
+}
