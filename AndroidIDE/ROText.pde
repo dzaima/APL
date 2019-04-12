@@ -15,7 +15,7 @@ class ROText extends Drawable {
     clip(x+border, y, w-border*2, h);
     if (mousePressed && dragged()) {
       yoff+= mouseY-pmouseY;
-      if (yoff < h) yoff = h-border;
+      if (yoff < h-border) yoff = h-border;
     }
     fill(#101010);
     noStroke();

@@ -123,6 +123,7 @@ class Key extends Drawable {
   }
   
   void redraw(Action hl) { // highlight
+    rectMode(CORNER);
     fill(b.start == this && (hl == actions[0])? lerpColor(col, #aaaaaa, .1) : col);
     noStroke();
     int px = b.x + x*w;

@@ -17,6 +17,8 @@ MOD ⇐ type=:← chr=:←
 MOD F spec=none goto=EXTRA
 MOD O spec=openPar chr=()
 MOD P spec=closePar chr=..)
+MOD X spec=copy chr=^C
+MOD V spec=paste chr=^V
 
 LAYOUT L 8×4 CODE
 LAYOUT P 6×5 CODE
@@ -70,7 +72,7 @@ C      U      D      col    L      R
 
 PART CODE P
 C      U      D      col    L      R
-E   ⌫A|     ⊖| xyz ⍉|300033|    C⌽|      |
+E   ⌫A|    X⊖| xyzV⍉|300033|    C⌽|      |
 «»⍺⍵←⏎|12345▲|67890▼|332223| ↶~⊇⊣⍝| ↷⍨⊆⊢ |
 {}⍴∘÷×|[]↑∪⍟*|⌷ ↓∩|∧|222222| ⍤∊⊃⍭!|⋄⍥⍷⊂√ |
 ()≡=-+|  ⊥⊤⌈⍢|OP≢≠⌊∨|222222|  ≤<⍳@|  ≥>⍸ |

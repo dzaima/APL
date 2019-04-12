@@ -18,19 +18,16 @@ class APLField extends Drawable implements TextReciever {
     if (mousePressed && !pmousePressed && dragged()) {
       textInput = this;
     }
-    if (cx < 0 || cx > line.length()) {
-      line+= "CX was "+cx;
-      cx = 0;
-    }
     if (modified) {
       hptr++;
       hptr%= hsz;
-      history[hptr] = new State(allText(), cx);
+      history[hptr] = new State(allText(), sx, ex);
       modified = false;
     }
     clip(x, y, w, h);
     if (pmousePressed && !mousePressed && dragged() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
-      cx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
+      sx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
+      ex = sx;
       tt = 0;
       //if (0 < 0) {
       //  lines.append("0<0!!1!11!!");
@@ -51,32 +48,56 @@ class APLField extends Drawable implements TextReciever {
     text(line, x, y + dy*tsz + h*.1);
     tt--;
     if (tt < 0) tt = 60;
+    
+    float spx = x + max(textWidth(line.substring(0, sx)), 3);
+    float epx = x + max(textWidth(line.substring(0, ex)), 3);
+    float sy = y + h*.1;
+    float ey = y + h*.9;
     if (tt > 30 || this != textInput) {
       strokeWeight(tsz*.05);
-      float px = x + max(textWidth(line.substring(0, cx)), 3);
-      line(px, y + h*.1, px, y + h*.9);
+      line(epx, sy, epx, ey);
+    }
+    if (!one()) {
+      fill(0x20ffffff);
+      noStroke();
+      rectMode(CORNERS);
+      rect(spx, sy, epx, ey);
     }
     noClip();
   }
   
   String line;
-  int cx;
+  int sx;
+  int ex;
+  boolean one() {
+    return sx == ex;
+  }
   String allText() {
     return line;
   }
   void clear() {
     if (!allText().equals("")) modified = true;
     line = "";
-    cx = 0;
+    sx = 0;
+    ex = 0;
+  }
+  void deleteSel() {
+    int min = min(sx, ex);
+    int max = max(sx, ex);
+    if (!one()) line = line.substring(0, min) + line.substring(max);
+    ex = min;
+    sx = min;
   }
   void append(String str) {
+    deleteSel();
     if (!str.equals("")) modified = true;
     tt = 0;
     for (char c : sit(str)) {
       if (c == '\n') newline();
       else {
-        line = line.substring(0, cx) + c + line.substring(cx);
-        cx++;
+        line = line.substring(0, sx) + c + line.substring(sx);
+        sx++;
+        ex++;
       }
     }
   }
@@ -84,11 +105,16 @@ class APLField extends Drawable implements TextReciever {
   void eval() { }
   void backspace() {
     tt = 0;
-    if (cx != 0) modified = true;
-    if (cx == 0) {
+    if (!one()) {
+      deleteSel();
+      return;
+    }
+    if (sx != 0) modified = true;
+    if (sx == 0) {
     } else {
-      line = line.substring(0, cx-1) + line.substring(cx);
-      cx--;
+      line = line.substring(0, sx-1) + line.substring(sx);
+      sx--;
+      ex--;
     }
   }
   void special(String s) {
@@ -96,28 +122,34 @@ class APLField extends Drawable implements TextReciever {
     if (s.equals("eval")) {
       eval();
     } else if (s.equals("left")) {
-      cx--;
-      if (cx == -1) cx = 0;
+      ex--;
+      if (ex == -1) ex = 0;
+      if (!cshift()) sx = ex; 
     }
     else if (s.equals("right")) {
-      cx++;
-      if (cx == line.length()+1) {
-        cx--;
+      ex++;
+      if (ex == line.length()+1) {
+        ex--;
       }
+      if (!cshift()) sx = ex;
     }
     else if (s.equals("up")) {
-      cx = 0;
+      sx = 0;
+      ex = 0;
     }
     else if (s.equals("down")) {
-      cx = line.length();
+      sx = line.length();
+      ex = line.length();
     }
     else if (s.equals("openPar")) {
       append("()");
-      cx--;
+      ex--;
+      sx--;
     }
     else if (s.equals("closePar")) {
-      append("()"); // TODO  
-      cx--;
+      append("()"); // TODO
+      ex--;
+      sx--;
     }
     else if (s.equals("undo")) {
       hptr+= hsz-1;
@@ -129,19 +161,29 @@ class APLField extends Drawable implements TextReciever {
       hptr%= hsz;
       to(history[hptr]);
     }
+    else if (s.equals("copy")) {
+      int min = min(sx, ex);
+      int max = max(sx, ex);
+      copy(line.substring(min, max));
+    }
+    else if (s.equals("paste")) {
+      append(paste());
+    }
     else println("unknown special " + s);
   }
   void to(State st) {
     if (st != null) {
       line = st.code;
-      cx = st.cx;
+      sx = st.sx;
+      ex = st.ex;
     } else clear();
   }
   class State {
     String code;
-    int cx;
-    State(String code, int cx) {
-      this.cx = cx;
+    int sx, ex;
+    State(String code, int sx, int ex) {
+      this.sx = sx;
+      this.ex = ex;
       this.code = code;
     }
   }

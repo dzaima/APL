@@ -110,7 +110,9 @@ void draw() {
 65535 40
 65535 39
 */
-void keyPressed() {
+boolean shift;
+void keyPressed(KeyEvent e) {
+  shift = e.isShiftDown();
   if (key == 65535) {
          if (keyCode == 38) textInput.special("up");
     else if (keyCode == 37) textInput.special("left");
@@ -120,8 +122,38 @@ void keyPressed() {
     if (key == 8) textInput.backspace();
     else if (key == 26 && keyCode == 90) textInput.special("undo");
     else if (key == 25 && keyCode == 89) textInput.special("redo");
+    else if (key ==  3 && keyCode == 67) textInput.special("copy");
+    else if (key == 22 && keyCode == 86) textInput.special("paste");
     else textInput.append(Character.toString(key));
   }
   //println(+key, keyCode);
   //resize(height, width);
+}
+void keyReleased(KeyEvent e) {
+  shift = e.isShiftDown();
+}
+
+boolean shift() {
+  return shift || (textInput!=null? kb.shiftMode>0 : false);
+}
+boolean cshift() {
+  boolean r = shift || (kb!=null? kb.shiftMode>0 : false);
+  if (kb!=null && kb.shiftMode>0) kb.shiftMode = 2;
+  return r;
+}
+
+import java.awt.datatransfer.*;
+import java.awt.Toolkit;
+void copy(String s) {
+  StringSelection stringSelection = new StringSelection(s);
+  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+  clipboard.setContents(stringSelection, null);
+}
+
+String paste() {
+  try {
+    return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+  } catch (Throwable e) {
+    return "";
+  }
 }
