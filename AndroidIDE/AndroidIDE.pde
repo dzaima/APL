@@ -119,11 +119,12 @@ void keyPressed(KeyEvent e) {
     else if (keyCode == 40) textInput.special("down");
     else if (keyCode == 39) textInput.special("right");
   } else {
-    if (key == 8) textInput.backspace();
-    else if (key == 26 && keyCode == 90) textInput.special("undo");
-    else if (key == 25 && keyCode == 89) textInput.special("redo");
-    else if (key ==  3 && keyCode == 67) textInput.special("copy");
-    else if (key == 22 && keyCode == 86) textInput.special("paste");
+    if (key == 8) textInput.ldelete();
+    else if (key ==  26 && keyCode ==  90) textInput.special("undo");
+    else if (key ==  25 && keyCode ==  89) textInput.special("redo");
+    else if (key ==   3 && keyCode ==  67) textInput.special("copy");
+    else if (key == 127 && keyCode == 127) textInput.rdelete();
+    else if (key ==  22 && keyCode ==  86) textInput.special("paste");
     else textInput.append(Character.toString(key));
   }
   //println(+key, keyCode);

@@ -108,7 +108,7 @@ class APLTextarea extends Drawable implements TextReciever {
     cx = 0;
   }
   void eval() { }
-  void backspace() {
+  void ldelete() {
     tt = 0;
     if (cx != 0 || cy != 0) modified = true;
     if (cx == 0) {
@@ -205,5 +205,8 @@ class APLTextarea extends Drawable implements TextReciever {
       if (r.size() == 0) r.add("");
       return r;
     }
+  }
+  void rdelete() {
+    
   }
 }

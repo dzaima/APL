@@ -103,7 +103,7 @@ class APLField extends Drawable implements TextReciever {
   }
   void newline() { }
   void eval() { }
-  void backspace() {
+  void ldelete() {
     tt = 0;
     if (!one()) {
       deleteSel();
@@ -185,6 +185,15 @@ class APLField extends Drawable implements TextReciever {
       this.sx = sx;
       this.ex = ex;
       this.code = code;
+    }
+  }
+  void rdelete() {
+    if (!one()) {
+      deleteSel();
+      return;
+    }
+    if (sx != line.length()) {
+      line = line.substring(0, sx) + line.substring(sx+1);
     }
   }
 }

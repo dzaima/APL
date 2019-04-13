@@ -150,19 +150,9 @@ class Key extends Drawable {
       float yoff = 0;
       
       if (i == 0) {
-        if (a.sd) {
-          textSize(h*.33f);
-          yoff = h/20f;
-        } else {
-          textSize(h*.4f);
-        }
+        textSize(h*.4f);
       } else {
-        if (a.sd) {
-          textSize(h*.08f);
-          yoff = h/40f;
-        } else {
-          textSize(h*.16f);
-        }
+        textSize(h*.16f);
       }
       
       text(t, px + w*offs[0], py + h*offs[1] + yoff);
@@ -181,7 +171,7 @@ class Key extends Drawable {
 
 class Action {
   final String chr, spec, type, gotof;
-  final boolean rep, sd;
+  final boolean rep;
   final Keyboard b;
   final Key k;
   Action (JSONObject o, Keyboard b, Key k) {
@@ -193,7 +183,6 @@ class Action {
     spec = o.getString("spec");
     gotof = o.getString("goto");
     rep = o.hasKey("rep")? o.getBoolean("rep") : false;
-    sd = o.hasKey("sd")? o.getBoolean("sd") : false;
     this.b = b;
     this.k = k;
   }
@@ -216,7 +205,8 @@ class Action {
     }
     switch(spec) {
       case "none": return;
-      case "del": textInput.backspace(); return;
+      case "del": textInput.ldelete(); return;
+      case "rdel": textInput.rdelete(); return;
       case "clear": textInput.clear(); return;
       case "enter": textInput.append("\n"); return;
       case "shift": 
