@@ -8,8 +8,8 @@ public class StrTok extends Token {
   public final ChrArr val;
   private final String raw;
   
-  public StrTok(String line, int pos, String str) {
-    super(line, pos);
+  public StrTok(String line, int spos, int epos, String str) {
+    super(line, spos, epos);
     raw = str;
 
     this.val = Main.toAPL(str);

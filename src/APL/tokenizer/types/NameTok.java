@@ -5,8 +5,8 @@ import APL.tokenizer.Token;
 public class NameTok extends Token {
   public final String name;
   
-  public NameTok(String line, int pos, String name) {
-    super(line, pos);
+  public NameTok(String line, int spos, int epos, String name) {
+    super(line, spos, epos);
     this.name = name;
   }
   

@@ -1,11 +1,12 @@
 package APL.tokenizer.types;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class BracketTok extends TokArr<LineTok> {
   
-  public BracketTok(String line, int pos, ArrayList<LineTok> tokens) {
-    super(line, pos, tokens);
+  public BracketTok(String line, int spos, int epos, List<LineTok> tokens) {
+    super(line, spos, tokens);
+    end(epos);
   }
   
   @Override public String toRepr() {

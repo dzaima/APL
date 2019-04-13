@@ -6,6 +6,7 @@ import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
+import APL.types.functions.userDefined.Dfn;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -159,6 +160,7 @@ public class Main {
     if (args.length == 0 || REPL) {
       if (!silentREPL) print("> ");
       while (console.hasNext()) {
+        faulty = null;
         try {
           String cr = console.nextLine();
           if (cr.equals("exit")) break;
@@ -176,8 +178,8 @@ public class Main {
           lastError = e;
           colorprint(e + ": " + e.getMessage(), 246);
           if (faulty != null && faulty.getToken() != null) {
-            String s = IntStream.range(0, faulty.getToken().pos).mapToObj(i -> " ").collect(Collectors.joining());
-            colorprint(faulty.getToken().line, 217);
+            String s = IntStream.range(0, faulty.getToken().spos).mapToObj(i -> " ").collect(Collectors.joining());
+            colorprint(faulty.getToken().raw, 217);
             colorprint(s + "^", 217);
           }
           e.printStackTrace();

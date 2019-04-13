@@ -3,8 +3,8 @@ package APL.tokenizer.types;
 import java.util.ArrayList;
 
 public class BasicLines extends TokArr<LineTok> {
-  public BasicLines(String line, int pos, ArrayList<LineTok> tokens) {
-    super(line, pos, tokens);
+  public BasicLines(String line, int spos, int epos, ArrayList<LineTok> tokens) {
+    super(line, spos, epos, tokens);
   }
   
   @Override public String toRepr() {

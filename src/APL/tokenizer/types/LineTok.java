@@ -5,22 +5,21 @@ import APL.tokenizer.Token;
 import java.util.*;
 
 public class LineTok extends TokArr<Token> {
-  public LineTok(String line, int pos, List<Token> tokens) {
-    super(line, pos, tokens);
-  }
-
-
   private Integer colonPos;
+  
+  public LineTok(String raw, int spos, int epos, List<Token> tokens) {
+    super(raw, spos, epos, tokens);
+  }
   
   public static LineTok inherit(List<Token> tokens) {
     Token fst = tokens.get(0);
-    return new LineTok(fst.line, fst.pos, tokens);
+    return new LineTok(fst.raw, fst.spos, tokens.get(tokens.size()-1).epos, tokens);
   }
   
   public static LineTok inherit(Token tk) {
     ArrayList<Token> a = new ArrayList<>();
     a.add(tk);
-    return new LineTok(tk.line, tk.pos, a);
+    return new LineTok(tk.raw, tk.spos, tk.epos, a);
   }
   
   public int colonPos() {

@@ -3,8 +3,9 @@ package APL.tokenizer.types;
 import java.util.*;
 
 public class ParenTok extends TokArr<LineTok> {
-  public ParenTok(String line, int pos, List<LineTok> tokens) {
-    super(line, pos, tokens);
+  public ParenTok(String line, int spos, int epos, List<LineTok> tokens) {
+    super(line, spos, tokens);
+    end(epos);
   }
   
   @Override public String toRepr() {

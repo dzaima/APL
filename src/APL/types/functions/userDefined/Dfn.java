@@ -1,16 +1,15 @@
 package APL.types.functions.userDefined;
 
 import APL.*;
-import APL.tokenizer.Token;
 import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.VarArr;
 
 public class Dfn extends Fun {
-  private final DfnTok token;
+  public final DfnTok code;
   Dfn(DfnTok t, Scope sc) {
     super(sc);
-    token = t;
+    code = t;
   }
   public Obj call(Value w) {
     Main.printdbg("dfn call", w);
@@ -18,7 +17,7 @@ public class Dfn extends Fun {
     nsc.set("⍺", new Variable(nsc, "⍺"));
     nsc.set("⍵", w);
     nsc.set("∇", this);
-    var res = Main.execLines(token, nsc);
+    var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
@@ -30,13 +29,13 @@ public class Dfn extends Fun {
     nsc.set("⍵", w);
     nsc.set("∇", this);
     nsc.alphaDefined = true;
-    var res = Main.execLines(token, nsc);
+    var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).materialize();
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
   public String repr() {
-    return token.toRepr();
+    return code.toRepr();
   }
   
   @Override

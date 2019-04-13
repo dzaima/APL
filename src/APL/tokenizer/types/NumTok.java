@@ -7,8 +7,8 @@ public class NumTok extends Token {
   public final Num num;
   private final String raw;
   
-  public NumTok(String line, int pos, String num) {
-    super(line, pos);
+  public NumTok(String line, int spos, int epos, String num) {
+    super(line, spos, epos);
     this.num = new Num(num);
     raw = num;
   }

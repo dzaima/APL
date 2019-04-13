@@ -5,8 +5,8 @@ import APL.tokenizer.Token;
 public class OpTok extends Token {
   public final String op;
   
-  public OpTok(String line, int pos, String op) {
-    super(line, pos);
+  public OpTok(String line, int spos, int epos, String op) {
+    super(line, spos, epos);
     
     this.op = op;
   }

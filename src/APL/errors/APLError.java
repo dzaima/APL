@@ -1,11 +1,11 @@
 package APL.errors;
 
-import APL.*;
-import APL.types.*;
+import APL.tokenizer.Token;
+import APL.types.Tokenable;
 
-import java.util.stream.*;
+import java.util.ArrayList;
 
-import static APL.Main.colorprint;
+import static APL.Main.*;
 
 public class APLError extends Error {
   public Tokenable cause;
@@ -17,32 +17,39 @@ public class APLError extends Error {
     String[] ns = getClass().getName().split("[$.]");
     if (getMessage().length() == 0) colorprint(ns[ns.length - 1], 246);
     else colorprint(ns[ns.length - 1] + ": " + getMessage(), 246);
-    String oline = null;
-    int opos = 0;
-    if (cause != null && cause.getToken() != null) {
-      oline = cause.getToken().line;
-      opos = cause.getToken().pos;
-    }
-    if (Main.faulty == null || Main.faulty.getToken() == null) { // fn bad
-      if (oline == null) return; // both bad
-      String s = IntStream.range(0, opos).mapToObj(i -> " ").collect(Collectors.joining());
-      colorprint(oline, 217);
-      colorprint(s +"^", 217);
-    } else { // fn good
-      String fnline = Main.faulty.getToken().line;
-      int fnpos = Main.faulty.getToken().pos;
-      if (oline != null && oline.equals(fnline)) { // draw both
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < oline.length(); i++) {
-          s.append(i == fnpos? '^' : i == opos? '¯' : ' ');
-        }
-        colorprint(oline, 217);
-        colorprint(s.toString(), 217);
-      } else { // only fn
-        String s = IntStream.range(0, fnpos).mapToObj(i -> " ").collect(Collectors.joining());
-        colorprint(fnline, 217);
-        colorprint(s + "^", 217);
+    ArrayList<Mg> l = new ArrayList<>();
+    if (cause != null) l.add(new Mg(cause, '¯'));
+    if (faulty != null) l.add(new Mg(faulty, '^'));
+    for (Mg g : l) {
+      Token t = g.t.getToken();
+      if (t == null) continue;
+      int spos = t.spos;
+      int epos = t.epos==null? spos+1 : t.epos;
+      String start = t.raw.substring(0, spos);
+      int lnn = start.split("\n").length-1;
+      String ln = t.raw.split("\n")[lnn==-1? 0 : lnn];
+      int lns = start.lastIndexOf('\n')+1;
+      //println(t.raw+" "+spos+" "+epos);
+      println(ln);
+      //println(g.c +" "+ faulty);
+      //println();
+      int rs = spos-lns;
+      int re = epos-lns;
+      StringBuilder b = new StringBuilder();
+      for (int i = 0 ; i < re; i++) {
+        b.append(i>=rs? g.c : ' ');
       }
+      println(b.toString());
+    }
+  }
+  
+  class Mg {
+    final Tokenable t;
+    final char c;
+  
+    Mg(Tokenable t, char c) {
+      this.t = t;
+      this.c = c;
     }
   }
 }

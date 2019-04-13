@@ -8,8 +8,8 @@ public class ChrTok extends Token {
   public final Value val;
   private final String raw;
   
-  public ChrTok(String line, int pos, String str) {
-    super(line, pos);
+  public ChrTok(String line, int spos, int epos, String str) {
+    super(line, spos, epos);
     raw = str;
     
     if (str.length() == 1) val = new Char(str);
