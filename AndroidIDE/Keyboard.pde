@@ -42,7 +42,7 @@ class Keyboard extends Drawable {
   Key start;
   
   void tick() {
-    if (!pmousePressed && mousePressed && dragged()) {
+    if (!pmousePressed && mousePressed && smouseIn()) {
       int mx = (mouseX-x) / kw;
       int my = (mouseY-y) / kh;
       if (mx >= 0 && my >= 0 && mx < xam && my < yam) {

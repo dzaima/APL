@@ -3,7 +3,6 @@ class ROText extends Drawable {
   ROText(int x, int y, int w, int h) {
     super(x, y, w, h);
     s = new ArrayList();
-    show();
   }
   int yoff = 0; // scroll
   int border = 10;
@@ -12,8 +11,9 @@ class ROText extends Drawable {
     yoff = h-border;
   }
   void tick() {
+    if (!visible) return;
     clip(x+border, y, w-border*2, h);
-    if (mousePressed && dragged()) {
+    if (mousePressed && smouseIn()) {
       yoff+= mouseY-pmouseY;
       if (yoff < h-border) yoff = h-border;
     }
@@ -27,6 +27,7 @@ class ROText extends Drawable {
     textSize(tsz);
     line(x, y+h, x+w, y+h);
     int dy = -s.size();
+    clip(x+border, y+3, w-border*2, h-6);
     for (String s : s) {
       text(s, x+border, y + dy*tsz + yoff);
       dy++;

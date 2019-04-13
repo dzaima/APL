@@ -8,9 +8,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 ArrayList<Drawable> screen = new ArrayList();
-Keyboard kb;
 TextReciever textInput;
-ROText REPLH;
+
+Keyboard kb;
+
+TopBar topbar;
+int top = 30;
+int freey;
 void setup() {
   //size(800, 450);
   //size(450, 800);
@@ -19,73 +23,36 @@ void setup() {
   //fullScreen();
   background(#0a0a0a);
   textFont(createFont("APL385+.ttf", 48));
-  REPLH = new ROText(0, 0, width, 340);
-  APLField f = new APLField(0, 350, width, 40) {
-    Interpreter it = new Dyalog();
-    
-    void eval() {
-      textln("  "+line+"\n");
-      if (line.startsWith(":")) {
-        String cmd = line.substring(1);
-        int i = cmd.indexOf(" "); 
-        String nm = i==-1? cmd : cmd.substring(0, i);
-        String arg = i==-1? "" : cmd.substring(i+1);
-        String argl = arg.toLowerCase();
-        if (nm.equals("sz")) REPLH.setSize(int(arg));
-        else if (nm.equals("i")) {
-          if (argl.equals("dyalog")) {
-            it = new Dyalog();
-          }
-          if (argl.equals("dzaima")) {
-            it = new DzaimaAPL();
-          }
-        } else if (nm.equals("clear")) {
-          REPLH.set(new ArrayList());
-        } else textln("Command "+nm+" not found");
-        //else if (nm.equals(""))
-        return;
-      }
-      
-      if (line.startsWith(")")) {
-        for (String s : it.special(line.substring(1))) textln(s);
-        return;
-      }
-      String[] res = it.get(line);
-      for (String ln : res) {
-        textln(ln);
-      }
-    }
-    void textln(String ln) {
-      REPLH.append(ln);
-    }
-    void newline() {
-      eval();
-      clear();
-    }
-  };
-  textInput = f;
-  resize(width, height);
+  topbar = new TopBar(0, 0, width, top);
+  topbar.toNew(new REPL());
+  topbar.add(new REPL());
+  topbar.show();
+  redrawAll();
 }
 boolean redraw;
 //@Override void orientation() {
   
 //}
-void resize(int w, int h) {
+void redrawAll() {
   //if (width != w || h != height) surface.setSize(w, h);
   redraw = true;
   if (width>height) keyboard(0, 0, width, width/3, "L.json");
   else              keyboard(0, 0, width, (int)(width*.8), "P.json");
+  freey = height-kb.h;
+  topbar.resize(width, top);
+  topbar.resized();
 }
 boolean pmousePressed;
 int smouseX, smouseY;
 int mouseStart;
 void draw() {
+  
   if (!pmousePressed && mousePressed) {
     smouseX = mouseX;
     smouseY = mouseY;
     mouseStart = millis();
   }
-  if (mouseButton == RIGHT) resize(width, height);
+  if (mouseButton == RIGHT) redrawAll();
   for (Drawable d : screen) {
     d.tick();
   }
@@ -113,19 +80,21 @@ void draw() {
 boolean shift;
 void keyPressed(KeyEvent e) {
   shift = e.isShiftDown();
-  if (key == 65535) {
-         if (keyCode == 38) textInput.special("up");
-    else if (keyCode == 37) textInput.special("left");
-    else if (keyCode == 40) textInput.special("down");
-    else if (keyCode == 39) textInput.special("right");
-  } else {
-    if (key == 8) textInput.ldelete();
-    else if (key ==  26 && keyCode ==  90) textInput.special("undo");
-    else if (key ==  25 && keyCode ==  89) textInput.special("redo");
-    else if (key ==   3 && keyCode ==  67) textInput.special("copy");
-    else if (key == 127 && keyCode == 127) textInput.rdelete();
-    else if (key ==  22 && keyCode ==  86) textInput.special("paste");
-    else textInput.append(Character.toString(key));
+  if (textInput != null) {
+    if (key == 65535) {
+           if (keyCode == 38) textInput.special("up");
+      else if (keyCode == 37) textInput.special("left");
+      else if (keyCode == 40) textInput.special("down");
+      else if (keyCode == 39) textInput.special("right");
+    } else {
+      if (key == 8) textInput.ldelete();
+      else if (key ==  26 && keyCode ==  90) textInput.special("undo");
+      else if (key ==  25 && keyCode ==  89) textInput.special("redo");
+      else if (key ==   3 && keyCode ==  67) textInput.special("copy");
+      else if (key == 127 && keyCode == 127) textInput.rdelete();
+      else if (key ==  22 && keyCode ==  86) textInput.special("paste");
+      else textInput.append(Character.toString(key));
+    }
   }
   //println(+key, keyCode);
   //resize(height, width);

@@ -3,7 +3,6 @@ class APLField extends Drawable implements TextReciever {
   APLField(int x, int y, int w, int h) {
     super(x, y, w, h);
     line = "";
-    show();
   }
   int tt = 0;
   
@@ -15,7 +14,8 @@ class APLField extends Drawable implements TextReciever {
   final State[] history = new State[hsz];
   int hptr = 0; // points to the current modification
   void tick() {
-    if (mousePressed && !pmousePressed && dragged()) {
+    if (!visible) return;
+    if (mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
     if (modified) {
@@ -25,7 +25,7 @@ class APLField extends Drawable implements TextReciever {
       modified = false;
     }
     clip(x, y, w, h);
-    if (pmousePressed && !mousePressed && dragged() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
+    if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
       sx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;

@@ -20,6 +20,18 @@ class Drawable {
     this.y = y;
     if (visible) redraw();
   }
+  void resize(int w, int h) {
+    this.w = w;
+    this.h = h;
+    if (visible) redraw();
+  }
+  void move(int x, int y, int w, int h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    if (visible) redraw();
+  }
   void show() {
     if (!visible) redraw();
     visible = true;
@@ -40,7 +52,7 @@ class Drawable {
   boolean mouseInMe() {
     return mouseX > x && mouseY > y && mouseX < x+w && mouseY < y+h;
   }
-  boolean dragged() {
+  boolean smouseIn() {
     return smouseX > x && smouseY > y && smouseX < x+w && smouseY < y+h;
   }
 }

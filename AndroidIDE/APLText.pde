@@ -4,7 +4,6 @@ class APLTextarea extends Drawable implements TextReciever {
     super(x, y, w, h);
     lines = new ArrayList();
     lines.add("");
-    show();
   }
   int tt = 0; // 
   int yoff = 0; // scroll
@@ -17,7 +16,8 @@ class APLTextarea extends Drawable implements TextReciever {
   final State[] history = new State[hsz];
   int hptr = 0; // points to the current modification
   void tick() {
-    if (mousePressed && !pmousePressed && dragged()) {
+    if (!visible) return;
+    if (mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
     if (cy < 0 || cy > lines.size() || cx < 0 || cx > lines.get(cy).length()) {
@@ -32,11 +32,11 @@ class APLTextarea extends Drawable implements TextReciever {
       modified = false;
     }
     clip(x, y, w, h);
-    if (mousePressed && dragged()) {
+    if (mousePressed && smouseIn()) {
       yoff+= mouseY-pmouseY;
       if (yoff > 0) yoff = 0;
     }
-    if (pmousePressed && !mousePressed && dragged() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
+    if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
       cy = constrain(floor((mouseY-y-yoff)/tsz), 0, lines.size()-1);
       cx = constrain(round((mouseX-x)/textWidth("H")), 0, lines.get(cy).length());
       tt = 0;
