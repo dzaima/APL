@@ -92,6 +92,7 @@ public class Scope {
         case "⎕DEATHLOGGER": return new DeathLogger();
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
+        case "⎕DL": return new Delay(this);
         case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕UCS": return new UCS(this);
         case "⎕HASH": return new Hasher();
@@ -223,6 +224,24 @@ public class Scope {
     public Obj call(Value w) {
       sc.set(w.asString(), null);
       return w;
+    }
+  }
+  static class Delay extends Builtin {
+    @Override public String repr() {
+      return "⎕DL";
+    }
+    Delay(Scope sc) {
+      super(sc);
+    }
+    
+    public Obj call(Value w) {
+      long nsS = System.nanoTime();
+      double ms = w.asDouble() * 1000;
+      int ns = (int) ((ms%1)*1000000);
+      try {
+        Thread.sleep((int) ms, ns);
+      } catch (InterruptedException ignored) { /* idk */ }
+      return new Num((System.nanoTime() - nsS) / 1000000000d);
     }
   }
   static class UCS extends Builtin {
