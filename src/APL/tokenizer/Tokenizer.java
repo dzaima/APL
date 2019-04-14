@@ -132,6 +132,7 @@ public class Tokenizer {
       } else if (c == '\'') {
         StringBuilder str = new StringBuilder();
         i++;
+        if (i >= len) throw new SyntaxError("unfinished string");
         while (true) {
           if (raw.charAt(i) == '\'') {
             if (i+1 < len && raw.charAt(i+1) == '\'') {
