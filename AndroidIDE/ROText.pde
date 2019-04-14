@@ -6,17 +6,9 @@ class ROText extends Drawable {
   }
   int yoff = 0; // scroll
   int border = 10;
+  boolean redraw;
   void redraw() {
-    tsz = min(width, height)/20;
-    yoff = h-border;
-  }
-  void tick() {
-    if (!visible) return;
     clip(x+border, y, w-border*2, h);
-    if (mousePressed && smouseIn()) {
-      yoff+= mouseY-pmouseY;
-      if (yoff < h-border) yoff = h-border;
-    }
     fill(#101010);
     noStroke();
     rectMode(CORNER);
@@ -33,18 +25,35 @@ class ROText extends Drawable {
       dy++;
     }
     noClip();
+    redraw = false;
+  }
+  void resized() {
+    tsz = min(width, height)/20;
+  }
+  void tick() {
+    if (!visible) return;
+    if (mousePressed && smouseIn()) {
+      yoff+= mouseY-pmouseY;
+      redraw = true;
+      if (yoff < h-border) yoff = h-border;
+    }
+    
+    if (redraw) redraw();
   }
   
   ArrayList<String> s;
   void append(String a) { // append a line
     s.add(a);
     yoff = h-border;
+    redraw = true;
   }
   void set(ArrayList<String> a) {
     s = a;
     yoff = h-border;
+    redraw = true;
   }
   void setSize(int sz) {
     tsz = sz;
+    redraw = true;
   }
 }

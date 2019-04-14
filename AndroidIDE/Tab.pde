@@ -4,14 +4,20 @@ abstract class Tab {
   abstract String name();
 }
 class REPL extends Tab {
-  final ROText REPLH;
-  final APLField REPLField;
+  final ROText historyView;
+  final APLField input;
+  ArrayList<String> inputs = new ArrayList();
+  String tmpSaved;
+  int iptr = 0; // can be ==input.size()
   REPL() {
-    REPLH = new ROText(0, top, width, 340-top);
-    REPLField = new APLField(0, 350, width, 40) {
+    historyView = new ROText(0, top, width, 340-top);
+    input = new APLField(0, 350, width, 40) {
       Interpreter it = new Dyalog();
       
       void eval() {
+        tmpSaved = null;
+        inputs.add(line);
+        iptr = inputs.size();
         textln("  "+line+"\n");
         if (line.startsWith(":")) {
           String cmd = line.substring(1);
@@ -19,8 +25,11 @@ class REPL extends Tab {
           String nm = i==-1? cmd : cmd.substring(0, i);
           String arg = i==-1? "" : cmd.substring(i+1);
           String argl = arg.toLowerCase();
-          if (nm.equals("sz")) REPLH.setSize(int(arg));
-          else if (nm.equals("i")) {
+          if (nm.equals("hsz")) historyView.setSize(int(arg));
+          if (nm.equals("isz")) {
+            isz = int(arg);
+            redrawAll();
+          } else if (nm.equals("i")) {
             if (argl.equals("dyalog")) {
               it = new Dyalog();
             }
@@ -28,10 +37,18 @@ class REPL extends Tab {
               it = new DzaimaAPL();
             }
           } else if (nm.equals("clear")) {
-            REPLH.set(new ArrayList());
+            historyView.set(new ArrayList());
           } else if (nm.equals("top")) {
             top = int(arg);
             redrawAll();
+          } else if (nm.equals("f")) {
+            String[] ps = arg.split("/");
+            String[] lns = loadStrings(arg);
+            topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
+              void save(String t) {
+                saveStrings(arg, new String[]{t});
+              }
+            });
           } else textln("Command "+nm+" not found");
           //else if (nm.equals(""))
           return;
@@ -46,8 +63,28 @@ class REPL extends Tab {
           textln(ln);
         }
       }
+      void extraSpecial(String s) {
+        if (s.equals("up")) {
+          if (inputs.size() == 0) return;
+          if (line.length() != 0 && iptr == inputs.size()) {
+            tmpSaved = line;
+          }
+          iptr--;
+          if (iptr < 0) iptr = 0;
+          line = inputs.get(iptr);
+          sx = ex = line.length();
+        } else {
+          if (inputs.size() == 0) return;
+          iptr++;
+          if (iptr >= inputs.size()) {
+            iptr = inputs.size();
+            line = tmpSaved == null? "" : tmpSaved;
+          } else line = inputs.get(iptr);
+          sx = ex = line.length();
+        }
+      }
       void textln(String ln) {
-        REPLH.append(ln);
+        historyView.append(ln);
       }
       void newline() {
         eval();
@@ -56,20 +93,52 @@ class REPL extends Tab {
     };
   }
   void show() {
-    REPLField.move(0, freey-REPLField.h);
-    REPLH.move(0, top, width, freey-top-REPLField.h);
-    REPLField.show();
-    REPLH.show();
-    textInput = REPLField;
-    println("+"+this);
+    input.move(0, freey-input.h, width, isz);
+    historyView.move(0, top, width, freey-top-input.h);
+    input.show();
+    historyView.show();
+    textInput = input;
   }
   void hide() {
-    println("-"+this);
-    REPLField.hide();
-    REPLH.hide();
-    if (textInput == REPLField) textInput = null;
+    input.hide();
+    historyView.hide();
+    if (textInput == input) textInput = null;
   }
   String name() {
     return "REPL";
+  }
+}
+
+
+
+abstract class Editor extends Tab {
+  String name;
+  APLTextarea a;
+  Editor(String name, String val) {
+    this.name = name;
+    a = new APLTextarea(0, 0, 0, 0) {
+      void eval() {
+        save(a.allText());
+      }
+      void extraSpecial(String s) {
+        if (s.equals("close")) {
+          eval();
+          topbar.close();
+        } else println("unknown special " + s);
+      }
+    };
+    a.append(val);
+  }
+  abstract void save(String val);
+  void show() {
+    a.move(0, top, width, freey-top);
+    a.show();
+    textInput = a;
+  }
+  void hide() {
+    a.hide();
+  }
+  String name() {
+    return name;
   }
 }

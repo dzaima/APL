@@ -183,7 +183,10 @@ class APLTextarea extends Drawable implements TextReciever {
       hptr%= hsz;
       to(history[hptr]);
     }
-    else println("unknown special " + s);
+    else extraSpecial(s);
+  }
+  void extraSpecial(String s) {
+    println("unknown special " + s);
   }
   void to(State st) {
     if (st != null) {

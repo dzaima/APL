@@ -66,8 +66,8 @@ class DzaimaAPL extends Interpreter {
       ArrayList<String> lns = new ArrayList();
       lns.add(e + ": " + e.getMessage());
       if (Main.faulty != null && Main.faulty.getToken() != null) {
-        String s = repeat(" ", Main.faulty.getToken().pos);
-        lns.add(Main.faulty.getToken().line);
+        String s = repeat(" ", Main.faulty.getToken().spos);
+        lns.add(Main.faulty.getToken().raw);
         lns.add(s + "^");
       }
       e.printStackTrace();
@@ -99,7 +99,29 @@ class DzaimaAPL extends Interpreter {
       return this.all();
     }
   }
+  class Ed extends Editor {
+    Ed(String name, String val) {
+      super(name, val);
+    }
+    void save(String val) {
+      dzaimaSC.set(name, Main.exec(val, dzaimaSC));
+    }
+  }
   String[] special(String ex) {
+    if (ex.toLowerCase().startsWith("ed ")) {
+      String nm = ex.substring(3);
+      Obj o = dzaimaSC.get(nm);
+      if (o instanceof Dfn) {
+        topbar.toNew(new Ed(nm, ((Dfn ) o).code.raw()));
+      }
+      if (o instanceof Dmop) {
+        topbar.toNew(new Ed(nm, ((Dmop) o).code.raw()));
+      }
+      if (o instanceof Ddop) {
+        topbar.toNew(new Ed(nm, ((Ddop) o).code.raw()));
+      }
+      return new String[0];
+    }
     TPs nSout = new TPs();
     try {
       Main.ucmd(dzaimaSC, ex);

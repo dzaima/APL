@@ -9,12 +9,9 @@ class Drawable {
     this.h = h;
     screen.add(this);
   }
-  void tick() { // only update things that changed. For global things called every frame, even if hidden
-    
-  }
-  void redraw() { // redraw everything. Should be pure and callable at any point any time (where P5 drawing is allowed); called at least on window/screen resizing/rotating
-    
-  }
+  void tick() { } // only update things that changed. For global things called every frame, even if hidden
+  void redraw() { } // redraw everything. Should be pure and callable at any point any time (where P5 drawing is allowed); called at least on window/screen resizing/rotating
+  void resized() { }
   void move(int x, int y) {
     this.x = x;
     this.y = y;
@@ -24,6 +21,7 @@ class Drawable {
     this.w = w;
     this.h = h;
     if (visible) redraw();
+    resized();
   }
   void move(int x, int y, int w, int h) {
     this.x = x;
@@ -31,6 +29,7 @@ class Drawable {
     this.w = w;
     this.h = h;
     if (visible) redraw();
+    resized();
   }
   void show() {
     if (!visible) redraw();

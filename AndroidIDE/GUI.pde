@@ -10,7 +10,7 @@ class TopBar extends Drawable {
       int cx = x;
       for (Tab t : tabs) {
         String n = t.name();
-        int dx = ceil(textWidth(n)) + h/2;
+        int dx = max(2*h, ceil(textWidth(n)) + h/2);
         if (mouseX > cx && mouseX < cx + dx) to(t);
         cx+= dx;
         redraw();
@@ -28,7 +28,7 @@ class TopBar extends Drawable {
     int cx = x;
     for (Tab t : tabs) {
       String n = t.name();
-      int dx = ceil(textWidth(n)) + h/2;
+      int dx = max(2*h, ceil(textWidth(n)) + h/2);
       if (t == ctab) {
         fill(#333333);
         rect(cx, y, dx, h);
@@ -41,7 +41,7 @@ class TopBar extends Drawable {
     cx = x;
     for (Tab t : tabs) {
       String n = t.name();
-      int dx = ceil(textWidth(n)) + h/2;
+      int dx = max(2*h, ceil(textWidth(n)) + h/2);
       text(n, cx + dx/2, y + h/2);
       cx+= dx;
     }
@@ -50,6 +50,7 @@ class TopBar extends Drawable {
     if (ctab != null) ctab.hide();
     ctab = t;
     ctab.show();
+    redraw();
   }
   void toNew(Tab t) {
     add(t);
@@ -57,8 +58,17 @@ class TopBar extends Drawable {
   }
   void add(Tab t) {
     tabs.add(t);
+    redraw();
   }
   void resized() {
     if (ctab != null) ctab.show();
+  }
+  void close() {
+    if (tabs.size() == 1) return;
+    int i = tabs.indexOf(ctab);
+    tabs.remove(i);
+    i--;
+    if (i < 0) i = 0;
+    to(tabs.get(i));
   }
 }

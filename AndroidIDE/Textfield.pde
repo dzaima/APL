@@ -133,14 +133,6 @@ class APLField extends Drawable implements TextReciever {
       }
       if (!cshift()) sx = ex;
     }
-    else if (s.equals("up")) {
-      sx = 0;
-      ex = 0;
-    }
-    else if (s.equals("down")) {
-      sx = line.length();
-      ex = line.length();
-    }
     else if (s.equals("openPar")) {
       append("()");
       ex--;
@@ -169,7 +161,10 @@ class APLField extends Drawable implements TextReciever {
     else if (s.equals("paste")) {
       append(paste());
     }
-    else println("unknown special " + s);
+    else extraSpecial(s);
+  }
+  void extraSpecial(String s) {
+    println("unknown special " + s);
   }
   void to(State st) {
     if (st != null) {

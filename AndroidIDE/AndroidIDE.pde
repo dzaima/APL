@@ -14,6 +14,7 @@ Keyboard kb;
 
 TopBar topbar;
 int top = 30;
+int isz = 40;
 int freey;
 void setup() {
   //size(800, 450);
@@ -25,7 +26,7 @@ void setup() {
   textFont(createFont("APL385+.ttf", 48));
   topbar = new TopBar(0, 0, width, top);
   topbar.toNew(new REPL());
-  topbar.add(new REPL());
+  //topbar.add(new REPL());
   topbar.show();
   redrawAll();
 }
@@ -92,7 +93,7 @@ void keyPressed(KeyEvent e) {
       else if (key ==  25 && keyCode ==  89) textInput.special("redo");
       else if (key ==   3 && keyCode ==  67) textInput.special("copy");
       else if (key == 127 && keyCode == 127) textInput.rdelete();
-      else if (key ==  22 && keyCode ==  86) textInput.special("paste");
+      else if (key ==  19 && keyCode ==  83) textInput.special("eval");
       else textInput.append(Character.toString(key));
     }
   }
