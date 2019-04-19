@@ -49,8 +49,9 @@ public class DoubleArr extends Arr {
     if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
-      if (arr[i] != (int) arr[i]) throw new DomainError("using a fractional number as integer", this);
-      r[i] = ((int) arr[i]);
+      int conv = (int) arr[i];
+      if (arr[i] != conv) throw new DomainError("using a fractional number as integer", this);
+      r[i] = conv;
     }
     return r;
   }

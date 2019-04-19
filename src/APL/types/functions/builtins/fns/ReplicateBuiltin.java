@@ -50,11 +50,13 @@ public class ReplicateBuiltin extends Builtin {
         double c = wi[i];
         int am = sizes[i];
         if (sizes[i] < 0) {
-          am = -am;
-          c = 0;
-        }
-        for (int j = 0; j < am; j++) {
-          res[ptr++] = c;
+          for (int j = 0; j > am; j--) {
+            res[ptr++] = 0;
+          }
+        } else {
+          for (int j = 0; j < am; j++) {
+            res[ptr++] = c;
+          }
         }
       }
       return new DoubleArr(res);
