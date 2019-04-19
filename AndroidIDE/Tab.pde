@@ -23,7 +23,7 @@ class REPL extends Tab {
           String cmd = line.substring(1);
           int i = cmd.indexOf(" "); 
           String nm = i==-1? cmd : cmd.substring(0, i);
-          String arg = i==-1? "" : cmd.substring(i+1);
+          final String arg = i==-1? "" : cmd.substring(i+1);
           String argl = arg.toLowerCase();
           if (nm.equals("hsz")) historyView.setSize(int(arg));
           if (nm.equals("isz")) {
@@ -45,7 +45,7 @@ class REPL extends Tab {
             String[] ps = arg.split("/");
             String[] lns = loadStrings(arg);
             topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
-              void save(String t) {
+              public void save(String t) {
                 saveStrings(arg, new String[]{t});
               }
             });

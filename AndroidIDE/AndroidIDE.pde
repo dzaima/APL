@@ -53,7 +53,7 @@ void draw() {
     smouseY = mouseY;
     mouseStart = millis();
   }
-  if (mouseButton == RIGHT) redrawAll();
+  // if (mouseButton == RIGHT) redrawAll();
   for (Drawable d : screen) {
     d.tick();
   }
