@@ -24,8 +24,8 @@ public class TrigBuiltin extends Builtin {
   public Obj call(Value w) {
     return numM(NF, w);
   }
-  public Obj call(Value a0, Value w0) {
-    return numD((a, w) -> {
+  static class DNf extends D_NNeN {
+    @Override public double on(double a, double w) {
       switch((int) a) {
         case  1: return Math.sin(w);
         case  2: return Math.cos(w);
@@ -39,7 +39,7 @@ public class TrigBuiltin extends Builtin {
         case 10: return Math.abs(w); // pointless
         case 11: return 0; // also pointless
         case 12: throw new DomainError("what even is phase");
-
+      
         case  0: return Math.sqrt(1-w*w); //Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
         case  -1: return Math.asin(w);
         case  -2: return Math.acos(w);
@@ -55,6 +55,10 @@ public class TrigBuiltin extends Builtin {
         case -12: throw new DomainError("no complex numbers no idea why this is even special-cased");
       }
       throw new DomainError("⍺ of ○ out of bounds");
-    }, a0, w0);
+    }
+  }
+  static DNf DNF = new DNf();
+  public Obj call(Value a, Value w) {
+    return numD(DNF, a, w);
   }
 }

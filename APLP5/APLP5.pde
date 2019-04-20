@@ -1,5 +1,5 @@
 import java.util.HashSet;
-import APL.types.Fun.NumDV;
+import APL.types.Fun.D_NNeN;
 import java.io.UnsupportedEncodingException;
 static final Null NULL = Null.NULL;
 Scope global;
@@ -11,7 +11,7 @@ void settings() {
   Main.colorful = false;
   mainGraphics = new APLGraphics();
   inSettings = true;
-  if (args == null) args = new String[]{"rects"};
+  if (args == null) args = new String[]{"ma"};
   
   global = new Scope();
   String s;

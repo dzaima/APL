@@ -26,17 +26,17 @@ public class FloorBuiltin extends Builtin {
   public Obj call(Value w) {
     return numChrM(NF, Char::lower, w);
   }
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
+  static class DNf extends D_NNeN {
+    public double on(double a, double w) {
       return Math.min(a, w);
     }
-    public void call(double[] res, double a, double[] w) {
+    public void on(double[] res, double a, double[] w) {
       for (int i = 0; i < w.length; i++) res[i] = Math.min(a, w[i]);
     }
-    public void call(double[] res, double[] a, double w) {
+    public void on(double[] res, double[] a, double w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w);
     }
-    public void call(double[] res, double[] a, double[] w) {
+    public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w[i]);
     }
   }

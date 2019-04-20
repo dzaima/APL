@@ -36,6 +36,69 @@ public class ReplicateBuiltin extends Builtin {
       return Arr.create(res);
     }
     if (a.ia != w.ia) throw new LengthError("⍺ & ⍵ should have equal lengths for ⌿", w);
+  
+    if (a instanceof BitArr) {
+      BitArr ab = (BitArr) a;
+      ab.setEnd(false);
+      int sum = ab.isum();
+      if (w.quickDoubleArr()) {
+        if (sum > w.ia*.96) {
+          double[] ds = w.asDoubleArr();
+          double[] res = new double[sum];
+          
+          long[] la = ab.arr;
+          int l = la.length;
+          int am = 0, pos = 0;
+          for (int i = 0; i < l; i++) {
+            long c = la[i];
+            for (int s = 0; s < 64; s++) {
+              if ((c&1) == 0) {
+                if (am != 0) System.arraycopy(ds, i*64 + s - am, res, pos, am);
+                pos+= am;
+                am = 0;
+              } else am++;
+              c>>= 1;
+            }
+          }
+          if (am > 0) System.arraycopy(ds, ds.length - am, res, pos, am);
+          return new DoubleArr(res);
+        }
+        double[] ds = w.asDoubleArr();
+        double[] res = new double[sum];
+        long[] la = ab.arr;
+        int l = la.length;
+        int pos = 0;
+        for (int i = 0; i < l; i++) {
+          long c = la[i];
+          for (int s = 0; s < 64; s++) {
+            if ((c&1) != 0) {
+              res[pos++] = ds[i*64 + s];
+            }
+            c>>= 1;
+          }
+        }
+        return new DoubleArr(res);
+        // BitArr.BR r = ab.read();
+        // int pos = 0;
+        // for (int i = 0; i < w.ia; i++) {
+        //   if (r.read()) {
+        //     res[pos++] = ds[i];
+        //   }
+        // }
+        // return new DoubleArr(res);
+      }
+      Value[] res = new Value[sum];
+      BitArr.BR r = ab.read();
+      int pos = 0;
+      for (int i = 0; i < w.ia; i++) {
+        if (r.read()) {
+          res[pos++] = w.get(i);
+        }
+      }
+      return Arr.create(res);
+    }
+    
+    
     int total = 0;
     int[] sizes = a.asIntVec();
     for (int i = 0; i < a.ia; i++) {

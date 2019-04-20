@@ -22,7 +22,7 @@ public class AtBuiltin extends Dop {
       boolean[] ba = new boolean[ia];
       int matchingCount = 0;
       for (int i = 0; i < ia; i++) {
-        ba[i] = Main.bool(vba.get(i), sc);
+        ba[i] = Main.bool(vba.get(i));
         if (ba[i]) matchingCount++;
       }
       Value aaa;

@@ -23,19 +23,19 @@ public class LogBuiltin extends Builtin {
     return numM(NF, w);
   }
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
+  static class DNf extends D_NNeN {
+    public double on(double a, double w) {
       return Math.log(w) / Math.log(a);
     }
-    public void call(double[] res, double a, double[] w) {
+    public void on(double[] res, double a, double[] w) {
       double la = Math.log(a);
       for (int i = 0; i < w.length; i++) res[i] = Math.log(w[i]) / la;
     }
-    public void call(double[] res, double[] a, double w) {
+    public void on(double[] res, double[] a, double w) {
       double lw = Math.log(w);
       for (int i = 0; i < a.length; i++) res[i] = lw / Math.log(a[i]);
     }
-    public void call(double[] res, double[] a, double[] w) {
+    public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(w[i]) / Math.log(a[i]);
     }
   }
@@ -45,6 +45,6 @@ public class LogBuiltin extends Builtin {
   }
   
   @Override public Obj callInvW(Value a, Value w) {
-    return numD(Math::pow, a, w);
+    return numD(StarBuiltin.DNF, a, w);
   }
 }

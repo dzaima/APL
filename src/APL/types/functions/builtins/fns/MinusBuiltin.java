@@ -11,8 +11,8 @@ public class MinusBuiltin extends Builtin {
   
   
   static class Nf implements NumMV {
-    public Value call(Num w) {
-      return w.negate();
+    public Value call(Num n) {
+      return n.negate();
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = -a[i];
@@ -21,20 +21,20 @@ public class MinusBuiltin extends Builtin {
   private static final Nf NF = new Nf();
   
   public Obj call(Value w) {
-    return numChrM(NF, Char::swap, w);
+    return numM(NF, w);
   }
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
+  static class DNf extends D_NNeN {
+    public double on(double a, double w) {
       return a - w;
     }
-    public void call(double[] res, double a, double[] w) {
+    public void on(double[] res, double a, double[] w) {
       for (int i = 0; i < w.length; i++) res[i] = a - w[i];
     }
-    public void call(double[] res, double[] a, double w) {
+    public void on(double[] res, double[] a, double w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] - w;
     }
-    public void call(double[] res, double[] a, double[] w) {
+    public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] - w[i];
     }
   }

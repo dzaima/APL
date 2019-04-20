@@ -140,8 +140,8 @@ class P5 extends APLMap {
           public String repr(){return "";}
         }
         DNf DNF = new DNf();
-        class DNf implements NumDV {
-          public double call(double a, double w) {
+        class DNf extends D_NNeN {
+          public double on(double a, double w) {
             int ai = (int) (long) a;
             int wi = (int) (long) w;
             return lerpColor(ai, wi, p);

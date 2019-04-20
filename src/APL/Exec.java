@@ -459,7 +459,7 @@ class Exec {
         case '⍱': return new NorBuiltin(sc);
         case '⊥': return new UTackBuiltin();
         case '⊤': return new DTackBuiltin();
-        case '~': return new TildeBuiltin(sc);
+        case '~': return new TildeBuiltin();
         case '○': return new TrigBuiltin();
         case '!': return new ExclBuiltin();
         

@@ -1,30 +1,50 @@
 package APL.types.functions.builtins.fns;
 
 import APL.*;
+import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 public class TildeBuiltin extends Builtin {
   @Override public String repr() {
     return "~";
   }
+  public Obj call(Value w) { return rec(w); }
   
-  public TildeBuiltin(Scope sc) {
-    super(sc);
+  private Value rec(Value w) {
+    if (w instanceof Arr) {
+      if (w instanceof BitArr) {
+        BitArr wb = (BitArr) w;
+        long[] res = new long[wb.llen()];
+        for (int i = 0; i < res.length; i++) res[i] = ~wb.arr[i];
+        return new BitArr(res, w.shape);
+      }
+      
+      if (w.quickDoubleArr()) {
+        long[] res = new long[BitArr.sizeof(w)];
+        // for (int i = 0; i < w.length; i++) if (w[i] == 0) res[i>>6]|= 1L << (i&63);
+        BitArr.BA a = new BitArr.BA(res);
+        for (double v : w.asDoubleArr()) a.append(v == 0);
+        return new BitArr(res, w.shape);
+      }
+      
+      Arr o = (Arr) w;
+      Value[] arr = new Value[o.ia];
+      for (int i = 0; i < o.ia; i++) {
+        arr[i] = rec(o.get(i));
+      }
+      return new HArr(arr, o.shape);
+    } else if (w instanceof Num) return Main.bool(w)? Num.ZERO : Num.ONE;
+    else throw new DomainError("Expected boolean, got "+w.humanType(false), w);
   }
   
-  class Nf implements NumMV {
-    public Value call(Num w) {
-      return Main.bool(w.num, sc)? Num.ZERO : Num.ONE;
+  public static BitArr call(BitArr w) {
+    BitArr.BC bc = BitArr.create(w.shape);
+    for (int i = 0; i < bc.arr.length; i++) {
+      bc.arr[i] = ~w.arr[i];
     }
-    public void call(double[] res, double[] a) {
-      for (int i = 0; i < a.length; i++) res[i] = Main.bool(a[i], sc)? 0 : 1;
-    }
-  }
-  private final Nf NF = new Nf();
-  
-  public Obj call(Value w) {
-    return numM(NF, w);
+    return bc.finish();
   }
   
   public Obj call(Value a, Value w) {

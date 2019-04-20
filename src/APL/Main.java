@@ -6,7 +6,6 @@ import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.VarArr;
-import APL.types.functions.userDefined.Dfn;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -191,13 +190,13 @@ public class Main {
   
   
   
-  public static void ucmd(Scope global, String cr) {
+  public static void ucmd(Scope sc, String cr) {
     String[] parts = cr.split(" ");
     String t = parts[0].toUpperCase();
     String rest = parts.length==1? "" : cr.substring(t.length()+1);
     switch (t) {
       case "EX":
-        exec(readFile(parts[1]), global);
+        exec(readFile(parts[1]), sc);
         break;
       case "DEBUG":
         debug = !debug;
@@ -210,10 +209,10 @@ public class Main {
         break;
       case "TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
       case "TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-      case "ERR"         : new NotErrorError("", exec(rest, global)).print(); break;
-      case "CLASS"       : var r = exec(rest, global); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
-      case "UOPT"        : var e = (Arr)global.get(rest); global.set(rest, new HArr(e.values(), e.shape)); break;
-      case "ATYPE"       : println(exec(rest, global).humanType(false)); break;
+      case "ERR"         : new NotErrorError("", exec(rest, sc)).print(); break;
+      case "CLASS"       : var r = exec(rest, sc); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
+      case "UOPT"        : var e = (Arr)sc.get(rest); sc.set(rest, new HArr(e.values(), e.shape)); break;
+      case "ATYPE"       : println(exec(rest, sc).humanType(false)); break;
       case "STACK":
         if (lastError != null) {
           lastError.printStackTrace();
@@ -308,7 +307,7 @@ public class Main {
         }
         if (guardPos != -1) {
           var guard = LineTok.inherit(tokens.subList(0, guardPos));
-          if (bool(norm(exec(guard, sc)), sc)) {
+          if (bool(norm(exec(guard, sc)))) {
             var expr = LineTok.inherit(tokens.subList(guardPos+(endAfter? 2 : 1), tokens.size()));
             res = exec(expr, sc);
             if (endAfter) return res;
@@ -335,6 +334,20 @@ public class Main {
       throw e;
     }
     return res;
+  }
+  public static boolean bool(double d) {
+    if (d == 1) return true;
+    if (d == 0) return false;
+    throw new DomainError("Expected boolean, got "+d);
+  }
+  
+  public static boolean bool(Obj v) {
+    if (v instanceof Num) {
+      double num = ((Num) v).num;
+      if (num == 1) return true;
+      if (num == 0) return false;
+    }
+    throw new DomainError("Expected boolean, got "+v);
   }
   
   public static void colorprint(String s, int col) {
@@ -367,39 +380,5 @@ public class Main {
   
   public static ChrArr toAPL(String s) {
     return new ChrArr(s);
-  }
-  public static boolean bool(Obj v, Scope sc) {
-    Scope.Cond c = sc.cond;
-    if (sc.condSpaces) {
-      if (v instanceof Char) {
-        return ((Char) v).chr != ' ';
-      }
-    }
-    if (!(v instanceof Num)) throw new DomainError("⎕COND does not accept "+v.humanType(false));
-    Num n = (Num) v;
-    switch (c) {
-      case _01:
-        if (n.equals(Num.ZERO)) return false;
-        if (n.equals(Num.ONE)) return true;
-        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+n.asInt());
-      case gt0:
-        return n.compareTo(Num.ZERO)>0;
-      case ne0:
-        return n.compareTo(Num.ZERO)!=0;
-      default: throw new IllegalStateException("unknown ⎕COND "+c);
-    }
-  }
-  public static boolean bool(double v, Scope sc) {
-    switch (sc.cond) {
-      case _01:
-        if (v == 0) return false;
-        if (v == 1) return true;
-        throw new DomainError("⎕COND='01' expected condition to be 0 or 1, got "+v);
-      case gt0:
-        return v>0;
-      case ne0:
-        return v!=0;
-      default: throw new IllegalStateException("unknown ⎕COND");
-    }
   }
 }

@@ -23,18 +23,18 @@ public class RootBuiltin extends Builtin {
     return numM(NF, w);
   }
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
+  static class DNf extends D_NNeN {
+    public double on(double a, double w) {
       return Math.pow(w, 1/a);
     }
-    public void call(double[] res, double a, double[] w) {
+    public void on(double[] res, double a, double[] w) {
       double pow = 1/a;
       for (int i = 0; i < w.length; i++) res[i] = Math.pow(w[i], pow);
     }
-    public void call(double[] res, double[] a, double w) {
+    public void on(double[] res, double[] a, double w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(w, 1/a[i]);
     }
-    public void call(double[] res, double[] a, double[] w) {
+    public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(w[i], 1/a[i]);
     }
   }

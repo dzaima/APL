@@ -3,8 +3,6 @@ package APL.types.functions.builtins.fns;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
-import java.util.Arrays;
-
 public class ExclBuiltin extends Builtin {
   @Override public String repr() {
     return "!";
@@ -38,6 +36,6 @@ public class ExclBuiltin extends Builtin {
   }
   
   public Obj call(Value a0, Value w0) {
-    return allM((a, w) -> ((Num) w).binomial((Num) a), a0, w0);
+    return allD((a, w) -> ((Num) w).binomial((Num) a), a0, w0);
   }
 }

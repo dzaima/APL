@@ -18,7 +18,7 @@ public class RepeatBuiltin extends Dop {
       Fun g = (Fun) ww;
       Value prev = w;
       Value curr = (Value) f.call(w);
-      while (!Main.bool(g.call(prev, curr), sc)) {
+      while (!Main.bool(g.call(prev, curr))) {
         Value next = (Value) f.call(curr);
         prev = curr;
         curr = next;

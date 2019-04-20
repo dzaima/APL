@@ -25,7 +25,7 @@ public class CRepeatBuiltin extends Dop {
       Value next = (Value) aaf.call(prev);
       res.add(next);
       Fun wwf = (Fun) ww;
-      while(!Main.bool(wwf.call(prev, next), sc)) {
+      while(!Main.bool(wwf.call(prev, next))) {
         prev = next;
         next = (Value) aaf.call(prev);
         res.add(next);

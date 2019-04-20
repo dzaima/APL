@@ -23,25 +23,23 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     if (w.rank >= 2) {
       return ngnReduce(w, -1, ff);
     }
-    if (f instanceof PlusBuiltin && w.quickDoubleArr()) {
-      double s = 0;
-      for (double d : w.asDoubleArr()) s+= d;
-      return new Num(s);
-    }
-    if (f instanceof MulBuiltin && w.quickDoubleArr()) {
-      double p = 1;
-      for (double d : w.asDoubleArr()) p*= d;
-      return new Num(p);
-    }
-    if (f instanceof FloorBuiltin && w.quickDoubleArr()) {
-      double p = Double.MAX_VALUE;
-      for (double d : w.asDoubleArr()) p = Math.min(p, d);
-      return new Num(p);
-    }
-    if (f instanceof CeilingBuiltin && w.quickDoubleArr()) {
-      double p = Double.MIN_VALUE;
-      for (double d : w.asDoubleArr()) p = Math.max(p, d);
-      return new Num(p);
+    if (w.quickDoubleArr()) {
+      if (f instanceof PlusBuiltin) return new Num(w.sum());
+      if (f instanceof MulBuiltin) {
+        double p = 1;
+        for (double d : w.asDoubleArr()) p *= d;
+        return new Num(p);
+      }
+      if (f instanceof FloorBuiltin) {
+        double p = Double.POSITIVE_INFINITY;
+        for (double d : w.asDoubleArr()) p = Math.min(p, d);
+        return new Num(p);
+      }
+      if (f instanceof CeilingBuiltin) {
+        double p = Double.NEGATIVE_INFINITY;
+        for (double d : w.asDoubleArr()) p = Math.max(p, d);
+        return new Num(p);
+      }
     }
     Value[] a = w.values();
     if (a.length == 0) {

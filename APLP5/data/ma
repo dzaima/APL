@@ -1,0 +1,78 @@
+⎕IO←0
+⎕VI←1
+⎕PP←6
+G←P5.G
+P5.smooth←0
+P5.size ← ,⍨ 200
+sz ← ,⍨ 200
+
+⍝ sqr ← (-⍥(×⍨) ⍮ 2××)/
+sqr ← ((-/ *∘2) ⍮ 2××/)
+AM ← 40 ⍝ iteration amount
+b2c ← 4278190080 + 65793×
+CL ← { ⍝ 0-1 hue to RGB
+  I ← 3|⍵×3
+  p ← ⌊256×1|I
+  P ← 255-p
+  off ← 4278190080 ⍝ 0xff000000
+  R G B ← 65536 256 1
+  I<1:← off + (P×B) + (p×R)
+  I<2:← off + (P×R) + (p×G)
+  I<3:← off + (P×G) + (p×B)
+}
+
+j ← { ⍝ julia
+  R←3⍴⊂⍬
+  C←0
+  mp ← ¯1.5 + 3×P5.mpos ÷ P5.size
+  ⍝ mp ← 1 2○ .1×P5.fc
+  {
+    C+←1
+    r ← mp + sqr 2↑⍵
+    ⍝ o←∨/2<|r
+    o ← 4<+/ ×⍨ r
+    R⊢← R ,¨ (⊂(⍴⊃f)⍴CL C×.04) ,⍨ f ← o∘⌿¨ ¯2↑⍵
+    (~o)∘⌿¨ r,¯2↑⍵
+  }⍣AM ⊢ ,¨ {(¯1.5 + 3×⍵÷sz) , ⍵}⍳sz
+  (0 0,P5.size) G.img P5.img  (2⊃R) @ (2↑R)  ⊢ sz⍴ b2c 0
+  ⎕←P5.fps
+}
+
+
+op ← 0 0
+zm ← ÷128 ⍝ 1
+PS ← (⌽⍳sz)-.5×sz
+m ← { ⍝ mandelbrot
+  P5.lm.p: op+← zm×(P5.pmpos - P5.mpos) × sz÷P5.size
+  add ← (zm × PS)+op
+  
+  Rc Ry Rx←3⍴⊂⍬
+  C←0
+  bc ic ← 0 ⍬
+  {
+    S A P ← ⍵
+    C+← 1
+    r ← A + sqr S
+    o ← 4<+/ r*2
+    ⍱o:← r A P
+    cx cy ← o∘⌿¨ P
+    Ry⍮← cy
+    Rx⍮← cx
+    Rc⍮← (⍴cx)⍴CL C×.04
+    bc+← 1
+    (~o)∘⌿¨¨ r A P
+  }⍣AM ⊢ ,¨¨ (2⍴⊂ sz⍴0) add (⍳sz)
+  (0 0,P5.size) G.img P5.img (∊Rc) @ (∊¨ Rx Ry)  ⊢ sz⍴ b2c 0
+  ⍝ ⎕←⎕PFR
+  ⎕←P5.fps bc (∊ic)
+}
+P5.sc ← {
+  zm÷←2*⍵
+}
+P5.draw ← m
+P5.rm.c ← {
+  P5.draw ← j
+}
+P5.mm.c ← {
+  P5.draw ← m
+}

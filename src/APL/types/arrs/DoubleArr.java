@@ -89,11 +89,10 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public double sum() { // TODO whether or not commented code
-//    double r = 0;
-//    for (double val : arr) r += val;
-//    return r;
-    return Arrays.stream(arr).sum();
+  public double sum() {
+   double r = 0;
+   for (double val : arr) r += val;
+   return r;
   }
   
   @Override

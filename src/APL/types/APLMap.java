@@ -26,7 +26,7 @@ public abstract class APLMap extends Primitive {
   
   abstract public int size();
   
-  class MapPointer extends Settable {
+  public class MapPointer extends Settable {
     private final APLMap map;
     private final Value k;
     

@@ -25,13 +25,13 @@ public class StileBuiltin extends Builtin {
     return numChrMapM(NF, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
   }
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
+  static class DNf extends D_NNeN {
+    public double on(double a, double w) {
       double c = w % a;
       if (c < 0) return c + a;
       return c;
     }
-    public void call(double[] res, double a, double[] w) {
+    public void on(double[] res, double a, double[] w) {
       int ia = (int) a;
       if (a == ia) {
         if (ia > 0 && (ia & ia-1) == 0) {
@@ -59,7 +59,7 @@ public class StileBuiltin extends Builtin {
         }
       }
     }
-    public void call(double[] res, double[] a, double w) {
+    public void on(double[] res, double[] a, double w) {
       if (w > 0) for (int i = 0; i < a.length; i++) res[i] = w % a[i];
       else       for (int i = 0; i < a.length; i++) {
         double c = w % a[i];
@@ -67,7 +67,7 @@ public class StileBuiltin extends Builtin {
         else res[i] = c;
       }
     }
-    public void call(double[] res, double[] a, double[] w) {
+    public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) {
         double c = w[i] % a[i];
         if (c < 0) res[i] = c + a[i];

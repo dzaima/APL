@@ -1,6 +1,7 @@
 package APL.types.functions.builtins.fns;
 
 import APL.types.*;
+import APL.types.arrs.BitArr;
 import APL.types.functions.Builtin;
 
 
@@ -11,23 +12,39 @@ public class EQBuiltin extends Builtin {
   
   
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
-      return a == w? 1 : 0;
+  static class DNf extends D_NNeB {
+    public boolean on(double a, double w) {
+      return a == w;
     }
-    public void call(double[] res, double a, double[] w) {
-      for (int i = 0; i < w.length; i++) res[i] = a == w[i]? 1 : 0;
+    public void on(BitArr.BC res, double a, double[] w) {
+      for (double cw : w) res.add(a == cw);
     }
-    public void call(double[] res, double[] a, double w) {
-      for (int i = 0; i < a.length; i++) res[i] = a[i] == w? 1 : 0;
+    public void on(BitArr.BC res, double[] a, double w) {
+      for (double ca : a) res.add(ca == w);
     }
-    public void call(double[] res, double[] a, double[] w) {
-      for (int i = 0; i < a.length; i++) res[i] = a[i] == w[i]? 1 : 0;
+    public void on(BitArr.BC res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) res.add(a[i] == w[i]);
+    }
+  }
+  static class DBf implements D_BB {
+    @Override public Value call(boolean a, BitArr w) {
+      if (a) return w;
+      return TildeBuiltin.call(w);
+    }
+    @Override public Value call(BitArr a, boolean w) {
+      if (w) return a;
+      return TildeBuiltin.call(a);
+    }
+    @Override public Value call(BitArr a, BitArr w) {
+      BitArr.BC bc = BitArr.create(w.shape);
+      for (int i = 0; i < bc.arr.length; i++) bc.arr[i] = ~(a.arr[i] ^ w.arr[i]);
+      return bc.finish();
     }
   }
   private static final DNf DNF = new DNf();
+  private static final DBf DBF = new DBf();
   
   public Obj call(Value a, Value w) {
-    return numChrD(DNF, (ca, cw) -> ca==cw? Num.ONE : Num.ZERO, (ca, cw) -> Num.ZERO, a, w);
+    return ncbaD(DNF, DBF, (ca, cw) -> ca==cw? Num.ONE : Num.ZERO, (ca, cw) -> Num.ZERO, a, w);
   }
 }

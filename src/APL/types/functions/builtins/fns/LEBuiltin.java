@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.BitArr;
 import APL.types.functions.Builtin;
 
 
@@ -12,18 +13,18 @@ public class LEBuiltin extends Builtin {
   
   
   
-  static class DNf implements NumDV {
-    public double call(double a, double w) {
-      return a <= w? 1 : 0;
+  static class DNf extends D_NNeB {
+    public boolean on(double a, double w) {
+      return a <= w;
     }
-    public void call(double[] res, double a, double[] w) {
-      for (int i = 0; i < w.length; i++) res[i] = a <= w[i]? 1 : 0;
+    public void on(BitArr.BC res, double a, double[] w) {
+      for (double cw : w) res.add(a <= cw);
     }
-    public void call(double[] res, double[] a, double w) {
-      for (int i = 0; i < a.length; i++) res[i] = a[i] <= w? 1 : 0;
+    public void on(BitArr.BC res, double[] a, double w) {
+      for (double ca : a) res.add(ca <= w);
     }
-    public void call(double[] res, double[] a, double[] w) {
-      for (int i = 0; i < a.length; i++) res[i] = a[i] <= w[i]? 1 : 0;
+    public void on(BitArr.BC res, double[] a, double[] w) {
+      for (int i = 0; i < a.length; i++) res.add(a[i] <= w[i]);
     }
   }
   private static final DNf DNF = new DNf();

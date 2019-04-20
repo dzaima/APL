@@ -9,30 +9,22 @@ import APL.types.functions.Builtin;
 
 import java.util.HashMap;
 
+import static APL.Main.*;
+
 public class Scope {
   private final HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
   public boolean alphaDefined;
   public int IO;
   private Num nIO;
-  
-  enum Cond {
-    _01, gt0, ne0,
-  }
-  boolean condSpaces;
-  Cond cond;
   public Scope() {
     IO = 1;
     nIO = Num.ONE;
-    cond = Cond._01;
-    condSpaces = false;
   }
   public Scope(Scope p) {
     parent = p;
     IO = p.IO;
     nIO = p.nIO;
-    cond = p.cond;
-    condSpaces = p.condSpaces;
   }
   private Scope owner(String name) {
     if (vars.containsKey(name)) return this;
@@ -55,20 +47,8 @@ public class Scope {
         Main.enclosePrimitives = ((Value) val).asInt() == 1;
       break;
       case "⎕VI":
-        Main.vind = Main.bool(val, this);
+        Main.vind = Main.bool(val);
       break;
-      case "⎕COND":
-        String s = ((Arr) val).asString();
-        if (s == null) throw new DomainError("⎕COND must be set to a character vector");
-        switch (s) {
-          case "01" : cond = Cond._01; condSpaces = false; return;
-          case ">0" : cond = Cond.gt0; condSpaces = false; return;
-          case "≠0" : cond = Cond.ne0; condSpaces = false; return;
-          case "01 ": cond = Cond._01; condSpaces = true ; return;
-          case ">0 ": cond = Cond.gt0; condSpaces = true ; return;
-          case "≠0 ": cond = Cond.ne0; condSpaces = true ; return;
-          default: throw new DomainError("⎕COND must be one of '01', '>0', '≠0' optionally followed by ' ' if space should be falsy");
-        }
       case "⎕PP":
         Num.setPrecision(((Value) val).asInt());
       break;
@@ -99,11 +79,16 @@ public class Scope {
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
         case "⎕PP": return new Num(Num.pp);
-        case "⎕COND": switch (cond) {
-          case _01: if (condSpaces) return new ChrArr("01 "); return new ChrArr("01");
-          case gt0: if (condSpaces) return new ChrArr(">0 "); return new ChrArr(">0");
-          case ne0: if (condSpaces) return new ChrArr("≠0 "); return new ChrArr("≠0");
-        }
+        case "⎕PF": return new Profiler(this);
+        case "⎕PFR": return Profiler.results();
+        case "⎕U": return new Builtin() {
+          @Override public String repr() { return "⎕U"; }
+  
+          @Override public Obj call(Value w) {
+            Main.ucmd(Scope.this, w.asString());
+            return null;
+          }
+        };
         case "⎕OPT": case "⎕OPTIMIZE":
           return new Optimizer(this);
       }
@@ -198,7 +183,7 @@ public class Scope {
         for (int i = 0; i < n; i++) Main.exec(test, sc);
       } else {
         BasicLines testTokenized = Tokenizer.tokenize(test);
-        for (int i = 0; i < n; i++) Main.execLines(testTokenized, sc);
+        for (int i = 0; i < n; i++) execLines(testTokenized, sc);
       }
       long end = System.nanoTime();
       if (simple) {
@@ -392,4 +377,61 @@ public class Scope {
     }
   }
   
+  private static class Profiler extends Builtin {
+    Profiler(Scope sc) {
+      super(sc);
+    }
+    
+    static HashMap<String, Pr> pfRes = new HashMap<>();
+    static double cam = 0;
+    public static Obj results() {
+      Value[] arr = new Value[pfRes.size()*4];
+      final int[] p = {0};
+      cam++;
+      pfRes.forEach((s, pr) -> {
+        arr[p[0]++] = toAPL(s);
+        arr[p[0]++] = new Num(pr.am/cam);
+        arr[p[0]++] = new Num(pr.ms/cam);
+        arr[p[0]++] = new Num(pr.ms/pr.am);
+        if (cam > 100) {
+          pr.am = 0;
+          pr.ms = 0;
+        }
+      });
+      if (cam > 100) cam = 0;
+      return new HArr(arr, new int[]{pfRes.size(), 4});
+    }
+  
+    @Override public String repr() {
+      return "⎕PF";
+    }
+    @Override
+    public Obj call(Value w) {
+      return call(w, w);
+    }
+    @Override
+    public Obj call(Value a, Value w) {
+      String s = w.asString();
+      String k = a.asString();
+      if (!pfRes.containsKey(k)) pfRes.put(k, new Pr(Tokenizer.tokenize(s)));
+      Pr p = pfRes.get(k);
+      BasicLines t = p.tok;
+      
+      p.am++;
+      long ns = System.nanoTime();
+      Obj res = execLines(t, sc);
+      long rns = System.nanoTime() - ns;
+      p.ms+= rns/1000000d;
+      return res;
+    }
+  }
+  static class Pr {
+    private final BasicLines tok;
+    int am;
+    double ms;
+  
+    public Pr(BasicLines tok) {
+      this.tok = tok;
+    }
+  }
 }
