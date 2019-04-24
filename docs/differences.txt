@@ -28,21 +28,20 @@ A¨ ←→ {A}¨ (though A is evaluated only once)
 ⌽[dim] takes dim reversed
 
 ⎕-s:
-  ⎕IO: IO. Can be set freely, but who knows what'll happen with ~⎕IO∊0 1
-  ⎕COND:
-    '01': 0 - falsy; 1 - truthy; anything else - error
-    '>0': >0: truthy; ≤0: falsy
-    '≠0': 0: falsy; ≠0: truthy
-    If followed by a space, makes ' ' falsy & every other char truthy. Otherwise, chars are a domain error
-  ⎕MILLIS: time since starting
-  ⎕TIME: time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
-  ⎕HTIME: as above but convert to a better time format
-  ⎕L/⎕LA: lowercase alphabet
-  ⎕ERASE 'varname': erase the variable
-  ⎕GC: force Java garbage collection
+  ⎕IO       : IO. Can be set freely, but who knows what'll happen with ~⎕IO∊0 1
+  ⎕VI       : vector indexing. changes behavior if ⍳vec, ⊇, etc.
+  ⎕MILLIS   : time since starting
+  ⎕TIME     : time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
+  ⎕HTIME    : as above but convert to a human-readable format
+  ⎕EX 'path': execute the APL program in the file
+  ⎕L/⎕LA    : lowercase alphabet
+  ⎕ERASE    : 'varname': erase the variable
+  ⎕GC       : force Java garbage collection
+  ⎕NULL     : null object (value of undefined keys in maps)
+  ⎕HASH     : get hash of the array
+  
   ⎕DEATHLOGGER 'name': log message upon getting garbage collected. This may be removed at any point in time without warning.
     Meant for testing for memory leaks (though make sure to call ⎕GC before concluding anything!)
-  ⎕NULL: null object (value of undefined keys in maps)
   ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
     monadic: create from key-value pairs
     dyadic: left - keys; right - values
@@ -65,9 +64,8 @@ REPL:
   
   )stack: stacktrace of last error
   )debug: debug info (useful for "couldn't join everything up into a single expression")
-  )tokenize expr; )tokenizerepr: tokenize the following code
-  )type: get object type
   )class: get object class
   )atype: array type (whatever that is; pretty much )class )
+  )tokenize expr; )tokenizerepr: tokenize the following code
   )err to get a fake error pointing to code
   )off←→)exit←→)stop←→exit (yep, without a starting ")")

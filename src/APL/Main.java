@@ -209,7 +209,6 @@ public class Main {
         break;
       case "TOKENIZE"    : println(Tokenizer.tokenize(rest).toTree("")); break;
       case "TOKENIZEREPR": println(Tokenizer.tokenize(rest).toRepr()); break;
-      case "ERR"         : new NotErrorError("", exec(rest, sc)).print(); break;
       case "CLASS"       : var r = exec(rest, sc); println(r == null? "nothing" : r.getClass().getCanonicalName()); break;
       case "UOPT"        : var e = (Arr)sc.get(rest); sc.set(rest, new HArr(e.values(), e.shape)); break;
       case "ATYPE"       : println(exec(rest, sc).humanType(false)); break;

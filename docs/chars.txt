@@ -28,6 +28,7 @@ fns:
 ⍸   where; NYI; where > 0 (positions replicated n times)
 ⍴   shape; reshape
 ,   ravel; concat
+⍮      ,⊂; {⍺⍵}
 ≢  not eq; tally (⊃1,⍨⍴⍵)
 ≡   depth; equal; depth is amount of ⊃s needed to get to a primitive (to be changed)
 ⊢       ⍵; ⍵
@@ -39,15 +40,15 @@ fns:
 ⊖    flip; NYI
 ⌽ reverse; NYI
 …     NYI; range
-⍕     NYI; format
-⍎     NYI; eval
-⍋     NYI; grade up
-⍒     NYI; grade down
+⍕  format; NYI
+⍎    eval; NYI
+⍋ grade up  ; NYI
+⍒ grade down; NYI
 ⌿     NYI; replicate
 ∪  unique; union
 ∩     NYI; intersection
 ⊂     NYI; enclose
-⊃   first; pick;
+⊃   first; pick
 ⊇ first if enclosed; select
 ⍉ transpose; NYI
           
@@ -65,23 +66,29 @@ monadic ops:
 \  scan
 ¨  for each
 ⍨  selfie; commute
-⌾  table (∘.⍺⍺)
-⌸  get/set map keys ('x'(map⌸)5; map⌸'x')
+⌾  table (aka ∘.⍺⍺; _might_ get removed at some point?)
+⌸  get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
 
 dyadic ops
 
 ∘  compose
 .  NYI
 ⍣  repeat
+⍡  cumulative repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
+⍤  atop (←→ {⍺⍺ ⍺ ⍵⍵ ⍵} )
 ⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵} )
+⍫  obverse - define inverse: ⍶ - regular function, ⍹ - inverse
 @  at; right op = indices or function giving boolean array, left op = replacement array or function
+⍁  for each diagonal
 
 nilads:
 
 ⍬  0⍴0
-⎕  console
+⎕  console (println; exec input line)
+⍞  console (print  ; input as string)
 ⍺  left arg
 ⍵  right arg
 ⍶  left operand
 ⍹  right operand
+∇  this function
