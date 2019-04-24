@@ -21,8 +21,8 @@ public class Fork extends Fun {
   }
   
   public Obj call(Value w) {
-    var left = (Value) (f instanceof Fun? ((Fun)f).call(w) : f);
     var right = (Value) (h instanceof Fun? ((Fun)h).call(w) : h);
+    var left = (Value) (f instanceof Fun? ((Fun)f).call(w) : f);
     return g.call(left, right);
   }
   public Obj callInv(Value w) {
