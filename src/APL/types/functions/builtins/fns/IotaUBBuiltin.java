@@ -60,8 +60,4 @@ public class IotaUBBuiltin extends Builtin {
     }
     return new DoubleArr(arr, sh);
   }
-  
-  public Obj call(Value a, Value w) {
-    return null;
-  }
 }
