@@ -15,15 +15,17 @@ A¨ ←→ {A}¨ (though A is evaluated only once)
 ⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
 
 √ exists (2√ ←→ √)
-⍥ & ⍢ & f⍤g & ⍫ exist from https://github.com/abrudz/dyalog-apl-extensions
+⍥ & ⍢ & f⍤g & ⍫ & ⊇ & ⍮ exist from https://github.com/abrudz/dyalog-apl-extensions
+
+⍡ & ⍁ have been added
 
 ⍸ works for things not 0 & 1 (also ⍸⍣¯1 works)
 
 > & < sort
 
-∨ & ∧ monadically are lcm/gcd of the array (so every/some too)
+∨ & ∧ & ⍱ & ⍲ monadically lcm(= some)/gcd(= all)/none/not all of the array
 
-⌊/⌈/×/- for things with char cases
+⌊, ⌈, ×, - for things with char cases
 
 ⌽[dim] takes dim reversed
 
