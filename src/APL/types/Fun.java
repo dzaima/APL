@@ -20,13 +20,13 @@ public abstract class Fun extends Scopeable {
     super(null);
   }
   public Obj call() {
-    throw new IncorrectArgsException("function "+toString()+" called niladically", this);
+    throw new IncorrectArgsError("function "+toString()+" called niladically", this);
   }
   public Obj call(Value w) {
-    throw new IncorrectArgsException("function "+toString()+" called monadically", w);
+    throw new IncorrectArgsError("function "+toString()+" called monadically", w);
   }
   public Obj call(Value a, Value w) {
-    throw new IncorrectArgsException("function "+toString()+" called dyadically", a);
+    throw new IncorrectArgsError("function "+toString()+" called dyadically", a);
   }
   public Obj callInv(Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", w);

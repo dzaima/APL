@@ -23,10 +23,10 @@ public abstract class Mop extends Scopeable {
     return new DerivedMop(aa, this);
   }
   public Obj call(Obj f, Value w, DerivedMop derv) {
-    throw new IncorrectArgsException(" derived mop called monadically with " + w, w);
+    throw new IncorrectArgsError("dyadic operator "+repr()+" can't be called monadically", w);
   }
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    throw new IncorrectArgsException(" derived mop called dyadically", a);
+    throw new IncorrectArgsError("dyadic operator "+repr()+" can't be called dyadically", a);
   }
   public Obj callInv(Obj f, Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", w);
