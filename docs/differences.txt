@@ -15,7 +15,7 @@ A¨ ←→ {A}¨ (though A is evaluated only once)
 ⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
 
 √ exists (2√ ←→ √)
-⍥ & ⍢ exist from https://github.com/abrudz/dyalog-apl-extensions (though only the versions with both operands being functions are implemented)
+⍥ & ⍢ & f⍤g & ⍫ exist from https://github.com/abrudz/dyalog-apl-extensions
 
 ⍸ works for things not 0 & 1 (also ⍸⍣¯1 works)
 
@@ -67,5 +67,4 @@ REPL:
   )class: get object class
   )atype: array type (whatever that is; pretty much )class )
   )tokenize expr; )tokenizerepr: tokenize the following code
-  )err to get a fake error pointing to code
   )off←→)exit←→)stop←→exit (yep, without a starting ")")
