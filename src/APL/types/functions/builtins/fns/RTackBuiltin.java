@@ -5,7 +5,7 @@ import APL.types.functions.Builtin;
 
 public class RTackBuiltin extends Builtin {
   @Override public String repr() {
-    return "⊣";
+    return "⊢";
   }
   
   
