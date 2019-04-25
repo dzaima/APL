@@ -3,6 +3,7 @@ class ROText extends Drawable {
   ROText(int x, int y, int w, int h) {
     super(x, y, w, h);
     s = new ArrayList();
+    tsz = min(width, height)/20;
   }
   int yoff = 0; // scroll
   int border = 10;
@@ -26,9 +27,6 @@ class ROText extends Drawable {
     }
     noClip();
     redraw = false;
-  }
-  void resized() {
-    tsz = min(width, height)/20;
   }
   void tick() {
     if (!visible) return;
@@ -55,5 +53,8 @@ class ROText extends Drawable {
   void setSize(int sz) {
     tsz = sz;
     redraw = true;
+  }
+  void end() {
+    yoff = h-border;
   }
 }

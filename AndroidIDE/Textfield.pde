@@ -1,5 +1,6 @@
 class APLField extends Drawable implements TextReciever {
   float tsz;
+  float extraH = 1.2;
   APLField(int x, int y, int w, int h) {
     super(x, y, w, h);
     line = "";
@@ -7,7 +8,7 @@ class APLField extends Drawable implements TextReciever {
   int tt = 0;
   
   void redraw() {
-    tsz = h*.8;
+    tsz = h/extraH;
   }
   boolean modified = true;
   final int hsz = 300;

@@ -3,6 +3,8 @@ abstract class Tab {
   abstract void hide();
   abstract String name();
 }
+
+
 class REPL extends Tab {
   final ROText historyView;
   final APLField input;
@@ -26,7 +28,7 @@ class REPL extends Tab {
           final String arg = i==-1? "" : cmd.substring(i+1);
           String argl = arg.toLowerCase();
           if (nm.equals("hsz")) historyView.setSize(int(arg));
-          if (nm.equals("isz")) {
+          else if (nm.equals("isz")) {
             isz = int(arg);
             redrawAll();
           } else if (nm.equals("i")) {
@@ -93,8 +95,10 @@ class REPL extends Tab {
     };
   }
   void show() {
-    input.move(0, freey-input.h, width, isz);
-    historyView.move(0, top, width, freey-top-input.h);
+    int ih = int(isz*input.extraH);
+    input.move(0, freey-ih, width, ih);
+    historyView.move(0, top, width, freey-top-ih);
+    historyView.end();
     input.show();
     historyView.show();
     textInput = input;
