@@ -1,3 +1,4 @@
+To generate the dzaima/APL interpreter jar file, run `./convert.py` in `app/`.
 
 Start Dyalog JSONServer:
 
