@@ -1,0 +1,131 @@
+MOD ↶ spec=undo
+MOD ↷ spec=redo
+MOD « rep spec=left
+MOD » rep spec=right
+MOD ⇧ spec=shift
+MOD ⌫ rep spec=del
+MOD C spec=clear
+MOD ▲ rep spec=up
+MOD ▼ rep spec=down
+MOD B spec=none goto=ABC3
+MOD L spec=none goto=ABC2
+MOD # spec=none goto=CODE
+MOD A spec=none goto=ABC3
+MOD ⏎ spec=enter
+MOD E spec=eval chr==
+MOD ⇐ type=:← chr=:←
+MOD F spec=none goto=EXTRA
+MOD O spec=openPar chr=()
+MOD P spec=closePar chr=..)
+MOD č spec=copy chr=^C
+MOD V spec=paste chr=^V
+MOD ⌦ spec=rdel
+MOD X spec=close
+
+LAYOUT L 8×4 CODE
+LAYOUT P 6×5 CODE
+
+
+
+PART ABC3 L
+C        U        D        col      L        R
+E     ⌫#|       9|12345678|10000012|      C |        |
+«»aei÷×⏎|0      ▲|       ▼|11222331| ↶bdg   | ↷cfh   |
+{}lnr-+⇧|       L|        |33222331| ⍺jmp   | ⍵koq   |
+()twx⎕. |[]      |        |33222222|  svy   |  u z   |
+
+
+PART ABC2 L
+C        U        D        col      L        R
+E     ⌫#|       9|12345678|10000012|      C |        |
+«»aei÷×⏎|0 cgk  ▲|       ▼|11222331| ↶bfj   | ↷dhl   |
+{}otw-+⇧|  nrx  B|   uz   |33222331| ⍺mqv   | wpsx   |
+()   ⎕. |[]      |        |33222222|        |        |
+
+
+PART CODE L
+C        U        D        col      L        R
+E     ⌫A|       9|12345678|10000012|      C |        |
+«»   ÷×⏎|0    |*▲|     √∧▼|11222331| ↶      | ↷      |
+{}=≠ -+ |⍵⍺≥>    |  ≤<  ∨ |33222331| ⍺≡≢    | ⍵      |
+()/\ ,  |[]⌿⍀    |        |33222222|        |        |
+
+
+
+
+
+PART ABC3 P
+C      U      D      col    L      R
+E   ⌫#|      |      |300033|    C |      |
+«»  ←⏎|12345▲|67890▼|332223| ↶    | ↷    |
+{}aei⎕|     ∆|     ∇|222222| ⍺bdg |⋄⍵cfh |
+()lnr.|[]    |      |222222|  jmp |  koq |
+':twx⇧|     L|      |222223|  svy |" u z |
+
+
+PART ABC2 P
+C      U      D      col    L      R
+E   ⌫#|      |      |300033|    C |      |
+«»   ⏎|12345▲|67890▼|332223| ↶    | ↷    |
+{}aei⎕|  cgk |      |112222| ⍺bfj | ⍵dhl |
+()otw.|[]nrx |   uz |112222|  mqv |  psx |
+     ⇧|     B|      |222223|      |      |
+
+
+PART CODE P
+C      U      D      col    L      R
+E   ⌫A|    č⊖| xyzV⍉|300033|    C⌽|    ⌦ |
+«»⍺⍵←⏎|12345▲|67890▼|332223| ↶~⊇⊣⍝| ↷⍨⊆⊢ |
+{}⍴∘÷×|[]↑∪⍟*|⌷ ↓∩|∧|222222| ⍤∊⊃⍭!|⋄⍥⍷⊂√ |
+()≡=-+|  ⊥⊤⌈⍢|OP≢≠⌊∨|222222| ⍶≤<⍳@| ⍹≥>⍸ |
+F:¨/,⇧| ⇐⍣\⍪B|      |322223| ;⍡⍀.⍬|○⍮ ⌿¯ |
+
+
+PART EXTRA P
+C      U      D      col    L      R
+E   ⌫A|      |      |300033|    C |      |
+«»  ←⏎|12345▲|67890▼|332223| ↶    | ↷    |
+{}⍫⌹⌸⍲|      |      |222222| ⍺    | ⍵    |
+()   ⍱|[]    |      |222222|      |      |
+#X   ⇧|     B|      |322223|      |      |
+
+
+⍱⍲
+∆⍙⌷⌶?
+∇⎕⍞⍕⍎
+⍋⍒
+
+⍵←⍺(){}1,0:/¨⍴⎕↑⊃2↓⊂+≡=∇∊∘¯⌽-_~×⍳.⋄\[]3∧⍬5|≠∆⌊⌈÷∨⍉4⊢<6≢⊣⍪⍕>⌿*⍷8⍣⍙⍨⍎9≥∪@⊥⊤⍋≤;7⊖⍤○⍟∩⍸⍞#⊆⌷⍒Ø⍱⌶!ø⌹?⌸⍲⍀
+⍵←⍺(){},:/¨⍴⎕↑⊃↓⊂+≡=∇∊∘¯⌽-_~×⍳.⋄\[]∧⍬|≠∆⌊⌈÷∨⍉⊢<≢⊣⍪⍕>⌿*⍷⍣⍙⍨⍎≥∪@⊥⊤⍋≤;⊖⍤○⍟∩⍸⍞#⊆⌷⍒Ø⍱⌶!ø⌹?⌸⍲⍀
+
+
+
+⍵←⍺(){},:/¨⍴↑⊃↓⊂+≡=∇
+
+
+no char layout:
+                                                       =   ⌫A|      |      |100011|    C |      |
+                                                       «»   ⏎|12345▲|67890▼|112221| ↶    | ↷    |
+                                                       {}    |      |      |332222| ⍺    | ⍵    |
+                                                       ()    |[]    |      |332222|      |      |
+                                                            ⇧|     B|      |122221|      |      |
+
+
+
+old P CODE
+=   ⌫A|     ⊖| xyz ⍉|300033|    C⌽|      |
+«»⍨⍴←⏎|12345▲|67890▼|332223| ↶~⊇∊⍝| ↷@⊆⍷ |
+{}⍥⍤÷×|⋄:⊥∪⍟*|⌺⇐⊤∩√!|112211| ⍺⍢⊃|∧| ⍵∘⊂⍭ |
+()=≠-+|[]↑≡⍋⌈|OP↓≢⍒⌊|112211| ⍶≤<⊣∨| ⍹≥>⊢ |
+F⍣/\,⇧|?⍫⌿⍀'L|      |322223|  ⍳…⍮ |○⍡⍸ ⍪ |
+
+alphabet layouts:
+
+v    v    v         v     v   v   
+abcd efgh ijkl    mnop qrstu vwxyz
+
+aei lnr twx
+
+v    v    v      v  v    v     v   v v 
+abc def ghi    jkl mno pqr    stu vw xyz
+

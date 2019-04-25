@@ -1,12 +1,12 @@
 #!/bin/bash
-rm APLApp/code/APL8.jar
+rm -f APLApp/code/APL8.jar
 cd APL
-rm -r src/build/APL
+rm -rf src/build/APL
 cd src
-mkdir build
+mkdir -p build
 javac -Xmaxerrs 1000 --release 8 -d ./build $(find APL -name '*.java')
 cd build
 jar cvfe APL.jar APL.Main * > /dev/null
 cp APL.jar ../../../APLApp/code/APL8.jar
-mkdir -p ../../../../APLP5/code
+cp APL.jar ../../../../AndroidIDE/code/APL8.jar
 mv APL.jar ../../../../APLP5/code/APL8.jar

@@ -1,0 +1,308 @@
+{
+  "colors": ["00ffffff", "FF134ADB", "FF282828", "FF353535"],
+  "defcol": 0,
+  "mainName": "main",
+  "main": [
+    [
+      { "col": 3,
+          "def": {"chr": "=","spec": "exec"},
+         "down": {"chr": "B","spec": "ascii"},
+        "right": {"chr": "%","spec": "graph"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "a"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "b"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "c"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "d"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "e"}
+      },
+      { "col": 3,
+        "def": {"chr": "⌫", "spec": "delete", "rep": true, "sd": true},
+        "down": {"chr": "C","spec": "clear"}
+      },
+      { "col": 3,
+        "def": {"chr": "←"},
+        "up": {"chr": "⊖"}, "down": {"chr": "⍉"}, "left": {"chr": "⌽"}
+      }
+    ], [
+      { "col": 3,
+         "def": {"chr": "«","spec": "left", "rep": true},
+          "up": {"chr": "^","spec": "up"},
+        "down": {"chr": "v","spec": "down"},
+      },
+      { "col": 3,
+          "def": {"chr": "»","spec": "right", "rep": true},
+           "up": {"chr": "↑"},
+         "down": {"chr": "↓"},
+         "left": {"chr": "↶","spec": "undo", "sd": true},
+        "right": {"chr": "↷","spec": "redo", "sd": true}
+      },
+      { "col": 2,
+        "def": {"chr": "7"},
+        "down": {"chr": "∘"}, "left": {"chr": "⍨"}, "right": {"chr": "~"}, "up": {"chr": "⍢"}
+      },
+      { "col": 2,
+        "def": {"chr": "8"},
+        "left": {"chr": "⍶"}, "right": {"chr": "⍹"},
+        "up": {"chr": "⍤"}, "down": {"chr": "⍥"}
+      },
+      { "col": 2,
+        "def": {"chr": "9"},
+        "up": {"chr": "∪"}, "down": {"chr": "∩"}, "left": {"chr": "⊃"}, "right": {"chr": "⊂"}
+      },
+      { "col": 1,
+        "def": {"chr": "÷"},
+        "up": {"chr": "|"}, "down": {"chr": "√"}
+      },
+      { "col": 1,
+        "def": {"chr": "×"},
+        "up": {"chr": "*"}, "down": {"chr": "∧"},
+        "right": {"chr": "⊢"}, "left": {"chr": "⊣"}
+      },
+      { "col": 3,
+         "def": {"chr": "⏎", "type": "\n", "sd": true},
+          "up": {"chr": "⊥"},
+        "down": {"chr": "⊤"},
+        "left": {"chr": "⍝"}
+      }
+    ], [
+      { "col": 1,
+        "def": {"chr": "{"},
+        "up": {"chr": "⋄"},
+        "right": {"chr": "⍵"}
+      },
+      { "col": 1,
+        "def": {"chr": "}"},
+        "up": {"chr": ":"},
+        "down": {"chr": ":←"},
+        "left": {"chr": "⍺"}
+      },
+      { "col": 2,
+          "def": {"chr": "4"},
+           "up": {"chr": "⌈"},
+         "down": {"chr": "⌊"},
+         "left": {"chr": "="},
+        "right": {"chr": "≠"}
+      },
+      { "col": 2,
+          "def": {"chr": "5"},
+           "up": {"chr": ">"},
+         "down": {"chr": "<"},
+         "left": {"chr": "≤"},
+        "right": {"chr": "≥"}
+      },
+      { "col": 2,
+        "def": {"chr": "6"},
+        "up": {"chr": "⍴"},
+         "left": {"chr": "≡"},
+        "right": {"chr": "≢"}
+      },
+      { "col": 1,
+        "def": {"chr": "-"},
+        "up": {"chr": "/"}, "down": {"chr": "\\"}, "left": {"chr": "⌿"}, "right": {"chr": "⍀"}
+      },
+      { "col": 1,
+        "def": {"chr": "+"},
+        "up": {"chr": "⍟"}, "down": {"chr": "∨"}
+      },
+      { "col": 1,
+        "def": {"chr": "¯"},
+        "down": {"chr": "⍣"}, "left": {"chr": "!"}
+      }
+    ], [
+      { "col": 1,
+        "def": {"chr": "("},
+        "up": {"chr": "["},
+        "right": {"chr": "()", "to": "left"}
+      },
+      { "col": 1,
+        "def": {"chr": ")"},
+        "up": {"chr": "]"},
+        "right": {"chr": "○"},
+        "left": {"chr": "..)", "spec": "wrap"}
+      },
+      { "col": 2,
+        "def": {"chr": "1"},
+        "up": {"chr": "…"}, "left": {"chr": "⍳"}, "right": {"chr": "⍸"}
+      },
+      { "col": 2,
+        "def": {"chr": "2"},
+        "up"  : {"chr": "@"},
+        "left": {"chr": "⊇"}, "right": {"chr": "⊆"}
+      },
+      { "col": 2,
+        "def" : {"chr": "3"},
+        "left": {"chr": "⍷"}, "right": {"chr": "∊"}
+      },
+      { "col": 2,
+        "def": {"chr": "0"},
+        "up": {"chr": "F","spec": "goto_extra"}, "left": {"chr": "?"}, "right": {"chr": "⍬"}
+      },
+      { "col": 2,
+        "def": {"chr": "."},
+        "up": {"chr": "'"}, "left": {"chr": ","}, "right": {"chr": "⍪"}
+      },
+      { "col": 1,
+        "def": {"chr": "¨"},
+        "left": {"chr": "⍮"}
+      }
+    ]
+  ],
+  "extra": [
+    [
+      {
+          "col": 3,
+          "def": {"chr": "=","spec": "exec"},
+         "down": {"chr": "B","spec": "ascii"},
+        "right": {"chr": "%","spec": "graph"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "a"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "b"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "c"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "d"}
+      },
+      { "col": 0,
+        "def": {"chr": " "},
+        "down": {"chr": "e"}
+      },
+      {
+        "col": 3,
+        "def": {"chr": "⌫", "spec": "delete", "rep": true, "sd": true},
+        "down": {"chr": "C","spec": "clear"}
+      },
+      {
+        "col": 3,
+        "def": {"chr": " "}
+      }
+    ], [
+      {
+         "col": 3,
+         "def": {"chr": "«","spec": "left", "rep": true},
+          "up": {"chr": "^","spec": "up"},
+        "down": {"chr": "v","spec": "down"},
+      },
+      {
+          "col": 3,
+          "def": {"chr": "»","spec": "right", "rep": true},
+         "left": {"chr": "↶","spec": "undo", "sd": true},
+        "right": {"chr": "↷","spec": "redo", "sd": true}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "sin", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "cos", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "tan", "to": "def"}
+      },
+      {
+        "col": 1,
+        "def": {"chr": "⌸"}
+      },
+      {
+        "col": 1,
+        "def": {"chr": "⍲"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "^C", "spec": "copy"}
+      }
+    ], [
+      {
+        "col": 1,
+        "def": {"chr": " "}
+      },
+      {
+        "col": 1,
+        "def": {"chr": " "}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "asin", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "acos", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "atan", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "⍫"}
+      },
+      {
+        "col": 1,
+        "def": {"chr": "⍱"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "^V", "spec": "paste"}
+      }
+    ], [
+      {
+        "col": 1,
+        "def": {"chr": "("},
+        "up": {"chr": "["}
+      },
+      {
+        "col": 1,
+        "def": {"chr": ")"},
+        "up": {"chr": "]"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "x"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "avg", "type": "(+/÷≢)", "to": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "y"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "F", "spec": "def"}
+      },
+      {
+        "col": 2,
+        "def": {"chr": " "}
+      },
+      {
+        "col": 2,
+        "def": {"chr": "⎕IO"}
+      }
+    ]
+  ]
+}
