@@ -14,7 +14,7 @@ class REPL extends Tab {
   REPL() {
     historyView = new ROText(0, top, width, 340-top);
     input = new APLField(0, 350, width, 40) {
-      Interpreter it = new Dyalog();
+      Interpreter it = new DzaimaAPL();
       
       void eval() {
         tmpSaved = null;

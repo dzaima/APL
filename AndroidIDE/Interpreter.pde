@@ -14,38 +14,37 @@ class Dyalog extends Interpreter {
     }
   }
   Scanner send(String function, String data) throws Exception {
-    //try {
-      URL url = new URL(l + function);
-      URLConnection con = url.openConnection();
-      HttpURLConnection http = (HttpURLConnection)con;
-      http.setRequestMethod("POST");
-      http.setDoOutput(true);
-      StringBuilder b = new StringBuilder("\"");
+    URL url = new URL(l + function);
+    URLConnection con = url.openConnection();
+    HttpURLConnection http = (HttpURLConnection)con;
+    http.setRequestMethod("POST");
+    http.setDoOutput(true);
+    StringBuilder b = new StringBuilder("\"");
 
-      for (char c : data.toCharArray()) {
-        if (c >= 128) b.append("\\u").append(String.format("%04X", (int) c));
-        else if (c == '"') b.append("\\\"");
-        else if (c == '\\') b.append("\\\\");
-        else b.append(c);
-      }
-      b.append("\"");
-      byte[] bytes = b.toString().getBytes(StandardCharsets.UTF_8);
-      http.setFixedLengthStreamingMode(bytes.length);
-      http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-      http.connect();
-      //try (
-      OutputStream os = http.getOutputStream();
-      //) {
-          os.write(bytes);
-      //}
-      return new Scanner(http.getInputStream());
+    for (char c : data.toCharArray()) {
+      if (c >= 128) b.append("\\u").append(String.format("%04X", (int) c));
+      else if (c == '"') b.append("\\\"");
+      else if (c == '\\') b.append("\\\\");
+      else b.append(c);
+    }
+    b.append("\"");
+    byte[] bytes = b.toString().getBytes(StandardCharsets.UTF_8);
+    http.setFixedLengthStreamingMode(bytes.length);
+    http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+    http.connect();
+    //try (
+    OutputStream os = http.getOutputStream();
+    //) {
+    os.write(bytes);
+    //}
+    return new Scanner(http.getInputStream());
   }
-  String l = "http://192.168.1.103:8080/"; // "http://localhost:8080/";
+  String l = "http://localhost:8080/";
   void setLink(String s) {
     l = s;
   }
   String[] special(String s) {
-    setLink(s);
+    setLink("http://"+s+"/");
     return new String[0];
   }
 }

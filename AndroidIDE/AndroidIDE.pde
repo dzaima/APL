@@ -15,21 +15,17 @@ Keyboard kb;
 
 TopBar topbar;
 int top = 30;
-int isz = 40;
+int isz = 30;
 int freey;
 void setup() {
   background(#0a0a0a);
   textFont(createFont("APL385+.ttf", 48));
   topbar = new TopBar(0, 0, width, top);
   topbar.toNew(new REPL());
-  //topbar.add(new REPL());
   topbar.show();
   redrawAll();
 }
 boolean redraw;
-//@Override void orientation() {
-  
-//}
 void redrawAll() {
   //if (width != w || h != height) surface.setSize(w, h);
   redraw = true;
@@ -60,20 +56,8 @@ void draw() {
     }
     redraw = false;
   }
-  //fill(#101010);
-  //rect(0, 0, width, 100);
-  //textAlign(LEFT, TOP);
-  //fill(#D2D2D2);
-  //textSize(min(width, height)/20);
-  //text(testRec.allText(), 0, 0);
   pmousePressed = mousePressed;
 }
-/*
-65535 38
-65535 37
-65535 40
-65535 39
-*/
 boolean shift;
 void keyPressed(KeyEvent e) {
   shift = e.isShiftDown();
@@ -94,7 +78,6 @@ void keyPressed(KeyEvent e) {
     }
   }
   //println(+key, keyCode);
-  //resize(height, width);
 }
 void keyReleased(KeyEvent e) {
   shift = e.isShiftDown();

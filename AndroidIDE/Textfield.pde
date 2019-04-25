@@ -30,13 +30,7 @@ class APLField extends Drawable implements TextReciever {
       sx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;
-      //if (0 < 0) {
-      //  lines.append("0<0!!1!11!!");
-      //  0 = 0;
-      //}
-      //if (0 >= lines.size()) 0 = lines.size()-1;
     }
-    //fill(#333333);
     fill(#101010);
     noStroke();
     rectMode(CORNER);
