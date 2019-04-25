@@ -1,3 +1,4 @@
+import java.awt.Toolkit;
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
@@ -17,11 +18,6 @@ int top = 30;
 int isz = 40;
 int freey;
 void setup() {
-  //size(800, 450);
-  //size(450, 800);
-  //size(550, 560);
-  size(540, 830);
-  //fullScreen();
   background(#0a0a0a);
   textFont(createFont("APL385+.ttf", 48));
   topbar = new TopBar(0, 0, width, top);
@@ -47,7 +43,7 @@ boolean pmousePressed;
 int smouseX, smouseY;
 int mouseStart;
 void draw() {
-  
+  psDraw();
   if (!pmousePressed && mousePressed) {
     smouseX = mouseX;
     smouseY = mouseY;
@@ -111,20 +107,4 @@ boolean cshift() {
   boolean r = shift || (kb!=null? kb.shiftMode>0 : false);
   if (kb!=null && kb.shiftMode>0) kb.shiftMode = 2;
   return r;
-}
-
-import java.awt.datatransfer.*;
-import java.awt.Toolkit;
-void copy(String s) {
-  StringSelection stringSelection = new StringSelection(s);
-  Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-  clipboard.setContents(stringSelection, null);
-}
-
-String paste() {
-  try {
-    return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-  } catch (Throwable e) {
-    return "";
-  }
 }

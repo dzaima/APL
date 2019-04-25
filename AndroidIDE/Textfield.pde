@@ -160,9 +160,12 @@ class APLField extends Drawable implements TextReciever {
       copy(line.substring(min, max));
     }
     else if (s.equals("paste")) {
-      append(paste());
+      paste(this);
     }
     else extraSpecial(s);
+  }
+  void pasted(String s) {
+    append(s);
   }
   void extraSpecial(String s) {
     println("unknown special " + s);

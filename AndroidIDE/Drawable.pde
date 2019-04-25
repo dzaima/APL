@@ -54,4 +54,7 @@ class Drawable {
   boolean smouseIn() {
     return smouseX > x && smouseY > y && smouseX < x+w && smouseY < y+h;
   }
+  void pasted(String s) {
+    throw new Error(this+" didn't ask for a clipboard!");
+  }
 }
