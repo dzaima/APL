@@ -112,13 +112,13 @@ class DzaimaAPL extends Interpreter {
       String nm = ex.substring(3);
       Obj o = dzaimaSC.get(nm);
       if (o instanceof Dfn) {
-        topbar.toNew(new Ed(nm, ((Dfn ) o).code.raw()));
+        topbar.toNew(new Ed(nm, ((Dfn ) o).code.source()));
       }
       if (o instanceof Dmop) {
-        topbar.toNew(new Ed(nm, ((Dmop) o).code.raw()));
+        topbar.toNew(new Ed(nm, ((Dmop) o).code.source()));
       }
       if (o instanceof Ddop) {
-        topbar.toNew(new Ed(nm, ((Ddop) o).code.raw()));
+        topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
       }
       return new String[0];
     }
