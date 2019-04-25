@@ -30,7 +30,7 @@ public abstract class Token implements Tokenable {
     return p + this.getClass().getCanonicalName() + ' '+ spos + '-' + epos + '\n';
   }
   public abstract String toRepr();
-  public String raw() {
+  public String source() {
     return raw.substring(spos, epos);
   }
 }
