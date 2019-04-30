@@ -91,11 +91,11 @@ public class SingleItemArr extends Arr {
     }
     return super.oneliner(where);
   }
-  @Override
-  public String toString() {
-    String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-    return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
-  }
+  // @Override
+  // public String toString() {
+  //   String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
+  //   return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
+  // }
   
   @Override public Iterator<Value> iterator() {
     //noinspection Convert2Diamond java 8
