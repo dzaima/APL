@@ -57,7 +57,7 @@ public class TrigBuiltin extends Builtin {
       throw new DomainError("⍺ of ○ out of bounds");
     }
   }
-  static DNf DNF = new DNf();
+  static final DNf DNF = new DNf();
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }

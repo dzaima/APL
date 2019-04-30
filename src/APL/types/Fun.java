@@ -19,9 +19,6 @@ public abstract class Fun extends Scopeable {
   protected Fun() {
     super(null);
   }
-  public Obj call() {
-    throw new IncorrectArgsError("function "+toString()+" called niladically", this);
-  }
   public Obj call(Value w) {
     throw new IncorrectArgsError("function "+toString()+" called monadically", w);
   }

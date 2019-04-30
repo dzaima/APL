@@ -18,7 +18,7 @@ public class MinusBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = -a[i];
     }
   }
-  private static final Nf NF = new Nf();
+  static final Nf NF = new Nf();
   
   public Obj call(Value w) {
     return numChrM(NF, Char::swap, w);
