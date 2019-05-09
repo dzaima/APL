@@ -21,13 +21,21 @@ public class IotaUBBuiltin extends Builtin {
     if (w.rank == 1) {
       int sum = (int)w.sum();
       var sub = new double[sum];
-      var da = w.asDoubleArr();
       int p = 0;
-      for (int i = 0; i < w.ia; i++) {
-        int v = (int) da[i];
-        if (v < 0) throw new DomainError("⍸ received negative ⍵", w);
-        for (int j = 0; j < v; j++) {
-          sub[p++] = i + IO;
+      
+      if (w instanceof BitArr) {
+        BitArr.BR r = ((BitArr) w).read();
+        for (int i = 0; i < w.ia; i++) {
+          if (r.read()) sub[p++] = i + IO;
+        }
+      } else {
+        var da = w.asDoubleArr();
+        for (int i = 0; i < w.ia; i++) {
+          int v = (int) da[i];
+          if (v < 0) throw new DomainError("⍸ received negative ⍵", w);
+          for (int j = 0; j < v; j++) {
+            sub[p++] = i + IO;
+          }
         }
       }
       return new DoubleArr(sub);

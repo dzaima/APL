@@ -40,7 +40,9 @@ public class Scope {
   public void set (String name, Obj val) { // sets in current scope
     switch (name) {
       case "⎕IO":
-        IO = ((Value) val).asInt();
+        int tIO = ((Value) val).asInt();
+        if (tIO != 0 && tIO != 1) throw new DomainError("⎕IO should be 0 or 1");
+        IO = tIO;
         nIO = IO==0? Num.ZERO : Num.ONE;
       break;
       case "⎕BOXSIMPLE":

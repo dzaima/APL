@@ -23,7 +23,8 @@ public class IotaBuiltin extends Builtin {
     int IO = sc.IO;
     if (w instanceof Primitive) {
       double[] res = new double[w.asInt()];
-      for (int i = 0; i < res.length; i++) res[i] = i + IO;
+      if (IO == 0) for (int i = 0; i < res.length; i++) res[i] = i;
+      else         for (int i = 0; i < res.length; i++) res[i] = i + 1;
       return new DoubleArr(res);
     }
     if (Main.vind) return new RhoBarBuiltin(sc).call(w);

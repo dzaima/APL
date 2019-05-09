@@ -35,19 +35,38 @@ public abstract class Value extends Obj implements Iterable<Value> {
   
   
   
-  public int compareTo(Value v) {
-    if (this instanceof Num && v instanceof Num) return ((Num) this).compareTo((Num) v);
-    if (this instanceof Char && v instanceof Char) return ((Char) this).compareTo((Char) v);
-    if (this instanceof Num && (   v instanceof Char ||    v instanceof Arr)) return -1;
-    if (   v instanceof Num && (this instanceof Char || this instanceof Arr)) return 1;
-    if ((this instanceof Arr || this instanceof Char) && (v instanceof Arr || v instanceof Char)) {
-      String s1 =   asString();
-      String s2 = v.asString();
-      return s1.compareTo(s2);
+  public int compareTo(Value r) {
+    Value l = this;
+    
+    boolean rA = r instanceof Arr;
+    boolean lA = l instanceof Arr;
+    
+    if (l instanceof  Num         && r instanceof Num         ) return ((Num) l).compareTo((Num) r);
+    if (l instanceof Char         && r instanceof Char        ) return ((Char) l).compareTo((Char) r);
+    if (l instanceof  Num         && (r instanceof Char || rA)) return -1;
+    if ((l instanceof Char || lA) && r instanceof Num         ) return 1;
+    if (!lA && !rA) {
+      throw new DomainError("Failed to compare "+ l +" and "+r, r);
     }
-    throw new DomainError("Can't compare "+v+" and "+this, this);
+    if (!lA) return -1;
+    if (!rA) return  1;
+    
+    if (l.rank != r.rank) throw new RankError("Expected ranks to be equal for compared elements", r);
+    
+    if (l.rank > 1) throw new DomainError("Expected rank of compared array to be ≤ 2", l);
+  
+    int min = Math.min(l.ia, r.ia);
+    for (int i = 0; i < min; i++) {
+      int cr = l.get(i).compareTo(r.get(i));
+      if (cr != 0) return cr;
+    }
+    return Integer.compare(l.ia, r.ia);
   }
+  
+  
   public abstract String asString();
+  
+  
   public Integer[] gradeUp() {
     if (rank != 1) throw new DomainError("grading rank ≠ 1", this);
     Integer[] na = new Integer[ia];
