@@ -65,6 +65,7 @@ public class Scope {
         case "⎕TIME": return new Timer(this, true);
         case "⎕HTIME": return new Timer(this, false);
         case "⎕EX": return new Ex(this);
+        case "⎕LNS": return new Lns();
         case "⎕A": return Main.alphabet;
         case "⎕D": return Main.digits;
         case "⎕L": return Main.lowercaseAlphabet;
@@ -369,6 +370,22 @@ public class Scope {
       return Main.exec(Main.readFile(path), sc);
     }
   }
+  static private class Lns extends Builtin {
+    @Override public String repr() {
+      return "⎕LNS";
+    }
+    
+    @Override
+    public Obj call(Value w) {
+      String path = w.asString();
+      String[] a = Main.readFile(path).split("\n");
+      Value[] o = new Value[a.length];
+      for (int i = 0; i < a.length; i++) {
+        o[i] = Main.toAPL(a[i]);
+      }
+      return Arr.create(o);
+    }
+  }
   static private class Hasher extends Builtin {
     @Override public String repr() {
       return "⎕HASH";
@@ -436,4 +453,5 @@ public class Scope {
       this.tok = tok;
     }
   }
+  
 }
