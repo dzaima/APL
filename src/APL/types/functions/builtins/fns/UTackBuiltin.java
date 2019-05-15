@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 public class UTackBuiltin extends Builtin {
@@ -24,12 +25,49 @@ public class UTackBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    Num res = Num.ZERO;
-    Num base = ((Num)a);
-    if (w.rank != 1) throw new DomainError("⊥ on rank "+w.rank, w);
-    for (int i = 0; i < w.ia; i++) {
-      res = res.times(base).plus((Num) w.get(i));
+    if (w.rank == 0) throw new DomainError("A⊥num is pointless", this);
+    if (a instanceof Num) {
+      double base = a.asDouble();
+      if (w.rank == 1) {
+        double res = 0;
+        for (int i = 0; i < w.ia; i++) {
+          res = res*base + w.get(i).asDouble();
+        }
+        return new Num(res);
+      } else {
+        double[] d = w.asDoubleArr();
+        int[] sh = new int[w.rank-1];
+        System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
+        int layers = w.shape[0];
+        double[] r = new double[w.ia / layers];
+  
+        System.arraycopy(d, 0, r, 0, r.length);
+        for (int i = 1; i < layers; i++) {
+          for (int j = 0; j < r.length; j++) {
+            r[j] = r[j]*base + d[j+r.length*i];
+          }
+        }
+        
+        return new DoubleArr(r, sh);
+      }
+    } else {
+      if (a.ia != w.shape[0]) throw new DomainError("(≢⍺) ≠ ⊃⍴⍵ for ⊥", this);
+      double[] d = w.asDoubleArr();
+      double[] bases = a.asDoubleArr();
+      int[] sh = new int[w.rank-1];
+      System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
+      int layers = w.shape[0];
+      double[] r = new double[w.ia /layers];
+  
+      System.arraycopy(d, 0, r, 0, r.length);
+      for (int i = 1; i < layers; i++) {
+        double base = bases[i];
+        for (int j = 0; j < r.length; j++) {
+          r[j] = r[j]*base + d[j+r.length*i];
+        }
+      }
+      if (sh.length == 0) return new Num(r[0]);
+      return new DoubleArr(r, sh);
     }
-    return res;
   }
 }

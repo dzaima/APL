@@ -23,16 +23,16 @@ public abstract class Mop extends Scopeable {
     return new DerivedMop(aa, this);
   }
   public Obj call(Obj f, Value w, DerivedMop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called monadically", w);
+    throw new IncorrectArgsError(repr()+" can't be called monadically", this, w);
   }
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called dyadically", a);
+    throw new IncorrectArgsError(repr()+" can't be called dyadically", this, a);
   }
   public Obj callInv(Obj f, Value w) {
-    throw new DomainError(this+" doesn't support monadic inverting", w);
+    throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
   public Obj callInvW(Obj f, Value a, Value w) {
-    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", w);
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
   
   public String toString() {

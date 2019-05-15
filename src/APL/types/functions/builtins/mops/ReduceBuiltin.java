@@ -44,7 +44,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     Value[] a = w.values();
     if (a.length == 0) {
       Value id = ff.identity();
-      if (id == null) throw new DomainError("No identity defined for "+f.name(), f);
+      if (id == null) throw new DomainError("No identity defined for "+f.name(), this, f);
       return id;
     }
     Value last = a[a.length-1];
@@ -55,7 +55,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   }
   
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", w);
+    if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", this, w);
     if (!(f instanceof Fun)) throw new DomainError("operand to / must be a function");
     int n = a.asInt();
     Value[] ra = new Value[w.ia - Math.abs(n) + 1];

@@ -29,7 +29,7 @@ public class DTackBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     if (!(a instanceof Primitive)) {
       int[] sh = new int[w.rank+a.rank];
-      if (a.rank != 1) throw new NYIError("⍺ of ⊤ with rank≥2 not yet implemented", a);
+      if (a.rank != 1) throw new NYIError("⍺ of ⊤ with rank≥2 not yet implemented", this);
 //      for (int i = 0; i < a.rank; i++) sh[i] = a.shape[i];
 //      for (int i = 0; i < w.rank; i++) sh[i+a.rank] = w.shape[i];
       System.arraycopy(a.shape, 0, sh, 0, a.rank); // yes yes this only works for a.rank==1
@@ -38,7 +38,7 @@ public class DTackBuiltin extends Builtin {
       double[] c = w.asDoubleArrClone();
       double[] b = a.asDoubleArr();
       double[] res = new double[w.ia * a.ia];
-      for (int i = 1; i < b.length; i++) if (b[i] == 0) throw new DomainError("base for ⊤ contained a 0 as not the 1st element", a);
+      for (int i = 1; i < b.length; i++) if (b[i] == 0) throw new DomainError("base for ⊤ contained a 0 as not the 1st element", this, a);
       int last = b[0] == 0? 1 : 0;
       for (int i = b.length-1; i >= last; i--) {
         int off = w.ia*i;
@@ -54,10 +54,10 @@ public class DTackBuiltin extends Builtin {
       }
       return new DoubleArr(res, sh);
     }
-    if (!(w instanceof Num)) throw new NYIError("non-scalar number not implemented", w);
+    if (!(w instanceof Num)) throw new NYIError("non-scalar number not implemented", this);
     double base = a.asDouble();
     double num = w.asDouble();
-    if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", w);
+    if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", this, w);
     var res = new ArrayList<Double>();
     while (num > 0) {
       res.add(num%base);

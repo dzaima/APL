@@ -22,7 +22,7 @@ public class StileBuiltin extends Builtin {
   private static final Nf NF = new Nf();
   
   public Obj call(Value w) {
-    return numChrMapM(NF, c->{ throw new DomainError("|char", w); }, c -> new Num(c.size()), w);
+    return numChrMapM(NF, c->{ throw new DomainError("|char", this, w); }, c -> new Num(c.size()), w);
   }
   
   static class DNf extends D_NNeN {

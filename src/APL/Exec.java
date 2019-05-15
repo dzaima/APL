@@ -533,7 +533,7 @@ class Exec {
         case '∇': return sc.get("∇");
         case '⍶': return sc.get("⍶");
         case '⍹': return sc.get("⍹");
-        default: throw new NYIError("no built-in " + ((OpTok) t).op + " defined in exec");
+        default: throw new NYIError("no built-in " + ((OpTok) t).op + " defined in exec", t);
       }
     }
     if (t instanceof NumTok) return ((NumTok) t).num;
@@ -571,6 +571,6 @@ class Exec {
     }
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
     if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
-    throw new NYIError("Unknown type: " + Main.explain(t));
+    throw new NYIError("Unknown type: " + Main.explain(t), t);
   }
 }

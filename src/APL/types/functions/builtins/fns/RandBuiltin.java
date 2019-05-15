@@ -33,6 +33,6 @@ public class RandBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    throw new NYIError("sorry", a);
+    throw new NYIError("sorry", this, a);
   }
 }

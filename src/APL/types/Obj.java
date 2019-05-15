@@ -50,7 +50,7 @@ public abstract class Obj implements Tokenable {
   
   @Override
   public int hashCode() {
-    throw new NYIError("hash not supported for "+this);
+    throw new NYIError("hash not supported for "+this, this);
   }
   
   @Override

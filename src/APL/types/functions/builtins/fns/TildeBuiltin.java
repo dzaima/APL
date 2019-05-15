@@ -36,7 +36,7 @@ public class TildeBuiltin extends Builtin {
       }
       return new HArr(arr, o.shape);
     } else if (w instanceof Num) return Main.bool(w)? Num.ZERO : Num.ONE;
-    else throw new DomainError("Expected boolean, got "+w.humanType(false), w);
+    else throw new DomainError("Expected boolean, got "+w.humanType(false), this, w);
   }
   
   public static BitArr call(BitArr w) {

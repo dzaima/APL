@@ -18,7 +18,7 @@ public class PlusBuiltin extends Builtin {
   
   public Obj call(Value w) {
     return allM(v -> {
-      if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", w); // TODO decide whether this should exist
+      if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
       return ((Num)v).conjugate();
     }, w);
   }
@@ -46,7 +46,7 @@ public class PlusBuiltin extends Builtin {
     try {
       return new MinusBuiltin().call(w, a);
     } catch (DomainError e) {
-      throw new DomainError("", e.cause);
+      throw new DomainError(e.getMessage(), this, e.cause);
     }
   }
 }

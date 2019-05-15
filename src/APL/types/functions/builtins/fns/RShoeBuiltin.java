@@ -16,7 +16,7 @@ public class RShoeBuiltin extends Builtin {
   
   public Obj call(Value w) {
     if (w instanceof Primitive) return w;
-    else if (w.ia == 0) throw new DomainError("⊃ on array with 0 elements", w);
+    else if (w.ia == 0) throw new DomainError("⊃ on array with 0 elements", this, w);
     else return w.first();
   }
   

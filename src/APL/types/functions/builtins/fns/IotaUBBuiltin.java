@@ -32,7 +32,7 @@ public class IotaUBBuiltin extends Builtin {
         var da = w.asDoubleArr();
         for (int i = 0; i < w.ia; i++) {
           int v = (int) da[i];
-          if (v < 0) throw new DomainError("⍸ received negative ⍵", w);
+          if (v < 0) throw new DomainError("⍸ received negative ⍵", this, w);
           for (int j = 0; j < v; j++) {
             sub[p++] = i + IO;
           }
@@ -45,7 +45,7 @@ public class IotaUBBuiltin extends Builtin {
       int ap = 0;
       for (int[] p : new Indexer(w.shape, IO)) {
         Num n = (Num) w.at(p, IO);
-        if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", n);
+        if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸ received negative ⍵", this, n);
         for (int i = 0, nint = n.asInt(); i < nint; i++) {
           sub[ap++] = Main.toAPL(p);
         }

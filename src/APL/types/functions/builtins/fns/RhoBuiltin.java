@@ -24,7 +24,7 @@ public class RhoBuiltin extends Builtin {
     return toAPL(sh);
   }
   public Obj call(Value a, Value w) {
-    if (a.rank > 1) throw new DomainError("multidimensional shape", a);
+    if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
     int[] sh = new int[a.ia];
     int ia = 1;
     Integer emptyPos = null;
@@ -36,12 +36,12 @@ public class RhoBuiltin extends Builtin {
         ia*= c;
       } else if (v.ia == 0) {
         if (emptyPos == null) emptyPos = i;
-        else throw new DomainError("shape contained multiple undefined dimension sizes", v);
-      } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), v);
+        else throw new DomainError("shape contained multiple undefined dimension sizes", this, v);
+      } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), this, v);
     }
     
     if (emptyPos != null) {
-      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", w);
+      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, w);
       sh[emptyPos] = w.ia/ia;
       return w.ofShape(sh);
     } else if (ia == w.ia) return w.ofShape(sh);

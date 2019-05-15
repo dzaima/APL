@@ -58,6 +58,6 @@ public class KeyBuiltin extends Mop {
       ((APLMap)aa).set(a, w);
       return w;
     }
-    throw new NYIError("dyadic ⌸"); // TODO
+    throw new NYIError("dyadic ⌸", this); // TODO
   }
 }

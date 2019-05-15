@@ -13,6 +13,10 @@ public class APLError extends Error {
   APLError (String msg) {
     super(msg);
   }
+  APLError (String msg, Tokenable cause) {
+    super(msg);
+    this.cause = cause;
+  }
   public void print() {
     String[] ns = getClass().getName().split("[$.]");
     if (getMessage().length() == 0) colorprint(ns[ns.length - 1], 246);

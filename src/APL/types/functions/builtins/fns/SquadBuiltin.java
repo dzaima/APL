@@ -17,7 +17,7 @@ public class SquadBuiltin extends Builtin {
   public Obj call(Value w) {
     if (w instanceof Arr) return w;
     if (w instanceof APLMap) return ((APLMap) w).toArr();
-    throw new DomainError("⍵ not array nor map", w);
+    throw new DomainError("⍵ not array nor map", this, w);
   }
   
   public Obj call(Value a, Value w) {

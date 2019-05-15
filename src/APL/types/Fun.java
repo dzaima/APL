@@ -20,19 +20,19 @@ public abstract class Fun extends Scopeable {
     super(null);
   }
   public Obj call(Value w) {
-    throw new IncorrectArgsError("function "+toString()+" called monadically", w);
+    throw new IncorrectArgsError("function "+toString()+" called monadically", this, w);
   }
   public Obj call(Value a, Value w) {
-    throw new IncorrectArgsError("function "+toString()+" called dyadically", a);
+    throw new IncorrectArgsError("function "+toString()+" called dyadically", this, a);
   }
   public Obj callInv(Value w) {
-    throw new DomainError(this+" doesn't support monadic inverting", w);
+    throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
   public Obj callInvW(Value a, Value w) {
-    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", w);
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
   public Obj callInvA(Value a, Value w) {
-    throw new DomainError(this+" doesn't support dyadic inverting of ⍺", w);
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
   
   public interface NumMV {
@@ -90,7 +90,7 @@ public abstract class Fun extends Scopeable {
       }
       return new HArr(arr, o.shape);
     } else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected number, got "+w.humanType(false), w);
+    else throw new DomainError("Expected number, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrM(NumMV nf, ChrMV cf, Value w) {
@@ -109,7 +109,7 @@ public abstract class Fun extends Scopeable {
       return new HArr(arr, o.shape);
     } else if (w instanceof Char) return cf.call((Char)w);
     else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), w);
+    else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrMapM(NumMV nf, ChrMV cf, MapMV mf, Value w) {
@@ -128,7 +128,7 @@ public abstract class Fun extends Scopeable {
     } else if (w instanceof Char  ) return cf.call((Char  ) w);
       else if (w instanceof Num   ) return nf.call((Num   ) w);
       else if (w instanceof APLMap) return mf.call((APLMap) w);
-    else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), w);
+    else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), this, w);
   }
   
   

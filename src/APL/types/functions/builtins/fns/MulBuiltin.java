@@ -51,7 +51,7 @@ public class MulBuiltin extends Builtin {
     try {
       return new DivBuiltin().call(w, a);
     } catch (DomainError e) {
-      throw new DomainError("", e.cause);
+      throw new DomainError(e.getMessage(), this, e.cause);
     }
   }
 }

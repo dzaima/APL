@@ -1,13 +1,18 @@
 package APL.errors;
 
-import APL.types.Value;
+import APL.Main;
+import APL.types.*;
 
 public class NYIError extends APLError { // AKA LazyError
   public NYIError(String s) {
     super(s);
   }
-  public NYIError(String s, Value cause) {
+  public NYIError(String s, Tokenable fun) {
     super(s);
-    this.cause = cause;
+    Main.faulty = fun;
+  }
+  public NYIError(String s, Tokenable fun, Tokenable cause) {
+    super(s, cause);
+    Main.faulty = fun;
   }
 }
