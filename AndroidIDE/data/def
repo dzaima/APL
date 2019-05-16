@@ -1,0 +1,31 @@
+toSet ← ⍬
+updated ← ⍬
+app.update←updateFun←{
+  ⍺≢'portrait':← ⍬ ⍝ this is only for portrait
+  ⎕IO←0
+  dmap ← (u:1⋄l:3⋄r:4⋄d:2⋄c:0)
+  L ← ⍵
+  m←dmap
+  txt ← {
+    2=≡⍵:← ⍺ app.set '{"chr":"',(⊃⍵),'","type":"',(1⊃⍵),'"}'
+    ⍺ app.set '{"chr":"',⍵,'"}'
+  }
+  L≡'ABC3': 1 4 m.u txt 'sd' ':ex /sdcard/def'
+  L≡'ABC3': 1 4 m.l txt 'set' 'toSet←'''''
+  L≡'ABC3': 2 1 0 txt 'derv'
+  {
+    x y dir l nm ← ⍵
+    l≡L: x y dir txt nm
+  }¨updated
+}
+app.action ← {
+  x y d l ← ⍵
+  ⍬≢toSet: {
+    updated,←⊂ x y d l toSet
+    ⎕← "L≡'",l,"': ",(⍕x)," ",(⍕y)," ",(⍕d)," txt '",toSet,"'"
+    toSet⊢← ⍬
+    app.update ← updateFun
+    'stop'
+  }⍵
+}
+1

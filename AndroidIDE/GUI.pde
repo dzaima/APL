@@ -42,7 +42,7 @@ class TopBar extends Drawable {
     for (Tab t : tabs) {
       String n = t.name();
       int dx = max(2*h, ceil(textWidth(n)) + h/2);
-      text(n, cx + dx/2, y + h/2);
+      text(n, cx + dx/2, y + h*.4);
       cx+= dx;
     }
   }

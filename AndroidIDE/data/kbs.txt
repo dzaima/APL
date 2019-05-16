@@ -22,8 +22,8 @@ MOD V spec=paste chr=^V
 MOD ⌦ spec=rdel
 MOD X spec=close
 
-LAYOUT L 8×4 CODE
-LAYOUT P 6×5 CODE
+LAYOUT L 8×4 CODE landscape
+LAYOUT P 6×5 CODE portrait
 
 
 

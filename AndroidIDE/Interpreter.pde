@@ -1,3 +1,6 @@
+Interpreter it = new DzaimaAPL(); // current interpreter
+
+
 abstract class Interpreter {
   abstract String[] get(String code);
   abstract String[] special(String ex);
@@ -48,11 +51,62 @@ class Dyalog extends Interpreter {
     return new String[0];
   }
 }
-Scope dzaimaSC = new Scope();
+static Scope dzaimaSC = new Scope();
+static Fun layoutUpdate, actionCalled;
 static {
   Main.colorful = false;
 }
+
+{
+  dzaimaSC.set("app", new APLMap() {
+    Arr toArr() { throw new SyntaxError("Converting an app object to array"); }
+    int size() { throw new SyntaxError("Getting size of the app object"); }
+    String toString() { return "app"; }
+    
+    void set(Value k, Obj v) {
+      String s = k.asString().toLowerCase();
+      switch (s) {
+        case "update":
+          layoutUpdate = (Fun) v;
+          layoutUpdate.call(Main.toAPL(kb.data.getString("fullName")), Main.toAPL(kb.layout));
+          kb.redraw();
+        return;
+        case "action": actionCalled = (Fun) v; return;
+        default: throw new DomainError("setting non-existing key "+s+" for app");
+      }
+    }
+    Obj getRaw(Value k) {
+      String s = k.asString().toLowerCase();
+      switch (s) {
+        case "layout": return Main.toAPL(kb.data.getString("fullName"));
+        case "set": return new Fun() {
+          String repr() { return "app.set"; }
+          Obj call(Value a, Value w) {
+            int[] is = a.asIntVec();
+            int x = is[0]; int y = is[1]; int dir = is[2];
+            Key key = kb.keys[y][x];
+            key.actions[dir] = new Action(parseJSONObject(w.asString()), kb, key);
+            return Num.ONE;
+          }
+        };
+        case "redraw": redrawAll(); return Num.ONE;
+        default: return Null.NULL;
+      }
+    }
+  });
+}
+
+
 class DzaimaAPL extends Interpreter {
+  
+  Obj eval(String code) {
+    try {
+      return Main.exec(code, dzaimaSC);
+    } catch (Throwable e) {
+      return Main.toAPL(e.toString());
+    }
+  }
+  
   String[] get(String code) {
     try {
       Obj v = Main.exec(code, dzaimaSC);

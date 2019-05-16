@@ -7,6 +7,8 @@ class APLField extends Drawable implements TextReciever {
   }
   int tt = 0;
   
+  void modified() { } // for overriding
+  
   void redraw() {
     tsz = h/extraH;
   }
@@ -20,6 +22,7 @@ class APLField extends Drawable implements TextReciever {
       textInput = this;
     }
     if (modified) {
+      modified();
       hptr++;
       hptr%= hsz;
       history[hptr] = new State(allText(), sx, ex);
@@ -187,6 +190,7 @@ class APLField extends Drawable implements TextReciever {
     }
     if (sx != line.length()) {
       line = line.substring(0, sx) + line.substring(sx+1);
+      modified = true;
     }
   }
 }

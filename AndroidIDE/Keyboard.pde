@@ -6,6 +6,7 @@ class Keyboard extends Drawable {
   int defcol;
   int shiftMode; // 0 = none, 1 = temp, 2 = hold;
   Key[][] keys;
+  String layout;
   Keyboard(int x, int y, int w, int h, int xam, int yam, JSONObject data) {
     super(x, y, w, h); // don't draw by default
     this.data = data;
@@ -24,6 +25,7 @@ class Keyboard extends Drawable {
     loadLayout(data.getString("mainName"));
   }
   void loadLayout(String name) {
+    layout = name;
     JSONArray arr = data.getJSONArray(name);
     for (int y = 0; y < yam; y++) {
       JSONArray row = arr.getJSONArray(y);
@@ -31,6 +33,7 @@ class Keyboard extends Drawable {
         keys[y][x].load(row.getJSONObject(x));
       }
     }
+    if (layoutUpdate != null) layoutUpdate.call(Main.toAPL(data.getString("fullName")), Main.toAPL(name));
     redraw();
   }
   void redraw() {
@@ -55,7 +58,10 @@ class Keyboard extends Drawable {
       Key t = start;
       start = null;
       t.redraw();
-      if (a != null) a.call();
+      if (a != null) {
+        if (actionCalled != null) if (actionCalled.call(new HArr(new Value[]{new Num(t.x), new Num(t.y), new Num(actionId()), Main.toAPL(kb.layout)})).equals(Main.toAPL("stop"))) return;
+        a.call();
+      }
     }
     if (start != null) {
       Action a = findAction();
@@ -68,17 +74,20 @@ class Keyboard extends Drawable {
     }
   }
   Action findAction() {
+    return start.actions[actionId()];
+  }
+  int actionId() {
     if (dist(mouseX, mouseY, smouseX, smouseY) > kh/3) { // gesture
       int dx = mouseX - smouseX;
       int dy = mouseY - smouseY;
       if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 0) return start.actions[4];
-        else        return start.actions[3];
+        if (dx > 0) return 4;
+        else        return 3;
       } else {
-        if (dy > 0) return start.actions[2];
-        else        return start.actions[1];
+        if (dy > 0) return 2;
+        else        return 1;
       }
-    } else return start.actions[0];
+    } else return 0;
   }
 }
 

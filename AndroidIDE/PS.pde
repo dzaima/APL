@@ -1,5 +1,13 @@
 //* PC
-void psDraw() { }
+class FakeTouch { // for interoperability with android mode
+  int x, y;
+  FakeTouch(int x, int y) { this.x = x; this.y = y; }
+}
+FakeTouch[] touches = new FakeTouch[0];
+void psDraw() {
+  if (mousePressed) touches = new FakeTouch[] { new FakeTouch(mouseX, mouseY) };
+  else touches = new FakeTouch[0];
+}
 void settings() {
   size(540, 830);
 }
@@ -19,6 +27,9 @@ void paste(Drawable d) {
     e.printStackTrace();
   }
 }
+void mouseWheel(MouseEvent e) {
+  if (topbar != null && topbar.ctab != null) topbar.ctab.mouseWheel(e.getCount());
+}
 
 /*/ // ANDROID
 
@@ -31,7 +42,8 @@ String gottenClip;
 Drawable clipRec;
 
 void settings() {
-  fullScreen();
+  //fullScreen();
+  size(displayWidth, displayHeight);
 }
 void psDraw() {
   if (gottenClip != null) {

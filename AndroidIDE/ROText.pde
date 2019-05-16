@@ -17,6 +17,7 @@ class ROText extends Drawable {
     textAlign(LEFT, TOP);
     fill(#D2D2D2);
     stroke(#D2D2D2);
+    strokeWeight(2);
     textSize(tsz);
     line(x, y+h, x+w, y+h);
     int dy = -s.size();

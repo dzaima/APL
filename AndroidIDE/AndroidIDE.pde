@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.awt.Toolkit;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -16,24 +17,31 @@ Keyboard kb;
 TopBar topbar;
 int top = 30;
 int isz = 30;
-int freey;
+int freey() { // y position of keyboard start
+  return height-kb.h;
+}
 void setup() {
   background(#0a0a0a);
+  int max = max(width, height);
+  top = isz = max/40;
   textFont(createFont("APL385+.ttf", 48));
+  newKb();
   topbar = new TopBar(0, 0, width, top);
   topbar.toNew(new REPL());
+  topbar.add(new Grapher());
   topbar.show();
   redrawAll();
 }
 boolean redraw;
+void newKb() {
+  if (width>height) keyboard(0, 0, width, width/3, "L.json");
+  else              keyboard(0, 0, width, (int)(width*.8), "P.json");
+}
 void redrawAll() {
   //if (width != w || h != height) surface.setSize(w, h);
   redraw = true;
-  if (width>height) keyboard(0, 0, width, width/3, "L.json");
-  else              keyboard(0, 0, width, (int)(width*.8), "P.json");
-  freey = height-kb.h;
+  newKb();
   topbar.resize(width, top);
-  topbar.resized();
 }
 boolean pmousePressed;
 int smouseX, smouseY;
@@ -46,8 +54,8 @@ void draw() {
     mouseStart = millis();
   }
   // if (mouseButton == RIGHT) redrawAll();
-  for (Drawable d : screen) {
-    d.tick();
+  for (int i = screen.size()-1; i >= 0; i--) {
+    screen.get(i).tick();
   }
   if (redraw) {
     background(#101010);
@@ -61,6 +69,10 @@ void draw() {
 boolean shift;
 void keyPressed(KeyEvent e) {
   shift = e.isShiftDown();
+  if (key == 18 && keyCode == 82) {
+    redrawAll();
+    return;
+  }
   if (textInput != null) {
     if (key == 65535) {
            if (keyCode == 38) textInput.special("up");

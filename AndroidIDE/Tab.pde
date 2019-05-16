@@ -2,7 +2,9 @@ abstract class Tab {
   abstract void show();
   abstract void hide();
   abstract String name();
+  void mouseWheel(int dir) { }
 }
+
 
 
 class REPL extends Tab {
@@ -14,7 +16,6 @@ class REPL extends Tab {
   REPL() {
     historyView = new ROText(0, top, width, 340-top);
     input = new APLField(0, 350, width, 40) {
-      Interpreter it = new DzaimaAPL();
       
       void eval() {
         tmpSaved = null;
@@ -51,6 +52,13 @@ class REPL extends Tab {
                 saveStrings(arg, new String[]{t});
               }
             });
+          } else if (nm.equals("ex")) {
+            String[] lns = loadStrings(arg);
+            if (lns != null) {
+              StringBuilder s = new StringBuilder();
+              for (String c : lns) s.append(c).append("\n");
+              for (String c : it.get(s.toString())) textln(c);
+            } else textln("file "+arg+" not found");
           } else textln("Command "+nm+" not found");
           //else if (nm.equals(""))
           return;
@@ -96,8 +104,12 @@ class REPL extends Tab {
   }
   void show() {
     int ih = int(isz*input.extraH);
-    input.move(0, freey-ih, width, ih);
-    historyView.move(0, top, width, freey-top-ih);
+    noStroke();
+    fill(#101010);
+    rectMode(CORNER);
+    rect(0, top, width, freey()-top-ih);
+    input.move(0, freey()-ih, width, ih);
+    historyView.move(0, top, width, freey()-top-ih);
     historyView.end();
     input.show();
     historyView.show();
@@ -135,7 +147,7 @@ abstract class Editor extends Tab {
   }
   abstract void save(String val);
   void show() {
-    a.move(0, top, width, freey-top);
+    a.move(0, top, width, freey()-top);
     a.show();
     textInput = a;
   }
@@ -144,5 +156,45 @@ abstract class Editor extends Tab {
   }
   String name() {
     return name;
+  }
+}
+
+
+class Grapher extends Tab {
+  Graph g;
+  final APLField input;
+  Obj last;
+  Grapher() {
+    g = new Graph(0, top, width, freey()-top-isz);
+    input = new APLField(0, 350, width, 40) {
+      void eval() {
+        modified();
+      }
+      void modified() {
+        if (it instanceof DzaimaAPL) {
+          last = ((DzaimaAPL) it).eval(line);
+          if (last instanceof Fun) g.newFun((Fun) last);
+        }
+      }
+    };
+  }
+  
+  void show() {
+    int ih = int(isz*input.extraH);
+    g.move(0, top, width, freey()-top-ih);
+    g.show();
+    input.move(0, freey()-ih, width, ih);
+    input.show();
+    textInput = input;
+  }
+  void hide() {
+    g.hide();
+    input.hide();
+  }
+  String name() {
+    return "grapher";
+  }
+  void mouseWheel(int dir) {
+    g.mouseWheel(dir);
   }
 }

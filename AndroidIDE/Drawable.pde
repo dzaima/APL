@@ -12,6 +12,7 @@ class Drawable {
   void tick() { } // only update things that changed. For global things called every frame, even if hidden
   void redraw() { } // redraw everything. Should be pure and callable at any point any time (where P5 drawing is allowed); called at least on window/screen resizing/rotating
   void resized() { }
+  void mouseWheel(int dir) { }
   void move(int x, int y) {
     this.x = x;
     this.y = y;

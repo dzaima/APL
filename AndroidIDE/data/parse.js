@@ -43,9 +43,9 @@ fs.readFile(process.argv[2], 'utf8', (e,c) => {
   while (arr.length) {
     let header = arr.shift();
     if (header.startsWith("LAYOUT ")) {
-      let [_, name, size, mainName] = header.split(" ");
+      let [_, name, size, mainName, fullName] = header.split(" ");
       let [w, h] = size.split("×").map(c=>parseInt(c));
-      let o = {w, h, name, obj: {mainName}};
+      let o = {w, h, name, obj: {mainName, fullName}};
       layouts[name] = o;
       layoutArr.push(o);
     }

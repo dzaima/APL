@@ -225,7 +225,7 @@ void draw() {
     stroke(0xff666666);
     strokeWeight(1 / (float)fullS);
     if (mode == 2) {
-                   
+      
       int freq = 10;
       
       float sx = (float) (fullX/scale);
