@@ -19,7 +19,7 @@ public class JotBuiltin extends Dop {
       }
     } else {
       if (aa instanceof Fun) return ((Fun) aa).call(w, (Value) ww);
-      throw new SyntaxError("arr∘arr makes no sense", w);
+      throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
   public Obj callInv(Obj aa, Obj ww, Value w) {
@@ -31,13 +31,16 @@ public class JotBuiltin extends Dop {
       }
     } else {
       if (aa instanceof Fun) return ((Fun) aa).callInvA(w, (Value) ww);
-      throw new SyntaxError("arr∘arr makes no sense", w);
+      throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
   public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    boolean af = aa instanceof Fun;
-    boolean wf = ww instanceof Fun;
-    if (!af || !wf) throw new SyntaxError("strictly monadic derived function called dyadically", a);
+    if (!(aa instanceof Fun)) {
+      throw new SyntaxError("both operands of dyadic ∘ must be functions", aa, this);
+    }
+    if (!(ww instanceof Fun)) {
+      throw new SyntaxError("both operands of dyadic ∘ must be functions", ww, this);
+    }
     return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
   }
 }

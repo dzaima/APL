@@ -2,6 +2,7 @@ package APL.errors;
 
 import APL.Main;
 import APL.types.*;
+import APL.types.functions.*;
 
 public class SyntaxError extends APLError {
   public SyntaxError(String s){
@@ -12,8 +13,31 @@ public class SyntaxError extends APLError {
     this.cause = cause;
   }
   public SyntaxError(String s, Tokenable cause){
+    super(s, cause);
+  }
+  public SyntaxError(String s, Tokenable cause, Fun fun){
+    super(s, cause);
+    Main.faulty = fun;
+  }
+  public SyntaxError(String s, Tokenable cause, Mop fun){
+    super(s, cause);
+    Main.faulty = fun;
+  }
+  public SyntaxError(String s, Tokenable cause, Dop fun){
+    super(s, cause);
+    Main.faulty = fun;
+  }
+  public SyntaxError(String s, Fun fun){
     super(s);
-    this.cause = cause;
+    Main.faulty = fun;
+  }
+  public SyntaxError(String s, Mop fun){
+    super(s);
+    Main.faulty = fun;
+  }
+  public SyntaxError(String s, Dop fun){
+    super(s);
+    Main.faulty = fun;
   }
   
   public static void direct(String msg, Tokenable t) {
