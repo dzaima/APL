@@ -41,6 +41,8 @@ class REPL extends Tab {
             }
           } else if (nm.equals("clear")) {
             historyView.set(new ArrayList());
+          } else if (nm.equals("g")) {
+            topbar.toNew(new Grapher(arg));
           } else if (nm.equals("top")) {
             top = int(arg);
             redrawAll();
@@ -164,9 +166,9 @@ class Grapher extends Tab {
   Graph g;
   final APLField input;
   Obj last;
-  Grapher() {
+  Grapher(String def) {
     g = new Graph(0, top, width, freey()-top-isz);
-    input = new APLField(0, 350, width, 40) {
+    input = new APLField(0, 350, width, 40, def) {
       void eval() {
         modified();
       }
@@ -175,6 +177,12 @@ class Grapher extends Tab {
           last = ((DzaimaAPL) it).eval(line);
           if (last instanceof Fun) g.newFun((Fun) last);
         }
+      }
+      void extraSpecial(String s) {
+        if (s.equals("close")) {
+          eval();
+          topbar.close();
+        } else println("unknown special " + s);
       }
     };
   }

@@ -2,8 +2,11 @@ class APLField extends Drawable implements TextReciever {
   float tsz;
   float extraH = 1.2;
   APLField(int x, int y, int w, int h) {
+    this(x, y, w, h, "");
+  }
+  APLField(int x, int y, int w, int h, String text) {
     super(x, y, w, h);
-    line = "";
+    line = text;
   }
   int tt = 0;
   

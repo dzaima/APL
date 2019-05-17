@@ -89,6 +89,13 @@ static {
             return Num.ONE;
           }
         };
+        case "graph": return new Fun() {
+          String repr() { return "app.graph"; }
+          Obj call(Value w) {
+            topbar.toNew(new Grapher(w.asString()));
+            return Num.ONE;
+          }
+        };
         case "redraw": redrawAll(); return Num.ONE;
         default: return Null.NULL;
       }

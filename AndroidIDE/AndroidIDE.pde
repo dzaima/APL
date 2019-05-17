@@ -28,7 +28,6 @@ void setup() {
   newKb();
   topbar = new TopBar(0, 0, width, top);
   topbar.toNew(new REPL());
-  topbar.add(new Grapher());
   topbar.show();
   redrawAll();
 }
