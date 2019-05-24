@@ -13,10 +13,18 @@ public class Num extends Primitive {
   
   public static final Num NEGINF = new Num(Double.NEGATIVE_INFINITY);
   public static final Num POSINF = new Num(Double.POSITIVE_INFINITY);
-  static DecimalFormat df;
+  private static DecimalFormat df;
   public static int pp;
   static {
     setPrecision(14);
+  }
+  public static String format(double d) {
+    if (d == (long)d) {
+      if (d < 0) return "¯"+ (long) -d;
+      else return Long.toString((long) d);
+    }
+    if (d < 0) return "¯"+ df.format(-d);
+    else return df.format(d);
   }
   public static void setPrecision(int p) {
     pp = p;
@@ -204,13 +212,10 @@ public class Num extends Primitive {
   }
   
   public String toString() {
-    if (num == (int)num) return Integer.toString((int)num);
-  
-    return df.format(num);
+    return format(num);
   }
   public String oneliner(int[] ignored) {
-    if (num == (int)num) return Integer.toString((int)num);
-    return String.format("%.5g%n", 0.912385);
+    return format(num);
   }
   
   @Override
