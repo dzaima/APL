@@ -9,10 +9,10 @@ public class ExclBuiltin extends Builtin {
   }
   
   
-  static double[] cache = new double[172];
+  private static double[] cache = new double[172];
   static {
     double r = 1;
-    cache[1] = r;
+    cache[0] = cache[1] = r;
     for (int i = 2; i < 172; i++) {
       r*= i;
       cache[i] = r;

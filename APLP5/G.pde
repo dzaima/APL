@@ -1,12 +1,7 @@
-class APLGraphics extends APLMap {
+class APLGraphics extends SimpleMap {
   PGraphics g;
-  APLGraphics () {
-  }
-  Arr toArr() {
-    throw new SyntaxError("Converting a Graphics object to array");
-  }
-  void set(Value k, Obj v) {
-    String s = k.asString().toLowerCase();
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
     if (g == null) throw new DomainError(this == mainGraphics? "Make P5.G calls in P5.setup/draw" : "object not yet initialized");
     switch (s) {
       
@@ -22,8 +17,8 @@ class APLGraphics extends APLMap {
       default: throw new DomainError("setting non-existing key "+s+" for Graphics");
     }
   }
-  Obj getRaw(Value k) {
-    String s = k.asString().toLowerCase();
+  Obj getv(String k) {
+    String s = k.toLowerCase();
     if (g == null) throw new DomainError(this == mainGraphics? "Make P5.G calls in P5.setup/draw" : "object not yet initialized");
     switch (s) {
       case "background": case "bg": return new Fun() {
@@ -160,9 +155,6 @@ class APLGraphics extends APLMap {
       };
       default: return NULL;
     }
-  }
-  int size() {
-    throw new SyntaxError("Getting size of the P5 object");
   }
   String toString() { return "G"; }
 }

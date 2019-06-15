@@ -16,7 +16,9 @@ class REPL extends Tab {
   REPL() {
     historyView = new ROText(0, top, width, 340-top);
     input = new APLField(0, 350, width, 40) {
-      
+      boolean apl() {
+        return !(line.startsWith(":") || line.startsWith(")"));
+      }
       void eval() {
         tmpSaved = null;
         inputs.add(line);
@@ -78,6 +80,8 @@ class REPL extends Tab {
       void extraSpecial(String s) {
         if (s.equals("up")) {
           if (inputs.size() == 0) return;
+          modified = true;
+          
           if (line.length() != 0 && iptr == inputs.size()) {
             tmpSaved = line;
           }
@@ -85,8 +89,10 @@ class REPL extends Tab {
           if (iptr < 0) iptr = 0;
           line = inputs.get(iptr);
           sx = ex = line.length();
-        } else {
+        } else if (s.equals("down")) {
           if (inputs.size() == 0) return;
+          modified = true;
+          
           iptr++;
           if (iptr >= inputs.size()) {
             iptr = inputs.size();
@@ -146,6 +152,7 @@ abstract class Editor extends Tab {
       }
     };
     a.append(val);
+    a.cx = a.cy = 0;
   }
   abstract void save(String val);
   void show() {

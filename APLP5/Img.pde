@@ -1,4 +1,4 @@
-class APLImg extends APLMap {
+class APLImg extends SimpleMap {
   PImage img;
   Arr size, px;
   Num w, h;
@@ -9,15 +9,14 @@ class APLImg extends APLMap {
     size = new DoubleArr(new double[]{img.width, img.height});
   }
   
-  Arr toArr() { throw new SyntaxError("Converting a APLImg object to array"); }
-  void set(Value k, Obj v) {
-    String s = k.asString().toLowerCase();
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
     switch (s) {
       default: throw new DomainError("setting non-existing key "+s+" for APLImg");
     }
   }
-  Obj getRaw(Value k) {
-    String s = k.asString().toLowerCase();
+  Obj getv(String k) {
+    String s = k.toLowerCase();
     switch (s) {
       case "w": case "width" : return w;
       case "h": case "height": return h;
@@ -33,6 +32,5 @@ class APLImg extends APLMap {
       default: return NULL;
     }
   }
-  int size() { throw new SyntaxError("Getting size of the APLImg object"); }
   String toString() { return "APLImg"; }
 }

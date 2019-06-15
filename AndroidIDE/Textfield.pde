@@ -1,6 +1,10 @@
 class APLField extends Drawable implements TextReciever {
   float tsz;
+  SyntaxHighlight hl;
+  Theme th = new Theme();
+  
   float extraH = 1.2;
+  
   APLField(int x, int y, int w, int h) {
     this(x, y, w, h, "");
   }
@@ -8,14 +12,15 @@ class APLField extends Drawable implements TextReciever {
     super(x, y, w, h);
     line = text;
   }
-  int tt = 0;
+  int tt = 0; // caret flicker timer
   
   void modified() { } // for overriding
   
   void redraw() {
     tsz = h/extraH;
   }
-  boolean modified = true;
+  boolean saveUndo = true;
+  boolean modified = false;
   final int hsz = 300;
   final State[] history = new State[hsz];
   int hptr = 0; // points to the current modification
@@ -24,12 +29,16 @@ class APLField extends Drawable implements TextReciever {
     if (mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
-    if (modified) {
+    if (modified || saveUndo) {
       modified();
+      hl = new SyntaxHighlight(line, th, g);
+      modified = false;
+    }
+    if (saveUndo) {
       hptr++;
       hptr%= hsz;
       history[hptr] = new State(allText(), sx, ex);
-      modified = false;
+      saveUndo = false;
     }
     clip(x, y, w, h);
     if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
@@ -41,12 +50,14 @@ class APLField extends Drawable implements TextReciever {
     noStroke();
     rectMode(CORNER);
     rect(x, y, w, h);
-    textAlign(LEFT, TOP);
-    fill(#D2D2D2);
-    stroke(#D2D2D2);
-    textSize(tsz);
-    int dy = 0;
-    text(line, x, y + dy*tsz + h*.1);
+    //text(line, x, y + dy*tsz + h*.1);
+    if (apl()) hl.draw(x, y, tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
+    else {
+      fill(#D2D2D2);
+      g.textAlign(LEFT, TOP);
+      textSize(tsz);
+      text(line, x, y);
+    }
     tt--;
     if (tt < 0) tt = 60;
     
@@ -56,6 +67,7 @@ class APLField extends Drawable implements TextReciever {
     float ey = y + h*.9;
     if (tt > 30 || this != textInput) {
       strokeWeight(tsz*.05);
+      stroke(th.caret);
       line(epx, sy, epx, ey);
     }
     if (!one()) {
@@ -73,11 +85,14 @@ class APLField extends Drawable implements TextReciever {
   boolean one() {
     return sx == ex;
   }
+  boolean apl() {
+    return true;
+  }
   String allText() {
     return line;
   }
   void clear() {
-    if (!allText().equals("")) modified = true;
+    if (!allText().equals("")) saveUndo = true;
     line = "";
     sx = 0;
     ex = 0;
@@ -91,7 +106,7 @@ class APLField extends Drawable implements TextReciever {
   }
   void append(String str) {
     deleteSel();
-    if (!str.equals("")) modified = true;
+    if (!str.equals("")) saveUndo = true;
     tt = 0;
     for (char c : sit(str)) {
       if (c == '\n') newline();
@@ -110,7 +125,7 @@ class APLField extends Drawable implements TextReciever {
       deleteSel();
       return;
     }
-    if (sx != 0) modified = true;
+    if (sx != 0) saveUndo = true;
     if (sx == 0) {
     } else {
       line = line.substring(0, sx-1) + line.substring(sx);
@@ -148,11 +163,13 @@ class APLField extends Drawable implements TextReciever {
       hptr+= hsz-1;
       hptr%= hsz;
       to(history[hptr]);
+      modified = true;
     }
     else if (s.equals("redo")) {
       hptr++;
       hptr%= hsz;
       to(history[hptr]);
+      modified = true;
     }
     else if (s.equals("copy")) {
       int min = min(sx, ex);
@@ -193,7 +210,7 @@ class APLField extends Drawable implements TextReciever {
     }
     if (sx != line.length()) {
       line = line.substring(0, sx) + line.substring(sx+1);
-      modified = true;
+      saveUndo = true;
     }
   }
 }

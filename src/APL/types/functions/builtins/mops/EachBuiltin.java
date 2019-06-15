@@ -16,10 +16,14 @@ public class EachBuiltin extends Mop {
   public Obj call(Obj f, Value w, DerivedMop derv) {
     if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : f;
     Value[] n = new Value[w.ia];
-    for (int i = 0; i < n.length; i++) {
-      n[i] = (f instanceof Fun ?
-        (Value)((Fun)f).call(w.get(i))
-      : (Value) f).squeeze();
+    if (f instanceof Fun) {
+      for (int i = 0; i < n.length; i++) {
+        n[i] = ((Value) ((Fun) f).call(w.get(i))).squeeze();
+      }
+    } else {
+      for (int i = 0; i < n.length; i++) {
+        n[i] = ((Value) f).squeeze();
+      }
     }
     return Arr.create(n, w.shape);
   }

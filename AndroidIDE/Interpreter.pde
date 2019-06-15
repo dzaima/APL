@@ -58,13 +58,11 @@ static {
 }
 
 {
-  dzaimaSC.set("app", new APLMap() {
-    Arr toArr() { throw new SyntaxError("Converting an app object to array"); }
-    int size() { throw new SyntaxError("Getting size of the app object"); }
+  dzaimaSC.set("app", new SimpleMap() {
     String toString() { return "app"; }
     
-    void set(Value k, Obj v) {
-      String s = k.asString().toLowerCase();
+    void setv(String k, Obj v) {
+      String s = k.toLowerCase();
       switch (s) {
         case "update":
           layoutUpdate = (Fun) v;
@@ -75,8 +73,8 @@ static {
         default: throw new DomainError("setting non-existing key "+s+" for app");
       }
     }
-    Obj getRaw(Value k) {
-      String s = k.asString().toLowerCase();
+    Obj getv(String k) {
+      String s = k.toLowerCase();
       switch (s) {
         case "layout": return Main.toAPL(kb.data.getString("fullName"));
         case "set": return new Fun() {
@@ -117,6 +115,7 @@ class DzaimaAPL extends Interpreter {
   String[] get(String code) {
     try {
       Obj v = Main.exec(code, dzaimaSC);
+      if (v == null) return new String[0];
       return v.toString().split("\n");
     } catch (APLError e) {
       TPs nSout = new TPs();

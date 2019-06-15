@@ -1,11 +1,8 @@
 Fun setup, draw, scroll, scrollU, scrollD, kp, mp, kr, mr;
-class P5 extends APLMap {
+class P5 extends SimpleMap {
   MouseButton lm, mm, rm;
-  Arr toArr() {
-    throw new SyntaxError("Converting the P5 object to array");
-  }
-  void set(Value k, Obj v) {
-    String s = k.asString().toLowerCase();
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
     switch (s) {
       // callbacks
       case "setup": setup = (Fun) v; break;
@@ -47,8 +44,8 @@ class P5 extends APLMap {
       default: throw new DomainError("setting non-existing key "+s+" for PS");
     }
   }
-  Obj getRaw(Value k) {
-    String s = k.asString().toLowerCase();
+  Obj getv(String k) {
+    String s = k.toLowerCase();
     switch (s) {
       case "g": return mainGraphics;
       case "size": return arr(width, height);

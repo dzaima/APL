@@ -18,15 +18,17 @@ import java.util.*;
 
 import static APL.Main.*;
 
-class Exec {
+public class Exec {
   private final Scope sc;
   private final List<Token> tokens;
   private final LineTok allToken;
-  Exec(LineTok ln, Scope sc) {
+  public Exec(LineTok ln, Scope sc) {
     tokens = ln.tokens;
     allToken = ln;
     this.sc = sc;
   }
+  
+  
   
   private void printlvl(Object... args) {
     if (!Main.debug) return;
@@ -35,7 +37,7 @@ class Exec {
   }
   private LinkedList<Obj> done;
   private Stack<Token> left;
-  Obj exec() {
+  public Obj exec() {
     if (tokens.size() > 0) Main.faulty = tokens.get(0);
     else Main.faulty = allToken;
     if (sc.alphaDefined && tokens.size() >= 2 && tokens.get(0) instanceof OpTok && ((OpTok) tokens.get(0)).op.equals("⍺") && tokens.get(1) instanceof SetTok) {
@@ -135,6 +137,20 @@ class Exec {
     if (done.size() != 1) {
       if (done.size() == 0) return null;
       if (done.get(0).token != null) Main.faulty = done.get(0).token;
+      // try to figure out what went wrong
+  
+      for (int i = done.size()-1; i >= 0; i--) {
+        Obj obj = done.get(i);
+        if (obj instanceof Variable) {
+          Variable vobj = (Variable) obj;
+          if (vobj.getOrThis() == obj) throw new SyntaxError("Couldn't find the value of " + vobj.name, obj);
+        } else if (obj instanceof Settable) {
+          Settable settable = (Settable) obj;
+          if (settable.getOrThis() == obj) throw new SyntaxError("Couldn't find the value of " + obj, obj);
+        }
+      }
+      
+      // oh well that failed
       throw new SyntaxError("couldn't join everything up into a single expression", done.get(done.size()-1));
     }
     return done.get(0);
@@ -284,7 +300,8 @@ class Exec {
     if (end && done.size() == 2) {
       var h = lastFun();
       var g = lastObj();
-      done.addLast(new Atop(g, h));
+      if (g instanceof Fun || g instanceof Value) done.addLast(new Atop(g, h));
+      else throw new SyntaxError("creating an atop with "+g.humanType(true), g);
     }
   }
   
@@ -529,11 +546,11 @@ class Exec {
         case '⍬': return new DoubleArr(new double[0]);
         case '⎕': return new Quad(sc);
         case '⍞': return new QuoteQuad();
-        case '⍺': return sc.get("⍺");
-        case '⍵': return sc.get("⍵");
-        case '∇': return sc.get("∇");
-        case '⍶': return sc.get("⍶");
-        case '⍹': return sc.get("⍹");
+        case '⍺': Obj o = sc.get("⍺"); if(o == null) throw new SyntaxError("No ⍺ found"); return o;
+        case '⍵':     o = sc.get("⍵"); if(o == null) throw new SyntaxError("No ⍵ found"); return o;
+        case '∇':     o = sc.get("∇"); if(o == null) throw new SyntaxError("No ∇ found"); return o;
+        case '⍶':     o = sc.get("⍶"); if(o == null) throw new SyntaxError("No ⍶ found"); return o;
+        case '⍹':     o = sc.get("⍹"); if(o == null) throw new SyntaxError("No ⍹ found"); return o;
         default: throw new NYIError("no built-in " + ((OpTok) t).op + " defined in exec", t);
       }
     }
@@ -572,6 +589,7 @@ class Exec {
     }
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
     if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
+    if (t instanceof BacktickTok) return new ArrFun((BacktickTok) t, sc);
     throw new NYIError("Unknown type: " + Main.explain(t), t);
   }
 }

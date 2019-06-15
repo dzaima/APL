@@ -1,17 +1,28 @@
 class APLTextarea extends Drawable implements TextReciever {
-  float tsz;
+  float tsz, chw; // text size, char width
+  void setsz(float sz) {
+    tsz = sz;
+    g.textSize(sz);
+    chw = g.textWidth('H');
+  }
+  SyntaxHighlight hl;
+  Theme th = new Theme();
+
   APLTextarea(int x, int y, int w, int h) {
     super(x, y, w, h);
     lines = new ArrayList();
     lines.add("");
   }
-  int tt = 0; // 
-  int yoff = 0; // scroll
-  
+  int tt = 0; // caret flicker timer
+  int xoff = 0; // scroll
+  int yoff = 0;
+
   void redraw() {
-    tsz = min(width, height)/20;
+    setsz(min(width, height)/20);
   }
-  boolean modified = true;
+  boolean saveUndo = true;
+  boolean modified = false;
+  boolean cursorMoved = false;
   final int hsz = 300;
   final State[] history = new State[hsz];
   int hptr = 0; // points to the current modification
@@ -25,20 +36,41 @@ class APLTextarea extends Drawable implements TextReciever {
       cx = 0;
       cy = 0;
     }
-    if (modified) {
+    if (cursorMoved || modified || saveUndo) {
+      xoff = (int) min(0, constrain(xoff, -(cx-2)*chw, w - (cx+2)*chw));
+      yoff = (int) min(0, constrain(yoff, -(cy  )*tsz, h - (cy+1)*tsz));
+      cursorMoved = false;
+    }
+    if (modified || saveUndo) {
+      StringBuilder all = new StringBuilder();
+      for (String s : lines) all.append(s).append("\n");
+      hl = new SyntaxHighlight(all.toString(), th, g);
+      modified = false;
+    }
+    if (saveUndo) {
       hptr++;
       hptr%= hsz;
       history[hptr] = new State(allText(), cx, cy);
-      modified = false;
+      saveUndo = false;
     }
     clip(x, y, w, h);
     if (mousePressed && smouseIn()) {
       yoff+= mouseY-pmouseY;
+      xoff+= mouseX-pmouseX;
+      int max = 0;
+      for (String s : lines) max = max(max, s.length());
+      float maxx = (max - 2)*chw;
+      if (xoff < -maxx) xoff = (int) -maxx;
+      if (w > (max + 5)*chw) xoff = 0;
+      float maxy = tsz * (lines.size() - 2);
+      if (yoff < -maxy) yoff = (int) -maxy;
+      
       if (yoff > 0) yoff = 0;
+      if (xoff > 0) xoff = 0;
     }
     if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
       cy = constrain(floor((mouseY-y-yoff)/tsz), 0, lines.size()-1);
-      cx = constrain(round((mouseX-x)/textWidth("H")), 0, lines.get(cy).length());
+      cx = constrain(round((mouseX-x-xoff)/chw), 0, lines.get(cy).length());
       tt = 0;
       //if (cy < 0) {
       //  lines.append("CY<0!!1!11!!");
@@ -52,23 +84,27 @@ class APLTextarea extends Drawable implements TextReciever {
     rectMode(CORNER);
     rect(x, y, w, h);
     textAlign(LEFT, TOP);
-    fill(#D2D2D2);
-    stroke(#D2D2D2);
-    textSize(tsz);
-    int dy = 0;
-    for (String s : lines) {
-      text(s, x, y + dy*tsz + yoff);
-      dy++;
-    }
+    //textSize(tsz);
+    //int dy = 0;
+    //for (String s : lines) {
+    //  SyntaxHighlight.apltext(s, x, y + dy*tsz + yoff, tsz, new Theme(), g);
+    //  //text(s, x, y + dy*tsz + yoff);
+    //  dy++;
+    //}
+    hl.draw(x + xoff, y + yoff, y, y+h, tsz, fullPos());
+    
     tt--;
     if (tt < 0) tt = 60;
     if (tt > 30 || this != textInput) {
-      float px = x + max(textWidth(lines.get(cy).substring(0, cx)), 3);
+      float px;
+      //if (mousePressed) px = x + max(textWidth(lines.get(cy).substring(0, cx)), 3) + xoff; else
+      px = x + max(chw * cx, 3) + xoff;
+      stroke(th.caret);
       line(px, tsz*cy + yoff + y, px, tsz*(cy+1) + yoff + y);
     }
     noClip();
   }
-  
+
   ArrayList<String> lines;
   int cx, cy;
   String allText() {
@@ -80,14 +116,14 @@ class APLTextarea extends Drawable implements TextReciever {
     return s;
   }
   void clear() {
-    if (!allText().equals("")) modified = true;
+    if (!allText().equals("")) saveUndo = true;
     lines = new ArrayList();
     lines.add("");
     cx = 0;
     cy = 0;
   }
   void append(String str) {
-    if (!str.equals("")) modified = true;
+    if (!str.equals("")) saveUndo = true;
     tt = 0;
     for (char c : sit(str)) {
       if (c == '\n') newline();
@@ -107,10 +143,11 @@ class APLTextarea extends Drawable implements TextReciever {
     cy++;
     cx = 0;
   }
-  void eval() { }
+  void eval() {
+  }
   void ldelete() {
     tt = 0;
-    if (cx != 0 || cy != 0) modified = true;
+    if (cx != 0 || cy != 0) saveUndo = true;
     if (cx == 0) {
       if (cy != 0) {
         String pln = lines.get(cy-1);
@@ -130,60 +167,59 @@ class APLTextarea extends Drawable implements TextReciever {
     if (s.equals("eval")) {
       eval();
     } else if (s.equals("left")) {
-      cx--;
-      if (cx == -1) {
-        if (cy == 0) cx = 0;
-        else {
-          cy--;
-          cx = lines.get(cy).length();
-        }
-      }
-    }
-    else if (s.equals("right")) {
-      cx++;
-      if (cx == lines.get(cy).length()+1) {
-        if (cy == lines.size()-1) cx--;
-        else {
-          cx = 0;
-          cy++;
-        }
-      }
-    }
-    else if (s.equals("up")) {
+      left();
+    } else if (s.equals("right")) {
+      right();
+    } else if (s.equals("up")) {
+      cursorMoved = true;
       if (cy > 0) {
         cy--;
         cx = Math.min(cx, lines.get(cy).length());
       } else {
         cx = 0;
       }
-    }
-    else if (s.equals("down")) {
+    } else if (s.equals("down")) {
+      cursorMoved = true;
       if (cy < lines.size()-1) {
         cy++;
         cx = Math.min(cx, lines.get(cy).length());
       } else {
         cx = lines.get(cy).length();
       }
-    }
-    else if (s.equals("openPar")) {
+    } else if (s.equals("openPar")) {
       append("()");
       cx--;
-    }
-    else if (s.equals("closePar")) {
-      append("()"); // TODO  
+    } else if (s.equals("closePar")) {
+      append("()"); // TODO
       cx--;
-    }
-    else if (s.equals("undo")) {
+    } else if (s.equals("undo")) {
       hptr+= hsz-1;
       hptr%= hsz;
       to(history[hptr]);
-    }
-    else if (s.equals("redo")) {
+      modified = true;
+    } else if (s.equals("redo")) {
       hptr++;
       hptr%= hsz;
       to(history[hptr]);
+      modified = true;
+    } else if (s.equals("paste")) {
+      paste(this);
+    } else if (s.equals("match")) {
+      int sel = hl.sel(fullPos());
+      if (sel != -1) to(sel);
+    } else extraSpecial(s);
+  }
+  void to(int full) {
+    int s = 0;
+    int e = hl.lnstarts.length;
+    while(s+1 != e) {
+      int n = (s+e)/2;
+      if (hl.lnstarts[n] <= full) s = n;
+      else e = n;
     }
-    else extraSpecial(s);
+    cy = s;
+    cx = full - hl.lnstarts[cy];
+    cursorMoved = true;
   }
   void extraSpecial(String s) {
     println("unknown special " + s);
@@ -193,7 +229,7 @@ class APLTextarea extends Drawable implements TextReciever {
       lines = st.lns();
       cx = st.cx;
       cy = st.cy;
-    } else clear();
+    }
   }
   class State {
     String code;
@@ -209,7 +245,38 @@ class APLTextarea extends Drawable implements TextReciever {
       return r;
     }
   }
+  
+  void left() {
+    cursorMoved = true;
+    cx--;
+    if (cx == -1) {
+      if (cy == 0) cx = 0;
+      else {
+        cy--;
+        cx = lines.get(cy).length();
+      }
+    }
+  }
+  void right() {
+    cursorMoved = true;
+    cx++;
+    if (cx == lines.get(cy).length()+1) {
+      if (cy == lines.size()-1) cx--;
+      else {
+        cx = 0;
+        cy++;
+      }
+    }
+  }
+  
   void rdelete() {
-    
+    right();
+    ldelete();
+  }
+  void pasted(String s) {
+    append(s);
+  }
+  int fullPos() {
+    return cx + hl.lnstarts[cy];
   }
 }

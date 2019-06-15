@@ -253,36 +253,25 @@ public class Scope {
     }
   }
   
-  static class ScopeViewer extends APLMap {
-  
+  static class ScopeViewer extends SimpleMap {
+    
     private final Scope sc;
-  
+    
     ScopeViewer(Scope sc) {
       this.sc = sc;
     }
-  
+    
     @Override
-    public Obj getRaw(Value k) {
-      String s = k.asString();
-      if (s.equals("parent")) return new ScopeViewer(sc.parent);
-      return sc.vars.get(s);
+    public Obj getv(String k) {
+      if (k.equals("parent")) return new ScopeViewer(sc.parent);
+      return sc.vars.get(k);
     }
-  
+    
     @Override
-    public void set(Value k, Obj v) {
+    public void setv(String k, Obj v) {
       throw new SyntaxError("No setting scope things!", v instanceof Value? (Value) v : null);
     }
-  
-    @Override
-    public Arr toArr() {
-      throw new SyntaxError("scope to array", this);
-    }
-  
-    @Override
-    public int size() {
-      throw new DomainError("size of ⎕SCOPE");
-    }
-  
+    
     @Override
     public String toString() {
       StringBuilder res = new StringBuilder("(");
@@ -293,7 +282,7 @@ public class Scope {
       });
       return res + ")";
     }
-  
+    
     @Override
     public Value ofShape(int[] sh) {
       throw new DomainError("⎕SCOPE is a debugging tool, not a toy.");
@@ -307,9 +296,12 @@ public class Scope {
     
     @Override
     public Obj call(Value w) {
+      if (w instanceof StrMap) {
+        return new StrMap(((StrMap) w));
+      }
       var map = new StrMap();
       for (Value v : w) {
-        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕smap should be 2-item arrays", v);
+        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕map should be 2-item arrays", v);
         map.set(v.get(0), v.get(1));
       }
       return map;

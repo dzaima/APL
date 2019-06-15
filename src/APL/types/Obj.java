@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.NYIError;
 import APL.tokenizer.Token;
 import APL.types.dimensions.*;
-import APL.types.functions.VarArr;
+import APL.types.functions.*;
 
 public abstract class Obj implements Tokenable {
   public Token token;
@@ -30,6 +30,9 @@ public abstract class Obj implements Tokenable {
     if (this instanceof VarArr)  return article? "a vararr"     : "vararr";
     if (this instanceof Variable)return article? "a variable"   : "variable";
     if (this instanceof Pick    )return article? "an array item": "array item";
+    if (this instanceof Mop     )return article? "monadic operator" : "a monadic operator";
+    if (this instanceof Dop     )return article? "dyadic operator" : "a dyadic operator";
+    if (this instanceof ArrFun  )return article? "an arrayified function": "arrayified function";
     if (this instanceof APLMap.MapPointer)return article? "a map item": "map item";
     return "some type that dzaima hasn't named in Obj.humanType ಠ_ಠ (class = "+getClass()+")";
   }

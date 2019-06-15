@@ -21,9 +21,8 @@ public abstract class APLMap extends Primitive {
   }
   
   abstract public void set(Value k, Obj v);
-  
-  abstract public Arr toArr();
-  
+  abstract public Arr allValues();
+  abstract public Arr allKeys();
   abstract public int size();
   
   public class MapPointer extends Settable {

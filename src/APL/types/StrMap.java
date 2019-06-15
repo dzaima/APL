@@ -1,9 +1,19 @@
 package APL.types;
 
+import APL.Main;
+
 import java.util.*;
 
 public class StrMap extends APLMap {
-  private final HashMap<String, Obj> map = new HashMap<>();
+  private final HashMap<String, Obj> map;
+  
+  public StrMap() {
+    map = new HashMap<>();
+  }
+  
+  public StrMap(StrMap w) { // copy
+    map = new HashMap<>(w.map);
+  }
   
   
   @Override
@@ -29,11 +39,20 @@ public class StrMap extends APLMap {
   }
   
   @Override
-  public Arr toArr() {
+  public Arr allValues() {
     Obj[] a = map.values().toArray(new Obj[0]);
     var items = new ArrayList<Value>();
     for (Obj o : a) {
       if (o instanceof Value) items.add((Value) o);
+    }
+    return Arr.create(items.toArray(new Value[0]));
+  }
+  
+  @Override public Arr allKeys() {
+    String[] a = map.keySet().toArray(new String[0]);
+    var items = new ArrayList<Value>();
+    for (String o : a) {
+      items.add(Main.toAPL(o));
     }
     return Arr.create(items.toArray(new Value[0]));
   }

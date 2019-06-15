@@ -1,7 +1,4 @@
-class MouseButton extends APLMap {
-  Arr toArr() {
-    throw new SyntaxError("Converting the P5 object to array");
-  }
+class MouseButton extends SimpleMap {
   int m;
   Num sX = Num.ZERO, sY = Num.ZERO;
   Arr sPos = new DoubleArr(new double[]{0, 0});
@@ -25,8 +22,8 @@ class MouseButton extends APLMap {
       call(rH, sPos, mpos);
     }
   }
-  void set(Value k, Obj v) {
-    String s = k.asString().toLowerCase();
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
     switch (s) {
       // callbacks
       case "clicked" : case "c": cH = (Fun) v; break;
@@ -34,8 +31,8 @@ class MouseButton extends APLMap {
       default: throw new DomainError("setting non-existing key "+s+" for Mouse");
     }
   }
-  Obj getRaw(Value k) {
-    String s = k.asString().toLowerCase();
+  Obj getv(String k) {
+    String s = k.toLowerCase();
     switch (s) {
       case "sx": case "startx": return sX;
       case "sy": case "starty": return sY;
@@ -44,9 +41,6 @@ class MouseButton extends APLMap {
       case "pp": case "ppressed": return ppressed;
       default: return NULL;
     }
-  }
-  int size() {
-    throw new SyntaxError("Getting size of the P5 object");
   }
   String toString() { return m==LEFT?"P5.lm":m==RIGHT?"P5.rm":"P5.mm"; }
 }

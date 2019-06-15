@@ -24,6 +24,10 @@ public class UserDefined {
         Type n = funType((TokArr<?>) t);
         if (n == Type.mop) type = Type.mop;
         else if (n.equals(Type.dop)) return Type.dop;
+      } else if (t instanceof BacktickTok) {
+        Type n = funType(((BacktickTok) t).value());
+        if (n == Type.mop) type = Type.mop;
+        else if (n.equals(Type.dop)) return Type.dop;
       }
     }
     return type;
