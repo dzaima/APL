@@ -109,7 +109,7 @@ public class Exec {
       } else {
         c = valueOf(t);
       }
-      if (c.isObj()) {
+      if (c.isObj() || c.type() == Type.gettable && (left.size() == 0 || !(left.get(0) instanceof SetTok))) {
         if (arr == null) arr = new ArrayList<>();
         arr.add(c);
       } else {
