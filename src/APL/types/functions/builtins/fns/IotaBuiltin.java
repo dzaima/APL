@@ -59,6 +59,7 @@ public class IotaBuiltin extends Builtin {
         res[ctr] = f==null? notfound : f + IO;
         ctr++;
       }
+      // w won't be a scalar
       return new DoubleArr(res, w.shape);
     }
     double[] res = new double[w.ia];
@@ -71,6 +72,7 @@ public class IotaBuiltin extends Builtin {
       }
       res[i++] = j+IO;
     }
+    if (w instanceof Primitive) return new Num(res[0]);
     return new DoubleArr(res, w.shape);
   }
 }
