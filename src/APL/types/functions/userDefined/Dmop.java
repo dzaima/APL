@@ -27,7 +27,7 @@ public class Dmop extends Mop {
     nsc.set("⍵", w);
     nsc.set("∇", derv);
     var res = Main.execLines(code, nsc);
-    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof VarArr) return ((VarArr)res).get();
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
@@ -40,7 +40,7 @@ public class Dmop extends Mop {
     nsc.set("∇", derv);
     nsc.alphaDefined = true;
     var res = Main.execLines(code, nsc);
-    if (res instanceof VarArr) return ((VarArr)res).materialize();
+    if (res instanceof VarArr) return ((VarArr)res).get();
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }

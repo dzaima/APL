@@ -273,14 +273,14 @@ public class Main {
   
   public static Obj oexec(LineTok s, Scope sc) {
     Obj val = Main.exec(s, sc);
-    if (val instanceof VarArr) val = ((VarArr) val).materialize();
+    if (val instanceof VarArr) val = ((VarArr) val).get();
     if (val instanceof Settable) val = ((Settable) val).get();
     return val;
   }
   
   public static Obj vexec(LineTok s, Scope sc) {
     Obj val = Main.exec(s, sc);
-    if (val instanceof VarArr) val = ((VarArr) val).materialize();
+    if (val instanceof VarArr) val = ((VarArr) val).get();
     if (val instanceof Settable) val = ((Settable) val).get();
     if (val instanceof Value) return val;
     throw new SyntaxError("expected array, got " + val.humanType(true));
@@ -371,7 +371,7 @@ public class Main {
   }
   
   private static Value norm(Obj o) {
-    if (o instanceof VarArr) return ((VarArr) o).materialize();
+    if (o instanceof VarArr) return ((VarArr) o).get();
     if (o instanceof Settable) return (Value) ((Settable) o).get();
     if (!(o instanceof Value)) throw new DomainError("Trying to use "+o.humanType(true)+" as array");
     return (Value) o;

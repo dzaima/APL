@@ -7,6 +7,7 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
+import java.io.*;
 import java.util.HashMap;
 
 import static APL.Main.*;
@@ -66,6 +67,7 @@ public class Scope {
         case "⎕HTIME": return new Timer(this, false);
         case "⎕EX": return new Ex(this);
         case "⎕LNS": return new Lns();
+        case "⎕SH": return new Shell();
         case "⎕A": return Main.alphabet;
         case "⎕D": return Main.digits;
         case "⎕L": return Main.lowercaseAlphabet;
@@ -378,6 +380,45 @@ public class Scope {
       return Arr.create(o);
     }
   }
+  
+  
+  private class Shell extends Fun {
+    @Override public String repr() {
+      return "⎕SH";
+    }
+  
+    @Override
+    public Obj call(Value w) {
+      return exec(w, null);
+    }
+  
+    @Override
+    public Obj call(Value a, Value w) {
+      return exec(w, new File(a.asString()));
+    }
+    
+    public Obj exec(Value w, File f) {
+      try {
+        Process p;
+        if (w.get(0) instanceof Char) {
+          String cmd = w.asString();
+          p = Runtime.getRuntime().exec(cmd, new String[0], f);
+        } else {
+          String[] parts = new String[w.ia];
+          for (int i = 0; i < parts.length; i++) {
+            parts[i] = w.get(i).asString();
+          }
+          p = Runtime.getRuntime().exec(parts, new String[0], f);
+        }
+        return new Num(p.waitFor());
+      } catch (Throwable e) {
+        e.printStackTrace();
+        return Null.NULL;
+      }
+    }
+  }
+  
+  
   static private class Hasher extends Builtin {
     @Override public String repr() {
       return "⎕HASH";

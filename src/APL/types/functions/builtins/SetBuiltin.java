@@ -5,7 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.*;
 
-public class SetBuiltin extends Builtin {
+public class SetBuiltin extends AbstractSet {
   public static SetBuiltin inst = new SetBuiltin();
   
   @Override public String repr() {
@@ -20,39 +20,21 @@ public class SetBuiltin extends Builtin {
   }
   
   public Obj call(Obj a, Obj w, boolean update) {
-    if (a instanceof Settable) {
-      if (update && a instanceof Variable) {
-        ((Variable) a).update(w);
-      } else {
-        ((Settable) a).set(w);
-      }
-      return w;
-    }
-    VarArr oa = (VarArr) a;
-    if (w instanceof Arr) {
-      Arr ow = (Arr) w;
-      if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
-      if (ow.ia != oa.ia) throw new LengthError("← scatter argument lengths not equal", ow);
-      for (int i = 0; i < oa.ia; i++) {
-        this.call(oa.arr.get(i), ow.get(i), update);
-      }
-      return w;
+    if (!(a instanceof Settable)) throw new SyntaxError(a + " isn't settable", a);
+    Settable as = (Settable) a;
+    if (update) {
+      if (a instanceof Variable) ((Variable) a).update(w);
+      else if (a instanceof VarArr) ((VarArr) a).set(w, true);
+      else as.set(w); // throw new SyntaxError("can't set", a); todo?
     } else {
-      for (int i = 0; i < oa.ia; i++) {
-        this.call(oa.arr.get(i), w, update);
-      }
-      return w;
+      as.set(w);
     }
+    return w;
   }
 
   public Obj call(Fun f, Obj a, Value w) {
     call(a, f.call((Value) ((Settable) a).get(), w), true);
     return w;
-  }
-  
-  @Override
-  public Type type() {
-    return Type.set;
   }
 }
 

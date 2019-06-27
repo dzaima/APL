@@ -8,6 +8,7 @@ import APL.types.arrs.DoubleArr;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
+import APL.types.functions.builtins.AbstractSet;
 import APL.types.functions.builtins.dops.*;
 import APL.types.functions.builtins.fns.*;
 import APL.types.functions.builtins.mops.*;
@@ -166,7 +167,7 @@ public class Exec {
         done.removeFirst();
         var fn = done.removeFirst();
         if (fn instanceof Settable) fn = ((Settable) fn).get();
-        if (fn instanceof VarArr) fn = ((VarArr) fn).materialize();
+        if (fn instanceof VarArr) fn = ((VarArr) fn).get();
         var TB = new TableBuiltin();
         TB.token = jot.token;
         done.addFirst(TB.derive(fn));
@@ -227,20 +228,31 @@ public class Exec {
         var w = firstVar();
         addFirst(w.get());
       }
-      if (is("D!|V←.,D!|D←D,D!|M←M,D!|F←F,D!|N←N,#←.", end, false)) { // "D!|.←." to allow changing type
+      if (is("D!|V←[#NFMD],#←[#NFMD],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         var w = lastObj();
-        var s = (SetBuiltin) done.removeLast(); // ←
+        var s = (AbstractSet) done.removeLast(); // ←
         var a = done.removeLast(); // variable
         Main.faulty = s;
         var res = s.call(a, w, false);
         done.addLast(res);
         continue;
       }
+      if (done.size() == 2 && is("F←", false, false)) {
+        if (Main.debug) printlvl("F←");
+        var s0 = done.removeLast(); // ←
+        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
+        var s = (SetBuiltin) s0;
+        var f = lastFun();
+        done.addLast(new DerivedSet(s, f));
+        continue;
+      }
       if (is("D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
         var w = lastVal();
-        var s = (SetBuiltin) done.removeLast(); // ←
+        var s0 = done.removeLast(); // ←
+        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
+        var s = (SetBuiltin) s0;
         var f = lastFun();
         Obj a = done.removeLast(); // variable
         Main.faulty = f;
@@ -264,8 +276,8 @@ public class Exec {
         var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
         if (wwu instanceof Settable) wwu = ((Settable) wwu).getOrThis();
-        if (aau instanceof VarArr) aau = ((VarArr) aau).materialize();
-        if (wwu instanceof VarArr) wwu = ((VarArr) wwu).materialize();
+        if (aau instanceof VarArr) aau = ((VarArr) aau).get();
+        if (wwu instanceof VarArr) wwu = ((VarArr) wwu).get();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
           done.add(barPtr, ((APLMap) aau).get(Main.toAPL(((Variable) ww).name)));
         } else {
@@ -308,7 +320,7 @@ public class Exec {
   private Value lastVal() {
     var r = done.removeLast();
     if (r instanceof Value) return (Value) r;
-    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof VarArr) return ((VarArr) r).get();
     if (r instanceof Settable) return (Value) ((Settable) r).get();
     throw new SyntaxError("Expected value, got "+r, r);
   }
@@ -330,13 +342,13 @@ public class Exec {
   
   private Obj lastObj() {
     var r = done.removeLast();
-    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof VarArr) return ((VarArr) r).get();
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   private Obj firstObj() {
     var r = done.remove(barPtr);
-    if (r instanceof VarArr) return ((VarArr) r).materialize();
+    if (r instanceof VarArr) return ((VarArr) r).get();
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
