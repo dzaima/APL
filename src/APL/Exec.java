@@ -524,6 +524,7 @@ public class Exec {
         case '⍋': return new GradeUpBuiltin(sc);
         case '⍒': return new GradeDownBuiltin(sc);
         case '⌿': return new ReplicateBuiltin();
+        case '⍧': return new LShoeStileBuiltin();
         
         // comparisons
         case '<': return new LTBuiltin();
