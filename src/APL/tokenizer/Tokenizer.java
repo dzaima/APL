@@ -173,7 +173,7 @@ public class Tokenizer {
           if (i >= len) throw new SyntaxError("unfinished string");
           while (true) {
             if (raw.charAt(i) == '\'') {
-              if (i + 1 < len && raw.charAt(i + 1) == '\'') {
+              if (i+1 < len && raw.charAt(i+1) == '\'') {
                 str.append("'");
                 i++;
               } else break;
@@ -186,15 +186,39 @@ public class Tokenizer {
         } else if (c == '"') {
           StringBuilder str = new StringBuilder();
           i++;
-          while (true) {
-            if (raw.charAt(i) == '\"') {
-              if (i + 1 < len && raw.charAt(i + 1) == '\"') {
-                str.append("\"");
-                i++;
-              } else break;
-            } else str.append(raw.charAt(i));
+          while (raw.charAt(i) != '"') {
+            if (raw.charAt(i) == '\\') {
+              i++;
+              SyntaxError.must(i < len, "unfinished string");
+              char esc = raw.charAt(i);
+              switch (esc) {
+                case  'n': str.append('\n'); break;
+                case  'r': str.append('\r'); break;
+                case  '"': str.append('\"'); break;
+                case '\'': str.append('\''); break;
+                case '\\': str.append('\\'); break;
+                case  't': str.append('\t'); break;
+                case  'x': {
+                  SyntaxError.must(i+2 < len, "unfinished string");
+                  int num = Integer.parseInt(raw.substring(i+1, i+3), 16);
+                  str.append(Character.toChars(num));
+                  i+= 2;
+                  break;
+                }
+                case  'u': {
+                  SyntaxError.must(i+4 < len, "unfinished string");
+                  int num = Integer.parseInt(raw.substring(i+1, i+5), 16);
+                  str.append(Character.toChars(num));
+                  i+= 4;
+                  break;
+                }
+                default: throw new SyntaxError("invalid escape character "+esc);
+              }
+            } else {
+              str.append(raw.charAt(i));
+            }
             i++;
-            if (i >= len) throw new SyntaxError("unfinished string");
+            SyntaxError.must(i < len, "unfinished string");
           }
           i++;
           tokens.add(new StrTok(raw, li, i, str.toString()));
