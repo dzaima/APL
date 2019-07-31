@@ -12,7 +12,7 @@ public class EachBuiltin extends Mop {
   }
   
   
-
+  
   public Obj call(Obj f, Value w, DerivedMop derv) {
     if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : f;
     Value[] n = new Value[w.ia];

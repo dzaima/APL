@@ -253,6 +253,10 @@ public class Scope {
         }
       }, c->new Num(c.chr), w);
     }
+  
+    @Override public Obj callInv(Value w) {
+      return call(w);
+    }
   }
   
   static class ScopeViewer extends SimpleMap {
