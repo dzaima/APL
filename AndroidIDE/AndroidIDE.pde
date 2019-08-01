@@ -83,6 +83,7 @@ void keyPressed(KeyEvent e) {
       else if (key ==  26 && keyCode ==  90) textInput.special("undo");
       else if (key ==  25 && keyCode ==  89) textInput.special("redo");
       else if (key ==   3 && keyCode ==  67) textInput.special("copy");
+      else if (key ==  22 && keyCode ==  86) textInput.special("paste");
       else if (key == 127 && keyCode == 127) textInput.rdelete();
       else if (key ==  19 && keyCode ==  83) textInput.special("eval");
       else textInput.append(Character.toString(key));

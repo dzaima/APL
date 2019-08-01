@@ -5,15 +5,15 @@ import APL.types.functions.*;
 
 public class EachLeft extends Mop {
   @Override public String repr() {
-    return "⍄";
+    return "ᐵ";
   }
   
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    if (a.scalar()) return ((Fun) f).call(a, w);
+    Fun ff = (Fun) f;
     Value[] n = new Value[a.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = ((Value)((Fun) f).call(a.get(i), w)).squeeze();
+      n[i] = ((Value) ff.call(a.get(i), w)).squeeze();
     }
-    return Arr.create(n, w.shape);
+    return Arr.create(n, a.shape);
   }
 }
