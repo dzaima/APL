@@ -542,8 +542,8 @@ public class Exec {
         case '⌾': return new TableBuiltin();
         case '⌸': return new KeyBuiltin(sc);
         case '⍁': return new ObliqueBuiltin();
-        case '⍄': return new EachLeft();
-        case '⍃': return new EachRight();
+        case 'ᐵ': return new EachLeft();
+        case 'ᑈ': return new EachRight();
         
         // dops
         case '∘': return new JotBuiltin();
