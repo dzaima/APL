@@ -2,6 +2,7 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.LengthError;
 import APL.types.*;
+import APL.types.arrs.SingleItemArr;
 import APL.types.functions.*;
 
 import java.util.Arrays;
@@ -15,17 +16,15 @@ public class EachBuiltin extends Mop {
   
   public Obj call(Obj f, Value w, DerivedMop derv) {
     if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : f;
-    Value[] n = new Value[w.ia];
     if (f instanceof Fun) {
+      Value[] n = new Value[w.ia];
       for (int i = 0; i < n.length; i++) {
         n[i] = ((Value) ((Fun) f).call(w.get(i))).squeeze();
       }
+      return Arr.create(n, w.shape);
     } else {
-      for (int i = 0; i < n.length; i++) {
-        n[i] = ((Value) f).squeeze();
-      }
+      return new SingleItemArr(((Value) f), w.shape);
     }
-    return Arr.create(n, w.shape);
   }
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
     if (w.scalar()) {
