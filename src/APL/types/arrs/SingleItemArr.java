@@ -15,8 +15,7 @@ public class SingleItemArr extends Arr {
   }
   
   @Override
-  public int[] asIntVec() {
-    if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
+  public int[] asIntArr() {
     int vi = item.asInt();
     int[] a = new int[ia];
     for (int i = 0; i < ia; i++) a[i] = vi;

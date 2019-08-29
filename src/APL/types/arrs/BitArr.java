@@ -65,8 +65,7 @@ public class BitArr extends Arr {
     return new BitArr(arr, v.shape, v.ia);
   }
   
-  @Override public int[] asIntVec() {
-    if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
+  @Override public int[] asIntArr() {
     int[] res = new int[ia];
     int ctr = 0;
     for (int i = 0; i < arr.length-1; i++) {

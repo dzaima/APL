@@ -22,8 +22,7 @@ public class HArr extends Arr {
   }
   
   @Override
-  public int[] asIntVec() {
-    if (rank >= 2) throw new DomainError("using array of rank≥2 as vector");
+  public int[] asIntArr() {
     int[] res = new int[ia];
     for (int i = 0; i < arr.length; i++) {
       res[i] = arr[i].asInt();

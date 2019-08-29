@@ -15,7 +15,7 @@ public class Shape1Arr extends Arr {
   }
   
   @Override
-  public int[] asIntVec() {
+  public int[] asIntArr() {
     return new int[]{item.asInt()};
   }
   

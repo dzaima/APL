@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
@@ -15,9 +16,8 @@ public class ReplicateBuiltin extends Builtin {
   
   
   public Obj call(Value a, Value w) {
-    if (a.rank > 1) throw new RankError("⍺ for ⌿ should have rank ≤1", a);
-    if (w.rank > 1) throw new RankError("⍵ for ⌿ should have rank ≤1", w);
     if (a.rank == 0) {
+      RankError.must(w.rank < 2, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
       int sz = a.asInt();
       if (sz < 0) {
         Value[] res = new Value[w.ia*-sz];
@@ -35,7 +35,10 @@ public class ReplicateBuiltin extends Builtin {
       }
       return Arr.create(res);
     }
-    if (a.ia != w.ia) throw new LengthError("⍺ & ⍵ should have equal lengths for ⌿", w);
+    
+    // ⍺.rank ≠ 0
+    RankError.must(a.rank == w.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+a.rank+" vs "+w.rank + ")");
+    LengthError.must(Arrays.equals(a.shape, w.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")");
   
     if (a instanceof BitArr) {
       BitArr ab = (BitArr) a;
@@ -100,7 +103,7 @@ public class ReplicateBuiltin extends Builtin {
     
     
     int total = 0;
-    int[] sizes = a.asIntVec();
+    int[] sizes = a.asIntArr();
     for (int i = 0; i < a.ia; i++) {
       total+= Math.abs(sizes[i]);
     }

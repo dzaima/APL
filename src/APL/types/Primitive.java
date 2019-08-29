@@ -19,10 +19,16 @@ public abstract class Primitive extends Value {
   public final Value first() {
     return this;
   }
+  
+  @Override
+  public int[] asIntArr() {
+    throw new DomainError("using " + this.oneliner() + " as integer array", this);
+  }
   @Override
   public int[] asIntVec() {
     throw new DomainError("using " + this.oneliner() + " as integer vector", this);
   }
+  
   @Override
   public int asInt() {
     throw new DomainError("using " + this.oneliner() + " as integer", this);

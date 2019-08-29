@@ -207,7 +207,7 @@ public class Num extends Primitive {
   }
   
   @Override
-  public int[] asIntVec() { // TODO not round
+  public int[] asIntArr() { // TODO not round
     return new int[]{(int)num};
   }
   

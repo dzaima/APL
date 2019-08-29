@@ -45,8 +45,7 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public int[] asIntVec() {
-    if (rank >= 2) throw new RankError("trying to use a rank " + rank + " number array as vector", this);
+  public int[] asIntArr() {
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
       int conv = (int) arr[i];

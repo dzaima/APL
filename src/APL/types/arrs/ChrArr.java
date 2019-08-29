@@ -21,8 +21,8 @@ public class ChrArr extends Arr {
   
   
   @Override
-  public int[] asIntVec() {
-    throw new DomainError("using character vector as integer vector", this);
+  public int[] asIntArr() {
+    throw new DomainError("using character array as integer array", this);
   }
   
   @Override

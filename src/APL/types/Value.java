@@ -23,7 +23,11 @@ public abstract class Value extends Obj implements Iterable<Value> {
     this.ia = ia;
     this.rank = rank;
   }
-  public abstract int[] asIntVec(); // succeeds on rank ≤ 1
+  public int[] asIntVec() { // succeeds on rank ≤ 1
+    RankError.must(rank<=1, "using rank "+rank+" array as vector");
+    return asIntArr();
+  }
+  public abstract int[] asIntArr();
   public abstract int asInt();
   public boolean scalar() {
     return rank == 0;
