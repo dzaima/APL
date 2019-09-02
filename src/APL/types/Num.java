@@ -210,6 +210,10 @@ public class Num extends Primitive {
   public int[] asIntArr() { // TODO not round
     return new int[]{(int)num};
   }
+  @Override
+  public int[] asIntVec() {
+    return new int[]{(int)num};
+  }
   
   public String toString() {
     return format(num);
