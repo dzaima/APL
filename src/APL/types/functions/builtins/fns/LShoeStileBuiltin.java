@@ -22,11 +22,11 @@ public class LShoeStileBuiltin extends Builtin {
       res[i] = counts.get(ca);
       i++;
     }
-    return new DoubleArr(res, a.shape);
+    return DoubleArr.safe(res, a.shape);
   }
   
   @Override public Obj call(Value w) {
-    RankError.must(w.rank == 1, "rank of ⍵ should be 1");
+    RankError.must(w.rank == 1, "rank of ⍵ must be 1");
     HashSet<Value> encountered = new HashSet<>();
     BitArr.BC res = new BitArr.BC(w.shape);
     for (Value cv : w) {

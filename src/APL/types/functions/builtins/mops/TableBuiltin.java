@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.mops;
 
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
+import APL.types.arrs.*;
 import APL.types.functions.*;
 
 public class TableBuiltin extends Mop {
@@ -14,8 +14,12 @@ public class TableBuiltin extends Mop {
     int[] shape = new int[a.rank+w.rank];
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
+    
+    if (a.ia==0 || w.ia==0) return new EmptyArr(shape);
+    
     Fun ff = (Fun) f;
-  
+    
+    
     int i = 0;
     Value first = (Value) ff.call(a.first(), w.first());
   

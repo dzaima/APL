@@ -10,7 +10,7 @@ public class DoubleArr extends Arr {
   final public double[] arr;
   public DoubleArr(double[] arr, int[] sh) {
     super(sh);
-    assert Main.enclosePrimitives || sh.length != 0;
+    assert Main.enclosePrimitives || sh.length != 0 : "Internal: attempting to create a shape ";
     this.arr = arr;
   }
   public DoubleArr(double[] arr) { // 1D
@@ -42,6 +42,11 @@ public class DoubleArr extends Arr {
       a[i] = da[i];
     }
     this.arr = a;
+  }
+  
+  public static Value safe(double[] vs, int[] sh) {
+    if (sh.length == 0) return new Num(vs[0]);
+    return new DoubleArr(vs, sh);
   }
   
   @Override
