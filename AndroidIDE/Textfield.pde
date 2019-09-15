@@ -154,11 +154,26 @@ class APLField extends Drawable implements TextReciever {
       ex--;
       sx--;
     }
-    else if (s.equals("closePar")) {
-      append("()"); // TODO
-      ex--;
-      sx--;
-    }
+    else if (s.equals("wrapPar")) {
+      append(")");
+      String all = allText();
+      int cl = 1;
+      int ocp = sx;
+      int cp = Math.max(0, Math.min(ocp-2, all.length()-1))+1;
+      while (cp > 0) {
+        cp--;
+        if (all.charAt(cp) == '\n') break;
+        if ("([{".contains(Character.toString(all.charAt(cp)))) { cl--; if (cl==0){ cp++; break; } }
+        if (")]}".contains(Character.toString(all.charAt(cp))))   cl++;
+      }
+      //println(cp);
+      ex = sx = Math.max(0, cp);
+      append("(");
+      ex = sx = ocp + 1;
+      //println(allText());
+      //println(cx, cy);
+      //cx--;
+    } 
     else if (s.equals("undo")) {
       hptr+= hsz-1;
       hptr%= hsz;

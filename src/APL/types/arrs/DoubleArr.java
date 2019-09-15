@@ -10,7 +10,7 @@ public class DoubleArr extends Arr {
   final public double[] arr;
   public DoubleArr(double[] arr, int[] sh) {
     super(sh);
-    assert Main.enclosePrimitives || sh.length != 0 : "Internal: attempting to create a shape ";
+    assert Main.enclosePrimitives || sh.length != 0 : "Internal: attempting to create a DoubleArr of shape ⍬";
     this.arr = arr;
   }
   public DoubleArr(double[] arr) { // 1D

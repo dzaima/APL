@@ -189,9 +189,28 @@ class APLTextarea extends Drawable implements TextReciever {
     } else if (s.equals("openPar")) {
       append("()");
       cx--;
-    } else if (s.equals("closePar")) {
-      append("()"); // TODO
-      cx--;
+    } else if (s.equals("wrapPar")) {
+      append(")");
+      String all = allText();
+      int cl = 1;
+      int ocp = 0;
+      for (int y = 0; y < cy; y++) ocp+= lines.get(y).length()+1;
+      ocp+= cx;
+      int cp = Math.max(0, Math.min(ocp-2, all.length()-1))+1;
+      while (cp > 0) {
+        cp--;
+        if (all.charAt(cp) == '\n') break;
+        if ("([{".contains(Character.toString(all.charAt(cp)))) { cl--; if (cl==0){ cp++; break; } }
+        if (")]}".contains(Character.toString(all.charAt(cp))))   cl++;
+      }
+      //println(cp);
+      to(Math.max(0, cp));
+      append("(");
+      to(ocp);
+      right();
+      //println(allText());
+      //println(cx, cy);
+      //cx--;
     } else if (s.equals("undo")) {
       hptr+= hsz-1;
       hptr%= hsz;
@@ -214,11 +233,12 @@ class APLTextarea extends Drawable implements TextReciever {
     int e = hl.lnstarts.length;
     while(s+1 != e) {
       int n = (s+e)/2;
-      if (hl.lnstarts[n] <= full) s = n;
+      if (hl.lnstarts[n] < full) s = n;
       else e = n;
     }
     cy = s;
     cx = full - hl.lnstarts[cy];
+    println(full,"->",cx,cy);
     cursorMoved = true;
   }
   void extraSpecial(String s) {
