@@ -42,6 +42,7 @@ class APLField extends Drawable implements TextReciever {
     }
     clip(x, y, w, h);
     if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
+      textSize(tsz);
       sx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;

@@ -73,6 +73,7 @@ static class SyntaxHighlight {
         }
         if (sel == pos) {
           g.stroke(th.pair);
+          g.strokeWeight(ceil(sz/20f));
           g.pushMatrix();
           g.translate(cx, y + ln*sz);
           g.beginShape();
