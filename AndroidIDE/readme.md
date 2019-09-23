@@ -1,6 +1,8 @@
 <img src=../docs/p1.png width="200"></img> <img src=../docs/p2.png width="200"></img> <img src=../docs/l1.png width="356"></img>
 
-Start Dyalog JSONServer:
+[Download APK](https://github.com/dzaima/APL/releases)
+
+By default this interprets dzaima/APL, but to connect to Dyalog APL (through JSONServer), in Dyalog do:
 
 ```apl
 )LOAD path/to/JSONServer/Distribution/JSONServer.dws
@@ -8,7 +10,7 @@ S←⊃JSONServer.Run ⍬
 eval←{⎕←'  ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵}
 ```
 
-Connect to it:
+And connect to it:
 
 ```apl
 :i dyalog
@@ -32,3 +34,5 @@ Compile for android:
     - sync, build → build project
     - project structure → facets → Android-Gradle (app) → Flavors → Min Sdk version → 24
     - build → generate signed APK → whatever
+
+Alternatively, Processing runs the project in Java mode just fine (keyboard input may be a bit funky though).
