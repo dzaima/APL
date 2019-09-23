@@ -1,4 +1,6 @@
-//* PC
+/* PC
+import java.awt.Toolkit;
+static boolean MOBILE = false;
 class FakeTouch { // for interoperability with android mode
   int x, y;
   FakeTouch(int x, int y) { this.x = x; this.y = y; }
@@ -33,10 +35,11 @@ void mouseWheel(MouseEvent e) {
 
 /*/ // ANDROID
 
-
 import android.content.ClipboardManager;
 import android.content.*;
 import android.app.*;
+
+static boolean MOBILE = true;
 
 String gottenClip;
 Drawable clipRec;
@@ -63,7 +66,7 @@ Activity a;
 ClipboardManager b;
 
 
-void copy(String s) {
+void copy(final String s) {
   getActivity().runOnUiThread(new Runnable() {
     public void run() {
       prepareClip();

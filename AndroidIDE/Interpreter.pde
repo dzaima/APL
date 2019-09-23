@@ -78,8 +78,8 @@ static {
       switch (s) {
         case "layout": return Main.toAPL(kb.data.getString("fullName"));
         case "set": return new Fun() {
-          String repr() { return "app.set"; }
-          Obj call(Value a, Value w) {
+          public String repr() { return "app.set"; }
+          public Obj call(Value a, Value w) {
             int[] is = a.asIntVec();
             int x = is[0]; int y = is[1]; int dir = is[2];
             Key key = kb.keys[y][x];
@@ -88,8 +88,8 @@ static {
           }
         };
         case "graph": return new Fun() {
-          String repr() { return "app.graph"; }
-          Obj call(Value w) {
+          public String repr() { return "app.graph"; }
+          public Obj call(Value w) {
             topbar.toNew(new Grapher(w.asString()));
             return Num.ONE;
           }
