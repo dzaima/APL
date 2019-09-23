@@ -1,5 +1,4 @@
 import java.text.DecimalFormat;
-import java.awt.Toolkit;
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
