@@ -40,7 +40,11 @@ public class StileBuiltin extends Builtin {
           for (int i = 0; i < w.length; i++) {
             int intv = (int) w[i];
             if (intv == w[i]) res[i] = (intv & mask) + w[i]-intv;
-            else res[i] = w[i]%ia;
+            else {
+              double c = w[i]%ia;
+              if (c < 0) res[i] = c + a;
+              else res[i] = c;
+            }
           }
         } else {
           // integer ⍺
