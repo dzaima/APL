@@ -58,7 +58,6 @@ static class SyntaxHighlight {
     g.textSize(sz);
     int sel = sel(poi);
     float chw = g.textWidth('H');
-    float ty = y + (MOBILE? sz*.333 : 0);
     for(int ln = max(0, floor((sy-y)/sz)); ln < min(lns.length, floor((ey-y)/sz+1)); ln++) {
       float cx = x;
       String cln = lns[ln];
@@ -66,11 +65,11 @@ static class SyntaxHighlight {
         char cc = cln.charAt(i);
         int pos = i + lnstarts[ln];
         g.fill(cs[pos]);
-        g.text(cc, cx, ty + ln*sz);
+        g.text(cc, cx, y + ln*sz);
         int markcol = mark[pos];
         if (markcol != 0) {
           g.fill(markcol);
-          g.text("_", cx, ty + ln*sz);
+          g.text("_", cx, y + ln*sz);
         }
         if (sel == pos) {
           g.stroke(th.pair);
@@ -193,4 +192,8 @@ class Theme {
   int caret = def;
   int[] dfn = {#AA77BB, #EEBB44, #CC7799, #CCDD00, #B63CDA};
   
+}
+
+static float textY(float y, float sz) {
+  return y + (MOBILE? sz*.333 : 0);
 }

@@ -21,14 +21,17 @@ function parse(chr, mods) {
   if (mods[chr]) {
     for (let mod of mods[chr]) {
       if (mod === 'sd') o.sd = true;
-      else if (mod === 'rep') o.rep = true;
       else {
         let [key, val] = mod.split(/(?<!=)=/);
-        if (key === 'spec') o.spec = val;
+        if (key === 'rep') {
+          o.rep = parseInt(val);
+          if (o.rep != val) throw new Error("couldn't parse number "+val);
+        }
+        else if (key === 'spec') o.spec = val;
         else if (key === 'goto') o.goto = val;
         else if (key === 'chr') o.chr = val;
         else if (key === 'type') o.type = val;
-        else throw "unknown mod "+mod;
+        else throw new Error("unknown mod "+mod);
       }
     }
   }

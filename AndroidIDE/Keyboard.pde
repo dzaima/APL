@@ -67,8 +67,9 @@ class Keyboard extends Drawable {
       Action a = findAction();
       if (a != null) {
         a.k.redraw(a);
-        if (millis() - mouseStart > 200) {
-          if (a.rep && frameCount%2==1) a.call();
+        int time = millis() - mouseStart;
+        if (time > 200) {
+          if (a.rep!=-1 && frameCount%a.rep == 0) a.call();
         }
       }
     }
@@ -180,7 +181,7 @@ class Key extends Drawable {
 
 class Action {
   final String chr, spec, type, gotof;
-  final boolean rep;
+  final int rep;
   final Keyboard b;
   final Key k;
   Action (JSONObject o, Keyboard b, Key k) {
@@ -191,7 +192,7 @@ class Action {
     
     spec = o.getString("spec");
     gotof = o.getString("goto");
-    rep = o.hasKey("rep")? o.getBoolean("rep") : false;
+    rep = o.hasKey("rep")? o.getInt("rep") : -1;
     this.b = b;
     this.k = k;
   }

@@ -12,13 +12,13 @@ class APLTextarea extends Drawable implements TextReciever {
     super(x, y, w, h);
     lines = new ArrayList();
     lines.add("");
+    setsz(min(width, height)/20);
   }
   int tt = 0; // caret flicker timer
   int xoff = 0; // scroll
   int yoff = 0;
 
   void redraw() {
-    setsz(min(width, height)/20);
   }
   boolean saveUndo = true;
   boolean modified = false;
@@ -91,7 +91,7 @@ class APLTextarea extends Drawable implements TextReciever {
     //  //text(s, x, y + dy*tsz + yoff);
     //  dy++;
     //}
-    hl.draw(x + xoff, y + yoff, y, y+h, tsz, fullPos());
+    hl.draw(x + xoff, textY(y + yoff, tsz), y, y+h, tsz, fullPos());
     
     tt--;
     if (tt < 0) tt = 60;

@@ -1,12 +1,12 @@
-MOD ↶ spec=undo
-MOD ↷ spec=redo
-MOD « rep spec=left
-MOD » rep spec=right
+MOD ↶ rep=6 spec=undo
+MOD ↷ rep=6 spec=redo
+MOD « rep=2 spec=left
+MOD » rep=2 spec=right
 MOD ⇧ spec=shift
-MOD ⌫ rep spec=del
+MOD ⌫ rep=3 spec=del
 MOD C spec=clear
-MOD ▲ rep spec=up
-MOD ▼ rep spec=down
+MOD ▲ rep=6 spec=up
+MOD ▼ rep=6 spec=down
 MOD # spec=none goto=CODE
 MOD A spec=none goto=ABC3
 MOD ⏎ spec=enter
@@ -17,7 +17,7 @@ MOD O spec=openPar chr=()
 MOD P spec=wrapPar chr=..)
 MOD č spec=copy chr=^C
 MOD V spec=paste chr=^V
-MOD ⌦ spec=rdel
+MOD ⌦ rep=3 spec=rdel
 MOD X spec=close
 MOD M spec=match
 

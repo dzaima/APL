@@ -1,9 +1,10 @@
 class APLField extends Drawable implements TextReciever {
-  float tsz;
+  float tsz, chw;
   SyntaxHighlight hl;
   Theme th = new Theme();
   
   float extraH = 1.2;
+  float xoff = 0;
   
   APLField(int x, int y, int w, int h) {
     this(x, y, w, h, "");
@@ -18,6 +19,8 @@ class APLField extends Drawable implements TextReciever {
   
   void redraw() {
     tsz = h/extraH;
+    textSize(tsz);
+    chw = textWidth("H");
   }
   boolean saveUndo = true;
   boolean modified = false;
@@ -29,6 +32,13 @@ class APLField extends Drawable implements TextReciever {
     if (mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
+    if (mousePressed && smouseIn()) {
+      xoff+= mouseX-pmouseX;
+    }
+    float maxx = w*.8/chw > line.length()? 0 : (line.length() - 2)*chw;
+    if (xoff < -maxx) xoff = (int) -maxx;
+    if (xoff > 0) xoff = 0;
+    
     if (modified || saveUndo) {
       modified();
       hl = new SyntaxHighlight(line, th, g);
@@ -43,7 +53,7 @@ class APLField extends Drawable implements TextReciever {
     clip(x, y, w, h);
     if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
       textSize(tsz);
-      sx = constrain(round((mouseX-x)/textWidth("H")), 0, line.length());
+      sx = constrain(round((mouseX-x-xoff)/textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;
     }
@@ -52,18 +62,18 @@ class APLField extends Drawable implements TextReciever {
     rectMode(CORNER);
     rect(x, y, w, h);
     //text(line, x, y + dy*tsz + h*.1);
-    if (apl()) hl.draw(x, y, tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
+    if (apl()) hl.draw(x + xoff, textY(y, tsz), tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
     else {
       fill(#D2D2D2);
       g.textAlign(LEFT, TOP);
       textSize(tsz);
-      text(line, x, y);
+      text(line, x + xoff, textY(y, tsz));
     }
     tt--;
     if (tt < 0) tt = 60;
     
-    float spx = x + max(textWidth(line.substring(0, sx)), 3);
-    float epx = x + max(textWidth(line.substring(0, ex)), 3);
+    float spx = x + max(textWidth(line.substring(0, sx)), 3) + xoff;
+    float epx = x + max(textWidth(line.substring(0, ex)), 3) + xoff;
     float sy = y + h*.1;
     float ey = y + h*.9;
     if (tt > 30 || this != textInput) {
@@ -104,6 +114,8 @@ class APLField extends Drawable implements TextReciever {
     if (!one()) line = line.substring(0, min) + line.substring(max);
     ex = min;
     sx = min;
+    modified = true;
+    saveUndo = true;
   }
   void append(String str) {
     deleteSel();
@@ -194,6 +206,10 @@ class APLField extends Drawable implements TextReciever {
     }
     else if (s.equals("paste")) {
       paste(this);
+    }
+    else if (s.equals("match")) {
+      int sel = hl.sel(sx);
+      if (sel != -1) sx = ex = sel;
     }
     else extraSpecial(s);
   }
