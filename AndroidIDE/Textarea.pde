@@ -91,7 +91,7 @@ class APLTextarea extends Drawable implements TextReciever {
     //  //text(s, x, y + dy*tsz + yoff);
     //  dy++;
     //}
-    hl.draw(x + xoff, textY(y + yoff, tsz), y, y+h, tsz, fullPos());
+    hl.draw(x + xoff, y + yoff, y, y+h, tsz, fullPos());
     
     tt--;
     if (tt < 0) tt = 60;

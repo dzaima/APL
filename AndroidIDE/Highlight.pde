@@ -65,11 +65,11 @@ static class SyntaxHighlight {
         char cc = cln.charAt(i);
         int pos = i + lnstarts[ln];
         g.fill(cs[pos]);
-        g.text(cc, cx, y + ln*sz);
+        textS(g, cc, cx, y + ln*sz);
         int markcol = mark[pos];
         if (markcol != 0) {
           g.fill(markcol);
-          g.text("_", cx, y + ln*sz);
+          textS(g, "_", cx, y + ln*sz);
         }
         if (sel == pos) {
           g.stroke(th.pair);
@@ -192,8 +192,4 @@ class Theme {
   int caret = def;
   int[] dfn = {#AA77BB, #EEBB44, #CC7799, #CCDD00, #B63CDA};
   
-}
-
-static float textY(float y, float sz) {
-  return y + (MOBILE? sz*.333 : 0);
 }

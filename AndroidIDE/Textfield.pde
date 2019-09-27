@@ -62,12 +62,12 @@ class APLField extends Drawable implements TextReciever {
     rectMode(CORNER);
     rect(x, y, w, h);
     //text(line, x, y + dy*tsz + h*.1);
-    if (apl()) hl.draw(x + xoff, textY(y, tsz), tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
+    if (apl()) hl.draw(x + xoff, y, tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
     else {
       fill(#D2D2D2);
       g.textAlign(LEFT, TOP);
       textSize(tsz);
-      text(line, x + xoff, textY(y, tsz));
+      textS(line, x + xoff, y);
     }
     tt--;
     if (tt < 0) tt = 60;

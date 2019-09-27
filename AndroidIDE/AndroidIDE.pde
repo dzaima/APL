@@ -102,3 +102,12 @@ boolean cshift() {
   if (kb!=null && kb.shiftMode>0) kb.shiftMode = 2;
   return r;
 }
+void textS(String s, float x, float y) {
+  textS(g, s, x, y);
+}
+static void textS(PGraphics g, String s, float x, float y) {
+  g.text(s, x, y + (MOBILE? g.textSize*.333 : 0));
+}
+static void textS(PGraphics g, char s, float x, float y) {
+  g.text(s, x, y + (MOBILE? g.textSize*.333 : 0));
+}
