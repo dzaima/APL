@@ -36,3 +36,30 @@ Compile for android:
     - build → generate signed APK → whatever
 
 Alternatively, Processing runs the project in Java mode just fine (keyboard input may be a bit funky though).
+
+---
+
+```
+swipe on characters to enter ones around it
+M - go to matching bracket
+F - switch layout to one with extra functions
+N - switch layout to numbers at top-level
+A - switch to text layout
+# - switch to default layout
+⇧ - shift (caps letters, select with «»)
+X - close tab (where applicable - grapher & editor)
+= - evaluate
+
+↶↷ - undo/redo
+▲▼ - move trough REPL history
+^C/^V - copy/paste
+
+
+:isz sz     change input box font size
+:hsz sz     change REPL history font size
+:g expr     graph the expression (editable in the window)
+:clear      clear REPL history
+:f  path    edit file at the path
+:ex path    execute file at the path
+)ed fn      edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)
+```

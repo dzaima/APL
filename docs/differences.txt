@@ -1,9 +1,20 @@
+/ - only reduce (/[] for first axis)
+⌿ - only replicate
+\ - only scan; executes left-to-right - aka isn't O(n^2)
+
+
+dfns:
+  start line with ← to force returning (e.g. {1 ⋄ 2} returns 2, {←1 ⋄ 2} returns 1)
+  ↑ makes more sense with conditionals - {A:B ⋄ C} will execute B if A, but return result of C always
+  {A:←B ⋄ C} returns B if A, leaving C unevaluated in that case.
+  
+
+
+⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
+
+
 "c" ←→ ,'c'
 'abc' ←→ "abc"
-
-/ - only reduce
-⌿ - only replicate
-\ - only scan; executes left-to-right, isn't O(n^2)
 
 monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
 
@@ -12,19 +23,13 @@ A¨ ←→ {A}¨ (though A is evaluated only once)
 ⊥ & ⊤ default left arg = 2
 ⊤ with a scalar left arg is like Dyalogs ⊥⍣¯1
 
-⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
-
 √ exists (2√ ←→ √)
 ⍥ & ⍢ & f⍤g & ⍫ & ⊇ & ⍮ exist from https://github.com/abrudz/dyalog-apl-extensions
-
 ⍡ & ⍁ have been added
 
-⍸ works for things not 0 & 1 (also ⍸⍣¯1 works)
-
-> & < sort
-
-∨ & ∧ & ⍱ & ⍲ monadically lcm(= some)/gcd(= all)/none/not all of the array
-
+⍸ works for input values outside of 0 & 1 (also ⍸⍣¯1 works)
+monadic > & < sort
+∨ & ∧ & ⍱ & ⍲ monadically are lcm(= some)/gcd(= all)/none/not-all of the array respectively (note that for the last two they're not just f/!)
 ⌊, ⌈, ×, - for things with char cases
 
 ⌽[dim] takes dim reversed

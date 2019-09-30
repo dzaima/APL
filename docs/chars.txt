@@ -37,8 +37,8 @@ fns:
 ↓   split; drop; split off last dimension as arrays
 ?    rand; NYI
 ⍪   table; vertical concat;
-⊖    flip; NYI
-⌽ reverse; NYI
+⊖    flip; vertical rotate
+⌽ reverse; horizontal rotate
 …     NYI; range
 ⍕  format; NYI
 ⍎    eval; NYI
@@ -47,10 +47,11 @@ fns:
 ⌿     NYI; replicate
 ∪  unique; union
 ∩     NYI; intersection
-⊂     NYI; enclose
+⊂ enclose; split
 ⊃   first; pick
 ⊇ first if enclosed; select
 ⍉ transpose; NYI
+⍧ is first; count
           
 
 < lt; sort asc
@@ -68,11 +69,14 @@ monadic ops:
 ⍨  selfie; commute
 ⌾  table (aka ∘.⍺⍺; _might_ get removed at some point?)
 ⌸  get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
+ᐵ  each-left (A fᐵ B ≡ A f¨ ⊂B)
+ᑈ  each-right (A fᑈ B ≡ (⊂A) f¨ B)
 
 dyadic ops
 
-∘  compose
-.  NYI
+∘  compose (←→ {⍶ ⍹ ⍵} or {⍺ ⍶ ⍹ ⍵})
+⍛  left-compose (←→ {(⍶ ⍺) ⍹ ⍵})
+.  NYI (well, ←→ {⍶/ ⍺ ⍹ ⍵})
 ⍣  repeat
 ⍡  cumulative repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
@@ -92,3 +96,8 @@ nilads:
 ⍶  left operand
 ⍹  right operand
 ∇  this function
+
+dfns:
+{A ⋄ B} → B (also executing A)
+{C:A ⋄ B} → B (also executing A if C was true)
+{C:←A ⋄ B} → A if C, else B
