@@ -24,12 +24,12 @@ public class RhoBuiltin extends Builtin {
     return toAPL(sh);
   }
   public Obj call(Value a, Value w) {
-    if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
-    int[] sh = new int[a.ia];
+    if (w.rank > 1) throw new DomainError("multidimensional shape", this, w);
+    int[] sh = new int[w.ia];
     int ia = 1;
     Integer emptyPos = null;
     for (int i = 0; i < sh.length; i++) {
-      Value v = a.get(i);
+      Value v = w.get(i);
       if (v instanceof Num) {
         int c = v.asInt();
         sh[i] = c;
@@ -41,35 +41,35 @@ public class RhoBuiltin extends Builtin {
     }
     
     if (emptyPos != null) {
-      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, w);
-      sh[emptyPos] = w.ia/ia;
-      return w.ofShape(sh);
-    } else if (ia == w.ia) return w.ofShape(sh);
+      if (a.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, a);
+      sh[emptyPos] = a.ia/ia;
+      return a.ofShape(sh);
+    } else if (ia == a.ia) return a.ofShape(sh);
     
-    if (w.ia == 0) {
-      return new SingleItemArr(w.prototype(), sh);
+    if (a.ia == 0) {
+      return new SingleItemArr(a.prototype(), sh);
       
-    } else if (w.scalar()) {
-      return new SingleItemArr(w.first(), sh);
+    } else if (a.scalar()) {
+      return new SingleItemArr(a.first(), sh);
     
-    } else if (w.quickDoubleArr()) {
-      assert !(w instanceof Primitive);
-      if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
-      double[] inp = w.asDoubleArr();
+    } else if (a.quickDoubleArr()) {
+      assert !(a instanceof Primitive);
+      if (sh.length == 0 && !Main.enclosePrimitives) return a.get(0);
+      double[] inp = a.asDoubleArr();
       double[] res = new double[ia];
       int p = 0;
       for (int i = 0; i < ia; i++) {
         res[i] = inp[p++];
-        if (p == w.ia) p = 0;
+        if (p == a.ia) p = 0;
       }
       return new DoubleArr(res, sh);
     } else {
-      if (sh.length == 0 && w.first() instanceof Primitive && !Main.enclosePrimitives) return w.get(0);
+      if (sh.length == 0 && a.first() instanceof Primitive && !Main.enclosePrimitives) return a.get(0);
       Value[] arr = new Value[ia];
       int index = 0;
       for (int i = 0; i < ia; i++) {
-        arr[i] = w.get(index++);
-        if (index == w.ia) index = 0;
+        arr[i] = a.get(index++);
+        if (index == a.ia) index = 0;
       }
       return Arr.create(arr, sh);
     }

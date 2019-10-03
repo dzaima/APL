@@ -14,7 +14,7 @@ public class UTackBuiltin extends Builtin {
   
   
   public Obj call(Value w) {
-    return call(Num.TWO, w);
+    return call(w, Num.TWO);
   }
   
   public Obj callInv(Value w) {
@@ -25,21 +25,21 @@ public class UTackBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    if (w.rank == 0) throw new DomainError("A⊥num is pointless", this);
-    if (a instanceof Num) {
-      double base = a.asDouble();
-      if (w.rank == 1) {
+    if (a.rank == 0) throw new DomainError("A⊥num is pointless", this);
+    if (w instanceof Num) {
+      double base = w.asDouble();
+      if (a.rank == 1) {
         double res = 0;
-        for (int i = 0; i < w.ia; i++) {
-          res = res*base + w.get(i).asDouble();
+        for (int i = 0; i < a.ia; i++) {
+          res = res*base + a.get(i).asDouble();
         }
         return new Num(res);
       } else {
-        double[] d = w.asDoubleArr();
-        int[] sh = new int[w.rank-1];
-        System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
-        int layers = w.shape[0];
-        double[] r = new double[w.ia / layers];
+        double[] d = a.asDoubleArr();
+        int[] sh = new int[a.rank-1];
+        System.arraycopy(a.shape, 1, sh, 0, a.rank - 1);
+        int layers = a.shape[0];
+        double[] r = new double[a.ia / layers];
   
         System.arraycopy(d, 0, r, 0, r.length);
         for (int i = 1; i < layers; i++) {
@@ -51,13 +51,13 @@ public class UTackBuiltin extends Builtin {
         return new DoubleArr(r, sh);
       }
     } else {
-      if (a.ia != w.shape[0]) throw new DomainError("(≢⍺) ≠ ⊃⍴⍵ for ⊥", this);
-      double[] d = w.asDoubleArr();
-      double[] bases = a.asDoubleArr();
-      int[] sh = new int[w.rank-1];
-      System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
-      int layers = w.shape[0];
-      double[] r = new double[w.ia /layers];
+      if (w.ia != a.shape[0]) throw new DomainError("(≢⍺) ≠ ⊃⍴⍵ for ⊥", this);
+      double[] d = a.asDoubleArr();
+      double[] bases = w.asDoubleArr();
+      int[] sh = new int[a.rank-1];
+      System.arraycopy(a.shape, 1, sh, 0, a.rank - 1);
+      int layers = a.shape[0];
+      double[] r = new double[a.ia /layers];
   
       System.arraycopy(d, 0, r, 0, r.length);
       for (int i = 1; i < layers; i++) {

@@ -26,31 +26,31 @@ public class TrigBuiltin extends Builtin {
   }
   static class DNf extends D_NNeN {
     @Override public double on(double a, double w) {
-      switch((int) a) {
-        case  1: return Math.sin(w);
-        case  2: return Math.cos(w);
-        case  3: return Math.tan(w);
-        case  4: return Math.sqrt(w*w + 1);
-        case  5: return Math.sinh(w);
-        case  6: return Math.cosh(w);
-        case  7: return Math.tanh(w);
+      switch((int) w) {
+        case  1: return Math.sin(a);
+        case  2: return Math.cos(a);
+        case  3: return Math.tan(a);
+        case  4: return Math.sqrt(a*a + 1);
+        case  5: return Math.sinh(a);
+        case  6: return Math.cosh(a);
+        case  7: return Math.tanh(a);
         case  8: return Double.NaN; // pointless
-        case  9: return w; // pointless
-        case 10: return Math.abs(w); // pointless
+        case  9: return a; // pointless
+        case 10: return Math.abs(a); // pointless
         case 11: return 0; // also pointless
         case 12: throw new DomainError("what even is phase");
       
-        case  0: return Math.sqrt(1-w*w); //Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
-        case  -1: return Math.asin(w);
-        case  -2: return Math.acos(w);
-        case  -3: return Math.atan(w);
-        case  -4: return Math.sqrt(w*w-1);
+        case  0: return Math.sqrt(1-a*a); //Num.ONE.minus(n.pow(Num.TWO)).root(Num.TWO);
+        case  -1: return Math.asin(a);
+        case  -2: return Math.acos(a);
+        case  -3: return Math.atan(a);
+        case  -4: return Math.sqrt(a*a-1);
         case  -5: throw new NYIError("inverse hyperbolic functions"); // return Math.asinh(w);
         case  -6: throw new NYIError("inverse hyperbolic functions"); // return Math.acosh(w);
         case  -7: throw new NYIError("inverse hyperbolic functions"); // return Math.atanh(w);
         case  -8: return Double.NaN; // pooointleeeessssss
-        case  -9: return w; // again, pointless pointless pointless
-        case -10: return w;
+        case  -9: return a; // again, pointless pointless pointless
+        case -10: return a;
         case -11: throw new DomainError("no complex numbers :/");
         case -12: throw new DomainError("no complex numbers no idea why this is even special-cased");
       }

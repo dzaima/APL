@@ -18,8 +18,8 @@ public class UpArrowBuiltin extends Builtin {
   }
   public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
-    int[] shape = a.asIntVec();
-    if (shape.length == 0) return w;
+    int[] shape = w.asIntVec();
+    if (shape.length == 0) return a;
     int ia = 1;
     int[] offsets = new int[shape.length];
     for (int i = 0; i < shape.length; i++) {
@@ -28,13 +28,13 @@ public class UpArrowBuiltin extends Builtin {
       if (d < 0) {
         shape[i] = -d;
         ia = -ia;
-        offsets[i] = w.shape[i]-shape[i]+IO;
+        offsets[i] = a.shape[i]-shape[i]+IO;
       } else offsets[i] = IO;
     }
     Value[] arr = new Value[ia];
     int i = 0;
     for (int[] index : new Indexer(shape, offsets)) {
-      arr[i] = w.at(index, sc.IO);
+      arr[i] = a.at(index, sc.IO);
       i++;
     }
     return Arr.create(arr, shape);

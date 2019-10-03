@@ -24,7 +24,7 @@ public class FlipBuiltin extends Builtin implements DimMFn, DimDFn {
   }
   
   @Override public Obj call(Value a, Value w) {
-    if (a instanceof Primitive) return ReverseBuiltin.call(a.asInt(), 0, w);
+    if (w instanceof Primitive) return ReverseBuiltin.call(w.asInt(), 0, a);
     throw new DomainError("A⊖B not implemented for non-scalar A");
   }
   

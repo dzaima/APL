@@ -9,7 +9,7 @@ public class SetBuiltin extends AbstractSet {
   public static SetBuiltin inst = new SetBuiltin();
   
   @Override public String repr() {
-    return "←";
+    return "→";
   }
   
   

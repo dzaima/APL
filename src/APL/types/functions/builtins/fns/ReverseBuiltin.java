@@ -25,19 +25,19 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   
   @Override public Obj call(Value a, Value w) {
-    if (a instanceof Primitive) return call(a.asInt(), -1, w);
-    if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵");
-    int[] as = a.shape;
-    int[] ws = w.shape;
+    if (w instanceof Primitive) return call(w.asInt(), -1, a);
+    if (w.rank+1 != a.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵");
+    int[] as = w.shape;
+    int[] ws = a.shape;
     for (int i = 0; i < as.length; i++) {
       if (as[i] != ws[i]) throw new LengthError("expected shape prefixes to match");
     }
-    int[] rots = a.ofShape(new int[]{a.ia}).asIntVec();
-    int block = w.shape[w.rank-1];
+    int[] rots = w.ofShape(new int[]{w.ia}).asIntVec();
+    int block = a.shape[a.rank-1];
     int cb = 0;
-    if (w.quickDoubleArr()) {
-      double[] vs = w.asDoubleArr();
-      double[] res = new double[w.ia];
+    if (a.quickDoubleArr()) {
+      double[] vs = a.asDoubleArr();
+      double[] res = new double[a.ia];
       for (int i = 0; i < rots.length; i++, cb += block) {
         int pA = rots[i];
         pA = Math.floorMod(pA, block);
@@ -45,10 +45,10 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
         System.arraycopy(vs, cb, res, cb + pB, pA);
         System.arraycopy(vs, cb + pA, res, cb, pB);
       }
-      return new DoubleArr(res, w.shape);
+      return new DoubleArr(res, a.shape);
     } else {
-      Value[] vs = w.values();
-      Value[] res = new Value[w.ia];
+      Value[] vs = a.values();
+      Value[] res = new Value[a.ia];
       for (int i = 0; i < rots.length; i++, cb += block) {
         int pA = rots[i];
         pA = Math.floorMod(pA, block);
@@ -56,7 +56,7 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
         System.arraycopy(vs, cb, res, cb + pB, pA);
         System.arraycopy(vs, cb + pA, res, cb, pB);
       }
-      return Arr.create(res, w.shape);
+      return Arr.create(res, a.shape);
     }
   }
   

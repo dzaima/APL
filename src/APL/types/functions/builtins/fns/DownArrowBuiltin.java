@@ -52,8 +52,8 @@ public class DownArrowBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) { // FIXME ⍴⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
-    int[] shape = a.asIntVec();
-    if (shape.length == 0) return w;
+    int[] shape = w.asIntVec();
+    if (shape.length == 0) return a;
     int ia = 1;
     int[] offsets = new int[shape.length];
     for (int i = 0; i < shape.length; i++) {
@@ -64,14 +64,14 @@ public class DownArrowBuiltin extends Builtin {
       } else {
         offsets[i] = d + IO;
       }
-      shape[i] = w.shape[i] - d;
+      shape[i] = a.shape[i] - d;
       ia *= shape[i];
     }
     Value[] arr = new Value[ia];
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
     for (int[] index : indexer) {
-      arr[i] = w.at(index, sc.IO).squeeze();
+      arr[i] = a.at(index, sc.IO).squeeze();
       i++;
     }
     return Arr.create(arr, shape);

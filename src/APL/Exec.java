@@ -42,11 +42,12 @@ public class Exec {
     if (tokens.size() > 0) Main.faulty = tokens.get(0);
     else Main.faulty = allToken;
     if (sc.alphaDefined && tokens.size() >= 2 && tokens.get(0) instanceof OpTok && ((OpTok) tokens.get(0)).op.equals("⍺") && tokens.get(1) instanceof SetTok) {
-      if (Main.debug) printlvl("skipping cuz it's ⍺←");
+      if (Main.debug) printlvl("skipping cuz it's →⍺");
       return null;
     }
     left = new Stack<>();
     left.addAll(tokens);
+    Collections.reverse(left);
     if (Main.debug) {
       StringBuilder repr = new StringBuilder();
       for (Token t : tokens) repr.append(t.toRepr()).append(" ");
@@ -161,11 +162,11 @@ public class Exec {
     if (done.size() == 1 && done.get(0) == null) return;
     while (true) {
       if (Main.debug) printlvl(done);
-      if (done.size() >= 3 && done.getFirst() instanceof JotBuiltin && done.get(1) instanceof DotBuiltin) {
+      if (done.size() >= 3 && done.get(2) instanceof JotBuiltin && done.get(1) instanceof DotBuiltin) {
         if (Main.debug) printlvl("∘.");
-        var jot = done.removeFirst();
-        done.removeFirst();
         var fn = done.removeFirst();
+        done.removeFirst(); // .
+        var jot = done.removeFirst();
         if (fn instanceof Settable) fn = ((Settable) fn).get();
         if (fn instanceof VarArr) fn = ((VarArr) fn).get();
         var TB = new TableBuiltin();
@@ -175,9 +176,9 @@ public class Exec {
       }
       if (is("D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
-        var w = lastVal();
-        var f = lastFun();
         var a = lastVal();
+        var f = lastFun();
+        var w = lastVal();
         Main.faulty = f;
         var res = f.call(a, w);
         if (res == null && (left.size() > 0 || done.size() > 0)) throw new SyntaxError("trying to use result of function which returned nothing", a);
@@ -213,7 +214,7 @@ public class Exec {
         done.addFirst(new Pick((Variable) f, w, sc));
         continue;
       }
-      if (is("[FM←]|FN", end, false)) {
+      if (is("[FM→]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
         var w = lastVal();
         var f = lastFun();
@@ -224,34 +225,34 @@ public class Exec {
         else return;
         continue;
       }
-      if (is("#!←", end, true) || done.size() == 1 && done.get(0).type() == Type.gettable) {
+      if (is("#!→", end, true) || done.size() == 1 && done.get(0).type() == Type.gettable) {
         var w = firstVar();
         addFirst(w.get());
       }
-      if (is("D!|V←[#NFMD],#←[#NFMD],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
-        if (Main.debug) printlvl("N←.");
+      if (is("D!|V→[#NFMD],#→[#NFMD],D!|D→D,D!|M→M,D!|F→F,D!|N→N", end, false)) { // "D!|.→." to allow changing type
+        if (Main.debug) printlvl("N→.");
         var w = lastObj();
-        var s = (AbstractSet) done.removeLast(); // ←
+        var s = (AbstractSet) done.removeLast(); // →
         var a = done.removeLast(); // variable
         Main.faulty = s;
         var res = s.call(a, w, false);
         done.addLast(res);
         continue;
       }
-      if (done.size() == 2 && is("F←", false, false)) {
-        if (Main.debug) printlvl("F←");
-        var s0 = done.removeLast(); // ←
-        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
+      if (done.size() == 2 && is("F→", false, false)) {
+        if (Main.debug) printlvl("F→");
+        var s0 = done.removeLast(); // →
+        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived →");
         var s = (SetBuiltin) s0;
         var f = lastFun();
         done.addLast(new DerivedSet(s, f));
         continue;
       }
-      if (is("D!|NF←N", end, false)) {
-        if (Main.debug) printlvl("NF←.");
+      if (is("D!|NF→N", end, false)) {
+        if (Main.debug) printlvl("NF→.");
         var w = lastVal();
-        var s0 = done.removeLast(); // ←
-        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
+        var s0 = done.removeLast(); // →
+        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived →");
         var s = (SetBuiltin) s0;
         var f = lastFun();
         Obj a = done.removeLast(); // variable
@@ -269,9 +270,9 @@ public class Exec {
       }
       if (is("!D|[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
-        var aa = done.remove(barPtr); // done.removeFirst();
-        var  o = firstDop(); // (Dop) done.removeFirst();
         var ww = done.remove(barPtr);
+        var  o = firstDop(); // (Dop) done.removeFirst();
+        var aa = done.remove(barPtr); // done.removeFirst();
         var aau = aa;
         var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
@@ -287,9 +288,9 @@ public class Exec {
       }
       if (is("D!|[FN]FF", end, false)) {
         if (Main.debug) printlvl("f g h");
-        var h = lastObj();
-        var g = lastFun();
         var f = lastObj();
+        var g = lastFun();
+        var h = lastObj();
         done.addLast(new Fork(f, g, h));
         continue;
       }
@@ -300,7 +301,7 @@ public class Exec {
         done.addLast(new Atop(a, f));
         continue;
       }
-      if (is("←FF", false, false)) {
+      if (is("→FF", false, false)) {
         if (Main.debug) printlvl("g h");
         var h = lastFun();
         var g = lastObj();
@@ -430,7 +431,7 @@ public class Exec {
           type = 'F';
           break;
         case set:
-          type = '←';
+          type = '→';
           break;
         case mop:
         case bmop:
@@ -494,9 +495,9 @@ public class Exec {
         
         case '∊': return new EpsilonBuiltin();
         case '⍷': return new FindBuiltin();
-        case '⊂': return new LShoeBuiltin();
-        case '⊇': return new RShoeUBBuiltin(sc);
-        case '⊃': return new RShoeBuiltin(sc);
+        case '⊂': return new LShoeBuiltin(sc);
+        case '⊆': return new LShoeUBBuiltin(sc);
+        case '⊃': return new RShoeBuiltin();
         case '∪': return new DShoeBuiltin();
         case '∩': return new UShoeBuiltin();
         case '⌷': return new SquadBuiltin(sc);

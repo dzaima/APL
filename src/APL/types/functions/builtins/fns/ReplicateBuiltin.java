@@ -16,19 +16,19 @@ public class ReplicateBuiltin extends Builtin {
   
   
   public Obj call(Value a, Value w) {
-    if (a.rank == 0) {
-      RankError.must(w.rank < 2, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
-      int sz = a.asInt();
+    if (w.rank == 0) {
+      RankError.must(a.rank < 2, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
+      int sz = w.asInt();
       if (sz < 0) {
-        Value[] res = new Value[w.ia*-sz];
-        Value n = w.first() instanceof Char? Char.SPACE : Num.ZERO;
+        Value[] res = new Value[a.ia*-sz];
+        Value n = a.first() instanceof Char? Char.SPACE : Num.ZERO;
         Arrays.fill(res, n);
         return Arr.create(res);
       }
-      Value[] res = new Value[w.ia*sz];
+      Value[] res = new Value[a.ia*sz];
       int ptr = 0;
-      for (int i = 0; i < w.ia; i++) {
-        Value c = w.get(i);
+      for (int i = 0; i < a.ia; i++) {
+        Value c = a.get(i);
         for (int j = 0; j < sz; j++) {
           res[ptr++] = c;
         }
@@ -37,16 +37,16 @@ public class ReplicateBuiltin extends Builtin {
     }
     
     // ⍺.rank ≠ 0
-    RankError.must(a.rank == w.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+a.rank+" vs "+w.rank + ")");
-    LengthError.must(Arrays.equals(a.shape, w.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")");
+    RankError.must(w.rank == a.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+w.rank+" vs "+a.rank + ")");
+    LengthError.must(Arrays.equals(w.shape, a.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(w.shape) + " vs " + Main.formatAPL(a.shape) + ")");
   
-    if (a instanceof BitArr) {
-      BitArr ab = (BitArr) a;
+    if (w instanceof BitArr) {
+      BitArr ab = (BitArr) w;
       ab.setEnd(false);
       int sum = ab.isum();
-      if (w.quickDoubleArr()) {
-        if (sum > w.ia*.96) {
-          double[] ds = w.asDoubleArr();
+      if (a.quickDoubleArr()) {
+        if (sum > a.ia*.96) {
+          double[] ds = a.asDoubleArr();
           double[] res = new double[sum];
           
           long[] la = ab.arr;
@@ -66,7 +66,7 @@ public class ReplicateBuiltin extends Builtin {
           if (am > 0) System.arraycopy(ds, ds.length - am, res, pos, am);
           return new DoubleArr(res);
         }
-        double[] ds = w.asDoubleArr();
+        double[] ds = a.asDoubleArr();
         double[] res = new double[sum];
         long[] la = ab.arr;
         int l = la.length;
@@ -93,9 +93,9 @@ public class ReplicateBuiltin extends Builtin {
       Value[] res = new Value[sum];
       BitArr.BR r = ab.read();
       int pos = 0;
-      for (int i = 0; i < w.ia; i++) {
+      for (int i = 0; i < a.ia; i++) {
         if (r.read()) {
-          res[pos++] = w.get(i);
+          res[pos++] = a.get(i);
         }
       }
       return Arr.create(res);
@@ -103,16 +103,16 @@ public class ReplicateBuiltin extends Builtin {
     
     
     int total = 0;
-    int[] sizes = a.asIntArr();
-    for (int i = 0; i < a.ia; i++) {
+    int[] sizes = w.asIntArr();
+    for (int i = 0; i < w.ia; i++) {
       total+= Math.abs(sizes[i]);
     }
     
-    if (w.quickDoubleArr()) {
+    if (a.quickDoubleArr()) {
       int ptr = 0;
-      double[] wi = w.asDoubleArr();
+      double[] wi = a.asDoubleArr();
       double[] res = new double[total];
-      for (int i = 0; i < a.ia; i++) {
+      for (int i = 0; i < w.ia; i++) {
         double c = wi[i];
         int am = sizes[i];
         if (sizes[i] < 0) {
@@ -130,8 +130,8 @@ public class ReplicateBuiltin extends Builtin {
     } else {
       int ptr = 0;
       Value[] res = new Value[total];
-      for (int i = 0; i < a.ia; i++) {
-        Value c = w.get(i);
+      for (int i = 0; i < w.ia; i++) {
+        Value c = a.get(i);
         int am = sizes[i];
         if (sizes[i] < 0) {
           am = -am;

@@ -31,50 +31,50 @@ public class StileBuiltin extends Builtin {
       if (c < 0) return c + a;
       return c;
     }
-    public void on(double[] res, double a, double[] w) {
-      int ia = (int) a;
-      if (a == ia) {
+    public void on(double[] res, double[] a, double w) {
+      int ia = (int) w;
+      if (w == ia) {
         if (ia > 0 && (ia & ia-1) == 0) {
           // power of 2 ⍺
           int mask = ia-1;
-          for (int i = 0; i < w.length; i++) {
-            int intv = (int) w[i];
-            if (intv == w[i]) res[i] = (intv & mask) + w[i]-intv;
+          for (int i = 0; i < a.length; i++) {
+            int intv = (int) a[i];
+            if (intv == a[i]) res[i] = (intv & mask) + a[i]-intv;
             else {
-              double c = w[i]%ia;
-              if (c < 0) res[i] = c + a;
+              double c = a[i]%ia;
+              if (c < 0) res[i] = c + w;
               else res[i] = c;
             }
           }
         } else {
           // integer ⍺
-          for (int i = 0; i < w.length; i++) {
-            double c = w[i]%ia;
-            if (c < 0) res[i] = c + a;
+          for (int i = 0; i < a.length; i++) {
+            double c = a[i]%ia;
+            if (c < 0) res[i] = c + w;
             else res[i] = c;
           }
         }
       } else {
         // arbitrary double ⍺
-        for (int i = 0; i < w.length; i++) {
-          double c = w[i]%a;
-          if (c < 0) res[i] = c + a;
+        for (int i = 0; i < a.length; i++) {
+          double c = a[i]%w;
+          if (c < 0) res[i] = c + w;
           else res[i] = c;
         }
       }
     }
-    public void on(double[] res, double[] a, double w) {
-      if (w > 0) for (int i = 0; i < a.length; i++) res[i] = w % a[i];
-      else       for (int i = 0; i < a.length; i++) {
-        double c = w % a[i];
-        if (c < 0) res[i] = c + a[i];
+    public void on(double[] res, double a, double[] w) {
+      if (a > 0) for (int i = 0; i < w.length; i++) res[i] = a % w[i];
+      else       for (int i = 0; i < w.length; i++) {
+        double c = a % w[i];
+        if (c < 0) res[i] = c + w[i];
         else res[i] = c;
       }
     }
     public void on(double[] res, double[] a, double[] w) {
-      for (int i = 0; i < a.length; i++) {
-        double c = w[i] % a[i];
-        if (c < 0) res[i] = c + a[i];
+      for (int i = 0; i < w.length; i++) {
+        double c = a[i] % w[i];
+        if (c < 0) res[i] = c + w[i];
         else res[i] = c;
       }
     }

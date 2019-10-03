@@ -15,7 +15,7 @@ public class VarArr extends Settable {
     super(null);
     ia = arr.size();
     if (arr.size() > 0) this.token = arr.get(0).token;
-    Collections.reverse(arr);
+    // Collections.reverse(arr);
     this.arr = arr;
   }
   
@@ -52,7 +52,7 @@ public class VarArr extends Settable {
       while (i < a.length) {
         Obj c = vs.get(i);
         if (c instanceof Num) {
-          a[a.length-i-1] = ((Num) c).num;
+          a[i] = ((Num) c).num;
           i++;
         } else {
           a = null;
@@ -66,7 +66,7 @@ public class VarArr extends Settable {
       while (i >= 0) {
         Obj c = vs.get(i);
         if (c instanceof Char) {
-          s+= ((Char) c).chr;
+          s = ((Char) c).chr + s;
           i--;
         } else {
           s = null;

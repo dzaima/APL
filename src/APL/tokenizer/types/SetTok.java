@@ -8,6 +8,6 @@ public class SetTok extends Token {
   }
   
   @Override public String toRepr() {
-    return "←";
+    return "→";
   }
 }
