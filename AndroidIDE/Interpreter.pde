@@ -94,6 +94,14 @@ static {
             return Num.ONE;
           }
         };
+        case "cpy": return new Fun() {
+          public String repr() { return "app.cpy"; }
+          public Obj call(Value w) {
+            String s = w.asString();
+            copy(s);
+            return Num.ONE;
+          }
+        };
         case "redraw": redrawAll(); return Num.ONE;
         default: return Null.NULL;
       }
