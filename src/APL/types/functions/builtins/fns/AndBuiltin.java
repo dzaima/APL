@@ -58,7 +58,7 @@ public class AndBuiltin extends Builtin {
   }
   private static final DBf DBF = new DBf();
   
-  public Obj call(Value a0, Value w0) {
-    return bitD(DNF, DBF, a0, w0);
+  public Obj call(Value a, Value w) {
+    return bitD(DNF, DBF, a, w);
   }
 }

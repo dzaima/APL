@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
@@ -27,6 +28,22 @@ public class CatBuiltin extends Builtin implements DimDFn {
     return cat(a, w, dim);
   }
   static Obj cat(Value a, Value w, int k) {
+    if ((a instanceof BitArr || w instanceof BitArr) && a.rank<=1 && w.rank<=1) {
+      boolean ab = a instanceof BitArr;
+      boolean wb = w instanceof BitArr;
+      if ((ab || Main.isBool(a))  &&  (wb || Main.isBool(w))) {
+        int sz = a.ia + w.ia;
+        long[] ls = new long[BitArr.sizeof(sz)];
+  
+        BitArr.BA res = new BitArr.BA(ls);
+        if (ab) res.append((BitArr) a);
+        else    res.append(Main.bool(a));
+        if (wb) res.append((BitArr) w);
+        else    res.append(Main.bool(w));
+  
+        return new BitArr(ls, new int[]{sz});
+      }
+    }
     boolean aScalar = a.scalar(), wScalar = w.scalar();
     if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0);
     if (!aScalar && !wScalar) {

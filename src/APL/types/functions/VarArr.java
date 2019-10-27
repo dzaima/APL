@@ -45,9 +45,26 @@ public class VarArr extends Settable {
   }
   
   public static Obj of (ArrayList<Obj> vs) {
-    if (vs.size() == 0) return EmptyArr.SHAPE0;
-    if (vs.get(0) instanceof Num) {
-      double[] a = new double[vs.size()];
+    int sz = vs.size();
+    if (sz == 0) return EmptyArr.SHAPE0;
+    Obj fst = vs.get(0);
+    if (fst instanceof Num) {
+      if (((Num) fst).num == 0 || ((Num) fst).num == 1) {
+        BitArr.BC bc = new BitArr.BC(new int[]{sz});
+        int i = sz-1;
+        while (i >= 0) {
+          Obj c = vs.get(i);
+          if (c instanceof Num) {
+            double n = ((Num) c).num;
+            if (n == 0 || n == 1) {
+              bc.add(n == 1);
+            } else { bc = null; break; }
+          } else { bc = null; break; }
+          i--;
+        }
+        if (bc != null) return bc.finish();
+      }
+      double[] a = new double[sz];
       int i = 0;
       while (i < a.length) {
         Obj c = vs.get(i);
@@ -60,9 +77,9 @@ public class VarArr extends Settable {
         }
       }
       if (a != null) return new DoubleArr(a);
-    } else {
+    } else if (fst instanceof Char) {
       String s = "";
-      int i = vs.size()-1;
+      int i = sz -1;
       while (i >= 0) {
         Obj c = vs.get(i);
         if (c instanceof Char) {

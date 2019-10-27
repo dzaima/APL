@@ -4,7 +4,7 @@ import APL.errors.*;
 import APL.tokenizer.Token;
 import APL.tokenizer.types.*;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
+import APL.types.arrs.*;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.*;
@@ -23,6 +23,7 @@ public class Exec {
   private final Scope sc;
   private final List<Token> tokens;
   private final LineTok allToken;
+  
   public Exec(LineTok ln, Scope sc) {
     tokens = ln.tokens;
     allToken = ln;
@@ -577,7 +578,9 @@ public class Exec {
     if (t instanceof LineTok) return Main.exec((LineTok) t, sc);
     if (t instanceof ParenTok) {
       List<LineTok> ts = ((ParenTok) t).tokens;
-      if (ts.size() == 0) return new StrMap();
+      int size = ts.size();
+      if (size == 1) return Main.exec(ts.get(0), sc);
+      if (size == 0) return new StrMap();
       LineTok fst = ts.get(0);
       if (fst.tokens != null && fst.colonPos() != -1) {
         StrMap map = new StrMap();
@@ -592,14 +595,24 @@ public class Exec {
         }
         return map;
       } else {
-        if (ts.size() == 1) {
-         return Main.exec(fst, sc);
-        }
-        List<Token> sts = new ArrayList<>();
-        for (Token st : ((ParenTok) t).tokens) {
-          sts.add(LineTok.inherit(st));
-        }
-        return Main.exec(LineTok.inherit(sts), sc); // todo think about whether this should be a thing
+        Obj fo = Main.exec(fst, sc);
+        if (fo instanceof Value) {
+          Value[] vs = new Value[size];
+          for (int i = 0; i < ts.size(); i++) {
+            Obj o = Main.exec(ts.get(i), sc);
+            if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true));
+            vs[i] = (Value) o;
+          }
+          return HArr.create(vs);
+        } else if (fo instanceof Fun) {
+          Obj[] os = new Obj[size];
+          for (int i = 0; i < ts.size(); i++) {
+            Obj o = Main.exec(ts.get(i), sc);
+            if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true));
+            os[i] = o;
+          }
+          return new FunArr(os);
+        } else throw new DomainError("⋄-array contained " + fo.humanType(true));
       }
     }
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);

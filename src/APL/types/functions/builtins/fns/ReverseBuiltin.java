@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
+import APL.types.arrs.*;
 import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
 
@@ -72,18 +72,25 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   
   public static Value call(int a, int dim, Value w) {
+    if (a == 0) return w;
     if (dim < 0) dim += w.rank;
     int rowsz = w.shape[dim];
     a = Math.floorMod(a, rowsz);
     int block = w.ia; // parts to rotate; each takes 2 arraycopy calls
     for (int i = 0; i < dim; i++) {
-      block /= w.shape[i];
+      block/= w.shape[i];
     }
     int sub = block/rowsz; // individual rotatable items
     int pA = sub*a; // first part
     int pB = block - pA; // second part
     // System.out.println(block+" "+rowsz+" "+bam+" "+sub+" "+pA+" "+pB);
-    if (w.quickDoubleArr()) {
+    if (w instanceof BitArr && w.rank == 1) {
+      BitArr wb = (BitArr) w;
+      BitArr.BA c = new BitArr.BA(wb.ia);
+      c.append(wb, a, wb.ia);
+      c.append(wb, 0, a);
+      return c.finish(wb.shape);
+    } else if (w.quickDoubleArr()) {
       double[] vs = w.asDoubleArr();
       double[] res = new double[w.ia];
       for (int cb = 0; cb < w.ia; cb += block) {

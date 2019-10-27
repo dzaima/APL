@@ -262,6 +262,12 @@ public class Main {
     return tok.toRepr();
   }
   
+  public static boolean isBool(Value a) {
+    if (!(a instanceof Num)) return false;
+    Num n = (Num) a;
+    return n.num==0 || n.num==1;
+  }
+  
   enum EType {
     all
   }

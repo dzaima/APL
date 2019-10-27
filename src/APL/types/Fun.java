@@ -331,11 +331,11 @@ public abstract class Fun extends Scopeable {
         
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
+          if (w instanceof BitArr && Main.isBool(a)) {
+            return b.call(Main.bool(a), ((BitArr) w));
+          }
           if (w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
-          }
-          if (w instanceof BitArr) {
-            return b.call(Main.bool(a), ((BitArr) w));
           }
         }
         Value af = a.first();
@@ -350,11 +350,11 @@ public abstract class Fun extends Scopeable {
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
         if (w instanceof Primitive) {
+          if (a instanceof BitArr && Main.isBool(w)) {
+            return b.call((BitArr) a, Main.bool(w));
+          }
           if (a.quickDoubleArr()) {
             return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
-          }
-          if (a instanceof BitArr) {
-            return b.call((BitArr) a, Main.bool(w));
           }
         }
         Value wf = w.first();
@@ -370,11 +370,12 @@ public abstract class Fun extends Scopeable {
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         
+        if (a instanceof BitArr && w instanceof BitArr) {
+          return b.call((BitArr) a, (BitArr) w);
+        }
+        
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
-        }
-        if (a instanceof BitArr && b instanceof BitArr) {
-          return b.call((BitArr) a, (BitArr) w);
         }
         
         Value[] arr = new Value[a.ia];
@@ -456,11 +457,11 @@ public abstract class Fun extends Scopeable {
         
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
+          if (w instanceof BitArr && Main.isBool(a)) {
+            return b.call(Main.bool(a), ((BitArr) w));
+          }
           if (w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
-          }
-          if (w instanceof BitArr) {
-            return b.call(Main.bool(a), ((BitArr) w));
           }
         }
         
@@ -475,11 +476,11 @@ public abstract class Fun extends Scopeable {
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
         if (w instanceof Primitive) {
+          if (a instanceof BitArr && Main.isBool(w)) {
+            return b.call((BitArr) a, Main.bool(w));
+          }
           if (a.quickDoubleArr()) {
             return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
-          }
-          if (a instanceof BitArr) {
-            return b.call((BitArr) a, Main.bool(w));
           }
         }
         Value wf = w.first();
@@ -494,12 +495,12 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺ ¨ ⍵
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        
+  
+        if (a instanceof BitArr && w instanceof BitArr) {
+          return b.call((BitArr) a, (BitArr) w);
+        }
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
-        }
-        if (a instanceof BitArr && b instanceof BitArr) {
-          return b.call((BitArr) a, (BitArr) w);
         }
         
         Value[] arr = new Value[a.ia];
