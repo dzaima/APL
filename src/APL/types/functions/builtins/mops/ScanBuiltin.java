@@ -48,7 +48,7 @@ public class ScanBuiltin extends Mop {
       Value[] curr = new Value[n];
       // for (int j = 0; j < n; j++) curr[j] = wa[i + j];
       System.arraycopy(wa, i, curr, 0, n);
-      res[i] = (Value) ((Fun) aa).call(HArr.create(curr));
+      res[i] = (Value) ((Fun) aa).call(Arr.create(curr));
     }
     return Arr.create(res);
   }

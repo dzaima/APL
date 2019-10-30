@@ -8,7 +8,7 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
 
 import static APL.Main.*;
 
@@ -18,14 +18,17 @@ public class Scope {
   public boolean alphaDefined;
   public int IO;
   private Num nIO;
+  public Random rnd;
   public Scope() {
     IO = 1;
     nIO = Num.ONE;
+    rnd = new Random();
   }
   public Scope(Scope p) {
     parent = p;
     IO = p.IO;
     nIO = p.nIO;
+    rnd = p.rnd;
   }
   private Scope owner(String name) {
     if (vars.containsKey(name)) return this;
@@ -120,10 +123,10 @@ public class Scope {
   }
   
   public double rand(double d) { // TODO seeds
-    return Math.random() * d;
+    return rnd.nextDouble()*d;
   } // with ⎕IO←0
-  public double rand(int n) {
-    return Math.floor(Math.random() * n);
+  public int rand(int n) {
+    return rnd.nextInt(n);
   } // with ⎕IO←0
   
   static class DeathLogger extends Builtin {

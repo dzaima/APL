@@ -3,7 +3,10 @@ package APL.types.functions.builtins.fns;
 import APL.Scope;
 import APL.errors.NYIError;
 import APL.types.*;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
+
+import java.util.*;
 
 public class RandBuiltin extends Builtin {
   @Override public String repr() {
@@ -33,6 +36,18 @@ public class RandBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) {
-    throw new NYIError("sorry", this, a);
+    int IO = sc.IO;
+    ArrayList<Integer> vs = new ArrayList<>(w.ia);
+    int wi = w.asInt();
+    int ai = a.asInt();
+    for (int i = 0; i < wi; i++) {
+      vs.add(i+IO);
+    }
+    Collections.shuffle(vs, sc.rnd);
+    double[] res = new double[ai];
+    for (int i = 0; i < ai; i++) {
+      res[i] = vs.get(i);
+    }
+    return new DoubleArr(res);
   }
 }

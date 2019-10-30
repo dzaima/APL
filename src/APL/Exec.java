@@ -543,6 +543,7 @@ public class Exec {
         case '⌾': return new TableBuiltin();
         case '⌸': return new KeyBuiltin(sc);
         case '⍁': return new ObliqueBuiltin();
+        case '⍩':
         case 'ᐵ': return new EachLeft();
         case 'ᑈ': return new EachRight();
         
@@ -603,7 +604,7 @@ public class Exec {
             if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true));
             vs[i] = (Value) o;
           }
-          return HArr.create(vs);
+          return Arr.create(vs);
         } else if (fo instanceof Fun) {
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {

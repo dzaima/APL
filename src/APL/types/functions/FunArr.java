@@ -27,7 +27,7 @@ public class FunArr extends Fun {
     for (int i = 0; i < os.length; i++) {
       vs[i] = (Value) ((Fun) os[i]).call(w);
     }
-    return HArr.create(vs);
+    return Arr.create(vs);
   }
   
   @Override public Obj call(Value a, Value w) {
@@ -35,6 +35,6 @@ public class FunArr extends Fun {
     for (int i = 0; i < os.length; i++) {
       vs[i] = (Value) ((Fun) os[i]).call(a, w);
     }
-    return HArr.create(vs);
+    return Arr.create(vs);
   }
 }
