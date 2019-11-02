@@ -29,7 +29,7 @@ public class IotaBuiltin extends Builtin {
     }
     if (Main.vind) return new RhoBarBuiltin(sc).call(w);
     int[] shape = w.asIntVec();
-    int ia = Arrays.stream(shape).reduce(1, (a, b) -> a * b);
+    int ia = Arr.prod(shape);
     Value[] arr = new Value[ia];
     int i = 0;
     for (int[] c : new Indexer(shape, IO)) {

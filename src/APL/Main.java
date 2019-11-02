@@ -11,7 +11,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.*;
 
 @SuppressWarnings("WeakerAccess") // for use as a library
 public class Main {
@@ -177,7 +176,7 @@ public class Main {
           lastError = e;
           colorprint(e + ": " + e.getMessage(), 246);
           if (faulty != null && faulty.getToken() != null) {
-            String s = IntStream.range(0, faulty.getToken().spos).mapToObj(i -> " ").collect(Collectors.joining());
+            String s = repeat(" ", faulty.getToken().spos);
             colorprint(faulty.getToken().raw, 217);
             colorprint(s + "^", 217);
           }
@@ -230,8 +229,13 @@ public class Main {
   public static void println(String s) {
     System.out.println(s);
   }
-  public static String formatAPL (int[] ia) {
-    return Arrays.stream(ia).mapToObj(String::valueOf).collect(Collectors.joining(" "));
+  public static String formatAPL(int[] ia) {
+    if (ia.length == 0) return "⍬";
+    StringBuilder r = new StringBuilder(ia[0]);
+    for (int i = 1; i < ia.length; i++) {
+      r.append(" ").append(ia[i]);
+    }
+    return r.toString();
   }
   static String readFile(String path) {
     try {
@@ -386,4 +390,12 @@ public class Main {
   public static ChrArr toAPL(String s) {
     return new ChrArr(s);
   }
+  
+  
+  static String repeat(String s, int l) {
+    StringBuilder r = new StringBuilder();
+    for (int i = 0; i < l; i++) r.append(s);
+    return r.toString();
+  }
+  
 }

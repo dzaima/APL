@@ -47,12 +47,19 @@ public class HArr extends Arr {
     Value v = (Value) o;
     if (!Arrays.equals(shape, v.shape)) return false;
     assert ia == v.ia;
-    return IntStream.range(0, ia).allMatch(i -> arr[i].equals(v.get(i)));
+    for (int i = 0; i < ia; i++) {
+      if (!arr[i].equals(v.get(i))) return false;
+    }
+    return true;
   }
   
   public String asString() {
-    if (!Arrays.stream(arr).allMatch(c -> c instanceof Char)) throw new DomainError("Converting non-char array to string");
-    return Arrays.stream(arr).map(Value::asString).collect(Collectors.joining());
+    StringBuilder r = new StringBuilder(ia);
+    for (Value v : arr) {
+      if (!(v instanceof Char)) throw new DomainError("Converting non-char array to string");
+      r.append(((Char) v).chr);
+    }
+    return r.toString();
   }
   
   @Override
@@ -66,7 +73,7 @@ public class HArr extends Arr {
     return arr;
   }
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new HArr(arr, sh);
   }
   

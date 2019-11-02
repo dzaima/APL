@@ -1,11 +1,10 @@
 package APL.types.arrs;
 
-import APL.*;
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 public final class BitArr extends Arr {
   
@@ -282,7 +281,7 @@ public final class BitArr extends Arr {
       i++;
     }
     public BitArr finish() {
-      assert (i<<6) + o == IntStream.of(sz).reduce(1, (l, r) ->l*r);
+      assert (i<<6) + o == Arr.prod(sz);
       return new BitArr(arr, sz);
     }
   

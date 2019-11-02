@@ -6,7 +6,6 @@ import APL.types.arrs.*;
 
 import java.util.*;
 
-@SuppressWarnings({"Convert2streamapi", "Java8ArraySetAll"}) // class for getting overridden & being fast so no streams
 public abstract class Fun extends Scopeable {
   
   public Value identity() {

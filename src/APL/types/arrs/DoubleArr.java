@@ -87,7 +87,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     if (sh.length == 0 && !Main.enclosePrimitives) return new Num(arr[0]);
     return new DoubleArr(arr, sh);
   }

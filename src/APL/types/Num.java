@@ -2,12 +2,10 @@ package APL.types;
 
 import APL.Main;
 import APL.errors.DomainError;
-import APL.types.arrs.*;
+import APL.types.arrs.SingleItemArr;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
 public class Num extends Primitive {
   
@@ -136,14 +134,6 @@ public class Num extends Primitive {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
-  public Num fact() {
-    if (num > 170) return Num.INFINITY;
-    if (num % 1 != 0) throw new DomainError("factorial of non-integer", this);
-    if (num < 0) throw new DomainError("factorial of negative number", this);
-    double res = IntStream.range(2, (int) (num+1)).asDoubleStream().reduce(1, (a, b) -> a * b);
-    return new Num(res);
-  }
-  
   public Num binomial(Num w) {
     if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", this);
     if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", w);
@@ -225,7 +215,7 @@ public class Num extends Primitive {
   @Override
   public Value ofShape(int[] sh) {
     if (sh.length == 0 && !Main.enclosePrimitives) return this;
-    assert Arrays.stream(sh).reduce(1, (a, b) -> a*b) == 1;
+    assert Arr.prod(sh) == 1;
     return new SingleItemArr(this, sh);
   }
   

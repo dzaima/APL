@@ -4,7 +4,8 @@ abstract class Plane extends Drawable {
   double fullX;
   double fullY;
   double fullS;
-  double lastDist; // old ow?
+  double lastDist; // ==0 => first multitouch frame
+  double lastX, lastY;
   Plane(int x, int y, int w, int h) {
     super(x, y, w, h);
     fullS = 10;
@@ -21,15 +22,19 @@ abstract class Plane extends Drawable {
       if (touches.length == 2) {
         float ow = dist(touches[0].x, touches[0].y, touches[1].x, touches[1].y);
         double sc = ow/lastDist;
+        double avgX = (touches[0].x + touches[1].x) / 2f;
+        double avgY = (touches[0].y + touches[1].y) / 2f;
         if (lastDist != 0) {
-          double avgX = (touches[0].x + touches[1].x) / 2f;
-          double avgY = (touches[0].y + touches[1].y) / 2f;
           double pS = fullS;
           fullS*= sc;
           double scalechange = 1/fullS - 1/pS;
           fullX-= (avgX * scalechange);
           fullY-= (avgY * scalechange);
+          fullX+= (lastX-avgX)/fullS;
+          fullY+= (lastY-avgY)/fullS;
         }
+        lastX = avgX;
+        lastY = avgY;
         lastDist = ow;
       } else {
         lastDist = 0;

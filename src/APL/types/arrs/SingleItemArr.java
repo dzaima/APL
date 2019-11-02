@@ -1,10 +1,10 @@
 package APL.types.arrs;
 
-import APL.errors.*;
+import APL.Main;
+import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Iterator;
 
 public class SingleItemArr extends Arr {
   private final Value item;
@@ -49,7 +49,7 @@ public class SingleItemArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new SingleItemArr(item, sh);
   }
   
@@ -85,15 +85,15 @@ public class SingleItemArr extends Arr {
   @Override
   public String oneliner(int[] where) {
     if (where.length == 0) {
-      String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-      return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner();
+      String r = Main.formatAPL(shape);
+      return r + "⍴" + item.oneliner();
     }
     return super.oneliner(where);
   }
   // @Override
   // public String toString() {
-  //   String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-  //   return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
+  //   String r = Main.formatAPL(shape);
+  //   return r + "⍴" + item.oneliner(new int[0]);
   // }
   
   @Override public Iterator<Value> iterator() {

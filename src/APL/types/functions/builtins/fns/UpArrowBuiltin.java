@@ -50,8 +50,8 @@ public class UpArrowBuiltin extends Builtin {
         if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
         for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
       }
-      int subIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
-      int totalIA = subIA * Arrays.stream(w.shape).reduce(1, (a, b) -> a * b);
+      int subIA = Arr.prod(def);
+      int totalIA = subIA * Arr.prod(w.shape);
       int[] totalShape = new int[def.length + w.rank];
       System.arraycopy(w.shape, 0, totalShape, 0, w.rank);
       System.arraycopy(def, 0, totalShape, w.rank, def.length);
@@ -102,7 +102,7 @@ public class UpArrowBuiltin extends Builtin {
       if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
       for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
     }
-    int subIA = Arrays.stream(def).reduce(1, (a, b) -> a * b);
+    int subIA = Arr.prod(def);
     int totalIA = subIA * w.length;
     int[] totalShape = new int[def.length + 1];
     totalShape[0] = w.length;

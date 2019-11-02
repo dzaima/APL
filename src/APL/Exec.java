@@ -257,7 +257,7 @@ public class Exec {
         var f = lastFun();
         Obj a = done.removeLast(); // variable
         Main.faulty = f;
-        var res = s.call(f, a, w);
+        Obj res = s.call(f, a, w);
         if (res != null) done.addLast(res);
         continue;
       }

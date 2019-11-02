@@ -5,7 +5,6 @@ import APL.errors.DomainError;
 import APL.types.arrs.*;
 
 import java.util.Arrays;
-import java.util.stream.*;
 
 public abstract class Arr extends Value {
   public Arr(int[] shape) {
@@ -38,7 +37,7 @@ public abstract class Arr extends Value {
     if (ia == 0) {
       if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬";
       else {
-        String s = IntStream.range(0, rank).mapToObj(i -> String.valueOf(shape[i])).collect(Collectors.joining(" "));
+        String s = Main.formatAPL(shape);
         return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬");
       }
     }
@@ -297,6 +296,12 @@ public abstract class Arr extends Value {
       hash = hash*31 + v.hashCode();
     }
     return hash;
+  }
+  
+  public static int prod(int[] ia) {
+    int r = 1;
+    for (int i : ia) r*= i;
+    return r;
   }
   
   // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.

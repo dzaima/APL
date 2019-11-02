@@ -276,7 +276,7 @@ public class Tokenizer {
             throw new Error("this should really not happen "+closed.b);
         }
         var lines = levels.get(levels.size() - 1).a;
-        var tokens = lines.get(lines.size() - 1);
+        Line tokens = lines.get(lines.size() - 1);
         tokens.add(r);
       }
     }

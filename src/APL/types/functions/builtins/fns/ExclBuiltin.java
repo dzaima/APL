@@ -21,7 +21,7 @@ public class ExclBuiltin extends Builtin {
   
   static class Nf implements NumMV {
     public Value call(Num w) {
-      return w.fact();
+      return new Num(cache[Math.min(w.asInt(), 171)]);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) {

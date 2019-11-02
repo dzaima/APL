@@ -39,7 +39,7 @@ public class EmptyArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new EmptyArr(sh);
   }
   
