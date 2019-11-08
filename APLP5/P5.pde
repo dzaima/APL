@@ -67,9 +67,11 @@ class P5 extends SimpleMap {
       case  "lm": case "leftmouse"  : return lm;
       case  "mm": case "middlemouse": return mm;
       case  "rm": case "rightmouse" : return rm;
+      
       case "key": return new Char(key);
       case "fps": case "framerate": return new Num(frameRate);
       case "fc": case "framecount": return new Num(frameCount);
+      case "scroll": return new Num(scrolled);
       case "color": case "col": return new Fun() {
         public Obj call(Value w) {
           return new Num(col(w));
@@ -175,9 +177,12 @@ void draw() {
   p5.mm.draw();
   p5.rm.draw();
   call(draw, mpos);
+  scrolled = 0;
 }
+int scrolled;
 void mouseWheel(MouseEvent e) {
   int c = -e.getCount();
+  scrolled+= c;
   Num n = new Num(c);
   call(scroll, n);
   if (c > 0) call(scrollU, n);

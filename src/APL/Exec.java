@@ -81,7 +81,7 @@ public class Exec {
           names[i] = name.name;
         }
         
-        if (Main.debug) printlvl("dotnot", Arrays.toString(names));
+        if (Main.debug) printlvl("dotnot", Arrays.toString(names)); // todo fix (m).a (m).b0
         Obj d = null;
         Settable r = sc.getVar(names[0]);
         for (int i = 1; i < names.length; i++) {
@@ -580,9 +580,9 @@ public class Exec {
     if (t instanceof ParenTok) {
       List<LineTok> ts = ((ParenTok) t).tokens;
       int size = ts.size();
-      if (size == 1) return Main.exec(ts.get(0), sc);
       if (size == 0) return new StrMap();
       LineTok fst = ts.get(0);
+      if (size == 1 && fst.colonPos() == -1) return Main.exec(ts.get(0), sc);
       if (fst.tokens != null && fst.colonPos() != -1) {
         StrMap map = new StrMap();
         for (LineTok ct : ts) {

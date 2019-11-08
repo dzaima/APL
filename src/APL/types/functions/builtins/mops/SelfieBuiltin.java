@@ -11,9 +11,11 @@ public class SelfieBuiltin extends Mop {
   
 
   public Obj call(Obj f, Value w, DerivedMop derv) {
-    return ((Fun)f).call(w, w);
+    if (f instanceof Fun) return ((Fun)f).call(w, w);
+    return f;
   }
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    return ((Fun)f).call(w, a);
+    if (f instanceof Fun) return ((Fun)f).call(w, a);
+    return f;
   }
 }

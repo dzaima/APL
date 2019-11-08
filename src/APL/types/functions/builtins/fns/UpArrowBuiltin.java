@@ -41,8 +41,9 @@ public class UpArrowBuiltin extends Builtin {
   }
   public Obj call(Value w) {
     if (w instanceof Arr) {
+      if (w instanceof DoubleArr || w instanceof ChrArr || w instanceof BitArr) return w;
       Value[] subs = w.values();
-      if (subs.length == 0) return w; // TODO prototypes
+      if (subs.length == 0) return w;
       
       int[] def = new int[subs[0].rank];
       System.arraycopy(subs[0].shape, 0, def, 0, def.length);
@@ -69,7 +70,6 @@ public class UpArrowBuiltin extends Builtin {
         int i = 0;
         for (Value v : subs) {
           double[] c = v.asDoubleArr();
-          int ia = c.length;
           int k = 0;
           for (int j : new SimpleIndexer(def, v.shape)) {
             allVals[i+j] = c[k++];

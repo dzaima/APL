@@ -2,7 +2,7 @@ package APL;
 
 import java.util.Iterator;
 
-public class SimpleIndexer implements Iterable<Integer> {
+public class SimpleIndexer implements Iterable<Integer> { // todo this is horrible (or at least i think so, i can't be bothered to understand it)
   private final int[] shape;
   private final int[] chosen;
   private final int[] shapeTP;
@@ -24,7 +24,7 @@ public class SimpleIndexer implements Iterable<Integer> {
   @Override public Iterator<Integer> iterator() {
     boolean empty = true;
     for (int i : chosen) if (i!=0) empty = false;
-    boolean finalEmpty = empty;
+    boolean finalEmpty = empty & chosen.length!=0;
     //noinspection Convert2Diamond java 8
     return new Iterator<Integer>() {
       int index = 0;

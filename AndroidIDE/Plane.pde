@@ -11,7 +11,6 @@ abstract class Plane extends Drawable {
     fullS = 10;
     fullX = width/2 /-fullS;
     fullY = (y+h/2) /-fullS;
-    println(fullX, fullY, fullS);
   }
   
   abstract void draw();

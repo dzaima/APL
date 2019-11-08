@@ -258,7 +258,7 @@ public final class BitArr extends Arr {
     return arr[i1]>>>o1 | arr[i2]<<(64-o1);
   }
   
-  public static class BC { // boolean creator
+  public static class BC { // boolean creator; todo merge with BA?
     public long[] arr;
     int[] sz;
     private int i, o = 0; // index, offset
@@ -281,7 +281,7 @@ public final class BitArr extends Arr {
       i++;
     }
     public BitArr finish() {
-      assert (i<<6) + o == Arr.prod(sz);
+      // assert (i<<6) + o == Arr.prod(sz); \\ idk man
       return new BitArr(arr, sz);
     }
   
