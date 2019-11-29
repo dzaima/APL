@@ -30,16 +30,17 @@ public class KeyBuiltin extends Mop {
     }
     if (aa instanceof Fun) {
       int i = sc.IO;
+      Num IOv = Num.of(i);
       var vals = new HashMap<Value, ArrayList<Value>>();
       var order = new ArrayList<Value>();
       for (Value v : w) {
         if (!vals.containsKey(v)) {
           var l = new ArrayList<Value>();
-          l.add(new Num(i));
+          l.add(IOv);
           vals.put(v, l);
           order.add(v);
         } else {
-          vals.get(v).add(new Num(i));
+          vals.get(v).add(IOv);
         }
         i++;
       }

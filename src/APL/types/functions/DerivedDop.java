@@ -25,6 +25,8 @@ public class DerivedDop extends Builtin {
     return op.call(aa, ww, a, w, this);
   }
   @Override public String repr() {
-    return aa.toString()+op.repr()+ww.toString();
+    String wws = ww.toString();
+    if (!(ww instanceof Arr) && wws.length() != 1) wws = "("+wws+")";
+    return aa.toString()+op.repr()+wws;
   }
 }

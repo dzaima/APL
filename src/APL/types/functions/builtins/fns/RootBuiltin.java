@@ -12,7 +12,7 @@ public class RootBuiltin extends Builtin {
   
   static class Nf implements NumMV {
     public Value call(Num w) {
-      return w.root(Num.TWO);
+      return w.root(Num.NUMS[2]);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.sqrt(a[i]);

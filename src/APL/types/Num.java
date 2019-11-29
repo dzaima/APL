@@ -31,14 +31,21 @@ public class Num extends Primitive {
     cdf.setRoundingMode(RoundingMode.HALF_UP);
     df = cdf;
   }
-  public static final Num ZERO = new Num("0");
-  public static final Num ONE = new Num("1");
-  public static final Num TWO = new Num("2");
   public static final Num MINUS_ONE = new Num("-1");
+  public static final Num ZERO  = new Num("0");
+  public static final Num ONE   = new Num("1");
+  public static final Num[] NUMS = new Num[256];
+  static {
+    for (int i = 0; i < NUMS.length; i++) {
+      NUMS[i] = new Num(i);
+    }
+  }
+  
+  
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
   public static final Num I1 = null; // no imaginary numbers :'(
-  @SuppressWarnings("WeakerAccess") // no, bad
+  @SuppressWarnings("unused") // no, bad
   public static final Num INFINITY = new Num("1e309");
   public final double num;
   public Num(String val) {
@@ -46,7 +53,7 @@ public class Num extends Primitive {
       num = -Double.parseDouble(val.substring(1));
     } else num = Double.parseDouble(val);
   }
-
+  
   public Num(int n) {
     num = n;
   }
@@ -56,7 +63,13 @@ public class Num extends Primitive {
   public Num(double val) {
     num = val;
   }
-
+  
+  public static Num of(int n) {
+    if (n>=0 && n<256) return NUMS[n];
+    if (n==-1) return MINUS_ONE;
+    return new Num(n);
+  }
+  
   public Num plus(Num w) {
     return new Num(num + w.num);
   }

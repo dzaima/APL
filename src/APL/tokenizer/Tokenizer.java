@@ -144,13 +144,39 @@ public class Tokenizer {
           if (c == '⎕') name = name.toUpperCase();
           tokens.add(new NameTok(raw, li, i, name));
         } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
-          i++;
-          boolean foundPoint = false;
-          while (i < len && (c = raw.charAt(i)) >= '0' && c <= '9' || c == '.' && !foundPoint) {
-            if (c == '.') foundPoint = true;
+          boolean negative = c=='¯';
+          if (negative) i++;
+          int si = i;
+          boolean point = false;
+          while(i < len) {
+            c = raw.charAt(i);
+            if (point) {
+              if (c<'0' || c>'9') break;
+            } else if (c<'0' || c>'9') {
+              if (c == '.') point = true;
+              else break;
+            }
             i++;
           }
-          tokens.add(new NumTok(raw, li, i, raw.substring(li, i)));
+          double f = Double.parseDouble(raw.substring(si,i));
+          if (negative) f = -f;
+          
+          if (i+1 < len && (c=='e' || c=='E')) {
+            i++;
+            c = raw.charAt(i);
+            boolean negExp = c=='¯';
+            if (negExp) i++;
+            si = i;
+            while (i<len) {
+              c = raw.charAt(i);
+              if (c<'0' || c>'9') break;
+              i++;
+            }
+            int exp = Integer.parseInt(raw.substring(si, i));
+            if (negExp) exp = -exp;
+            f*= Math.pow(10, exp);
+          }
+          tokens.add(new NumTok(raw, li, i, f));
         } else if (ops.contains(cS)) {
           tokens.add(new OpTok(raw, i, i + 1, cS));
           i++;

@@ -20,7 +20,7 @@ public class RandBuiltin extends Builtin {
   class Nf implements NumMV {
     @Override public Value call(Num v) {
       if (v.equals(Num.ZERO)) return new Num(sc.rand(1d));
-      else return new Num(sc.rand(v.asInt()) + sc.IO);
+      else return Num.of(sc.rand(v.asInt()) + sc.IO);
     }
   
     @Override public void call(double[] res, double[] a) {

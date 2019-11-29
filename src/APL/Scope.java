@@ -5,7 +5,7 @@ import APL.tokenizer.*;
 import APL.tokenizer.types.BasicLines;
 import APL.types.*;
 import APL.types.arrs.*;
-import APL.types.functions.Builtin;
+import APL.types.functions.*;
 
 import java.io.*;
 import java.util.*;
@@ -71,9 +71,10 @@ public class Scope {
         case "⎕EX": return new Ex(this);
         case "⎕LNS": return new Lns();
         case "⎕SH": return new Shell();
+        case "⎕NC": return new NC();
         case "⎕A": return Main.alphabet;
         case "⎕D": return Main.digits;
-        case "⎕L": return Main.lowercaseAlphabet;
+        case "⎕L":
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser(this);
         case "⎕GC": System.gc(); return Num.ONE;
@@ -86,7 +87,7 @@ public class Scope {
         case "⎕HASH": return new Hasher();
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
-        case "⎕PP": return new Num(Num.pp);
+        case "⎕PP": return Num.of(Num.pp);
         case "⎕PF": return new Profiler(this);
         case "⎕PFR": return Profiler.results();
         case "⎕U": return new Builtin() {
@@ -254,7 +255,7 @@ public class Scope {
         @Override public boolean retNum() {
           return false;
         }
-      }, c->new Num(c.chr), w);
+      }, c->Num.of(c.chr), w);
     }
   
     @Override public Obj callInv(Value w) {
@@ -339,7 +340,7 @@ public class Scope {
     @Override
     public Obj call(Value w) {
       String name = w.asString();
-      if (! (get(name) instanceof Value)) return Num.MINUS_ONE;
+      if (!(get(name) instanceof Value)) return Num.MINUS_ONE;
       Value v = (Value) get(name);
       Value optimized = v.squeeze();
       if (v == optimized) return Num.ZERO;
@@ -393,12 +394,12 @@ public class Scope {
     @Override public String repr() {
       return "⎕SH";
     }
-  
+    
     @Override
     public Obj call(Value w) {
       return exec(w, null);
     }
-  
+    
     @Override
     public Obj call(Value a, Value w) {
       return exec(w, new File(a.asString()));
@@ -417,11 +418,29 @@ public class Scope {
           }
           p = Runtime.getRuntime().exec(parts, new String[0], f);
         }
-        return new Num(p.waitFor());
+        return Num.of(p.waitFor());
       } catch (Throwable e) {
         e.printStackTrace();
         return Null.NULL;
       }
+    }
+  }
+  
+  
+  private class NC extends Fun {
+    @Override public String repr() {
+      return "⎕NC";
+    }
+    
+    @Override
+    public Obj call(Value w) {
+      Obj obj = get(w.asString());
+      if (obj == null) return Num.ZERO;
+      if (obj instanceof Value) return Num.NUMS[2];
+      if (obj instanceof Fun  ) return Num.NUMS[3];
+      if (obj instanceof Dop  ) return Num.NUMS[4];
+      if (obj instanceof Mop  ) return Num.NUMS[5];
+      return Num.NUMS[9];
     }
   }
   
@@ -432,7 +451,7 @@ public class Scope {
     }
     @Override
     public Obj call(Value w) {
-      return new Num(w.hashCode());
+      return Num.of(w.hashCode());
     }
   }
   
@@ -443,7 +462,7 @@ public class Scope {
     
     static HashMap<String, Pr> pfRes = new HashMap<>();
     static double cam = 0;
-    public static Obj results() {
+    static Obj results() {
       Value[] arr = new Value[pfRes.size()*4];
       final int[] p = {0};
       cam++;

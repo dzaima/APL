@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.mops;
 
-import APL.errors.LengthError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.SingleItemArr;
 import APL.types.functions.*;
@@ -46,6 +46,15 @@ public class EachBuiltin extends Mop {
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
       n[i] = ((Value)((Fun)f).call(a.get(i), w.get(i))).squeeze();
+    }
+    return Arr.create(n, w.shape);
+  }
+  
+  @Override public Obj callInv(Obj f, Value w) {
+    if (!(f instanceof Fun)) throw new DomainError("can't invert A¨");
+    Value[] n = new Value[w.ia];
+    for (int i = 0; i < n.length; i++) {
+      n[i] = ((Value) ((Fun) f).callInv(w.get(i))).squeeze();
     }
     return Arr.create(n, w.shape);
   }

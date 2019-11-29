@@ -73,6 +73,7 @@ public class IotaBuiltin extends Builtin {
       res[i++] = j+IO;
     }
     if (w instanceof Primitive) return new Num(res[0]);
+    if (w.rank == 0) return new Num(res[0]);
     return new DoubleArr(res, w.shape);
   }
 }

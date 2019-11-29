@@ -17,7 +17,7 @@ public class MulBuiltin extends Builtin {
   
   static class Nf implements NumMV {
     public Value call(Num w) {
-      return new Num(w.compareTo(Num.ZERO));
+      return Num.of(w.compareTo(Num.ZERO));
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = a[i]>0? 1 : a[i]<0? -1 : 0;
@@ -25,7 +25,7 @@ public class MulBuiltin extends Builtin {
   }
   private static final Nf NF = new Nf();
   public Obj call(Value w) {
-    return numChrMapM(NF, c -> new Num(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
+    return numChrMapM(NF, c -> Num.of(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
   }
   
   static class DNf extends D_NNeN {
@@ -53,5 +53,9 @@ public class MulBuiltin extends Builtin {
     } catch (DomainError e) {
       throw new DomainError(e.getMessage(), this, e.cause);
     }
+  }
+  
+  @Override public Obj callInvA(Value a, Value w) {
+    return callInvW(w, a);
   }
 }
