@@ -6,17 +6,17 @@ import APL.types.*;
 
 public class ChrTok extends Token {
   public final Value val;
-  private final String raw;
+  public final String parsed;
   
   public ChrTok(String line, int spos, int epos, String str) {
     super(line, spos, epos);
-    raw = str;
+    parsed = str;
     
     if (str.length() == 1) val = new Char(str);
     else val = Main.toAPL(str);
   }
   
   @Override public String toRepr() {
-    return "\"" + raw.replaceAll("\"", "\"\"") + "\"";
+    return raw;
   }
 }

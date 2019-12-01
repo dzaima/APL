@@ -590,10 +590,14 @@ public class Exec {
           Token name = ct.tokens.get(0);
           if (ct.colonPos() ==-1)         SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
           if (ct.colonPos() != 1)         SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
-          if (!(name instanceof NameTok)) SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
+          String kname;
+          if (name instanceof NameTok) kname = ((NameTok) name).name;
+          else if (name instanceof StrTok) kname = ((StrTok) name).parsed;
+          else if (name instanceof ChrTok) kname = ((ChrTok) name).parsed;
+          else throw SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
-          //noinspection ConstantConditions no?
-          map.setStr(((NameTok) name).name, Main.oexec(LineTok.inherit(tokens), sc));
+          
+          map.setStr(kname, Main.oexec(LineTok.inherit(tokens), sc));
         }
         return map;
       } else {

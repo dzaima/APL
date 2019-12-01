@@ -1,9 +1,7 @@
 package APL.types;
 
 import APL.Main;
-import APL.types.arrs.*;
-
-import java.util.Arrays;
+import APL.types.arrs.SingleItemArr;
 
 public abstract class APLMap extends Primitive {
   

@@ -8,6 +8,7 @@ import APL.types.arrs.*;
 import APL.types.functions.*;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import static APL.Main.*;
@@ -386,6 +387,61 @@ public class Scope {
         o[i] = Main.toAPL(a[i]);
       }
       return Arr.create(o);
+    }
+    
+    String get(APLMap m, String key, String def) {
+      Value got = (Value) m.getRaw(key);
+      if (got != Null.NULL) return got.asString();
+      return def;
+    }
+  
+    @Override public Obj call(Value a, Value w) {
+      try {
+        URL url = new URL(w.asString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        APLMap m = (APLMap) a;
+        String content = get(m, "content", "");
+        conn.setRequestMethod(get(m, "method", "POST"));
+        
+        conn.setRequestProperty("Content-Type", get(m, "type", "POST"));
+        conn.setRequestProperty("Content-Language", get(m, "language", "en-US"));
+        conn.setRequestProperty("Content-Length", Integer.toString(content.length()));
+  
+        Obj eo = m.getRaw("e");
+        if (eo != Null.NULL) {
+          APLMap e = (APLMap) eo;
+          for (Value k : e.allKeys()) {
+            Value v = (Value) e.getRaw(k);
+            conn.setRequestProperty(k.asString(), v.asString());
+          }
+        }
+        
+        Obj cache = m.getRaw("cache");
+        conn.setUseCaches(cache!=Null.NULL && Main.bool(cache));
+        conn.setDoOutput(true);
+        
+        if (content.length() != 0) {
+          DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+          os.writeBytes(content);
+          os.close();
+        }
+  
+  
+        InputStream is = conn.getInputStream();
+        StringBuilder res;
+        try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
+          res = new StringBuilder();
+          String ln;
+          while ((ln = rd.readLine()) != null) res.append(ln).append('\n');
+        }
+        return Main.toAPL(res.toString());
+      } catch (MalformedURLException e) {
+        throw new DomainError("bad URL: "+e.getMessage());
+      } catch (ProtocolException e) {
+        throw new DomainError("ProtocolException: "+e.getMessage());
+      } catch (IOException e) {
+        throw new DomainError("IOException: "+e.getMessage());
+      }
     }
   }
   

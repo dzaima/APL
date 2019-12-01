@@ -40,7 +40,7 @@ public class SyntaxError extends APLError {
     Main.faulty = fun;
   }
   
-  public static void direct(String msg, Tokenable t) {
+  public static Error direct(String msg, Tokenable t) {
     assert t != null;
     Main.faulty = t;
     throw new SyntaxError(msg);
