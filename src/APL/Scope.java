@@ -428,13 +428,12 @@ public class Scope {
   
   
         InputStream is = conn.getInputStream();
-        StringBuilder res;
+        ArrayList<Value> vs = new ArrayList<>();
         try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
-          res = new StringBuilder();
           String ln;
-          while ((ln = rd.readLine()) != null) res.append(ln).append('\n');
+          while ((ln = rd.readLine()) != null) vs.add(Main.toAPL(ln));
         }
-        return Main.toAPL(res.toString());
+        return new HArr(vs.toArray(new Value[0]));
       } catch (MalformedURLException e) {
         throw new DomainError("bad URL: "+e.getMessage());
       } catch (ProtocolException e) {
