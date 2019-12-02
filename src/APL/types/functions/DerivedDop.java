@@ -2,7 +2,7 @@ package APL.types.functions;
 
 import APL.types.*;
 
-public class DerivedDop extends Builtin {
+public class DerivedDop extends Fun {
   private final Obj aa, ww;
   private final Dop op;
   DerivedDop(Obj aa, Obj ww, Dop op) {

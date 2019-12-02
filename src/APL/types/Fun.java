@@ -525,4 +525,12 @@ public abstract class Fun extends Scopeable {
   @Override public String toString() {
     return repr();
   }
+  
+  // functions are equal per-object basis
+  @Override public int hashCode() {
+    return actualHashCode();
+  }
+  @Override public boolean equals(Obj o) {
+    return this == o;
+  }
 }

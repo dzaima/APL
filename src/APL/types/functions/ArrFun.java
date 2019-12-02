@@ -29,4 +29,14 @@ public class ArrFun extends Primitive {
   @Override public String toString() {
     return "`"+f.repr();
   }
+  
+  @Override public int hashCode() {
+    return f.hashCode();
+  }
+  
+  @Override public boolean equals(Obj o) {
+    if (!(o instanceof ArrFun)) return false;
+    ArrFun w = (ArrFun) o;
+    return w.f.equals(f);
+  }
 }

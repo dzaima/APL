@@ -56,6 +56,10 @@ public abstract class Obj implements Tokenable {
     throw new NYIError("hash not supported for "+this, this);
   }
   
+  final protected int actualHashCode() {
+    return super.hashCode();
+  }
+  
   @Override
   public Token getToken() {
     return token;

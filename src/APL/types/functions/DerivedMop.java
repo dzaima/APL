@@ -2,7 +2,7 @@ package APL.types.functions;
 
 import APL.types.*;
 
-public class DerivedMop extends Builtin {
+public class DerivedMop extends Fun {
   private final Obj aa;
   private final Mop op;
   DerivedMop(Obj aa, Mop op) {
