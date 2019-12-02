@@ -39,4 +39,12 @@ public abstract class Dop extends Scopeable {
     return repr();
   }
   public abstract String repr();
+  
+  // functions are equal per-object basis
+  @Override public int hashCode() {
+    return actualHashCode();
+  }
+  @Override public boolean equals(Obj o) {
+    return this == o;
+  }
 }
