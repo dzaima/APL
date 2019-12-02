@@ -16,6 +16,6 @@ public class NumTok extends Token {
   }
   
   @Override public String toRepr() {
-    return raw;
+    return source();
   }
 }

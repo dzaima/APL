@@ -15,6 +15,6 @@ public class StrTok extends Token {
   }
   
   @Override public String toRepr() {
-    return raw;
+    return source();
   }
 }
