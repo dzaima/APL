@@ -303,8 +303,4 @@ public abstract class Arr extends Value {
     for (int i : ia) r*= i;
     return r;
   }
-  
-  // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.
-  private class delete_new_pls extends Exception{}
-  public class create extends Main {create(Object...FO) throws delete_new_pls{}}
 }
