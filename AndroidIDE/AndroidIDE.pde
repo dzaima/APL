@@ -64,27 +64,30 @@ void draw() {
   }
   pmousePressed = mousePressed;
 }
-boolean shift;
+boolean shift, ctrl;
 void keyPressed(KeyEvent e) {
+  e = fixKE(e);
+  println(+key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
   shift = e.isShiftDown();
+  ctrl  = e.isControlDown();
+  //println(e.getNative());
   if (key == 18 && keyCode == 82) {
     redrawAll();
     return;
   }
   if (textInput != null) {
     if (key == 65535) {
-           if (keyCode == 38) textInput.special("up");
-      else if (keyCode == 37) textInput.special("left");
-      else if (keyCode == 40) textInput.special("down");
-      else if (keyCode == 39) textInput.special("right");
+      handleCoded(keyCode);
     } else {
       if (key == 8) textInput.ldelete();
       else if (key ==  26 && keyCode ==  90) textInput.special("undo");
       else if (key ==  25 && keyCode ==  89) textInput.special("redo");
       else if (key ==   3 && keyCode ==  67) textInput.special("copy");
       else if (key ==  22 && keyCode ==  86) textInput.special("paste");
+      else if (key ==  24 && keyCode ==  88) textInput.special("cut");
       else if (key == 127 && keyCode == 127) textInput.rdelete();
       else if (key ==  19 && keyCode ==  83) textInput.special("eval");
+      else if (key ==   1 && keyCode ==  65) textInput.special("sall");
       else textInput.append(Character.toString(key));
     }
   }

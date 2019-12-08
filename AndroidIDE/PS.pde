@@ -1,4 +1,4 @@
-//* PC
+/* PC
 import java.awt.Toolkit;
 static boolean MOBILE = false;
 class FakeTouch { // for interoperability with android mode
@@ -12,6 +12,7 @@ void psDraw() {
 }
 void settings() {
   size(540, 830);
+  //size(830, 540);
 }
 
 import java.awt.datatransfer.*;
@@ -31,6 +32,20 @@ void paste(Drawable d) {
 }
 void mouseWheel(MouseEvent e) {
   if (topbar != null && topbar.ctab != null) topbar.ctab.mouseWheel(e.getCount());
+}
+void openKeyboard() {};
+
+void handleCoded(int keyCode) {
+       if (keyCode == java.awt.event.KeyEvent.VK_BACK_SPACE) textInput.ldelete();
+  else if (keyCode == java.awt.event.KeyEvent.VK_UP        ) textInput.special("up");
+  else if (keyCode == java.awt.event.KeyEvent.VK_LEFT      ) textInput.special("left");
+  else if (keyCode == java.awt.event.KeyEvent.VK_DOWN      ) textInput.special("down");
+  else if (keyCode == java.awt.event.KeyEvent.VK_RIGHT     ) textInput.special("right");
+  else if (keyCode == java.awt.event.KeyEvent.VK_HOME      ) textInput.special("home");
+  else if (keyCode == java.awt.event.KeyEvent.VK_END       ) textInput.special("end");
+}
+KeyEvent fixKE(KeyEvent e) {
+  return e;
 }
 
 /*/ // ANDROID
@@ -86,5 +101,33 @@ void paste(Drawable rec) {
       }
     }
   });
+}
+void handleCoded(int keyCode) {
+  if (ctrl) {
+    if (keyCode == android.view.KeyEvent.KEYCODE_C) textInput.special("copy");
+    if (keyCode == android.view.KeyEvent.KEYCODE_V) textInput.special("paste");
+    if (keyCode == android.view.KeyEvent.KEYCODE_Z) textInput.special("undo");
+    if (keyCode == android.view.KeyEvent.KEYCODE_Y) textInput.special("redo");
+    if (keyCode == android.view.KeyEvent.KEYCODE_X) textInput.special("cut");
+    if (keyCode == android.view.KeyEvent.KEYCODE_A) textInput.special("sall");
+    if (keyCode == android.view.KeyEvent.KEYCODE_ENTER) textInput.special("eval");
+    
+  }
+       if (keyCode == android.view.KeyEvent.KEYCODE_DEL       ) textInput.ldelete();
+  else if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_UP   ) textInput.special("up");
+  else if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_LEFT ) textInput.special("left");
+  else if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_DOWN ) textInput.special("down");
+  else if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_RIGHT) textInput.special("right");
+  else if (keyCode == android.view.KeyEvent.KEYCODE_MOVE_HOME ) textInput.special("home");
+  else if (keyCode == android.view.KeyEvent.KEYCODE_MOVE_END  ) textInput.special("end");
+}
+KeyEvent fixKE(KeyEvent e) {
+  android.view.KeyEvent n = (android.view.KeyEvent) e.getNative();
+  return new KeyEvent(e.getNative(), e.getMillis(), e.getAction(), 
+    (n.isShiftPressed() ? Event.SHIFT : 0) +
+    (n. isCtrlPressed() ? Event.CTRL  : 0) +
+    (n. isMetaPressed() ? Event.META  : 0) +
+    (n.  isAltPressed() ? Event.ALT   : 0)
+  , e.getKey(), e.getKeyCode());
 }
 //*/

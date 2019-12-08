@@ -151,15 +151,36 @@ class APLField extends Drawable implements TextReciever {
     if (s.equals("eval")) {
       eval();
     } else if (s.equals("left")) {
-      ex--;
-      if (ex == -1) ex = 0;
-      if (!cshift()) sx = ex; 
-    }
-    else if (s.equals("right")) {
-      ex++;
-      if (ex == line.length()+1) {
-        ex--;
+      if (sx!=ex && !cshift()) {
+        sx = ex = Math.min(sx, ex);
+      } else {
+        ex = Math.max(0, ex-1);
+        if (ctrl) {
+          while (ex>0 && !Character.isAlphabetic(line.charAt(ex))) ex--;
+          while (ex>0 &&  Character.isAlphabetic(line.charAt(ex))) ex--;
+          if (ex<line.length() && !Character.isAlphabetic(line.charAt(ex))) ex++;
+        }
+        if (!cshift()) sx = ex;
       }
+    }//asdas    asdas asd asd a   sdasda
+    else if (s.equals("right")) {
+      int len = line.length();
+      if (sx!=ex && !cshift()) {
+        sx = ex = Math.max(sx, ex);
+      } else {
+        if (ctrl) {
+          while (ex<len && !Character.isAlphabetic(line.charAt(ex))) ex++;
+          while (ex<len &&  Character.isAlphabetic(line.charAt(ex))) ex++;
+        } else ex = Math.min(len, ex+1);
+        if (!cshift()) sx = ex;
+      }
+    }
+    else if (s.equals("home")) {
+      ex = 0;
+      if (!cshift()) sx = ex;
+    }
+    else if (s.equals("end")) {
+      ex = line.length();
       if (!cshift()) sx = ex;
     }
     else if (s.equals("openPar")) {
@@ -200,9 +221,18 @@ class APLField extends Drawable implements TextReciever {
       modified = true;
     }
     else if (s.equals("copy")) {
-      int min = min(sx, ex);
-      int max = max(sx, ex);
-      copy(line.substring(min, max));
+      if (sx==ex) extraSpecial(s);
+      else {
+        int min = min(sx, ex);
+        int max = max(sx, ex);
+        copy(line.substring(min, max));
+      }
+    }
+    else if (s.equals("cut")) {
+      if (sx != ex) {
+        special("copy");
+        ldelete();
+      }
     }
     else if (s.equals("paste")) {
       paste(this);
@@ -210,8 +240,10 @@ class APLField extends Drawable implements TextReciever {
     else if (s.equals("match")) {
       int sel = hl.sel(sx);
       if (sel != -1) sx = ex = sel;
-    }
-    else extraSpecial(s);
+    } else if (s.equals("sall")) {
+      sx = 0;
+      ex = line.length();
+    } else extraSpecial(s);
   }
   void pasted(String s) {
     append(s);

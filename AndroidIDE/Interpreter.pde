@@ -97,8 +97,14 @@ static {
         case "cpy": return new Fun() {
           public String repr() { return "app.cpy"; }
           public Obj call(Value w) {
-            String s = w.asString();
-            copy(s);
+            if (w.rank == 1) {
+              w = w.squeeze();
+              if (w instanceof ChrArr) {
+                copy(w.asString());
+                return Num.ONE;
+              }
+            }
+            copy(w.toString());
             return Num.ONE;
           }
         };

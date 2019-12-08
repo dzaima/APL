@@ -99,6 +99,8 @@ class REPL extends Tab {
             line = tmpSaved == null? "" : tmpSaved;
           } else line = inputs.get(iptr);
           sx = ex = line.length();
+        } else if (s.equals("copy")) {
+          append("app.cpy");
         }
       }
       void textln(String ln) {

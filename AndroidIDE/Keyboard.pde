@@ -134,7 +134,7 @@ class Key extends Drawable {
   
   void redraw(Action hl) { // highlight
     rectMode(CORNER);
-    fill(b.start == this && (hl == actions[0])? lerpColor(col, #aaaaaa, .1) : col);
+    fill(b.start == this && (hl == actions[0])? g.lerpColor(col, #aaaaaa, .1) : col);
     noStroke();
     int px = b.x + x*w;
     int py = b.y + y*h;
@@ -143,7 +143,7 @@ class Key extends Drawable {
       for(int i = 1; i < 5; i++) {
         Action a = actions[i];
         if (a == hl) {
-          fill(lerpColor(col, #aaaaaa, .1));
+          fill(g.lerpColor(col, #aaaaaa, .1));
           triangle(px+w/2, py+h/2, px + w*corners[i][0], py + h*corners[i][1], px + w*corners[i][2], py + h*corners[i][3]);
           break;
         }
@@ -219,6 +219,7 @@ class Action {
       case "rdel": textInput.rdelete(); return;
       case "clear": textInput.clear(); return;
       case "enter": textInput.append("\n"); return;
+      case "vkb": openKeyboard(); return;
       case "shift": 
         b.shiftMode++;
         if (b.shiftMode > 2) b.shiftMode = 0;
