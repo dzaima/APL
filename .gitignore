@@ -17,3 +17,5 @@ AndroidIDE/android/
 app/err
 
 *.apk
+
+AndroidIDE/build/

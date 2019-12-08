@@ -27,13 +27,7 @@ Compile for android:
 
 1. generate the dzaima/APL interpreter jar file - run `./convert.py` in `app/`.
 2. in PS.pde, change start to `/*`
-3. Export application in Android mode
-4. Use your favorite way to compile the project, changing the min sdk version. For IntelliJ IDEA:
-    - open with "use auto-import" checked
-    - file → project structure → Project SDK = 1.8
-    - sync, build → build project
-    - project structure → facets → Android-Gradle (app) → Flavors → Min Sdk version → 24
-    - build → generate signed APK → whatever
+3. either run in android mode with a device connected, or File → Export Signed Package to generate an APK.
 
 Alternatively, Processing runs the project in Java mode just fine (keyboard input may be a bit funky though).
 
