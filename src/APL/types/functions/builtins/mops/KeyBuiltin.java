@@ -30,23 +30,22 @@ public class KeyBuiltin extends Mop {
     }
     if (aa instanceof Fun) {
       int i = sc.IO;
-      Num IOv = Num.of(i);
       var vals = new HashMap<Value, ArrayList<Value>>();
       var order = new ArrayList<Value>();
       for (Value v : w) {
         if (!vals.containsKey(v)) {
           var l = new ArrayList<Value>();
-          l.add(IOv);
+          l.add(Num.of(i));
           vals.put(v, l);
           order.add(v);
         } else {
-          vals.get(v).add(IOv);
+          vals.get(v).add(Num.of(i));
         }
         i++;
       }
       var res = new Value[order.size()];
       i = 0;
-      for (var c : order) {
+      for (Value c : order) {
         res[i++] = (Value) ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
       }
       return new HArr(res);
