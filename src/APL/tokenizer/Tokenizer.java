@@ -263,7 +263,11 @@ public class Tokenizer {
           if (pointless) tokens.add(new CommentTok(raw, li, i));
         } else if (c == ' ' || c == '\t') {i++;} else {
           if (pointless) tokens.add(new ErrTok(raw, i, i + 1));
-          else Main.colorprint("warning: unknown token `" + c + "`", 206);
+          else {
+            String hex = Integer.toHexString(c);
+            while(hex.length() < 4) hex = "0"+hex;
+            throw new SyntaxError("unknown token `" + c + "` (\\u"+hex+")");
+          }
           i++;
         }
         //if (c != ' ') {

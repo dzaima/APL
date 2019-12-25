@@ -42,6 +42,7 @@ A - switch to text layout
 # - switch to default layout
 ⇧ - shift (caps letters, select with «»)
 X - close tab (where applicable - grapher & editor)
+K - open virtual keyboard
 = - evaluate
 
 ↶↷ - undo/redo
