@@ -34,6 +34,9 @@ public abstract class Dop extends Scopeable {
   public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
+  public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
+    throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
+  }
   
   public String toString() {
     return repr();

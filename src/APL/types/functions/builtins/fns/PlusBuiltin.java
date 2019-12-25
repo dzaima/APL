@@ -37,16 +37,16 @@ public class PlusBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = a[i] + w[i];
     }
   }
-  private static final DNf DNF = new DNf();
+  public static final DNf DNF = new DNf();
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }
   public Obj callInv(Value w) { return call(w); }
   public Obj callInvW(Value a, Value w) {
-    try {
-      return new MinusBuiltin().call(w, a);
-    } catch (DomainError e) {
-      throw new DomainError(e.getMessage(), this, e.cause);
-    }
+    return numD(MinusBuiltin.DNF, w, a);
+  }
+  
+  @Override public Obj callInvA(Value a, Value w) {
+    return callInvW(w, a);
   }
 }

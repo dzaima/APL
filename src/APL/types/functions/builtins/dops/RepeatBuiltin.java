@@ -76,4 +76,11 @@ public class RepeatBuiltin extends Dop {
     }
     return w;
   }
+  public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
+    int am = ((Num)ww).asInt();
+    if (am== 1) return ((Fun) aa).callInvA(a, w);
+    if (am==-1) return ((Fun) aa).callInvA(w, a);
+  
+    throw new DomainError("inverting ⍺ of f⍣C is only possible when C∊¯1 1");
+  }
 }

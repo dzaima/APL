@@ -288,7 +288,7 @@ public class Exec {
       }
       if (is("D!|[FN]FF", end, false)) {
         if (Main.debug) printlvl("f g h");
-        var h = lastObj();
+        var h = lastFun();
         var g = lastFun();
         var f = lastObj();
         done.addLast(new Fork(f, g, h));

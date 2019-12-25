@@ -42,4 +42,10 @@ public class StarBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }
+  public Obj callInvW(Value a, Value w) {
+    return numD(LogBuiltin.DNF, a, w);
+  }
+  public Obj callInvA(Value a, Value w) {
+    return numD(RootBuiltin.DNF, w, a);
+  }
 }

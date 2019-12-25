@@ -20,6 +20,9 @@ public class DerivedMop extends Fun {
   public Obj callInvW(Value a, Value w) {
     return op.callInvW(aa, a, w);
   }
+  public Obj callInvA(Value a, Value w) {
+    return op.callInvA(aa, a, w);
+  }
   public Obj call(Value a, Value w) {
     return op.call(aa, a, w, this);
   }

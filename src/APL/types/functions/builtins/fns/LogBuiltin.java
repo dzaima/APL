@@ -39,12 +39,15 @@ public class LogBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(w[i]) / Math.log(a[i]);
     }
   }
-  private static final DNf DNF = new DNf();
+  public static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
   
   @Override public Obj callInvW(Value a, Value w) {
     return numD(StarBuiltin.DNF, a, w);
+  }
+  @Override public Obj callInvA(Value a, Value w) {
+    return numD(RootBuiltin.DNF, a, w);
   }
 }

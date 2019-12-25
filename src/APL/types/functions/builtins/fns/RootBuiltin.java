@@ -38,7 +38,7 @@ public class RootBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(w[i], 1/a[i]);
     }
   }
-  private static final DNf DNF = new DNf();
+  public static final DNf DNF = new DNf();
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
