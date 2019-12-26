@@ -23,7 +23,7 @@ public class PlusBuiltin extends Builtin {
     }, w);
   }
   
-  static class DNf extends D_NNeN {
+  public static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       return a + w;
     }
@@ -36,8 +36,7 @@ public class PlusBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] + w[i];
     }
-  }
-  public static final DNf DNF = new DNf();
+  };
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }

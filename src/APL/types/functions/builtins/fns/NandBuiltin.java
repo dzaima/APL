@@ -15,7 +15,7 @@ public class NandBuiltin extends Builtin {
   }
   
   
-  static class DNf extends D_NNeN {
+  private static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       return Main.bool(a)&Main.bool(w) ? 0 : 1;
     }
@@ -28,10 +28,9 @@ public class NandBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Main.bool(a[i])&Main.bool(w[i]) ? 0 : 1;
     }
-  }
-  private static final DNf DNF = new DNf();
+  };
   
-  static class DBf implements D_BB {
+  private static final D_BB DBF = new D_BB() {
     @Override public Value call(boolean a, BitArr w) {
       if (a) return TildeBuiltin.call(w);
       return BitArr.fill(w, true);
@@ -45,8 +44,7 @@ public class NandBuiltin extends Builtin {
       for (int i = 0; i < a.arr.length; i++) bc.arr[i] = ~(a.arr[i] & w.arr[i]);
       return bc.finish();
     }
-  }
-  private static final DBf DBF = new DBf();
+  };
   
   public Obj call(Value a, Value w) {
     return bitD(DNF, DBF, a, w);

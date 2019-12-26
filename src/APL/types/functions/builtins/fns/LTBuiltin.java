@@ -15,7 +15,7 @@ public class LTBuiltin extends Builtin {
   
   
   
-  static class DNf extends D_NNeB {
+  private static final D_NNeB DNF = new D_NNeB() {
     public boolean on(double a, double w) {
       return a < w;
     }
@@ -28,8 +28,7 @@ public class LTBuiltin extends Builtin {
     public void on(BitArr.BC res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res.add(a[i] < w[i]);
     }
-  }
-  private static final DNf DNF = new DNf();
+  };
   
   public Obj call(Value a, Value w) {
     return numChrD(DNF, (ca, cw) -> ca<cw? Num.ONE : Num.ZERO,

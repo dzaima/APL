@@ -11,20 +11,19 @@ public class TrigBuiltin extends Builtin {
   
   
   
-  static class Nf implements NumMV {
+  private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return new Num(Math.PI * w.num);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.PI * a[i];
     }
-  }
-  private static final Nf NF = new Nf();
+  };
   
   public Obj call(Value w) {
     return numM(NF, w);
   }
-  static class DNf extends D_NNeN {
+  static final D_NNeN DNF = new D_NNeN() {
     @Override public double on(double a, double w) {
       switch((int) a) {
         case  1: return Math.sin(w);
@@ -56,8 +55,7 @@ public class TrigBuiltin extends Builtin {
       }
       throw new DomainError("⍺ of ○ out of bounds");
     }
-  }
-  static final DNf DNF = new DNf();
+  };
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }

@@ -10,15 +10,14 @@ public class StarBuiltin extends Builtin {
   
   
   
-  static class Nf implements NumMV {
+  public static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return Num.E.pow(w);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.exp(a[i]);
     }
-  }
-  public static final Nf NF = new Nf();
+  };
   public Obj call(Value w) {
     return numM(NF, w);
   }
@@ -26,7 +25,7 @@ public class StarBuiltin extends Builtin {
     return numM(LogBuiltin.NF, w);
   }
   
-  static class DNf extends D_NNeN {
+  static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       return Math.pow(a, w);
     }
@@ -40,8 +39,7 @@ public class StarBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w[i]);
     }
-  }
-  static final DNf DNF = new DNf();
+  };
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);
   }

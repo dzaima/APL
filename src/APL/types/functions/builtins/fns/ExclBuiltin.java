@@ -19,7 +19,7 @@ public class ExclBuiltin extends Builtin {
     }
   }
   
-  static class Nf implements NumMV {
+  private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return new Num(cache[Math.min(w.asInt(), 171)]);
     }
@@ -28,8 +28,7 @@ public class ExclBuiltin extends Builtin {
         res[i] = cache[Math.min((int) a[i], 171)];
       }
     }
-  }
-  private static final Nf NF = new Nf();
+  };
   
   public Obj call(Value w) {
     return numM(NF, w);

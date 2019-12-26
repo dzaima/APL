@@ -10,19 +10,19 @@ public class DivBuiltin extends Builtin {
   
   
   
-  static class Nf implements NumMV {
+  private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return Num.ONE.divide(w);
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = 1/a[i];
     }
-  }
-  private static final Nf NF = new Nf();
+  };
   public Obj call(Value w) {
     return numM(NF, w);
   }
-  static class DNf extends D_NNeN {
+  
+  private static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       return a / w;
     }
@@ -35,8 +35,7 @@ public class DivBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] / w[i];
     }
-  }
-  private static final DNf DNF = new DNf();
+  };
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }

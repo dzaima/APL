@@ -11,21 +11,20 @@ public class StileBuiltin extends Builtin {
   
   
   
-  static class Nf implements NumMV {
+  private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return w.abs();
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.abs(a[i]);
     }
-  }
-  private static final Nf NF = new Nf();
+  };
   
   public Obj call(Value w) {
     return numChrMapM(NF, c->{ throw new DomainError("|char", this, w); }, c -> Num.of(c.size()), w);
   }
   
-  static class DNf extends D_NNeN {
+  private static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       double c = w % a;
       if (c < 0) return c + a;
@@ -78,8 +77,7 @@ public class StileBuiltin extends Builtin {
         else res[i] = c;
       }
     }
-  }
-  private static final DNf DNF = new DNf();
+  };
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
