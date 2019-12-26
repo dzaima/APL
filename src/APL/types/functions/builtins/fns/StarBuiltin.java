@@ -18,9 +18,12 @@ public class StarBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.exp(a[i]);
     }
   }
-  private static final Nf NF = new Nf();
+  public static final Nf NF = new Nf();
   public Obj call(Value w) {
     return numM(NF, w);
+  }
+  public Obj callInv(Value w) {
+    return numM(LogBuiltin.NF, w);
   }
   
   static class DNf extends D_NNeN {
