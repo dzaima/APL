@@ -1,10 +1,14 @@
 package APL.types.functions.builtins.mops;
 
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.dimensions.DimMMop;
 import APL.types.functions.*;
 import APL.types.functions.builtins.fns.*;
+
+import java.util.*;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   @Override public String repr() {
@@ -18,6 +22,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     return ngnReduce(w, dim, (Fun)f);
   }
   
+  @SuppressWarnings({"LoopStatementThatDoesntLoop", "ConstantConditions"}) // goto replacement ftw
   public Obj call(Obj f, Value w, DerivedMop derv) {
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
@@ -39,6 +44,61 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         double p = Double.NEGATIVE_INFINITY;
         for (double d : w.asDoubleArr()) p = Math.max(p, d);
         return new Num(p);
+      }
+    }
+    if (f instanceof CatBuiltin) {
+      if (w.ia > 0) {
+        special: do {
+          Value first = w.first();
+          ArrayList<Value> pre = null;
+          int si = 0;
+          typed: do {
+            if (first instanceof ChrArr || first instanceof Char) {
+              StringBuilder res = new StringBuilder();
+              for (int i = 0; i < w.ia; i++) {
+                Value v = w.get(i);
+                if (v.rank > 1) break special; // oh nooo
+                if (v instanceof Char) res.append(((Char) v).chr);
+                else if (v instanceof ChrArr) res.append(((ChrArr) v).s);
+                else {
+                  si = i;
+                  pre = new ArrayList<>();
+                  for (int j = 0; j < res.length(); j++) {
+                    pre.add(new Char(res.charAt(j)));
+                  }
+                  break typed;
+                }
+              }
+              return Main.toAPL(res.toString());
+            }
+            if (first.quickDoubleArr()) {
+              ArrayList<Double> ds = new ArrayList<>();
+              for (int i = 0; i < w.ia; i++) {
+                Value v = w.get(i);
+                if (v.rank > 1) break special; // :/
+                if (v instanceof Num) ds.add(((Num) v).num);
+                else if (v instanceof DoubleArr) for (double d : ((DoubleArr) v).arr) ds.add(d);
+                else {
+                  si = i;
+                  pre = new ArrayList<>();
+                  for (Double d : ds) {
+                    pre.add(new Num(d));
+                  }
+                  break typed;
+                }
+              }
+              return new DoubleArr(ds);
+            }
+          } while (false);
+          if (pre == null) pre = new ArrayList<>();
+          
+          for (int i = si; i < w.ia; i++) {
+            Value v = w.get(i);
+            if (v.rank > 1) break special; // :|
+            for (Value c : v) pre.add(c);
+          }
+          return HArr.create(pre.toArray(new Value[0]));
+        } while (false);
       }
     }
     Value[] a = w.values();

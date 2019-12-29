@@ -37,9 +37,8 @@ public class DoubleArr extends Arr {
   public DoubleArr(ArrayList<Double> arr) {
     super(new int[]{arr.size()});
     double[] a = new double[ia];
-    Double[] da = arr.toArray(new Double[0]);
     for (int i = 0; i < a.length; i++) {
-      a[i] = da[i];
+      a[i] = arr.get(i);
     }
     this.arr = a;
   }

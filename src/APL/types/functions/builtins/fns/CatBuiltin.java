@@ -16,7 +16,11 @@ public class CatBuiltin extends Builtin implements DimDFn {
   
   
   public Obj call(Value w) {
-    if (w instanceof Primitive) return new Shape1Arr(w);
+    if (w instanceof Primitive) {
+      if (w instanceof Num) return new DoubleArr(new double[]{((Num) w).num});
+      if (w instanceof Char) return new ChrArr(String.valueOf(((Char) w).chr));
+      return new Shape1Arr(w);
+    }
     return w.ofShape(new int[]{w.ia});
   }
   public Obj call(Value a, Value w) {
