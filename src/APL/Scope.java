@@ -11,7 +11,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import static APL.Main.*;
 
 public class Scope {
   private final HashMap<String, Obj> vars = new HashMap<>();
@@ -91,6 +90,7 @@ public class Scope {
         case "⎕PP": return Num.of(Num.pp);
         case "⎕PF": return new Profiler(this);
         case "⎕PFR": return Profiler.results();
+        case "⎕STDIN": return new Stdin();
         case "⎕U": return new Builtin() {
           @Override public String repr() { return "⎕U"; }
   
@@ -193,7 +193,7 @@ public class Scope {
         for (int i = 0; i < n; i++) Main.exec(test, sc);
       } else {
         BasicLines testTokenized = Tokenizer.tokenize(test);
-        for (int i = 0; i < n; i++) execLines(testTokenized, sc);
+        for (int i = 0; i < n; i++) Main.execLines(testTokenized, sc);
       }
       long end = System.nanoTime();
       if (simple) {
@@ -487,8 +487,7 @@ public class Scope {
       return "⎕NC";
     }
     
-    @Override
-    public Obj call(Value w) {
+    @Override public Obj call(Value w) {
       Obj obj = get(w.asString());
       if (obj == null) return Num.ZERO;
       if (obj instanceof Value) return Num.NUMS[2];
@@ -504,9 +503,27 @@ public class Scope {
     @Override public String repr() {
       return "⎕HASH";
     }
-    @Override
-    public Obj call(Value w) {
+    @Override public Obj call(Value w) {
       return Num.of(w.hashCode());
+    }
+  }
+  static private class Stdin extends Builtin {
+    @Override public String repr() {
+      return "⎕STDIN";
+    }
+    @Override public Obj call(Value w) {
+      if (w instanceof Num) {
+        int n = w.asInt();
+        ArrayList<Value> res = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) res.add(Main.toAPL(Main.console.nextLine()));
+        return new HArr(res);
+      }
+      if (w.ia == 0) {
+        ArrayList<Value> res = new ArrayList<>();
+        while (Main.console.hasNext()) res.add(Main.toAPL(Main.console.nextLine()));
+        return new HArr(res);
+      }
+      throw new DomainError("⎕STDIN needs either ⍬ or a number as ⍵");
     }
   }
   
@@ -522,7 +539,7 @@ public class Scope {
       final int[] p = {0};
       cam++;
       pfRes.forEach((s, pr) -> {
-        arr[p[0]++] = toAPL(s);
+        arr[p[0]++] = Main.toAPL(s);
         arr[p[0]++] = new Num(pr.am/cam);
         arr[p[0]++] = new Num(pr.ms/cam);
         arr[p[0]++] = new Num(pr.ms/pr.am);
@@ -538,12 +555,10 @@ public class Scope {
     @Override public String repr() {
       return "⎕PF";
     }
-    @Override
-    public Obj call(Value w) {
+    @Override public Obj call(Value w) {
       return call(w, w);
     }
-    @Override
-    public Obj call(Value a, Value w) {
+    @Override public Obj call(Value a, Value w) {
       String s = w.asString();
       String k = a.asString();
       if (!pfRes.containsKey(k)) pfRes.put(k, new Pr(Tokenizer.tokenize(s)));
@@ -552,7 +567,7 @@ public class Scope {
       
       p.am++;
       long ns = System.nanoTime();
-      Obj res = execLines(t, sc);
+      Obj res = Main.execLines(t, sc);
       long rns = System.nanoTime() - ns;
       p.ms+= rns/1000000d;
       return res;
