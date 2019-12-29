@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Null extends Primitive {
   public static final Null NULL = new Null();
-  
+  private Null() { }
   
   @Override
   public String toString() {

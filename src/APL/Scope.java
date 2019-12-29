@@ -9,6 +9,7 @@ import APL.types.functions.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.*;
 import java.util.*;
 
 
@@ -452,15 +453,39 @@ public class Scope {
     
     @Override
     public Obj call(Value w) {
-      return exec(w, null);
+      return exec(w, null, null, false);
     }
     
     @Override
     public Obj call(Value a, Value w) {
-      return exec(w, new File(a.asString()));
+      APLMap m = (APLMap) a;
+      
+      File dir = null;
+      Obj diro = m.getRaw("dir");
+      if (diro != Null.NULL) dir = new File(((Value) diro).asString());
+      
+      byte[] inp = null;
+      Obj inpo = m.getRaw("inp");
+      if (inpo != Null.NULL) {
+        Value inpv = (Value) inpo;
+        if (inpv.ia > 0) {
+          if (inpv.first() instanceof Char) inp = inpv.asString().getBytes(StandardCharsets.UTF_8);
+          else {
+            inp = new byte[inpv.ia];
+            double[] ds = inpv.asDoubleArr();
+            for (int i = 0; i < ds.length; i++) inp[i] = (byte) ds[i];
+          }
+        }
+      }
+      
+      boolean raw = false;
+      Obj rawo = m.getRaw("raw");
+      if (rawo != Null.NULL) raw = Main.bool(rawo);
+      
+      return exec(w, dir, inp, raw);
     }
     
-    public Obj exec(Value w, File f) {
+    public Obj exec(Value w, File f, byte[] inp, boolean raw) {
       try {
         Process p;
         if (w.get(0) instanceof Char) {
@@ -473,7 +498,13 @@ public class Scope {
           }
           p = Runtime.getRuntime().exec(parts, new String[0], f);
         }
-        return Num.of(p.waitFor());
+        Num ret = Num.of(p.waitFor());
+        if (inp != null) p.getOutputStream().write(inp);
+        byte[] out = p.getInputStream().readAllBytes();
+        byte[] err = p.getErrorStream().readAllBytes();
+        if (raw) return new HArr(new Value[]{ret, new DoubleArr(out), new DoubleArr(err)});
+        else return new HArr(new Value[]{ret, Main.toAPL(new String(out, StandardCharsets.UTF_8)),
+                                              Main.toAPL(new String(err, StandardCharsets.UTF_8))});
       } catch (Throwable e) {
         e.printStackTrace();
         return Null.NULL;
