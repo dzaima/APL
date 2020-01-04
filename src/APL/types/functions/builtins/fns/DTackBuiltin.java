@@ -5,6 +5,7 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class DTackBuiltin extends Builtin {
@@ -54,14 +55,61 @@ public class DTackBuiltin extends Builtin {
       }
       return new DoubleArr(res, sh);
     }
-    if (!(w instanceof Num)) throw new NYIError("non-scalar number not implemented", this);
+    if (!(w instanceof Num)) {
+      if (w instanceof BigValue) {
+        BigInteger base = BigValue.bigint(a);
+        BigInteger wlr = ((BigValue) w).i;
+        int sign = wlr.signum();
+        BigInteger wl = wlr.abs();
+        int ibase = BigValue.safeInt(base);
+        if (ibase <= 1) {
+          if (ibase==1 && sign!=0) throw new DomainError("⍺=1 and ⍵≠0 isn't possible", this, w);
+          if (ibase < 0) throw new DomainError("⊤: ⍺ < 0", this);
+        }
+        if (sign==0) return EmptyArr.SHAPE0;
+        if (ibase <= Character.MAX_RADIX) { // utilize the actually optimized base conversion of BigInteger.toString
+          String str = wl.toString(ibase);
+          Value[] res = new Value[str.length()];
+          for (int i = 0; i < res.length; i++) {
+            char c = str.charAt(i);
+            int n = c<='9'? c-'0' : 10+c-'a';
+            if (sign==-1) n=-n;
+            res[i] = new BigValue(BigInteger.valueOf(n));
+          }
+          return new HArr(res);
+        }
+        ArrayList<Value> ns = new ArrayList<>(); // if we can't, just be lazy. ¯\_(ツ)_/¯
+        while (wl.signum() != 0) {
+          BigInteger[] c = wl.divideAndRemainder(base);
+          wl = c[0];
+          ns.add(new BigValue(sign==1? c[1] : c[1].negate()));
+        }
+        Value[] res = new Value[ns.size()];
+        for (int i = 0; i < res.length; i++) {
+          res[res.length-i-1] = ns.get(i);
+        }
+        return new HArr(res);
+      }
+      throw new NYIError("non-scalar number not implemented", this);
+    }
     double base = a.asDouble();
     double num = w.asDouble();
-    if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", this, w);
+    if (base <= 1) {
+      if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", this, w);
+      if (base < 0) throw new DomainError("⊤: ⍺ < 0", this);
+    }
     var res = new ArrayList<Double>();
-    while (num > 0) {
-      res.add(num%base);
-      num = Math.floor(num/base);
+    if (num < 0) {
+      num = -num;
+      while (num > 0) {
+        res.add(-num%base);
+        num = Math.floor(num/base);
+      }
+    } else {
+      while (num > 0) {
+        res.add(num%base);
+        num = Math.floor(num/base);
+      }
     }
     double[] f = new double[res.size()];
     for (int i = res.size()-1, j = 0; i >= 0; i--, j++) {

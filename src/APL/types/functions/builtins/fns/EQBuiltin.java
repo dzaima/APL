@@ -25,6 +25,9 @@ public class EQBuiltin extends Builtin {
     public void on(BitArr.BC res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res.add(a[i] == w[i]);
     }
+    public Value call(BigValue a, BigValue w) {
+      return a.equals(w)? Num.ONE : Num.ZERO;
+    }
   };
   private static final D_BB DBF = new D_BB() {
     @Override public Value call(boolean a, BitArr w) {

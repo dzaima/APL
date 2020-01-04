@@ -22,6 +22,9 @@ public class MulBuiltin extends Builtin {
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = a[i]>0? 1 : a[i]<0? -1 : 0;
     }
+    public Value call(BigValue w) {
+      return Num.of(w.i.signum());
+    }
   };
   public Obj call(Value w) {
     return numChrMapM(NF, c -> Num.of(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
@@ -39,6 +42,9 @@ public class MulBuiltin extends Builtin {
     }
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] * w[i];
+    }
+    public Value call(BigValue a, BigValue w) {
+      return new BigValue(a.i.multiply(w.i));
     }
   };
   public Obj call(Value a, Value w) {

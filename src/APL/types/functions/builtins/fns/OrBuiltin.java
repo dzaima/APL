@@ -38,6 +38,9 @@ public class OrBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Num.gcd(a[i], w[i]);
     }
+    public Value call(BigValue a, BigValue w) {
+      return new BigValue(a.i.gcd(w.i));
+    }
   };
   
   private static final D_BB DBF = new D_BB() {

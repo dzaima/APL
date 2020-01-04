@@ -5,6 +5,8 @@ import APL.types.*;
 import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
+import java.math.BigInteger;
+
 public class UTackBuiltin extends Builtin {
   static final UTackBuiltin copy = new UTackBuiltin();
   @Override public String repr() {
@@ -26,6 +28,14 @@ public class UTackBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     if (w.rank == 0) throw new DomainError("A⊥num is pointless", this);
+    if (a instanceof BigValue | w.first() instanceof BigValue) {
+      BigInteger al = BigValue.bigint(a);
+      BigInteger res = BigInteger.ZERO;
+      for (int i = 0; i < w.ia; i++) {
+        res = res.multiply(al).add(BigValue.bigint(w.get(i)));
+      }
+      return new BigValue(res);
+    }
     if (a instanceof Num) {
       double base = a.asDouble();
       if (w.rank == 1) {

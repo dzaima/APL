@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
@@ -16,6 +17,17 @@ public class LogBuiltin extends Builtin {
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(a[i]);
+    }
+    double LOG2 = Math.log(2);
+    public Num call(BigValue w) {
+      if (w.i.signum() <= 0) {
+        if (w.i.signum() == -1) throw new DomainError("logarithm of negative number", w);
+        return Num.ZERO;
+      }
+      int len = w.i.bitLength();
+      int shift = len > 64? len - 64 : 0; // 64 msb should be enough to get most out of log
+      double d = w.i.shiftRight(shift).doubleValue();
+      return new Num(Math.log(d) + LOG2*shift);
     }
   };
   public Obj call(Value w) {
@@ -39,6 +51,9 @@ public class LogBuiltin extends Builtin {
     }
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(w[i]) / Math.log(a[i]);
+    }
+    public Value call(double a, BigValue w) {
+      return new Num(((Num) NF.call(w)).num/Math.log(a));
     }
   };
   public Obj call(Value a0, Value w0) {

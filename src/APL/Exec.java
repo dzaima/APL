@@ -624,6 +624,7 @@ public class Exec {
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
     if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
     if (t instanceof BacktickTok) return new ArrFun((BacktickTok) t, sc);
+    if (t instanceof BigTok) return ((BigTok) t).val;
     throw new NYIError("Unknown type: " + Main.explain(t), t);
   }
 }

@@ -39,6 +39,9 @@ public class CeilingBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.max(a[i], w[i]);
     }
+    public Value call(BigValue a, BigValue w) {
+      return a.compareTo(w)>0? a : w;
+    }
   };
   public Obj call(Value a0, Value w0) {
     return numD(DNF, a0, w0);

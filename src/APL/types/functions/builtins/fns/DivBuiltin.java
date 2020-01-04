@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
@@ -16,6 +17,9 @@ public class DivBuiltin extends Builtin {
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = 1/a[i];
+    }
+    public Value call(BigValue w) {
+      throw new DomainError("reciprocal of biginteger", w);
     }
   };
   public Obj call(Value w) {
@@ -34,6 +38,9 @@ public class DivBuiltin extends Builtin {
     }
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] / w[i];
+    }
+    public Value call(BigValue a, BigValue w) {
+      return new BigValue(a.i.divide(w.i));
     }
   };
   public Obj call(Value a0, Value w0) {

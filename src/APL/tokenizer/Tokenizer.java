@@ -1,17 +1,21 @@
 package APL.tokenizer;
 
+import java.math.BigInteger;
 import java.util.*;
 
-import APL.*;
 import APL.errors.*;
 import APL.tokenizer.types.*;
+import APL.types.BigValue;
 
 public class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_∆".toCharArray();
   private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞…ᑈᐵ"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
-  private static boolean validName(char i) {
-    for (char c : validNames) if (c == i) return true;
+  private static boolean validNameStart(char c) {
+    for (char l : validNames) if (l == c) return true;
     return false;
+  }
+  public static boolean validNameMid(char c) {
+    return validNameStart(c) || c >= '0' && c <= '9';
   }
   static class Line {
     final ArrayList<Token> ts;
@@ -137,9 +141,9 @@ public class Tokenizer {
           tokens = lines.get(lines.size() - 1);
           tokens.add(r);
           i++;
-        } else if (validName(c) || c == '⎕' && validName(next)) {
+        } else if (validNameStart(c) || c == '⎕' && validNameStart(next)) {
           i++;
-          while (i < len && (validName(raw.charAt(i)) || raw.charAt(i) >= '0' && raw.charAt(i) <= '9')) i++;
+          while (i < len && validNameMid(raw.charAt(i))) i++;
           var name = raw.substring(li, i);
           if (c == '⎕') name = name.toUpperCase();
           tokens.add(new NameTok(raw, li, i, name));
@@ -147,36 +151,50 @@ public class Tokenizer {
           boolean negative = c=='¯';
           if (negative) i++;
           int si = i;
-          boolean point = false;
+          boolean hasPoint = false;
           while(i < len) {
             c = raw.charAt(i);
-            if (point) {
+            if (hasPoint) {
               if (c<'0' || c>'9') break;
             } else if (c<'0' || c>'9') {
-              if (c == '.') point = true;
+              if (c == '.') hasPoint = true;
               else break;
             }
             i++;
           }
           double f = Double.parseDouble(raw.substring(si,i));
           if (negative) f = -f;
-          
-          if (i+1 < len && (c=='e' || c=='E')) {
-            i++;
+          if (i < len) {
             c = raw.charAt(i);
-            boolean negExp = c=='¯';
-            if (negExp) i++;
-            si = i;
-            while (i<len) {
-              c = raw.charAt(i);
-              if (c<'0' || c>'9') break;
+            boolean hasE = c=='e' | c=='E';
+            if (hasE && i+1==len) throw new SyntaxError("unfinished number");
+            boolean hasExp = hasE && !validNameStart(raw.charAt(i+1));
+            if (hasExp) {
               i++;
+              c = raw.charAt(i);
+              boolean negExp = c == '¯';
+              if (negExp) i++;
+              si = i;
+              while (i < len) {
+                c = raw.charAt(i);
+                if (c < '0' || c > '9') break;
+                i++;
+              }
+              int exp = Integer.parseInt(raw.substring(si, i));
+              if (negExp) exp = -exp;
+              f *= Math.pow(10, exp);
             }
-            int exp = Integer.parseInt(raw.substring(si, i));
-            if (negExp) exp = -exp;
-            f*= Math.pow(10, exp);
-          }
-          tokens.add(new NumTok(raw, li, i, f));
+            if (i<len && raw.charAt(i)=='L' && (i+1 == len || !validNameMid(raw.charAt(i+1)))) {
+              if (hasExp || hasPoint) {
+                if (hasExp) throw new SyntaxError("biginteger literal with exponent");
+                throw new SyntaxError("biginteger literal with decimal part");
+              }
+              i++;
+              BigInteger big = new BigInteger(raw.substring(si, i-1));
+              if (negative) big = big.negate();
+              tokens.add(new BigTok(raw, li, i, new BigValue(big)));
+            } else tokens.add(new NumTok(raw, li, i, f));
+          } else tokens.add(new NumTok(raw, li, i, f));
         } else if (ops.contains(cS)) {
           tokens.add(new OpTok(raw, i, i + 1, cS));
           i++;

@@ -45,6 +45,9 @@ public abstract class Fun extends Scopeable {
     default void call(double[] res, double[] a) {
       for (int i = 0; i < res.length; i++) res[i] = call(a[i]);
     }
+    default Value call(BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
+    }
   }
   public interface ChrMV {
     Value call(Char w);
@@ -88,8 +91,10 @@ public abstract class Fun extends Scopeable {
         arr[i] = numM(nf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected number, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected number, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrM(NumMV nf, ChrMV cf, Value w) {
@@ -106,9 +111,11 @@ public abstract class Fun extends Scopeable {
         arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Char) return cf.call((Char)w);
-    else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Char    ) return cf.call((Char    ) w);
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected either number or character argument, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrMapM(NumMV nf, ChrMV cf, MapMV mf, Value w) {
@@ -124,10 +131,12 @@ public abstract class Fun extends Scopeable {
         arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Char  ) return cf.call((Char  ) w);
-      else if (w instanceof Num   ) return nf.call((Num   ) w);
-      else if (w instanceof APLMap) return mf.call((APLMap) w);
-    else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Char    ) return cf.call((Char    ) w);
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof APLMap  ) return mf.call((APLMap  ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected either number/char/map, got "+w.humanType(false), this, w);
   }
   
   
@@ -221,6 +230,9 @@ public abstract class Fun extends Scopeable {
       on(res, a, w);
       return new DoubleArr(res, sh);
     }
+    public Value call(BigValue a, BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
+    }
   }
   
   public abstract static class D_NNeB implements D_NN { // dyadic number-number equals boolean
@@ -247,6 +259,9 @@ public abstract class Fun extends Scopeable {
       on(res, a, w);
       return res.finish();
     }
+    public Value call(BigValue a, BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
+    }
   }
   
   
@@ -255,6 +270,10 @@ public abstract class Fun extends Scopeable {
     Value call(double[] a, double[] w, int[] sh);
     Value call(double   a, double[] w, int[] sh);
     Value call(double[] a, double   w, int[] sh);
+    Value call(BigValue a, BigValue w);
+    default Value call(double a, BigValue w) { // special requirement for log; only needs to be handled in numD
+      return call(new BigValue(a), w);
+    }
   }
   public interface D_BB {
     Value call(BitArr  a, BitArr  w);
@@ -270,8 +289,14 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return f.call(((Num) a).num, ((Num) w).num);
-          else throw new DomainError("calling a number-only function with "+w.humanType(true));
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return f.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn)) {
+            if (an) return f.call(((Num) a).num, (BigValue) w);
+            else return f.call((BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          }
+          throw new DomainError("calling a number-only function with "+w.humanType(true));
         } else return new Rank0Arr(numD(f, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
@@ -324,8 +349,12 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
-          else throw new DomainError("calling a number-only function with "+w.humanType(true));
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          throw new DomainError("calling a number-only function with "+w.humanType(true));
         } else return new Rank0Arr(numD(n, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
@@ -394,9 +423,13 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
-          else if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
-          else return def.call(a, w);
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
+          return def.call(a, w);
         } else return new Rank0Arr(numChrD(n, c, def, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
@@ -449,8 +482,12 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
           else if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
+          else if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
           else return def.call(a, w);
         } else return new Rank0Arr(ncbaD(n, b, c, def, a.first(), w.first()));
         

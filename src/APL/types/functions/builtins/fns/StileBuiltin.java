@@ -18,6 +18,9 @@ public class StileBuiltin extends Builtin {
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.abs(a[i]);
     }
+    public Value call(BigValue w) {
+      return new BigValue(w.i.abs());
+    }
   };
   
   public Obj call(Value w) {
@@ -76,6 +79,9 @@ public class StileBuiltin extends Builtin {
         if (c < 0) res[i] = c + a[i];
         else res[i] = c;
       }
+    }
+    public Value call(BigValue a, BigValue w) {
+      return new BigValue(w.i.remainder(a.i));
     }
   };
   public Obj call(Value a0, Value w0) {

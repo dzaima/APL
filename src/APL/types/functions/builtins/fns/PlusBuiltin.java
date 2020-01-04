@@ -36,6 +36,9 @@ public class PlusBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = a[i] + w[i];
     }
+    public Value call(BigValue a, BigValue w) {
+      return new BigValue(a.i.add(w.i));
+    }
   };
   public Obj call(Value a, Value w) {
     return numD(DNF, a, w);

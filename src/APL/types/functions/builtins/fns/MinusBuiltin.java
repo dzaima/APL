@@ -17,6 +17,9 @@ public class MinusBuiltin extends Builtin {
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = -a[i];
     }
+    public Value call(BigValue w) {
+      return new BigValue(w.i.negate());
+    }
   };
   
   public Obj call(Value w) {

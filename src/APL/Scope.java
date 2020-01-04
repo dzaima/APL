@@ -92,6 +92,7 @@ public class Scope {
         case "⎕PF": return new Profiler(this);
         case "⎕PFR": return Profiler.results();
         case "⎕STDIN": return new Stdin();
+        case "⎕BIG": return new Big();
         case "⎕U": return new Builtin() {
           @Override public String repr() { return "⎕U"; }
   
@@ -604,7 +605,8 @@ public class Scope {
       return res;
     }
   }
-  static class Pr {
+  
+  private static class Pr {
     private final BasicLines tok;
     int am;
     double ms;
@@ -614,4 +616,37 @@ public class Scope {
     }
   }
   
+  private static class Big extends Fun {
+    @Override public Obj call(Value w) {
+      return rec(w);
+    }
+    private Value rec(Value w) {
+      if (w instanceof Num) return new BigValue(((Num) w).num);
+      if (w instanceof Primitive) return w;
+      Value[] pa = w.values();
+      Value[] va = new Value[pa.length];
+      for (int i = 0; i < pa.length; i++) {
+        va[i] = rec(pa[i]);
+      }
+      return HArr.create(va, w.shape);
+    }
+    
+    @Override public Obj callInv(Value w) {
+      return recN(w);
+    }
+    private Value recN(Value w) {
+      if (w instanceof BigValue) return ((BigValue) w).num();
+      if (w instanceof Primitive) return w;
+      if (w instanceof DoubleArr) return w;
+      Value[] pa = w.values();
+      Value[] va = new Value[pa.length];
+      for (int i = 0; i < pa.length; i++) {
+        va[i] = recN(pa[i]);
+      }
+      return HArr.create(va, w.shape);
+    }
+    @Override public String repr() {
+      return "⎕BIG";
+    }
+  }
 }

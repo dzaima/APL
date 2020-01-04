@@ -1,7 +1,10 @@
 package APL.types.functions.builtins.fns;
 
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
+
+import java.math.BigInteger;
 
 public class StarBuiltin extends Builtin {
   @Override public String repr() {
@@ -38,6 +41,13 @@ public class StarBuiltin extends Builtin {
     }
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.pow(a[i], w[i]);
+    }
+    public Value call(BigValue a, BigValue w) {
+      if (a.i.signum() == 0) return BigValue.ZERO;
+      if (a.i.equals(BigInteger.ONE)) return BigValue.ONE;
+      if (a.i.equals(BigValue.MINUS_ONE.i)) return w.i.intValue()%2 == 0? BigValue.ONE : BigValue.MINUS_ONE;
+      if (w.i.bitLength() > 30) throw new DomainError("right argument of * too big", w); // otherwise intValue might ignore those!
+      return new BigValue(a.i.pow(w.i.intValue()));
     }
   };
   public Obj call(Value a, Value w) {

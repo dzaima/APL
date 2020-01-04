@@ -1,7 +1,10 @@
 package APL.types.functions.builtins.fns;
 
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
+
+import java.math.BigInteger;
 
 public class ExclBuiltin extends Builtin {
   @Override public String repr() {
@@ -28,6 +31,15 @@ public class ExclBuiltin extends Builtin {
         res[i] = cache[Math.min((int) a[i], 171)];
       }
     }
+    public Value call(BigValue w) {
+      if (w.i.bitLength() > 30) throw new DomainError("argument of ! too big", w); // otherwise intValue might ignore those!
+      int am = w.i.intValue();
+      BigInteger res = BigInteger.ONE;
+      for (int i = 2; i <= am; i++) {
+        res = res.multiply(BigInteger.valueOf(i));
+      }
+      return new BigValue(res);
+    }
   };
   
   public Obj call(Value w) {
@@ -35,6 +47,28 @@ public class ExclBuiltin extends Builtin {
   }
   
   public Obj call(Value a0, Value w0) {
-    return allD((a, w) -> ((Num) w).binomial((Num) a), a0, w0);
+    return allD((a, w) -> {
+      if (a instanceof BigValue || w instanceof BigValue) {
+        
+        BigInteger res = BigInteger.ONE;
+        BigInteger al = BigValue.bigint(w);
+        BigInteger bl = BigValue.bigint(a);
+        if (al.compareTo(bl) < 0) return Num.ZERO;
+  
+        if (bl.compareTo(al.subtract(bl)) > 0) bl = al.subtract(bl);
+        
+        if (bl.bitLength() > 30) throw new DomainError("arguments of ! too big", w);
+        int ri = bl.intValue();
+        
+        for (int i = 0; i < ri; i++) {
+          res = res.multiply(al.subtract(BigInteger.valueOf(i)));
+        }
+        for (int i = 0; i < ri; i++) {
+          res = res.divide(BigInteger.valueOf(i+1));
+        }
+        return new BigValue(res);
+      }
+      return ((Num) w).binomial((Num) a);
+    }, a0, w0);
   }
 }

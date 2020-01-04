@@ -26,6 +26,9 @@ public class LEBuiltin extends Builtin {
     public void on(BitArr.BC res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res.add(a[i] <= w[i]);
     }
+    public Value call(BigValue a, BigValue w) {
+      return a.i.compareTo(w.i) <= 0? Num.ONE : Num.ZERO;
+    }
   };
   
   public Obj call(Value a, Value w) {

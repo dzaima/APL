@@ -11,6 +11,8 @@ public class Num extends Primitive {
   
   public static final Num NEGINF = new Num(Double.NEGATIVE_INFINITY);
   public static final Num POSINF = new Num(Double.POSITIVE_INFINITY);
+  public static final long MAX_SAFE_INT = 9007199254740992L;
+  
   private static DecimalFormat df;
   public static int pp;
   static {
@@ -44,9 +46,6 @@ public class Num extends Primitive {
   
   public static final Num E = new Num("2.71828182845904523536028747135266249775724709369995");
   public static final Num PI = new Num("3.1415926535897932384626433832795028841971693993751");
-  public static final Num I1 = null; // no imaginary numbers :'(
-  @SuppressWarnings("unused") // no, bad
-  public static final Num INFINITY = new Num("1e309");
   public final double num;
   public Num(String val) {
     if (val.startsWith("¯")) {
@@ -65,7 +64,9 @@ public class Num extends Primitive {
   }
   
   public static Num of(int n) {
-    if (n>=0 && n<256) return NUMS[n];
+    if (n>=0 && n<256) {
+      return NUMS[n];
+    }
     if (n==-1) return MINUS_ONE;
     return new Num(n);
   }
@@ -76,22 +77,11 @@ public class Num extends Primitive {
   public Num divide(Num w) {
     return new Num(num / w.num);
   }
-  public Num floorDivide(Num w) {
-    return new Num(Math.floor(num / w.num));
-  }
-  public Num times(Num w) {
-    return new Num(num * w.num);
-  }
   public Num pow(Num w) {
     return new Num(Math.pow(num, w.num));
   }
   public Num minus(Num w) {
     return new Num(num - w.num);
-  }
-  public Num mod(Num base) {
-    double d = num % base.num;
-    if (d < 0) return new Num(d+base.num);
-    return new Num(d);
   }
   
   public static double gcd(double... nums) {
@@ -163,26 +153,6 @@ public class Num extends Primitive {
     }
     return new Num(res);
   }
-  
-  public Num sin() { return new Num(Math.sin(num)); }
-  public Num cos() { return new Num(Math.cos(num)); }
-  public Num tan() { return new Num(Math.tan(num)); }
-  
-  public Num asin() { return new Num(Math.asin(num)); }
-  public Num acos() { return new Num(Math.acos(num)); }
-  public Num atan() { return new Num(Math.atan(num)); }
-  
-  public Num sinh() { return new Num(Math.sinh(num)); }
-  public Num cosh() { return new Num(Math.cosh(num)); }
-  public Num tanh() { return new Num(Math.tanh(num)); }
-  
-  public Num asinh() { throw new DomainError("inverse hyperbolic functions NYI"); }
-  public Num acosh() { throw new DomainError("inverse hyperbolic functions NYI"); }
-  public Num atanh() { throw new DomainError("inverse hyperbolic functions NYI"); }
-  
-  public Num real() { return this; }
-  @SuppressWarnings("SameReturnValue") // no imaginary numbers.. for now
-  public Num imag() { return Num.ZERO; }
   
   
   public Num ceil() {
