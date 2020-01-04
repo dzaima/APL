@@ -68,10 +68,12 @@ public class ChrArr extends Arr {
   
   @Override
   public int hashCode() {
-    int r = 0;
-    for (char c : s.toCharArray()) {
-      r = r*31 + c;
+    if (hash == 0) {
+      for (char c : s.toCharArray()) {
+        hash = hash*31 + c;
+      }
+      hash = shapeHash(hash);
     }
-    return r;
+    return hash;
   }
 }

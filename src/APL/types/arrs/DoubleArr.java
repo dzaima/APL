@@ -183,13 +183,13 @@ public class DoubleArr extends Arr {
     }
     return super.equals(o);
   }
-  int hash;
   @Override public int hashCode() {
-    if (hash != 0) return hash;
-    // hash = 0;
-    for (double d : arr) {
-      hash = hash*31;
-      if (d != 0d) hash+= Double.hashCode(d);
+    if (hash == 0) {
+      for (double d : arr) {
+        hash = hash*31;
+        if (d != 0d) hash += Double.hashCode(d); // ¯0 == 0
+      }
+      hash = shapeHash(hash);
     }
     return hash;
   }

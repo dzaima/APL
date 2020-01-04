@@ -287,15 +287,25 @@ public abstract class Arr extends Value {
     }
     return true;
   }
-  private int hash;
+  protected int hash;
   @Override
   public int hashCode() {
-    if (hash != 0) return hash;
-    // hash = 0;
-    for (Value v : this) {
-      hash = hash*31 + v.hashCode();
+    if (hash == 0) {
+      for (Value v : this) {
+        hash = hash*31 + v.hashCode();
+      }
     }
-    return hash;
+    return shapeHash(hash);
+  }
+  
+  protected int shapeHash(int hash) {
+    int h = 0;
+    for (int i : shape) {
+      h = h*31 + i;
+    }
+    int res = hash*113 + h;
+    if (res == 0) return 100003;
+    return res;
   }
   
   public static int prod(int[] ia) {
