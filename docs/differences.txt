@@ -31,6 +31,9 @@ monadic > & < sort
 ∨ & ∧ & ⍱ & ⍲ monadically are lcm(= some)/gcd(= all)/none/not-all of the array respectively (note that for the last two they're not just ⍲/ or ⍱/ !)
 ⌊, ⌈, ×, - for things with char cases
 
+bigintegers:
+  123L, ⎕BIG (most regular math functions work on them, flooring if necessary)
+
 ⌽[dim] takes dim reversed
 
 ⎕-s:
@@ -45,7 +48,7 @@ monadic > & < sort
   ⎕GC       : force Java garbage collection
   ⎕NULL     : null object (value of undefined keys in maps)
   ⎕HASH     : get hash of the array
-  
+  ⎕BIG      : convert array to bigintegers (⍣¯1 to invert)
   ⎕DEATHLOGGER 'name': log message upon getting garbage collected. This may be removed at any point in time without warning.
     Meant for testing for memory leaks (though make sure to call ⎕GC before concluding anything!)
   ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
