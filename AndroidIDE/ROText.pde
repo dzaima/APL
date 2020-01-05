@@ -51,16 +51,31 @@ class ROText extends Drawable {
   }
   
   ArrayList<String> s;
+  boolean newline;
+  void appendLns(String a) {
+    String[] lns = split(a, "\n");
+    if (newline) {
+      for (String s : lns) append(s);
+    } else {
+      if (s.size()==0) s.add("");
+      s.set(s.size()-1, s.get(s.size()-1)+lns[0]);
+      for (int i = 1; i < lns.length; i++) append(lns[i]);
+    }
+    newline = a.endsWith("\n");
+    if (newline)s.remove(s.size()-1);
+  }
   void append(String a) { // append a line
     s.add(a);
     yoff = h-border;
     xoff = 0;
+    newline = true;
     redraw = true;
   }
   void set(ArrayList<String> a) {
     s = a;
     yoff = h-border;
     xoff = 0;
+    newline = true;
     redraw = true;
   }
   void setSize(int sz) {

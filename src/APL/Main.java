@@ -29,7 +29,7 @@ public class Main {
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
   public static Tokenable faulty;
-  private static Throwable lastError = null;
+  public static Throwable lastError = null;
   public static void main(String[] args) {
     colorful = System.console() != null && System.getenv().get("TERM") != null;
     console = new Scanner(System.in);

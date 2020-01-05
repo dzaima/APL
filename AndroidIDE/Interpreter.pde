@@ -132,9 +132,8 @@ class DzaimaAPL extends Interpreter {
       if (v == null) return new String[0];
       return v.toString().split("\n");
     } catch (APLError e) {
-      TPs nSout = new TPs();
       e.print();
-      return nSout.end().split("\n");
+      return new String[0];
     } catch (Throwable e) {
       ArrayList<String> lns = new ArrayList();
       lns.add(e + ": " + e.getMessage());
@@ -147,60 +146,25 @@ class DzaimaAPL extends Interpreter {
       return lns.toArray(new String[0]);
     }
   }
-  class TPs extends OutputStream {
-    PrintStream oSout;
-    TPs() {
-      oSout = System.out;
-      System.setOut(new PrintStream(this));
-    }
-    ArrayList<Byte> bs = new ArrayList<Byte>();
-    void write(int i) {
-      bs.add((byte)(i&0xff));
-    }
-    String all() {
-      byte[] ba = new byte[bs.size()];
-      int i = 0;
-      for (byte b : bs) {
-        ba[i] = b;
-        i++;
-      }
-      return new String(ba);
-    }
-    String end() {
-      System.out.flush();
-      System.setOut(oSout);
-      return this.all();
-    }
-  }
-  class Ed extends Editor {
-    Ed(String name, String val) {
-      super(name, val);
-    }
-    void save(String val) {
-      dzaimaSC.set(name, Main.exec(val, dzaimaSC));
-    }
-  }
   String[] special(String ex) {
-    if (ex.toLowerCase().startsWith("ed ")) {
-      String nm = ex.substring(3);
-      Obj o = dzaimaSC.get(nm);
-      if (o instanceof Dfn) {
-        topbar.toNew(new Ed(nm, ((Dfn ) o).code.source()));
-      }
-      if (o instanceof Dmop) {
-        topbar.toNew(new Ed(nm, ((Dmop) o).code.source()));
-      }
-      if (o instanceof Ddop) {
-        topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
-      }
-      return new String[0];
-    }
-    TPs nSout = new TPs();
     try {
       Main.ucmd(dzaimaSC, ex);
     } catch (Throwable e) {
       e.printStackTrace();
     }
-    return nSout.end().split("\n");
+    return new String[0];
+  }
+}
+class Ed extends Editor {
+  Ed(String name, String val) {
+    super(name, val);
+  }
+  void save(String val) {
+    try {
+      dzaimaSC.set(name, Main.exec(val, dzaimaSC));
+    } catch (Throwable t) {
+      println(t.getMessage());
+      Main.lastError = t;
+    }
   }
 }

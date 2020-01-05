@@ -199,3 +199,53 @@ class PQNode<M extends Comparable<? super M>, V> {
     return m+"";
   }
 }
+
+
+
+class StrOS extends OutputStream {
+  PrintStream oOut;
+  PrintStream oErr;
+  StrOS() {
+    oOut = System.out;
+    oErr = System.err;
+    System.setOut(new PrintStream(this));
+    System.setErr(new PrintStream(this));
+  }
+  ByteArr bs = new ByteArr();
+  void write(int i) {
+    synchronized(bs) {
+      bs.add((byte)(i&0xff));
+    }
+  }
+  String get() {
+    synchronized(bs) {
+      String res = new String(Arrays.copyOf(bs.arr, bs.used));
+      bs.clear();
+      return res;
+    }
+  }
+  void close() {
+    System.out.flush();
+    System.setOut(oOut);
+    System.setOut(oErr);
+  }
+}
+
+
+
+class ByteArr {
+  byte[] arr = new byte[128];
+  int used = 0;
+  void add(byte b) {
+    if (used+1 == arr.length) arr = Arrays.copyOf(arr, arr.length*2);
+    arr[used] = b;
+    used++;
+  }
+  void get(int i) {
+    assert i>=0 && i<used : "get("+i+") for array of size "+used;
+  }
+  void clear() {
+    used = 0;
+    if (arr.length > 100000) arr = new byte[128];
+  }
+}

@@ -1,4 +1,4 @@
-/* PC
+//* PC
 import java.awt.Toolkit;
 static boolean MOBILE = false;
 class FakeTouch { // for interoperability with android mode

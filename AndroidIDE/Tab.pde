@@ -45,15 +45,22 @@ class REPL extends Tab {
             historyView.set(new ArrayList());
           } else if (nm.equals("g")) {
             topbar.toNew(new Grapher(arg));
-          } else if (nm.equals("top")) {
+          } else if (nm.equals("tsz")) {
             top = int(arg);
             redrawAll();
-          } else if (nm.equals("f")) {
+          } else if (nm.equals("f") || nm.equals("fx")) {
+            boolean ex = nm.equals("fx");
             String[] ps = arg.split("/");
             String[] lns = loadStrings(arg);
             topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
               public void save(String t) {
-                saveStrings(arg, new String[]{t});
+                try {
+                  saveStrings(arg, new String[]{t});
+                  if (ex) Main.exec(a.allText(), dzaimaSC);
+                } catch (Throwable e) {
+                  println(e.getMessage());
+                  Main.lastError = e;
+                }
               }
             });
           } else if (nm.equals("ex")) {
@@ -63,6 +70,17 @@ class REPL extends Tab {
               for (String c : lns) s.append(c).append("\n");
               for (String c : it.get(s.toString())) textln(c);
             } else textln("file "+arg+" not found");
+          } else if (nm.equals("ed")) {
+            Obj o = dzaimaSC.get(arg);
+            if (o instanceof Dfn) {
+              topbar.toNew(new Ed(nm, ((Dfn ) o).code.source()));
+            }
+            if (o instanceof Dmop) {
+              topbar.toNew(new Ed(nm, ((Dmop) o).code.source()));
+            }
+            if (o instanceof Ddop) {
+              topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
+            }
           } else textln("Command "+nm+" not found");
           //else if (nm.equals(""))
           return;
@@ -107,7 +125,12 @@ class REPL extends Tab {
         historyView.append(ln);
       }
       void newline() {
-        eval();
+        try {
+          eval();
+        } catch (Throwable t) {
+          Main.lastError = t;
+          println(t.getMessage());
+        }
         clear();
       }
     };

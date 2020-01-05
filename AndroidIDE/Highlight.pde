@@ -104,6 +104,7 @@ static class SyntaxHighlight {
   void walk(Token t, int dlvl) {
     int dfncol = dlvl < 0? th.err : dlvl >= th.dfn.length? th.dfn[0] : th.dfn[dlvl];
     if (t instanceof NumTok) set(t, th.num);
+    if (t instanceof BigTok) set(t, th.num);
     if (t instanceof SetTok) set(t, th.set);
     if (t instanceof ErrTok) set(t, th.err);
     if (t instanceof StrTok) set(t, th.str);

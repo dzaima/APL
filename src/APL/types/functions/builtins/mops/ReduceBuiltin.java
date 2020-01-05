@@ -22,7 +22,6 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     return ngnReduce(w, dim, (Fun)f);
   }
   
-  @SuppressWarnings({"LoopStatementThatDoesntLoop", "ConstantConditions"}) // goto replacement ftw
   public Obj call(Obj f, Value w, DerivedMop derv) {
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
@@ -48,11 +47,11 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     }
     if (f instanceof CatBuiltin) {
       if (w.ia > 0) {
-        special: do {
+        special: {
           Value first = w.first();
           ArrayList<Value> pre = null;
           int si = 0;
-          typed: do {
+          typed: {
             if (first instanceof ChrArr || first instanceof Char) {
               StringBuilder res = new StringBuilder();
               for (int i = 0; i < w.ia; i++) {
@@ -89,7 +88,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
               }
               return new DoubleArr(ds);
             }
-          } while (false);
+          }
           if (pre == null) pre = new ArrayList<>();
           
           for (int i = si; i < w.ia; i++) {
@@ -98,7 +97,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
             for (Value c : v) pre.add(c);
           }
           return HArr.create(pre.toArray(new Value[0]));
-        } while (false);
+        }
       }
     }
     Value[] a = w.values();

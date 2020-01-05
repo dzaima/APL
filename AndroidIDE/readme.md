@@ -52,9 +52,11 @@ K - open virtual keyboard
 
 :isz sz     change input box font size
 :hsz sz     change REPL history font size
+:tsz sz     change top bar size
 :g expr     graph the expression (editable in the window)
 :clear      clear REPL history
 :f  path    edit file at the path
+:fx path    edit file at the path, executing on save
 :ex path    execute file at the path
-)ed fn      edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)
+:ed fn      edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)
 ```

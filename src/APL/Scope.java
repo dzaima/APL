@@ -151,7 +151,7 @@ public class Scope {
       @SuppressWarnings("deprecation") // as this thing is only used for debugging, this should be fine
       @Override
       protected void finalize() {
-        System.out.println(msg+" died");
+        Main.println(msg+" died");
       }
       public String toString() {
         return "⎕DEATHLOGGER["+msg+"]";

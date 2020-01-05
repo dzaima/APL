@@ -19,14 +19,17 @@ int isz = 30;
 int freey() { // y position of keyboard start
   return height-kb.h;
 }
+StrOS os;
+REPL mainREPL;
 void setup() {
+  os = new StrOS();
   background(#0a0a0a);
   int max = max(width, height);
   top = isz = max/40;
   textFont(createFont("APL385+.ttf", 48));
   newKb();
   topbar = new TopBar(0, 0, width, top);
-  topbar.toNew(new REPL());
+  topbar.toNew(mainREPL = new REPL());
   topbar.show();
   redrawAll();
 }
@@ -62,12 +65,16 @@ void draw() {
     }
     redraw = false;
   }
+  String s = os.get();
+  if (s.length() != 0) {
+    if (mainREPL != null) mainREPL.historyView.appendLns(s);
+  }
   pmousePressed = mousePressed;
 }
 boolean shift, ctrl;
 void keyPressed(KeyEvent e) {
   e = fixKE(e);
-  println(+key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
+  //println(+key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
   shift = e.isShiftDown();
   ctrl  = e.isControlDown();
   //println(e.getNative());
