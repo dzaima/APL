@@ -501,14 +501,31 @@ public class Scope {
         }
         Num ret = Num.of(p.waitFor());
         if (inp != null) p.getOutputStream().write(inp);
-        byte[] out = p.getInputStream().readAllBytes();
-        byte[] err = p.getErrorStream().readAllBytes();
+        byte[] out = readAllBytes(p.getInputStream());
+        byte[] err = readAllBytes(p.getErrorStream());
         if (raw) return new HArr(new Value[]{ret, new DoubleArr(out), new DoubleArr(err)});
         else return new HArr(new Value[]{ret, Main.toAPL(new String(out, StandardCharsets.UTF_8)),
                                               Main.toAPL(new String(err, StandardCharsets.UTF_8))});
       } catch (Throwable e) {
         e.printStackTrace();
         return Null.NULL;
+      }
+    }
+    private byte[] readAllBytes(InputStream is) {
+      try {
+        byte[] res = new byte[512];
+        int used = 0;
+        read: while (true) {
+          while (used < res.length) {
+            int n = is.read(res, used, res.length-used);
+            if (n==-1) break read;
+            used+= n;
+          }
+          if (used==res.length) res = Arrays.copyOf(res, res.length*2);
+        }
+        return Arrays.copyOf(res, used);
+      } catch (IOException e) {
+        throw new DomainError("failed to read I/O");
       }
     }
   }

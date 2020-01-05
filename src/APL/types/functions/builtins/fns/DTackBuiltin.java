@@ -6,7 +6,7 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.*;
 
 public class DTackBuiltin extends Builtin {
   static final DTackBuiltin copy = new DTackBuiltin();
@@ -29,6 +29,18 @@ public class DTackBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     if (!(a instanceof Primitive)) {
+      if (w instanceof BigValue) {
+        ArrayList<Value> res = new ArrayList<>();
+        BigInteger c = ((BigValue) w).i;
+        for (int i = 0; i < a.ia; i++) {
+          Value v = a.get(a.ia-i-1);
+          BigInteger[] dr = c.divideAndRemainder(BigValue.bigint(v));
+          res.add(v instanceof Num? new Num(dr[1].intValue()) : new BigValue(dr[1]));
+          c = dr[0];
+        }
+        Collections.reverse(res);
+        return HArr.create(res.toArray(new Value[0]));
+      }
       int[] sh = new int[w.rank+a.rank];
       if (a.rank != 1) throw new NYIError("⍺ of ⊤ with rank≥2 not yet implemented", this);
 //      for (int i = 0; i < a.rank; i++) sh[i] = a.shape[i];
@@ -58,6 +70,7 @@ public class DTackBuiltin extends Builtin {
     if (!(w instanceof Num)) {
       if (w instanceof BigValue) {
         BigInteger base = BigValue.bigint(a);
+        boolean bigBase = a instanceof BigValue;
         BigInteger wlr = ((BigValue) w).i;
         int sign = wlr.signum();
         BigInteger wl = wlr.abs();
@@ -74,7 +87,7 @@ public class DTackBuiltin extends Builtin {
             char c = str.charAt(i);
             int n = c<='9'? c-'0' : 10+c-'a';
             if (sign==-1) n=-n;
-            res[i] = new BigValue(BigInteger.valueOf(n));
+            res[i] = bigBase? new BigValue(BigInteger.valueOf(n)) : Num.of(n);
           }
           return new HArr(res);
         }
@@ -82,7 +95,7 @@ public class DTackBuiltin extends Builtin {
         while (wl.signum() != 0) {
           BigInteger[] c = wl.divideAndRemainder(base);
           wl = c[0];
-          ns.add(new BigValue(sign==1? c[1] : c[1].negate()));
+          ns.add(bigBase? new BigValue(sign==1? c[1] : c[1].negate()) : new Num(c[1].intValue()*sign));
         }
         Value[] res = new Value[ns.size()];
         for (int i = 0; i < res.length; i++) {

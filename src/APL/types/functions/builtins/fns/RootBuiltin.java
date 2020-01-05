@@ -17,9 +17,6 @@ public class RootBuiltin extends Builtin {
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.sqrt(a[i]);
     }
-    public Value call(BigValue w) {
-      return new BigValue(w.i.sqrt());
-    }
   };
   public Obj call(Value w) {
     return numM(NF, w);
