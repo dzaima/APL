@@ -25,7 +25,7 @@ public class RandBuiltin extends Builtin {
     }
     @Override public void call(double[] res, double[] a) {
       for (int i = 0; i < res.length; i++) {
-        res[i] = a[i]==0? sc.rand(1d) : sc.rand((int) a[i]) + sc.IO;
+        res[i] = a[i]==0? sc.rand(1d) : Math.floor(sc.rand(a[i])) + sc.IO;
       }
     }
     @Override public Value call(BigValue w) {

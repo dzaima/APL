@@ -21,6 +21,12 @@ public class BigValue extends Primitive {
   public BigValue(double d) {
     i = bigint(d);
   }
+  public BigValue(int n) {
+    i = BigInteger.valueOf(n);
+  }
+  public BigValue(long n) {
+    i = BigInteger.valueOf(n);
+  }
   public static BigInteger bigint(Value w) {
     if (w instanceof Num) return bigint(((Num) w).num);
     if (w instanceof BigValue) return ((BigValue) w).i;

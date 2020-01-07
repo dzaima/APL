@@ -6,6 +6,7 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
+import java.math.BigInteger;
 import java.util.*;
 
 import static APL.Main.*;
@@ -22,10 +23,18 @@ public class IotaBuiltin extends Builtin {
   public Obj call(Value w) {
     int IO = sc.IO;
     if (w instanceof Primitive) {
-      double[] res = new double[w.asInt()];
-      if (IO == 0) for (int i = 0; i < res.length; i++) res[i] = i;
-      else         for (int i = 0; i < res.length; i++) res[i] = i + 1;
-      return new DoubleArr(res);
+      if (w instanceof Num) {
+        double[] res = new double[w.asInt()];
+        if (IO == 0) for (int i = 0; i < res.length; i++) res[i] = i;
+        else for (int i = 0; i < res.length; i++) res[i] = i + 1;
+        return new DoubleArr(res);
+      } else if (w instanceof BigValue) {
+        Value[] res = new Value[w.asInt()];
+        for (int i = 0; i < res.length; i++) {
+          res[i] = new BigValue(i+IO);
+        }
+        return new HArr(res);
+      }
     }
     if (Main.vind) return new RhoBarBuiltin(sc).call(w);
     int[] shape = w.asIntVec();

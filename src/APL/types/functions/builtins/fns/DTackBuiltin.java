@@ -80,6 +80,23 @@ public class DTackBuiltin extends Builtin {
           if (ibase < 0) throw new DomainError("⊤: ⍺ < 0", this);
         }
         if (sign==0) return EmptyArr.SHAPE0;
+        if (ibase == 2) {
+          int len = wl.bitLength();
+          if (bigBase) {
+            Value[] res = new Value[len];
+            if (sign==1) for (int i = 0; i < len; i++) res[len-i-1] = wl.testBit(i)? BigValue.      ONE : BigValue.ZERO;
+            else         for (int i = 0; i < len; i++) res[len-i-1] = wl.testBit(i)? BigValue.MINUS_ONE : BigValue.ZERO;
+            return new HArr(res);
+          } else if (sign == 1) {
+            BitArr.BC bc = new BitArr.BC(new int[]{len});
+            for (int i = 0; i < len; i++) bc.add(wl.testBit(len-i-1));
+            return bc.finish();
+          } else {
+            double[] res = new double[len];
+            for (int i = 0; i < len; i++) res[i] = wl.testBit(len-i-1)? -1 : 0;
+            return new DoubleArr(res);
+          }
+        }
         if (ibase <= Character.MAX_RADIX) { // utilize the actually optimized base conversion of BigInteger.toString
           String str = wl.toString(ibase);
           Value[] res = new Value[str.length()];

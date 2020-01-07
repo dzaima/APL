@@ -300,7 +300,7 @@ public abstract class Fun extends Scopeable {
         } else return new Rank0Arr(numD(f, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
-        if (w.quickDoubleArr() && a instanceof Primitive) {
+        if (w.quickDoubleArr() && a instanceof Num) {
           return f.call(a.asDouble(), w.asDoubleArr(), w.shape);
         }
         Value af = a.first();
@@ -314,7 +314,7 @@ public abstract class Fun extends Scopeable {
       }
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
-        if (a.quickDoubleArr() && w instanceof Primitive) {
+        if (a.quickDoubleArr() && w instanceof Num) {
           return f.call(a.asDoubleArr(), w.asDouble(), a.shape);
         }
         Value wf = w.first();
@@ -362,7 +362,7 @@ public abstract class Fun extends Scopeable {
           if (w instanceof BitArr && Main.isBool(a)) {
             return b.call(Main.bool(a), ((BitArr) w));
           }
-          if (w.quickDoubleArr()) {
+          if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
           }
         }
@@ -381,7 +381,7 @@ public abstract class Fun extends Scopeable {
           if (a instanceof BitArr && Main.isBool(w)) {
             return b.call((BitArr) a, Main.bool(w));
           }
-          if (a.quickDoubleArr()) {
+          if (a instanceof Num && a.quickDoubleArr()) {
             return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
           }
         }
@@ -433,7 +433,7 @@ public abstract class Fun extends Scopeable {
         } else return new Rank0Arr(numChrD(n, c, def, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
-        if (a instanceof Primitive && w.quickDoubleArr()) {
+        if (a instanceof Num && w.quickDoubleArr()) {
           return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
         }
         
@@ -448,7 +448,7 @@ public abstract class Fun extends Scopeable {
       }
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
-        if (w instanceof Primitive && a.quickDoubleArr()) {
+        if (w instanceof Num && a.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
         }
         Value wf = w.first();
@@ -496,7 +496,7 @@ public abstract class Fun extends Scopeable {
           if (w instanceof BitArr && Main.isBool(a)) {
             return b.call(Main.bool(a), ((BitArr) w));
           }
-          if (w.quickDoubleArr()) {
+          if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
           }
         }
@@ -515,7 +515,7 @@ public abstract class Fun extends Scopeable {
           if (a instanceof BitArr && Main.isBool(w)) {
             return b.call((BitArr) a, Main.bool(w));
           }
-          if (a.quickDoubleArr()) {
+          if (a instanceof Num && a.quickDoubleArr()) {
             return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
           }
         }
