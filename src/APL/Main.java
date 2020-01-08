@@ -25,7 +25,7 @@ public class Main {
   static final ChrArr lowercaseAlphabet = toAPL("abcdefghijklmnopqrstuvwxyz");
   public static final ChrArr digits = toAPL("0123456789");
   static int printlvl = 0;
-  public static final Error up = null;//new Error("A problem has been detected and APL has been shut down to prevent damage to your computer.");
+  public static final Error up = null;
   static final long startingMillis = System.currentTimeMillis();
   public static Scanner console;
   public static Tokenable faulty;

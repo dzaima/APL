@@ -30,7 +30,7 @@ public class BigValue extends Primitive {
   public static BigInteger bigint(Value w) {
     if (w instanceof Num) return bigint(((Num) w).num);
     if (w instanceof BigValue) return ((BigValue) w).i;
-    throw new Error("using "+w.humanType(true)+" as biginteger");
+    throw new DomainError("using "+w.humanType(true)+" as biginteger");
   }
   public static BigInteger bigint(double d) {
     if (Math.abs(d) > Num.MAX_SAFE_INT) throw new DomainError("creating biginteger from possibly rounded value");

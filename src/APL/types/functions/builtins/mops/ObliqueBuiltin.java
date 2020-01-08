@@ -67,7 +67,7 @@ public class ObliqueBuiltin extends Mop {
       int rrank = res[0].rank; // required rank
       for (int i = 0; i < ram; i++) {
         Value v = (Value) ff.call(new HArr(rows[i]));
-        if (v.rank != rrank) throw new Error("⍶ of ⍁ must return equal rank arrays");
+        if (v.rank != rrank) throw new DomainError("⍶ of ⍁ must return equal rank arrays");
         res[i] = v;
       }
     }

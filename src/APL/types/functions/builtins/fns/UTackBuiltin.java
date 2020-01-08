@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
@@ -28,13 +28,25 @@ public class UTackBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     if (w.rank == 0) throw new DomainError("A⊥num is pointless", this);
-    if (a instanceof BigValue | w.first() instanceof BigValue) {
-      BigInteger al = BigValue.bigint(a);
-      BigInteger res = BigInteger.ZERO;
-      for (int i = 0; i < w.ia; i++) {
-        res = res.multiply(al).add(BigValue.bigint(w.get(i)));
+    if (a instanceof BigValue || a.first() instanceof BigValue || w.first() instanceof BigValue) {
+      if (a.rank == 0) {
+        BigInteger al = BigValue.bigint(a);
+        BigInteger res = BigInteger.ZERO;
+        for (int i = 0; i < w.ia; i++) {
+          res = res.multiply(al).add(BigValue.bigint(w.get(i)));
+        }
+        return new BigValue(res);
+      } else {
+        if (w.rank != 1) throw new NYIError("1<≢⍴⍵ for ⊥");
+        if (a.rank != 1) throw new DomainError("1<≢⍴⍺ for ⊥");
+        if (a.ia != w.shape[0]) throw new DomainError("(≢⍺) ≠ ≢⍵ for ⊥", this);
+        BigInteger res = BigInteger.ZERO;
+        for (int i = 0; i < a.ia; i++) {
+          res = res.multiply(BigValue.bigint(a.get(i)));
+          res = res.add(BigValue.bigint(w.get(i)));
+        }
+        return new BigValue(res);
       }
-      return new BigValue(res);
     }
     if (a instanceof Num) {
       double base = a.asDouble();

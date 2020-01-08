@@ -89,7 +89,7 @@ public final class BitArr extends Arr {
   @Override public double[] asDoubleArr() {
     double[] res = new double[ia];
     int ctr = 0;
-    for (int i = 0; i < arr.length-1; i++) {
+    for (int i = 0; i < ia/64; i++) {
       long cl = arr[i];
       for (int j = 0; j < 64; j++) {
         res[ctr++] = cl&1;
