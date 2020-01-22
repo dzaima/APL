@@ -46,7 +46,7 @@ public class VarArr extends Settable {
   
   public static Obj of (ArrayList<Obj> vs) {
     int sz = vs.size();
-    if (sz == 0) return EmptyArr.SHAPE0;
+    if (sz == 0) return EmptyArr.SHAPE0Q;
     Obj fst = vs.get(0);
     if (fst instanceof Num) {
       if (((Num) fst).num == 0 || ((Num) fst).num == 1) {

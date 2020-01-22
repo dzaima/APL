@@ -215,8 +215,7 @@ public class Num extends Primitive {
     return Double.hashCode(num);
   }
   
-  @Override
-  public Value prototype() {
+  public Value safePrototype() {
     return ZERO;
   }
   

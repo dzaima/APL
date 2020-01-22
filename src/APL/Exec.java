@@ -601,11 +601,11 @@ public class Exec {
         }
         return map;
       } else {
-        Obj fo = Main.exec(fst, sc);
+        Obj fo = Main.oexec(fst, sc);
         if (fo instanceof Value) {
           Value[] vs = new Value[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = Main.exec(ts.get(i), sc);
+            Obj o = Main.oexec(ts.get(i), sc);
             if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true));
             vs[i] = (Value) o;
           }
@@ -613,7 +613,7 @@ public class Exec {
         } else if (fo instanceof Fun) {
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = Main.exec(ts.get(i), sc);
+            Obj o = Main.oexec(ts.get(i), sc);
             if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true));
             os[i] = o;
           }

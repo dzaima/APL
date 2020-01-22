@@ -35,7 +35,7 @@ public class LShoeBuiltin extends Builtin {
         cpart.add(vals[i]);
         if (am > 0) {
           parts.add(new DoubleArr(cpart));
-          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0);
+          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0N);
           cpart.clear();
         }
       }
@@ -50,7 +50,7 @@ public class LShoeBuiltin extends Builtin {
         cpart.add(vals[i]);
         if (am > 0) {
           parts.add(Arr.create(cpart.toArray(new Value[0])));
-          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0);
+          for (int j = 0; j < am - 1; j++) parts.add(new EmptyArr(EmptyArr.SHAPE0, w.safePrototype()));
           cpart.clear();
         }
       }

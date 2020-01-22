@@ -35,11 +35,12 @@ public class Rank0Arr extends Arr {
     throw new DomainError("array with non-char element used as string");
   }
   
-  @Override
   public Value prototype() {
-    return new Rank0Arr(item.prototype());
+    return item.prototype();
   }
-  
+  public Value safePrototype() {
+    return item.safePrototype();
+  }
   @Override
   public Value ofShape(int[] sh) {
     assert ia == Arr.prod(sh);

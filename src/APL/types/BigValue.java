@@ -68,7 +68,8 @@ public class BigValue extends Primitive {
   public int hashCode() {
     return i.hashCode();
   }
-  @Override public Value prototype() {
+  
+  public Value safePrototype() {
     return ZERO;
   }
   public static BigInteger MIN_INT = BigInteger.valueOf(Integer.MIN_VALUE);

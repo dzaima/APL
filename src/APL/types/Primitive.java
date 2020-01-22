@@ -39,11 +39,14 @@ public abstract class Primitive extends Value {
     throw new DomainError("using " + this.oneliner() + " as string", this);
   }
   
-  @Override
-  public Value prototype() {
-    throw new DomainError("getting prototype of "+this, this);
+  public final Value prototype() {
+    Value v = safePrototype();
+    if (v==null) throw new DomainError("getting prototype of "+this, this);
+    return v;
   }
-  
+  public Value safePrototype() {
+    return null;
+  }
   @Override
   public Value with(Value what, int[] where) {
     if (where.length == 0) return what;

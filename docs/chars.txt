@@ -1,6 +1,6 @@
 fns:
  dyadic  monadic
-+   add; conjugate
++   add; identity (no complex numbers)
 -   sub; negate / swap case
 ×   mul; sign / case (i.e. ×'Hi ' → 1 ¯1 0) / ×|map
 ÷   div; 1÷⍵

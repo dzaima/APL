@@ -87,8 +87,10 @@ public class DoubleArr extends Arr {
     throw new DomainError("using double array as string", this);
   }
   
-  @Override
   public Value prototype() {
+    return Num.ZERO;
+  }
+  public Value safePrototype() {
     return Num.ZERO;
   }
   

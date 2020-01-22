@@ -71,8 +71,7 @@ public class Char extends Primitive {
     return chr;
   }
   
-  @Override
-  public Value prototype() {
+  public Value safePrototype() {
     return SPACE;
   }
 }

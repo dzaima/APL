@@ -47,7 +47,7 @@ public class DTackBuiltin extends Builtin {
 //      for (int i = 0; i < w.rank; i++) sh[i+a.rank] = w.shape[i];
       System.arraycopy(a.shape, 0, sh, 0, a.rank); // yes yes this only works for a.rank==1
       System.arraycopy(w.shape, 0, sh, a.rank, w.rank);
-      if (a.ia == 0) return new EmptyArr(sh);
+      if (a.ia == 0) return new EmptyArr(sh, Num.ZERO);
       double[] c = w.asDoubleArrClone();
       double[] b = a.asDoubleArr();
       double[] res = new double[w.ia * a.ia];
@@ -79,7 +79,7 @@ public class DTackBuiltin extends Builtin {
           if (ibase==1 && sign!=0) throw new DomainError("⍺=1 and ⍵≠0 isn't possible", this, w);
           if (ibase < 0) throw new DomainError("⊤: ⍺ < 0", this);
         }
-        if (sign==0) return EmptyArr.SHAPE0;
+        if (sign==0) return EmptyArr.SHAPE0N;
         if (ibase == 2) {
           int len = wl.bitLength();
           if (bigBase) {

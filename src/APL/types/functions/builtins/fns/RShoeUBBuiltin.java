@@ -23,7 +23,7 @@ public class RShoeUBBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
 //    return new EachBuiltin().derive(new SquadBuiltin(sc)).call(a, (Value)new LShoeBuiltin().call(w));
-    if (a.ia == 0) return EmptyArr.SHAPE0;
+    if (a.ia == 0) return EmptyArr.SHAPE0Q;
     if (w instanceof APLMap) {
       Value[] res = new Value[a.ia];
       APLMap map = (APLMap) w;

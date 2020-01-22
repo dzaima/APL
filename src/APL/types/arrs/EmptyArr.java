@@ -6,9 +6,13 @@ import APL.types.*;
 import java.util.Arrays;
 
 public class EmptyArr extends Arr {
-  public static final EmptyArr SHAPE0 = new EmptyArr(new int[]{0});
-  public EmptyArr(int[] sh) {
+  public static final EmptyArr SHAPE0Q = new EmptyArr(new int[]{0}, null);
+  public static final EmptyArr SHAPE0N = new EmptyArr(new int[]{0}, Num.ZERO);
+  public static final int[] SHAPE0 = new int[]{0};
+  private final Value proto;
+  public EmptyArr(int[] sh, Value proto) {
     super(sh, 0, sh.length);
+    this.proto = proto;
   }
   
   @Override
@@ -32,15 +36,18 @@ public class EmptyArr extends Arr {
     return "";
   }
   
-  @Override
   public Value prototype() {
-    return this;
+    if (proto == null) throw new DomainError("couldn't get prototype", this);
+    return proto;
+  }
+  public Value safePrototype() {
+    return proto;
   }
   
   @Override
   public Value ofShape(int[] sh) {
     assert ia == Arr.prod(sh);
-    return new EmptyArr(sh);
+    return new EmptyArr(sh, proto);
   }
   
   private static final Value[] NO_VALUES = new Value[0];

@@ -35,10 +35,11 @@ public abstract class Arr extends Value {
   }
   public String toString() {
     if (ia == 0) {
-      if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬";
+      String mr = safePrototype() instanceof Char? "''" : "⍬";
+      if (rank == 1) return mr;
       else {
         String s = Main.formatAPL(shape);
-        return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬");
+        return s + "⍴" + mr;
       }
     }
     String qs = string(Main.quotestrings || Main.noBoxing);
@@ -238,7 +239,7 @@ public abstract class Arr extends Value {
   }
   
   public static Arr create(Value[] v, int[] sh) { // note, doesn't attempt individual item squeezing
-    if (v.length == 0) return new EmptyArr(sh);
+    if (v.length == 0) return new EmptyArr(sh, null);
     if (v[0] instanceof Num) {
       double[] da = new double[v.length];
       for (int i = 0; i < v.length; i++) {

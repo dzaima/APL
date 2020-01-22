@@ -55,16 +55,16 @@ public class LogBuiltin extends Builtin {
     }
     public Value call(double a, BigValue w) {
       double res = ((Num) NF.call(w)).num/Math.log(a);
-      if (a==2) { // make sure 2⍟ makes sense
+      if (a==2) { // quick path to make sure 2⍟ makes sense
         int expected = w.i.bitLength()-1;
-        System.out.println(res+" > "+expected);
+        // System.out.println(res+" > "+expected);
         if (res < expected)   return Num.of(expected);
         if (res >=expected+1) { // have to get the double juuuust below expected
           long repr = Double.doubleToRawLongBits(expected+1);
           repr--; // should be safe as positive int values are always well into the proper double domain
           return new Num(Double.longBitsToDouble(repr));
         }
-      }
+        }
       return new Num(res);
     }
   };

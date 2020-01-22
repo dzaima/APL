@@ -44,8 +44,10 @@ public class ChrArr extends Arr {
     return s;
   }
   
-  @Override
   public Value prototype() {
+    return Char.SPACE;
+  }
+  public Value safePrototype() {
     return Char.SPACE;
   }
   

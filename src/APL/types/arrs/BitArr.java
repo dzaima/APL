@@ -115,7 +115,10 @@ public final class BitArr extends Arr {
     throw new DomainError("using bit arr as string");
   }
   
-  @Override public Value prototype() {
+  public Value prototype() {
+    return Num.ZERO;
+  }
+  public Value safePrototype() {
     return Num.ZERO;
   }
   

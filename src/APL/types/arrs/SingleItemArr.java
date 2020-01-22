@@ -42,11 +42,12 @@ public class SingleItemArr extends Arr {
     return s.toString();
   }
   
-  @Override
   public Value prototype() {
     return item.prototype();
   }
-  
+  public Value safePrototype() {
+    return item.safePrototype();
+  }
   @Override
   public Value ofShape(int[] sh) {
     assert ia == Arr.prod(sh);

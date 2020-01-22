@@ -22,7 +22,7 @@ public class ObliqueBuiltin extends Mop {
     int szM = H > W? H : W;
     int szm = H > W? W : H;
     int ram = H + W - 1;
-    if (ram <= 0) return EmptyArr.SHAPE0;
+    if (ram <= 0) return new EmptyArr(EmptyArr.SHAPE0, w.safePrototype());
     
     Value[] res = new Value[ram];
     

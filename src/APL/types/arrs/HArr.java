@@ -62,12 +62,14 @@ public class HArr extends Arr {
     return r.toString();
   }
   
-  @Override
   public Value prototype() {
-    if (ia == 0) return EmptyArr.SHAPE0;
-    return get(0) instanceof Primitive? get(0).prototype() : EmptyArr.SHAPE0;
+    if (ia == 0) throw new DomainError("failed to get prototype", this);
+    return arr[0].prototype();
   }
-  
+  public Value safePrototype() {
+    if (ia == 0) return null;
+    return arr[0].safePrototype();
+  }
   @Override
   public Value[] values() {
     return arr;

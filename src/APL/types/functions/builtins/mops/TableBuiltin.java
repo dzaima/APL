@@ -15,7 +15,7 @@ public class TableBuiltin extends Mop {
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
     
-    if (a.ia==0 || w.ia==0) return new EmptyArr(shape);
+    if (a.ia==0 || w.ia==0) return new EmptyArr(shape, a.safePrototype());
     
     Fun ff = (Fun) f;
     
