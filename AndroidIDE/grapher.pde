@@ -1,4 +1,4 @@
-class Graph extends Plane {
+static class Graph extends Plane {
   LL<Point> points = new LL<Point>();
   PQ<Double, Point> pq = new PQ<Double, Point>();
   double[] b;
@@ -35,29 +35,29 @@ class Graph extends Plane {
         if (Double.isNaN(y)) {
           if (drawing) {
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else if (y == Double.POSITIVE_INFINITY) {
           if (drawing) {
-            vertex(realX(x*scale), realY(fullY));
+            d.vertex(realX(x*scale), realY(fullY));
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else if (y==Double.NEGATIVE_INFINITY) {
           if (drawing) {
-            vertex(realX(x*scale), realY(fullY + height/fullS));
+            d.vertex(realX(x*scale), realY(fullY + d.height/fullS));
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else {
           if (!drawing) {
             drawing = true;
-            beginShape();
+            d.beginShape();
           }
-          vertex(realX(x*scale), realY(-y*scale));
+          d.vertex(realX(x*scale), realY(-y*scale));
         }
       }
-      if (drawing) endShape();
+      if (drawing) d.endShape();
     }
   }
   
@@ -146,9 +146,9 @@ class Graph extends Plane {
       } else break;
     }
     
-    noFill();
-    stroke(0xffd2d2d2);
-    strokeWeight(ph);
+    d.noFill();
+    d.stroke(0xffd2d2d2);
+    d.strokeWeight(ph);
     n = points.first();
     if (joined && n != points.end && n.next != points.end) {
       ArrayList<Line> lns = new ArrayList<Line>();
@@ -173,13 +173,13 @@ class Graph extends Plane {
       }
       for(Line l : lns) l.draw();
     } else {
-      fill(0xffd2d2d2);
-      noStroke();
+      d.fill(0xffd2d2d2);
+      d.noStroke();
       //beginShape(POINTS);
       //strokeWeight(ph);
       while (n != points.end) {
-        //for (double y : n.v.y) vertex ((float)(n.v.x*scale), -(float)(y*scale));
-          for (double y : n.v.y) ellipse(realX(n.v.x*scale), realY(-y*scale), ph, ph);
+        //for (double y : n.v.y) d.vertex ((float)(n.v.x*scale), -(float)(y*scale));
+          for (double y : n.v.y) d.ellipse(realX(n.v.x*scale), realY(-y*scale), ph, ph);
         n = n.next;
       }
       //endShape();
@@ -235,8 +235,8 @@ class Graph extends Plane {
   void bounds() {
     b = new double[] {
       fullX/scale, // starting visible x
-      (fullX + width/fullS)/scale, // ending visible x
-      (width/fullS)/scale / pts,
+      (fullX + d.width/fullS)/scale, // ending visible x
+      (d.width/fullS)/scale / pts,
     };
   }
   
@@ -337,8 +337,8 @@ class Graph extends Plane {
     double pS = fullS;
     fullS*= sc;
     double scalechange = 1/fullS - 1/pS;
-    fullX-= (mouseX * scalechange);
-    fullY-= (mouseY * scalechange);
+    fullX-= (a.mouseX * scalechange);
+    fullY-= (a.mouseY * scalechange);
   }
 
 }

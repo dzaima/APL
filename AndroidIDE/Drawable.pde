@@ -1,4 +1,4 @@
-class Drawable {
+static class Drawable {
   int x, y;
   int w, h;
   boolean visible;
@@ -41,7 +41,7 @@ class Drawable {
   }
   void align(int dir) {
     switch(dir) {
-      case BOTTOM: move(x, height-h);
+      case BOTTOM: move(x, d.height-h);
     }
   }
   final void delete() {
@@ -50,7 +50,7 @@ class Drawable {
     x = y = w = h = -1111111;
   }
   boolean mouseInMe() {
-    return mouseX > x && mouseY > y && mouseX < x+w && mouseY < y+h;
+    return a.mouseX > x && a.mouseY > y && a.mouseX < x+w && a.mouseY < y+h;
   }
   boolean smouseIn() {
     return smouseX > x && smouseY > y && smouseX < x+w && smouseY < y+h;

@@ -1,4 +1,4 @@
-//* PC
+/* PC
 import java.awt.Toolkit;
 static boolean MOBILE = false;
 class FakeTouch { // for interoperability with android mode
@@ -11,8 +11,8 @@ void psDraw() {
   else touches = new FakeTouch[0];
 }
 void settings() {
-  size(540, 830);
-  //size(830, 540);
+  //size(540, 830);
+  size(960, 540);
 }
 
 import java.awt.datatransfer.*;
@@ -71,14 +71,14 @@ void psDraw() {
 }
 
 void prepareClip() {
-  if (a == null) {
-    a = getActivity();
-    b = (ClipboardManager) a.getSystemService(Context.CLIPBOARD_SERVICE);
+  if (cba == null) {
+    cba = getActivity();
+    cbcm = (ClipboardManager) cba.getSystemService(Context.CLIPBOARD_SERVICE);
   }
 }
 
-Activity a;
-ClipboardManager b;
+Activity cba;
+ClipboardManager cbcm;
 
 
 void copy(final String s) {
@@ -86,7 +86,7 @@ void copy(final String s) {
     public void run() {
       prepareClip();
       ClipData clip = android.content.ClipData.newPlainText("wtf", s);
-      b.setPrimaryClip(clip);
+      cbcm.setPrimaryClip(clip);
     }
   });
 }
@@ -95,9 +95,9 @@ void paste(Drawable rec) {
   getActivity().runOnUiThread(new Runnable() {
     public void run() {
       prepareClip();
-      if (b.hasPrimaryClip()) {
-        ClipData clip = b.getPrimaryClip();
-        gottenClip = clip.getItemAt(0).coerceToText(a).toString();
+      if (cbcm.hasPrimaryClip()) {
+        ClipData clip = cbcm.getPrimaryClip();
+        gottenClip = clip.getItemAt(0).coerceToText(cba).toString();
       }
     }
   });
@@ -130,4 +130,5 @@ KeyEvent fixKE(KeyEvent e) {
     (n.  isAltPressed() ? Event.ALT   : 0)
   , e.getKey(), e.getKeyCode());
 }
+
 //*/

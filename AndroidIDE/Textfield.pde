@@ -1,4 +1,4 @@
-class APLField extends Drawable implements TextReciever {
+static class APLField extends Drawable implements TextReciever {
   float tsz, chw;
   SyntaxHighlight hl;
   Theme th = new Theme();
@@ -19,8 +19,9 @@ class APLField extends Drawable implements TextReciever {
   
   void redraw() {
     tsz = h/extraH;
-    textSize(tsz);
-    chw = textWidth("H");
+    d.textSize(tsz);
+    if (hl!=null) hl.g = d;
+    chw = d.textWidth("H");
   }
   boolean saveUndo = true;
   boolean modified = false;
@@ -29,11 +30,11 @@ class APLField extends Drawable implements TextReciever {
   int hptr = 0; // points to the current modification
   void tick() {
     if (!visible) return;
-    if (mousePressed && !pmousePressed && smouseIn()) {
+    if (a.mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
-    if (mousePressed && smouseIn()) {
-      xoff+= mouseX-pmouseX;
+    if (a.mousePressed && smouseIn()) {
+      xoff+= a.mouseX-a.pmouseX;
     }
     float maxx = w*.8/chw > line.length()? 0 : (line.length() - 2)*chw;
     if (xoff < -maxx) xoff = (int) -maxx;
@@ -41,7 +42,7 @@ class APLField extends Drawable implements TextReciever {
     
     if (modified || saveUndo) {
       modified();
-      hl = new SyntaxHighlight(line, th, g);
+      hl = new SyntaxHighlight(line, th, d);
       modified = false;
     }
     if (saveUndo) {
@@ -50,44 +51,44 @@ class APLField extends Drawable implements TextReciever {
       history[hptr] = new State(allText(), sx, ex);
       saveUndo = false;
     }
-    clip(x, y, w, h);
-    if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
-      textSize(tsz);
-      sx = constrain(round((mouseX-x-xoff)/textWidth("H")), 0, line.length());
+    d.clip(x, y, w, h);
+    if (pmousePressed && !a.mousePressed && smouseIn() && dist(a.mouseX, a.mouseY, smouseX, smouseY) < 10) {
+     d. textSize(tsz);
+      sx = constrain(round((a.mouseX-x-xoff)/d.textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;
     }
-    fill(#101010);
-    noStroke();
-    rectMode(CORNER);
-    rect(x, y, w, h);
+    d.fill(#101010);
+    d.noStroke();
+    d.rectMode(CORNER);
+    d.rect(x, y, w, h);
     //text(line, x, y + dy*tsz + h*.1);
     if (apl()) hl.draw(x + xoff, y, tsz, sx); //SyntaxHighlight.apltext(line, x, y + dy*tsz + h*.1, tsz, new Theme(), g);
     else {
-      fill(#D2D2D2);
-      g.textAlign(LEFT, TOP);
-      textSize(tsz);
-      textS(line, x + xoff, y);
+      d.fill(#D2D2D2);
+      d.textAlign(LEFT, TOP);
+      d.textSize(tsz);
+      textS(d, line, x + xoff, y);
     }
     tt--;
     if (tt < 0) tt = 60;
     
-    float spx = x + max(textWidth(line.substring(0, sx)), 3) + xoff;
-    float epx = x + max(textWidth(line.substring(0, ex)), 3) + xoff;
+    float spx = x + max(d.textWidth(line.substring(0, sx)), 3) + xoff;
+    float epx = x + max(d.textWidth(line.substring(0, ex)), 3) + xoff;
     float sy = y + h*.1;
     float ey = y + h*.9;
     if (tt > 30 || this != textInput) {
-      strokeWeight(tsz*.05);
-      stroke(th.caret);
-      line(epx, sy, epx, ey);
+      d.strokeWeight(tsz*.05);
+      d.stroke(th.caret);
+      d.line(epx, sy, epx, ey);
     }
     if (!one()) {
-      fill(0x20ffffff);
-      noStroke();
-      rectMode(CORNERS);
-      rect(spx, sy, epx, ey);
+      d.fill(0x20ffffff);
+      d.noStroke();
+      d.rectMode(CORNERS);
+      d.rect(spx, sy, epx, ey);
     }
-    noClip();
+    d.noClip();
   }
   
   String line;
@@ -151,16 +152,16 @@ class APLField extends Drawable implements TextReciever {
     if (s.equals("eval")) {
       eval();
     } else if (s.equals("left")) {
-      if (sx!=ex && !cshift()) {
+      if (sx!=ex && !a.cshift()) {
         sx = ex = Math.min(sx, ex);
       } else {
         ex = Math.max(0, ex-1);
-        if (ctrl) {
+        if (a.ctrl) {
           while (ex>0 && !Character.isAlphabetic(line.charAt(ex))) ex--;
           while (ex>0 &&  Character.isAlphabetic(line.charAt(ex))) ex--;
           if (ex<line.length() && !Character.isAlphabetic(line.charAt(ex))) ex++;
         }
-        if (!cshift()) sx = ex;
+        if (!a.cshift()) sx = ex;
       }
     }//asdas    asdas asd asd a   sdasda
     else if (s.equals("right")) {
@@ -225,7 +226,7 @@ class APLField extends Drawable implements TextReciever {
       else {
         int min = min(sx, ex);
         int max = max(sx, ex);
-        copy(line.substring(min, max));
+        a.copy(line.substring(min, max));
       }
     }
     else if (s.equals("cut")) {
@@ -235,7 +236,7 @@ class APLField extends Drawable implements TextReciever {
       }
     }
     else if (s.equals("paste")) {
-      paste(this);
+      a.paste(this);
     }
     else if (s.equals("match")) {
       int sel = hl.sel(sx);

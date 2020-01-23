@@ -8,45 +8,61 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
-ArrayList<Drawable> screen = new ArrayList();
-TextReciever textInput;
 
-Keyboard kb;
 
-TopBar topbar;
-int top = 30;
-int isz = 30;
-int freey() { // y position of keyboard start
-  return height-kb.h;
+static PGraphics d;
+static AndroidIDE a;
+
+
+static ArrayList<Drawable> screen;
+
+static TextReciever textInput;
+static Keyboard kb;
+
+static TopBar topbar;
+static int top = 30;
+static int isz = 30;
+static int freey() { // y position of keyboard start
+  return a.height-kb.h;
 }
-StrOS os;
-REPL mainREPL;
+static StrOS os;
+static REPL mainREPL;
+
+
+
 void setup() {
-  os = new StrOS();
+  d = g;
+  a = this;
+  if (screen==null) screen = new ArrayList();
   background(#0a0a0a);
   int max = max(width, height);
   top = isz = max/40;
-  textFont(createFont("APL385+.ttf", 48));
+  
+  
   newKb();
-  topbar = new TopBar(0, 0, width, top);
-  topbar.toNew(mainREPL = new REPL());
-  topbar.show();
+  if (topbar==null) { // don't reset variables if orientation has changed
+    os = new StrOS();
+    topbar = new TopBar(0, 0, width, top);
+    topbar.toNew(mainREPL = new REPL());
+    topbar.show();
+  }
+  textFont(createFont("APL385+.ttf", 48));
   redrawAll();
 }
-boolean redraw;
+static boolean redraw;
 void newKb() {
   if (width>height) keyboard(0, 0, width, width/3, "L.json");
   else              keyboard(0, 0, width, (int)(width*.8), "P.json");
 }
-void redrawAll() {
+static void redrawAll() {
   //if (width != w || h != height) surface.setSize(w, h);
   redraw = true;
-  newKb();
-  topbar.resize(width, top);
+  a.newKb();
+  topbar.resize(d.width, top);
 }
-boolean pmousePressed;
-int smouseX, smouseY;
-int mouseStart;
+static boolean pmousePressed;
+static int smouseX, smouseY;
+static int mouseStart;
 void draw() {
   psDraw();
   if (!pmousePressed && mousePressed) {
@@ -71,8 +87,12 @@ void draw() {
   }
   pmousePressed = mousePressed;
 }
-boolean shift, ctrl;
+static boolean shift, ctrl;
 void keyPressed(KeyEvent e) {
+  //if (key == 'Q') {
+  //  surface.setSize(height, width);
+  //  redrawAll();
+  //}
   e = fixKE(e);
   //println(+key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
   shift = e.isShiftDown();
@@ -104,16 +124,13 @@ void keyReleased(KeyEvent e) {
   shift = e.isShiftDown();
 }
 
-boolean shift() {
+static boolean shift() {
   return shift || (textInput!=null? kb.shiftMode>0 : false);
 }
-boolean cshift() {
+static boolean cshift() {
   boolean r = shift || (kb!=null? kb.shiftMode>0 : false);
   if (kb!=null && kb.shiftMode>0) kb.shiftMode = 2;
   return r;
-}
-void textS(String s, float x, float y) {
-  textS(g, s, x, y);
 }
 static void textS(PGraphics g, String s, float x, float y) {
   g.text(s, x, y + (MOBILE? g.textSize*.333 : 0));

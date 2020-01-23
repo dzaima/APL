@@ -1,4 +1,4 @@
-abstract class Tab {
+abstract static class Tab {
   abstract void show();
   abstract void hide();
   abstract String name();
@@ -7,15 +7,15 @@ abstract class Tab {
 
 
 
-class REPL extends Tab {
+static class REPL extends Tab {
   final ROText historyView;
   final APLField input;
   ArrayList<String> inputs = new ArrayList();
   String tmpSaved;
   int iptr = 0; // can be ==input.size()
   REPL() {
-    historyView = new ROText(0, top, width, 340-top);
-    input = new APLField(0, 350, width, 40) {
+    historyView = new ROText(0, top, a.width, 340-top);
+    input = new APLField(0, 350, a.width, 40) {
       boolean apl() {
         return !(line.startsWith(":") || line.startsWith(")"));
       }
@@ -49,14 +49,14 @@ class REPL extends Tab {
             top = int(arg);
             redrawAll();
           } else if (nm.equals("f") || nm.equals("fx")) {
-            boolean ex = nm.equals("fx");
+            final boolean ex = nm.equals("fx");
             String[] ps = arg.split("/");
-            String[] lns = loadStrings(arg);
+            String[] lns = a.loadStrings(arg);
             topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
               public void save(String t) {
                 try {
-                  saveStrings(arg, new String[]{t});
-                  if (ex) Main.exec(a.allText(), dzaimaSC);
+                  a.saveStrings(arg, new String[]{t});
+                  if (ex) Main.exec(ta.allText(), dzaimaSC);
                 } catch (Throwable e) {
                   println(e.getMessage());
                   Main.lastError = e;
@@ -64,7 +64,7 @@ class REPL extends Tab {
               }
             });
           } else if (nm.equals("ex")) {
-            String[] lns = loadStrings(arg);
+            String[] lns = a.loadStrings(arg);
             if (lns != null) {
               StringBuilder s = new StringBuilder();
               for (String c : lns) s.append(c).append("\n");
@@ -137,12 +137,12 @@ class REPL extends Tab {
   }
   void show() {
     int ih = int(isz*input.extraH);
-    noStroke();
-    fill(#101010);
-    rectMode(CORNER);
-    rect(0, top, width, freey()-top-ih);
-    input.move(0, freey()-ih, width, ih);
-    historyView.move(0, top, width, freey()-top-ih);
+    d.noStroke();
+    d.fill(#101010);
+    d.rectMode(CORNER);
+    d.rect(0, top, d.width, freey()-top-ih);
+    input.move(0, freey()-ih, d.width, ih);
+    historyView.move(0, top, d.width, freey()-top-ih);
     historyView.end();
     input.show();
     historyView.show();
@@ -160,14 +160,14 @@ class REPL extends Tab {
 
 
 
-abstract class Editor extends Tab {
+abstract static class Editor extends Tab {
   String name;
-  APLTextarea a;
+  APLTextarea ta;
   Editor(String name, String val) {
     this.name = name;
-    a = new APLTextarea(0, 0, 0, 0) {
+    ta = new APLTextarea(0, 0, 0, 0) {
       void eval() {
-        save(a.allText());
+        save(ta.allText());
       }
       void extraSpecial(String s) {
         if (s.equals("close")) {
@@ -176,17 +176,17 @@ abstract class Editor extends Tab {
         } else println("unknown special " + s);
       }
     };
-    a.append(val);
-    a.cx = a.cy = 0;
+    ta.append(val);
+    ta.cx = ta.cy = 0;
   }
   abstract void save(String val);
   void show() {
-    a.move(0, top, width, freey()-top);
-    a.show();
-    textInput = a;
+    ta.move(0, top, d.width, freey()-top);
+    ta.show();
+    textInput = ta;
   }
   void hide() {
-    a.hide();
+    ta.hide();
   }
   String name() {
     return name;
@@ -194,13 +194,13 @@ abstract class Editor extends Tab {
 }
 
 
-class Grapher extends Tab {
+static class Grapher extends Tab {
   Graph g;
   final APLField input;
   Obj last;
   Grapher(String def) {
-    g = new Graph(0, top, width, freey()-top-isz);
-    input = new APLField(0, 350, width, 40, def) {
+    g = new Graph(0, top, d.width, freey()-top-isz);
+    input = new APLField(0, 350, d.width, 40, def) {
       void eval() {
         modified();
       }
@@ -221,9 +221,9 @@ class Grapher extends Tab {
   
   void show() {
     int ih = int(isz*input.extraH);
-    g.move(0, top, width, freey()-top-ih);
+    g.move(0, top, d.width, freey()-top-ih);
     g.show();
-    input.move(0, freey()-ih, width, ih);
+    input.move(0, freey()-ih, d.width, ih);
     input.show();
     textInput = input;
   }

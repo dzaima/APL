@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="0.1.4" package="dzaima.aplide">
     <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="28"/>
     <application android:icon="@mipmap/ic_launcher" android:label="">
-        <activity android:name=".MainActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <activity android:configChanges="orientation|screenSize" android:name=".MainActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

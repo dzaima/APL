@@ -9,7 +9,7 @@ static class SyntaxHighlight {
   final int[] pairs;
   final int[] mark;
   final Theme th;
-  final PGraphics g;
+  PGraphics g;
   SyntaxHighlight(String s, Theme th, PGraphics g) {
     this.g = g;
     this.th = th;
@@ -173,7 +173,7 @@ static class SyntaxHighlight {
     }
   }
 }
-class Theme {
+static class Theme {
   int def = #D2D2D2;
   int err = #FF0000;
   int com = #BBBBBB;

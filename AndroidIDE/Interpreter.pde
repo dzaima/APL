@@ -1,16 +1,16 @@
-Interpreter it = new DzaimaAPL(); // current interpreter
+static Interpreter it = new DzaimaAPL(); // current interpreter
 
 
-abstract class Interpreter {
+abstract static class Interpreter {
   abstract String[] get(String code);
   abstract String[] special(String ex);
 }
-class Dyalog extends Interpreter {
+static class Dyalog extends Interpreter {
   String[] get(String code) {
     try {
       Scanner s = send("eval", code);
       String ln = s.nextLine();
-      return parseJSONArray(ln).getStringArray();
+      return a.parseJSONArray(ln).getStringArray();
     } catch (Exception e) {
       e.printStackTrace();
       return new String[]{"failed to request:", e.toString()};
@@ -116,7 +116,7 @@ static {
 }
 
 
-class DzaimaAPL extends Interpreter {
+static class DzaimaAPL extends Interpreter {
   
   Obj eval(String code) {
     try {
@@ -155,7 +155,7 @@ class DzaimaAPL extends Interpreter {
     return new String[0];
   }
 }
-class Ed extends Editor {
+static class Ed extends Editor {
   Ed(String name, String val) {
     super(name, val);
   }

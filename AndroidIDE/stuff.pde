@@ -1,4 +1,4 @@
-Iterable<Character> sit(final String s) { // String iterator
+static Iterable<Character> sit(final String s) { // String iterator
   return new Iterable() {
     public Iterator<Character> iterator() {
       return new Iterator<Character> () {
@@ -13,7 +13,7 @@ Iterable<Character> sit(final String s) { // String iterator
     }
   };
 }
-String repeat(String s, int am) {
+static String repeat(String s, int am) {
   StringBuilder r = new StringBuilder();
   for (int i = 0; i < am; i++) r.append(s);
   return r.toString();
@@ -24,7 +24,7 @@ String repeat(String s, int am) {
 
 
 
-class PQ<M extends Comparable<? super M>, V> {
+static class PQ<M extends Comparable<? super M>, V> {
   static final byte lc = 32;
   PQNode<M, V>[][] B = new PQNode[lc][];
   PQNode<M, V>[][] S = new PQNode[lc][];
@@ -159,7 +159,7 @@ class PQ<M extends Comparable<? super M>, V> {
     return size;
   }
 }
-class PQNode<M extends Comparable<? super M>, V> {
+static class PQNode<M extends Comparable<? super M>, V> {
   int Bp, Sp;
   byte Bl, Sl;
   PQ<M, V> pq;
@@ -214,6 +214,7 @@ class StrOS extends OutputStream {
   ByteArr bs = new ByteArr();
   void write(int i) {
     synchronized(bs) {
+      oOut.write(i);
       bs.add((byte)(i&0xff));
     }
   }
