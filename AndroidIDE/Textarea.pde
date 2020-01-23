@@ -54,7 +54,7 @@ static class APLTextarea extends Drawable implements TextReciever {
       history[hptr] = new State(allText(), cx, cy);
       saveUndo = false;
     }
-    a.clip(x, y, w, h);
+    beginClip(d, x, y, w, h);
     if (a.mousePressed && smouseIn()) {
       yoff+= a.mouseY-a.pmouseY;
       xoff+= a.mouseX-a.pmouseX;
@@ -103,7 +103,7 @@ static class APLTextarea extends Drawable implements TextReciever {
       d.stroke(th.caret);
       d.line(px, tsz*cy + yoff + y, px, tsz*(cy+1) + yoff + y);
     }
-    d.noClip();
+    endClip(d);
   }
 
   ArrayList<String> lines;

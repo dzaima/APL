@@ -11,8 +11,8 @@ void psDraw() {
   else touches = new FakeTouch[0];
 }
 void settings() {
-  //size(540, 830);
-  size(960, 540);
+  size(540, 830);
+  //size(960, 540);
 }
 
 import java.awt.datatransfer.*;
@@ -46,6 +46,13 @@ void handleCoded(int keyCode) {
 }
 KeyEvent fixKE(KeyEvent e) {
   return e;
+}
+
+static void beginClip(PGraphics g, float x, float y, float x2, float y2) {
+  g.clip(x, y, x2, y2);
+}
+static void endClip(PGraphics g) {
+  g.noClip();
 }
 
 /*/ // ANDROID
@@ -129,6 +136,16 @@ KeyEvent fixKE(KeyEvent e) {
     (n. isMetaPressed() ? Event.META  : 0) +
     (n.  isAltPressed() ? Event.ALT   : 0)
   , e.getKey(), e.getKeyCode());
+}
+
+import processing.a2d.*;
+static void beginClip(PGraphics g, float x, float y, float x2, float y2) {
+  if (g instanceof PGraphicsAndroid2D) ((PGraphicsAndroid2D)g).canvas.save();
+  g.clip(x, y, x2, y2);
+}
+static void endClip(PGraphics g) {
+  if (g instanceof PGraphicsAndroid2D) ((PGraphicsAndroid2D)g).canvas.restore();
+  else g.noClip();
 }
 
 //*/

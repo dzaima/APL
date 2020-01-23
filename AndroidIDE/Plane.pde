@@ -44,8 +44,8 @@ abstract static class Plane extends Drawable {
       }
     } else lastDist = 0;
     d.pushMatrix();
+    beginClip(d, x, y, w, h);
     d.imageMode(CORNER);
-    d.clip(x, y, w, h);
     d.background(12);
     
     d.stroke(0xff666666);
@@ -117,7 +117,7 @@ abstract static class Plane extends Drawable {
     
     draw();
     
-    d.noClip();
+    endClip(d);
     d.popMatrix();
   }
   

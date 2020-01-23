@@ -10,7 +10,7 @@ static class ROText extends Drawable {
   int border = 10;
   boolean redraw;
   void redraw() {
-    d.clip(x+border, y, w-border*2, h);
+    beginClip(d, x+border, y, w-border*2, h);
     d.fill(#101010);
     d.noStroke();
     d.rectMode(CORNER);
@@ -27,7 +27,7 @@ static class ROText extends Drawable {
       d.text(s, x+border + xoff, y + dy*tsz + yoff);
       dy++;
     }
-    d.noClip();
+    endClip(d);
     redraw = false;
   }
   void tick() {

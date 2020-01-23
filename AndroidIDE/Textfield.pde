@@ -51,9 +51,9 @@ static class APLField extends Drawable implements TextReciever {
       history[hptr] = new State(allText(), sx, ex);
       saveUndo = false;
     }
-    d.clip(x, y, w, h);
+    beginClip(d, x, y, w, h);
     if (pmousePressed && !a.mousePressed && smouseIn() && dist(a.mouseX, a.mouseY, smouseX, smouseY) < 10) {
-     d. textSize(tsz);
+      d.textSize(tsz);
       sx = constrain(round((a.mouseX-x-xoff)/d.textWidth("H")), 0, line.length());
       ex = sx;
       tt = 0;
@@ -88,7 +88,7 @@ static class APLField extends Drawable implements TextReciever {
       d.rectMode(CORNERS);
       d.rect(spx, sy, epx, ey);
     }
-    d.noClip();
+    endClip(d);
   }
   
   String line;
