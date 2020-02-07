@@ -29,8 +29,9 @@ public class EpsilonBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     if (a.scalar()) {
+      Value a1 = a.first();
       for (Value v : w) {
-        if (v.equals(a)) {
+        if (v.equals(a1)) {
           return Num.ONE;
         }
       }
