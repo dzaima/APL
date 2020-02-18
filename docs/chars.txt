@@ -68,7 +68,7 @@ monadic ops:
 ¨  for each
 ⍨  selfie; commute
 ⌾  table (aka ∘.⍺⍺; _might_ get removed at some point?)
-⌸  get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
+⌸  count equal; get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
 ᐵ  each-left (A fᐵ B ≡ A f¨ ⊂B)
 ᑈ  each-right (A fᑈ B ≡ (⊂A) f¨ B)
 

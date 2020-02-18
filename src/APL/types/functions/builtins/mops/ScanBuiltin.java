@@ -11,8 +11,8 @@ public class ScanBuiltin extends Mop {
   }
   
   public Obj call(Obj aa, Value w, DerivedMop derv) {
+    isFn(aa);
     // TODO ranks
-    if (! (aa instanceof Fun)) throw new SyntaxError("\\ expects ⍶ to be a function");
     Fun f = (Fun) aa;
     if (w.ia == 0) return w;
     Value c = w.get(0);
@@ -26,6 +26,7 @@ public class ScanBuiltin extends Mop {
   }
   
   public Obj call(Obj aa, Value a, Value w, DerivedMop derv) {
+    isFn(aa);
     int n = a.asInt();
     int len = w.ia;
     DomainError.must(n>=0, "⍺ of \\ should be non-negative (was "+n+")");

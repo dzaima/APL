@@ -43,6 +43,10 @@ public abstract class Mop extends Scopeable {
   }
   public abstract String repr();
   
+  protected void isFn(Obj o) {
+    if (!(o instanceof Fun)) throw new SyntaxError("⍶ of "+repr()+" must be a function");
+  }
+  
   // functions are equal per-object basis
   @Override public int hashCode() {
     return actualHashCode();

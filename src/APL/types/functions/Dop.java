@@ -43,6 +43,10 @@ public abstract class Dop extends Scopeable {
   }
   public abstract String repr();
   
+  protected void isFn(Obj o, char c) {
+    if (!(o instanceof Fun)) throw new SyntaxError(c+" of "+repr()+" must be a function");
+  }
+  
   // functions are equal per-object basis
   @Override public int hashCode() {
     return actualHashCode();

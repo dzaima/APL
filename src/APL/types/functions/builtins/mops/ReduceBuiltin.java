@@ -8,7 +8,7 @@ import APL.types.dimensions.DimMMop;
 import APL.types.functions.*;
 import APL.types.functions.builtins.fns.*;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class ReduceBuiltin extends Mop implements DimMMop {
   @Override public String repr() {
@@ -19,10 +19,12 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   
   @Override
   public Obj call(Obj f, Value w, int dim) {
+    if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     return ngnReduce(w, dim, (Fun)f);
   }
   
   public Obj call(Obj f, Value w, DerivedMop derv) {
+    if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
       return ngnReduce(w, -1, ff);
@@ -114,8 +116,8 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   }
   
   public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+    isFn(f);
     if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", this, w);
-    if (!(f instanceof Fun)) throw new DomainError("operand to / must be a function");
     int n = a.asInt();
     Value[] ra = new Value[w.ia - Math.abs(n) + 1];
     Value[] wa = w.values();
