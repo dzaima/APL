@@ -37,7 +37,6 @@ public class Exec {
     for (int i = 0; i < Main.printlvl; i++) print("  ");
     Main.printdbg(args);
   }
-  private LinkedList<Obj> done;
   private Stack<Token> left;
   public Obj exec() {
     if (tokens.size() > 0) Main.faulty = tokens.get(0);
@@ -56,7 +55,7 @@ public class Exec {
       printlvl("code:", repr);
       printlvl();
     }
-    done = new LinkedList<>();
+    reset();
     ArrayList<Obj> arr = null;
     while (left.size() > 0) {
       Token t = left.pop();
@@ -106,7 +105,7 @@ public class Exec {
           else d = new DotBuiltin().derive(d, r.get());
         } else if (d == null) throw new SyntaxError("what?");
         c = d;
-        if (Main.debug) printlvl(done);
+        if (Main.debug) printlvl(llToString());
         
       } else {
         c = valueOf(t);
@@ -116,18 +115,18 @@ public class Exec {
         arr.add(c);
       } else {
         if (arr != null) {
-          if (arr.size() == 1) done.addFirst(arr.get(0));
-          else done.addFirst(VarArr.of(arr));
+          if (arr.size() == 1) addS(arr.get(0));
+          else addS(VarArr.of(arr));
           update(false);
           arr = null;
         }
-        done.addFirst(c);
+        addS(c);
         update(false);
       }
     }
     if (arr != null) {
-      if (arr.size() == 1) done.addFirst(arr.get(0));
-      else done.addFirst(VarArr.of(arr));
+      if (arr.size() == 1) addS(arr.get(0));
+      else addS(VarArr.of(arr));
     }
     update(true);
     
@@ -135,14 +134,15 @@ public class Exec {
 //    if (done.size() != 1) update(done, true); // e.g. for f←1+
     
     Main.printlvl--;
-    if (Main.debug) printlvl("END:", done);
-    if (done.size() != 1) {
-      if (done.size() == 0) return null;
-      if (done.get(0).token != null) Main.faulty = done.get(0).token;
+    if (Main.debug) printlvl("END:", llToString());
+    if (llSize != 1) {
+      if (llSize == 0) return null;
+      if (pollS().token != null) Main.faulty = pollS().token;
       // try to figure out what went wrong
-  
-      for (int i = done.size()-1; i >= 0; i--) {
-        Obj obj = done.get(i);
+      
+      
+      for (Node cn = LN.l; cn != FN; cn = cn.l) {
+        Obj obj = cn.val;
         if (obj instanceof Variable) {
           Variable vobj = (Variable) obj;
           if (vobj.getOrThis() == obj) throw new SyntaxError("Couldn't find the value of " + vobj.name, obj);
@@ -153,27 +153,14 @@ public class Exec {
       }
       
       // oh well that failed
-      throw new SyntaxError("couldn't join everything up into a single expression", done.get(done.size()-1));
+      throw new SyntaxError("couldn't join everything up into a single expression", pollL());
     }
-    return done.get(0);
+    return pollS();
   }
-  
   private void update(boolean end) {
-    if (done.size() == 1 && done.get(0) == null) return;
+    if (llSize == 1 && pollS() == null) return;
     while (true) {
-      if (Main.debug) printlvl(done);
-      if (done.size() >= 3 && done.getFirst() instanceof JotBuiltin && done.get(1) instanceof DotBuiltin) {
-        if (Main.debug) printlvl("∘.");
-        var jot = done.removeFirst();
-        done.removeFirst();
-        var fn = done.removeFirst();
-        if (fn instanceof Settable) fn = ((Settable) fn).get();
-        if (fn instanceof VarArr) fn = ((VarArr) fn).get();
-        var TB = new TableBuiltin();
-        TB.token = jot.token;
-        done.addFirst(TB.derive(fn));
-        continue;
-      }
+      if (Main.debug) printlvl(llToString());
       if (is("D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
         var w = lastVal();
@@ -181,37 +168,37 @@ public class Exec {
         var a = lastVal();
         Main.faulty = f;
         var res = f.call(a, w);
-        if (res == null && (left.size() > 0 || done.size() > 0)) throw new SyntaxError("trying to use result of function which returned nothing", a);
-        if (res != null) done.addLast(res);
+        if (res == null && (left.size() > 0 || llSize > 0)) throw new SyntaxError("trying to use result of function which returned nothing", a);
+        if (res != null) addE(res);
         else return;
         continue;
       }
       if (is("F@", end, true)) {
         if (Main.debug) printlvl("F[]");
         var f = (Fun) firstObj();
-        var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimFn(f, w.toInt(), sc));
+        var w = (Brackets) popS();
+        addS(new DervDimFn(f, w.toInt(), sc));
         continue;
       }
       if (is("M@", end, true)) {
         if (Main.debug) printlvl("M[]");
         var f = firstMop();
-        var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimMop(f, w.toInt(), sc));
+        var w = (Brackets) popS();
+        addS(new DervDimMop(f, w.toInt(), sc));
         continue;
       }
       if (is("D@", end, true)) {
         if (Main.debug) printlvl("D[]");
         var f = firstDop();
-        var w = (Brackets) done.removeFirst();
-        done.addFirst(new DervDimDop(f, w.toInt(), sc));
+        var w = (Brackets) popS();
+        addS(new DervDimDop(f, w.toInt(), sc));
         continue;
       }
       if (is("v@", end, true)) {
         if (Main.debug) printlvl("v[]");
         var f = firstVar();
-        var w = (Brackets) done.removeFirst();
-        done.addFirst(new Pick((Variable) f, w, sc));
+        var w = (Brackets) popS();
+        addS(new Pick((Variable) f, w, sc));
         continue;
       }
       if (is("[FM←]|FN", end, false)) {
@@ -220,45 +207,45 @@ public class Exec {
         var f = lastFun();
         Main.faulty = f;
         var res = f.call(w);
-        if (res == null && (left.size() > 0 || done.size() > 0)) throw new SyntaxError("trying to use result of function which returned nothing", f);
-        if (res != null) done.addLast(res);
+        if (res == null && (left.size() > 0 || llSize > 0)) throw new SyntaxError("trying to use result of function which returned nothing", f);
+        if (res != null) addE(res);
         else return;
         continue;
       }
-      if (is("#!←", end, true) || done.size() == 1 && done.get(0).type() == Type.gettable) {
+      if (is("#!←", end, true) || llSize == 1 && pollS().type() == Type.gettable) {
         var w = firstVar();
         addFirst(w.get());
       }
       if (is("D!|V←[#NFMD],#←[#NFMD],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         var w = lastObj();
-        var s = (AbstractSet) done.removeLast(); // ←
-        var a = done.removeLast(); // variable
+        var s = (AbstractSet) popE(); // ←
+        var a = popE(); // variable
         Main.faulty = s;
         var res = s.call(a, w, false);
-        done.addLast(res);
+        addE(res);
         continue;
       }
-      if (done.size() == 2 && is("F←", false, false)) {
+      if (llSize == 2 && is("F←", false, false)) {
         if (Main.debug) printlvl("F←");
-        var s0 = done.removeLast(); // ←
+        var s0 = popE(); // ←
         if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
         var s = (SetBuiltin) s0;
         var f = lastFun();
-        done.addLast(new DerivedSet(s, f));
+        addE(new DerivedSet(s, f));
         continue;
       }
       if (is("D!|NF←N", end, false)) {
         if (Main.debug) printlvl("NF←.");
         var w = lastVal();
-        var s0 = done.removeLast(); // ←
+        var s0 = popE(); // ←
         if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
         var s = (SetBuiltin) s0;
         var f = lastFun();
-        Obj a = done.removeLast(); // variable
+        Obj a = popE(); // variable
         Main.faulty = f;
         Obj res = s.call(f, a, w);
-        if (res != null) done.addLast(res);
+        if (res != null) addE(res);
         continue;
       }
       if (is("!D|[FN]M", end, true)) {
@@ -270,9 +257,9 @@ public class Exec {
       }
       if (is("!D|[FNV]D[FNV]", end, true)) {
         if (Main.debug) printlvl("FDF");
-        var aa = done.remove(barPtr); // done.removeFirst();
+        var aa = popB(); // done.removeFirst();
         var  o = firstDop(); // (Dop) done.removeFirst();
-        var ww = done.remove(barPtr);
+        var ww = popB();
         var aau = aa;
         var wwu = ww;
         if (aau instanceof Settable) aau = ((Settable) aau).getOrThis();
@@ -280,9 +267,9 @@ public class Exec {
         if (aau instanceof VarArr) aau = ((VarArr) aau).get();
         if (wwu instanceof VarArr) wwu = ((VarArr) wwu).get();
         if (o instanceof DotBuiltin && aau instanceof APLMap && ww instanceof Variable) {
-          done.add(barPtr, ((APLMap) aau).get(Main.toAPL(((Variable) ww).name)));
+          addB(((APLMap) aau).get(Main.toAPL(((Variable) ww).name)));
         } else {
-          done.add(barPtr, o.derive(aau, wwu));
+          addB(o.derive(aau, wwu));
         }
         continue;
       }
@@ -291,154 +278,189 @@ public class Exec {
         var h = lastFun();
         var g = lastFun();
         var f = lastObj();
-        done.addLast(new Fork(f, g, h));
+        addE(new Fork(f, g, h));
         continue;
       }
       if (is("D!|NF", false, false)) {
         if (Main.debug) printlvl("A f");
         var f = lastFun();
         var a = lastObj();
-        done.addLast(new Atop(a, f));
+        addE(new Atop(a, f));
         continue;
       }
       if (is("←FF", false, false)) {
         if (Main.debug) printlvl("g h");
         var h = lastFun();
         var g = lastObj();
-        done.addLast(new Atop(g, h));
+        addE(new Atop(g, h));
+        continue;
+      }
+      if (llSize >= 3 && pollS() instanceof JotBuiltin && FN.r.r.val instanceof DotBuiltin) {
+        if (Main.debug) printlvl("∘.");
+        var jot = popS();
+        popS();
+        var fn = popS();
+        if (fn instanceof Settable) fn = ((Settable) fn).get();
+        if (fn instanceof VarArr) fn = ((VarArr) fn).get();
+        var TB = new TableBuiltin();
+        TB.token = jot.token;
+        addS(TB.derive(fn));
         continue;
       }
       break;
     }
-    if (end && done.size() == 2) {
+    if (end && llSize == 2) {
+      if (Main.debug) printlvl("g h");
       var h = lastFun();
       var g = lastObj();
-      if (g instanceof Fun || g instanceof Value) done.addLast(new Atop(g, h));
+      if (g instanceof Fun || g instanceof Value) addE(new Atop(g, h));
       else throw new SyntaxError("creating an atop with "+g.humanType(true), g);
     }
   }
   
   private Value lastVal() {
-    var r = done.removeLast();
+    var r = popE();
+    if (r instanceof Settable) r = ((Settable) r).get();
     if (r instanceof Value) return (Value) r;
     if (r instanceof VarArr) return ((VarArr) r).get();
-    if (r instanceof Settable) return (Value) ((Settable) r).get();
     throw new SyntaxError("Expected value, got "+r, r);
   }
   
   private Fun lastFun() {
-    var r = done.removeLast();
+    var r = popE();
+    if (r instanceof Settable) r = ((Settable) r).get();
     if (r instanceof Fun) return (Fun) r;
-    if (r instanceof Settable) return (Fun) ((Settable) r).get();
     throw new SyntaxError("Expected function, got "+r, r);
   }
   
   
   private Dop firstDop() {
-    var r = done.remove(barPtr);
+    var r = popB();
+    if (r instanceof Settable) r = ((Settable) r).get();
     if (r instanceof Dop) return (Dop) r;
-    if (r instanceof Settable) return (Dop) ((Settable) r).get();
     throw new SyntaxError("Expected dop, got "+r, r);
   }
   
   private Obj lastObj() {
-    var r = done.removeLast();
+    var r = popE();
+    if (r instanceof Settable) r = ((Settable) r).get();
     if (r instanceof VarArr) return ((VarArr) r).get();
-    if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   private Obj firstObj() {
-    var r = done.remove(barPtr);
+    var r = popB();
     if (r instanceof VarArr) return ((VarArr) r).get();
     if (r instanceof Settable) return ((Settable) r).get();
     return r;
   }
   private Settable firstVar() {
-    var r = done.remove(barPtr);
+    var r = popB();
     if (r instanceof Settable) return (Settable) r;
     throw new SyntaxError("Expected a variable, got "+r, r);
   }
   private Mop firstMop() {
-    var r = done.remove(barPtr);
+    var r = popB();
+    if (r instanceof Settable) r = ((Settable) r).get();
     if (r instanceof Mop) return (Mop) r;
-    if (r instanceof Settable) return (Mop) ((Settable) r).get();
     throw new SyntaxError("Expected mop, got "+r, r);
   }
   private void addFirst(Obj o) {
-    done.add(barPtr, o);
+    addB(o);
   }
   
   
-  private int barPtr = 0;
   
-  private boolean is(String pt, boolean everythingDone, boolean fromStart) {
-    barPtr = 0;
-    if (pt.contains(",")) {
-      for (String s : pt.split(",")) {
-        if (is(s, everythingDone, fromStart)) return true;
-      }
-    }
-    if (everythingDone && is(pt, false, fromStart)) return true;
-    if (fromStart && everythingDone && pt.contains("|")) {
-      return is(pt.split("\\|")[1], false, true);
-    }
-    int len = pt.length();
-    int ptr = fromStart ? 0 : done.size() - 1;
-    int ptrinc = fromStart ? 1 : -1;
-    boolean pass = false;
-    for (int i = fromStart ? 0 : len - 1; (fromStart ? i < len : i >= 0); i += ptrinc) {
-      char p = pt.charAt(i);
-      String any;
-      boolean inv = false;
-      if (p == '|') {
-        pass = everythingDone;
-        barPtr = ptr;
-        i += ptrinc;
-        p = pt.charAt(i);
-      }
-      if (ptr >= done.size() || ptr < 0) return pass;
-      if (p == '!') {
-        inv = true;
-        i += ptrinc;
-        p = pt.charAt(i);
-      }
-      if (p == ']') { // regular
-        int si = i;
-        while (pt.charAt(i) != '[') i--;
-        any = pt.substring(i + 1, si);
-        } else if (p == '[') { // reverse
-        int si = i;
-        while (pt.charAt(i) != ']') i++;
-        any = pt.substring(si + 1, i);
-      } else any = String.valueOf(p);
-      if (p == '.') {
-        ptr += ptrinc;
-        continue;
-      }
-      Obj v = done.get(ptr);
-      if (p == 'v') {
-        if (!(v instanceof Settable) ^ inv) return false;
-        ptr += ptrinc;
-        continue;
-      }
-      char type;
-      switch (v.type()) {
+  
+  private int llSize;
+  private Obj popS() {
+    llSize--;
+    Node c = FN.r;
+    Node r = c.r;
+    Obj res = c.val;
+    FN.r = c.r;
+    r.l = FN;
+    return res;
+  }
+  private Obj popE() {
+    llSize--;
+    Node c = LN.l;
+    Node l = c.l;
+    Obj r = c.val;
+    LN.l = c.l;
+    l.r = LN;
+    return r;
+  }
+  private Obj popB() {
+    llSize--;
+    Obj r = barNode.remove();
+    barNode = barNode.r;
+    return r;
+  }
+  private void addS(Obj o) {
+    llSize++;
+    Node r = FN.r;
+    Node l = FN.r.l;
+    assert l == FN;
+    Node n = new Node(o, l, r);
+    l.r = n;
+    r.l = n;
+  }
+  private void addE(Obj o) {
+    llSize++;
+    Node l = LN.l;
+    Node r = LN.l.r;
+    assert r == LN : llToString();
+    Node n = new Node(o, l, r);
+    l.r = n;
+    r.l = n;
+  }
+  private void addB(Obj o) {
+    llSize++;
+    Node l = barNode.l;
+    Node r = barNode;
+    Node n = new Node(o, l, r);
+    l.r = n;
+    r.l = n;
+    barNode = n;
+  }
+  private Obj pollS() {
+    return FN.r.val;
+  }
+  private Obj pollL() {
+    return LN.l.val;
+  }
+  private Node FN, LN;
+  private void reset() {
+    FN = new Node();
+    LN = new Node();
+    FN.r = LN;
+    LN.l = FN;
+    FN.l = LN.r = null;
+  }
+  private static class Node {
+    Node l, r;
+    char type;
+    Obj val;
+    Node() { }
+    Node(Obj val, Node l, Node r) {
+      this.l = l;
+      this.r = r;
+      this.val = val;
+  
+      switch (val.type()) {
         case array:
           type = 'N';
           break;
         case fn:
-        case bfn:
           type = 'F';
           break;
         case set:
           type = '←';
           break;
         case mop:
-        case bmop:
           type = 'M';
           break;
         case dop:
-        case bdop:
           type = 'D';
           break;
         case var:
@@ -454,8 +476,104 @@ public class Exec {
         default:
           throw up;
       }
-      if ((!any.contains(String.valueOf(type))) ^ inv) return false;
-      ptr += ptrinc;
+    }
+    Obj remove() {
+      l.r = r;
+      r.l = l;
+      return val;
+    }
+    public String toString() {
+      // return hashCode()+"{"+l.hashCode()+"; "+r.hashCode()+"}\n";
+      return val==null? "null" : val.toString();
+    }
+  }
+  private String llToString() {
+    StringBuilder r = new StringBuilder("[");
+    Node c = FN.r;
+    boolean first = true;
+    while (c != LN) {
+      if (first) first = false;
+      else r.append(", ");
+      r.append(c);
+      c = c.r;
+    }
+    return r.append("]").toString();
+  }
+  
+  
+  
+  
+  
+  private Node barNode;
+  private boolean is(String pt, boolean everythingDone, boolean fromStart) {
+    if(!fromStart && llSize > 4) return false;
+    if (pt.contains(",")) {
+      for (String s : pt.split(",")) {
+        if (is(s, everythingDone, fromStart)) return true;
+      }
+    }
+    if (everythingDone && is(pt, false, fromStart)) return true;
+    if (fromStart && everythingDone) {
+      for (int i = 0; i < pt.length(); i++) {
+        if (pt.charAt(i) == '|') return is(pt.substring(i+1), false, true);
+      }
+    }
+    int len = pt.length();
+    int ptrinc = fromStart ? 1 : -1;
+    boolean pass = false;
+    barNode = FN.r;
+    Node cn = fromStart? FN.r : LN.l;
+    for (int i = fromStart ? 0 : len - 1; (fromStart ? i < len : i >= 0); i += ptrinc) {
+      char p = pt.charAt(i);
+      boolean inv = false;
+      if (p == '|') {
+        pass = everythingDone;
+        barNode = cn;
+        i += ptrinc;
+        p = pt.charAt(i);
+      }
+      if (cn==FN | cn==LN) return pass;
+      if (p == '!') {
+        inv = true;
+        i += ptrinc;
+        p = pt.charAt(i);
+      }
+      Obj v = cn.val;
+      if (p == 'v') {
+        if (!(v instanceof Settable) ^ inv) return false;
+        cn = fromStart? cn.r : cn.l;
+        continue;
+      }
+      if (p == '.') {
+        cn = fromStart? cn.r : cn.l;
+        continue;
+      }
+      
+      char type = cn.type;
+      if (p == ']') { // regular guaranteed
+        i--;
+        boolean nf = true;
+        while (true) {
+          char c = pt.charAt(i);
+          if (c == '[') break;
+          if (c==type) nf = false;
+          i--;
+        }
+        if (nf) return false; // no inv for []s!
+      } else if (p == '[') { // reverse guaranteed
+        i++;
+        boolean nf = true;
+        while (true) {
+          char c = pt.charAt(i);
+          if (c == ']') break;
+          if (c==type) nf = false;
+          i++;
+        }
+        if (nf) return false;
+      } else {
+        if ((p != type) ^ inv) return false;
+      }
+      cn = fromStart? cn.r : cn.l;
     }
     return true;
   }
