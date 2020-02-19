@@ -84,6 +84,7 @@ public class Scope {
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕DL": return new Delay(this);
         case "⎕SCOPE": return new ScopeViewer(this);
+        case "⎕DR": return new DR();
         case "⎕UCS": return new UCS(this);
         case "⎕HASH": return new Hasher();
         case "⎕IO": return nIO;
@@ -664,6 +665,42 @@ public class Scope {
     }
     @Override public String repr() {
       return "⎕BIG";
+    }
+  }
+  
+  private class DR extends Fun {
+    /*
+       0=100| - unknown
+       1=100| - bit
+       2=100| - char
+       3=100| - 64-bit float
+       4=100| - map
+       5=100| - bigint
+       6=100| - `fn
+       9=100| - null
+      
+      0=÷∘100 - primitive
+      1=÷∘100 - array
+    */
+    @Override public Obj call(Value w) {
+      if (w instanceof    BitArr) return Num.of(101);
+      if (w instanceof      Char) return Num.of(  2);
+      if (w instanceof    ChrArr) return Num.of(102);
+      if (w instanceof       Num) return Num.of(  3);
+      if (w instanceof DoubleArr) return Num.of(103);
+      if (w instanceof    APLMap) return Num.of(  4);
+      if (w instanceof  BigValue) return Num.of(  5);
+      if (w instanceof    ArrFun) return Num.of(  8);
+      if (w instanceof      Null) return Num.of(  9);
+      if (w instanceof       Arr) return Num.of(100);
+      if (w instanceof Primitive) return Num.of(  0);
+      return Num.of(200); // idk ¯\_(ツ)_/¯
+    }
+    public Obj call(Value a, Value w) {
+      throw new Error("TODO");
+    }
+    @Override public String repr() {
+      return "⎕DR";
     }
   }
 }

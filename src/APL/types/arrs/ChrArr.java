@@ -41,6 +41,7 @@ public class ChrArr extends Arr {
   }
   @Override
   public String asString() {
+    if (rank > 1) throw new DomainError("Using rank "+rank+" character array as string");
     return s;
   }
   

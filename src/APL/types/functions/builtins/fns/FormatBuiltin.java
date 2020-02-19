@@ -1,7 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.*;
-import APL.errors.NYIError;
+import APL.Main;
 import APL.types.*;
 import APL.types.arrs.ChrArr;
 import APL.types.functions.Builtin;
