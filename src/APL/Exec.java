@@ -173,33 +173,35 @@ public class Exec {
         else return;
         continue;
       }
-      if (is("F@", end, true)) {
-        if (Main.debug) printlvl("F[]");
-        var f = (Fun) firstObj();
-        var w = (Brackets) popS();
-        addS(new DervDimFn(f, w.toInt(), sc));
-        continue;
-      }
-      if (is("M@", end, true)) {
-        if (Main.debug) printlvl("M[]");
-        var f = firstMop();
-        var w = (Brackets) popS();
-        addS(new DervDimMop(f, w.toInt(), sc));
-        continue;
-      }
-      if (is("D@", end, true)) {
-        if (Main.debug) printlvl("D[]");
-        var f = firstDop();
-        var w = (Brackets) popS();
-        addS(new DervDimDop(f, w.toInt(), sc));
-        continue;
-      }
-      if (is("v@", end, true)) {
-        if (Main.debug) printlvl("v[]");
-        var f = firstVar();
-        var w = (Brackets) popS();
-        addS(new Pick((Variable) f, w, sc));
-        continue;
+      if (llSize >= 2 && FN.r.r.type == '@') {
+        if (is("F@", end, true)) {
+          if (Main.debug) printlvl("F[]");
+          var f = (Fun) firstObj();
+          var w = (Brackets) popS();
+          addS(new DervDimFn(f, w.toInt(), sc));
+          continue;
+        }
+        if (is("M@", end, true)) {
+          if (Main.debug) printlvl("M[]");
+          var f = firstMop();
+          var w = (Brackets) popS();
+          addS(new DervDimMop(f, w.toInt(), sc));
+          continue;
+        }
+        if (is("D@", end, true)) {
+          if (Main.debug) printlvl("D[]");
+          var f = firstDop();
+          var w = (Brackets) popS();
+          addS(new DervDimDop(f, w.toInt(), sc));
+          continue;
+        }
+        if (is("v@", end, true)) {
+          if (Main.debug) printlvl("v[]");
+          var f = firstVar();
+          var w = (Brackets) popS();
+          addS(new Pick((Variable) f, w, sc));
+          continue;
+        }
       }
       if (is("[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
@@ -507,11 +509,14 @@ public class Exec {
   private Node barNode;
   private boolean is(String pt, boolean everythingDone, boolean fromStart) {
     if(!fromStart && llSize > 4) return false;
-    if (pt.contains(",")) {
-      for (String s : pt.split(",")) {
-        if (is(s, everythingDone, fromStart)) return true;
+    int pi = 0;
+    for (int i = 0; i < pt.length(); i++) {
+      if (pt.charAt(i) == ',') {
+        if (is(pt.substring(pi, i), everythingDone, fromStart)) return true;
+        pi = i+1;
       }
     }
+    if (pi != 0) pt = pt.substring(pi);
     if (everythingDone && is(pt, false, fromStart)) return true;
     if (fromStart && everythingDone) {
       for (int i = 0; i < pt.length(); i++) {
