@@ -14,7 +14,7 @@ public class RepeatBuiltin extends Dop {
     super(sc);
   }
   public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of ⍣ must be a function", aa);
+    isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
       Fun g = (Fun) ww;
@@ -40,7 +40,7 @@ public class RepeatBuiltin extends Dop {
   }
   
   public Obj callInv(Obj aa, Obj ww, Value w) {
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of ⍣ must be a function", aa);
+    isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) throw new DomainError("(f⍣g)A cannot be inverted", this);
     
@@ -56,20 +56,34 @@ public class RepeatBuiltin extends Dop {
   }
   
   public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of ⍣ must be a function", aa);
-    int am = ((Num)ww).asInt();
-    if (am < 0) {
-      for (int i = 0; i < -am; i++) {
-        w = (Value)((Fun)aa).callInvW(a, w);
+    isFn(aa, '⍶');
+    Fun f = (Fun) aa;
+    if (ww instanceof Fun) {
+      Fun g = (Fun) ww;
+      Value prev = w;
+      Value curr = (Value) f.call(a, w);
+      while (!Main.bool(g.call(prev, curr))) {
+        Value next = (Value) f.call(a, curr);
+        prev = curr;
+        curr = next;
       }
-    } else for (int i = 0; i < am; i++) {
-      w = (Value)((Fun)aa).call(a, w);
+      return curr;
+    } else {
+      if (!(ww instanceof Num)) throw new SyntaxError("⍹ of ⍣ must be either a function or scalar number");
+      int am = ((Num) ww).asInt();
+      if (am < 0) {
+        for (int i = 0; i < -am; i++) {
+          w = (Value) f.callInvW(a, w);
+        }
+      } else for (int i = 0; i < am; i++) {
+        w = (Value) f.call(a, w);
+      }
+      return w;
     }
-    return w;
   }
   
   public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of ⍣ must be a function", aa);
+    isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
@@ -81,7 +95,7 @@ public class RepeatBuiltin extends Dop {
     return w;
   }
   public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of ⍣ must be a function", aa);
+    isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am== 1) return ((Fun) aa).callInvA(a, w);
     if (am==-1) return ((Fun) aa).callInvA(w, a);

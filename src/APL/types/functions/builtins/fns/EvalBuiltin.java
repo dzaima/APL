@@ -21,7 +21,7 @@ public class EvalBuiltin extends Builtin {
   public Obj call(Value a, Value w) {
     if (a instanceof ArrFun) {
       Obj obj = ((ArrFun) a).obj();
-      if (!(obj instanceof Fun)) throw new DomainError("⍺ of ⍎ must be `fun, was "+obj.humanType(true));
+      if (!(obj instanceof Fun)) throw new DomainError("⍺ of ⍎ must be `function, was "+obj.humanType(true));
       return ((Fun) obj).call(w);
     } else {
       throw new DomainError("Expected ⍺ of ⍎ to be an arrayified function", this, a);
