@@ -20,7 +20,7 @@ public class DualBuiltin extends Dop {
       return under.strInv(obj, w);
     }
     
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function");
+    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
     Value obj = (Value) ((Fun) aa).call(sub);
     return under.callInv(obj);
   }
@@ -33,7 +33,7 @@ public class DualBuiltin extends Dop {
       return under.strInv(obj, w);
     }
   
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function");
+    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
     Value obj = (Value) ((Fun) aa).callInv(sub);
     return under.callInv(obj);
   }

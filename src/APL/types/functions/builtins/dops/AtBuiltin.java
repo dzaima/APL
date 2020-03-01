@@ -15,7 +15,7 @@ public class AtBuiltin extends Dop {
     super(sc);
   }
   
-  public Obj at(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     return at(aa, ww, w, sc.IO);
   }
   

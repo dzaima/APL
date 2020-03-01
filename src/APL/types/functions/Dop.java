@@ -48,7 +48,7 @@ public abstract class Dop extends Scopeable {
   public abstract String repr();
   
   protected void isFn(Obj o, char c) {
-    if (!(o instanceof Fun)) throw new SyntaxError(c+" of "+repr()+" must be a function");
+    if (!(o instanceof Fun)) throw new SyntaxError(c+" of "+repr()+" must be a function", this);
   }
   
   // functions are equal per-object basis
