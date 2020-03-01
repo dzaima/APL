@@ -5,6 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
+import APL.types.functions.builtins.dops.AtBuiltin;
 
 import java.util.Arrays;
 
@@ -17,7 +18,7 @@ public class ReplicateBuiltin extends Builtin {
   
   public Obj call(Value a, Value w) {
     if (a.rank == 0) {
-      RankError.must(w.rank < 2, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
+      RankError.must(w.rank<=1, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
       int sz = a.asInt();
       if (sz < 0) {
         Value[] res = new Value[w.ia*-sz];
@@ -143,5 +144,14 @@ public class ReplicateBuiltin extends Builtin {
       }
       return Arr.create(res);
     }
+  }
+  
+  
+  public boolean strInvW() { return true; }
+  public Value strInvW(Value a, Value w, Value origW) {
+    return AtBuiltin.at(w, new Fun() { // lazy version
+      public String repr() { return "{⌿.⍺}"; }
+      public Obj call(Value w) { return a; }
+    }, origW, -1234);
   }
 }

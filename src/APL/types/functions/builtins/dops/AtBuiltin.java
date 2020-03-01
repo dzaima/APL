@@ -14,8 +14,12 @@ public class AtBuiltin extends Dop {
   public AtBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    int IO = sc.IO;
+  
+  public Obj at(Obj aa, Obj ww, Value w, DerivedDop derv) {
+    return at(aa, ww, w, sc.IO);
+  }
+  
+  public static Value at(Obj aa, Obj ww, Value w, int IO) {
     int ia = w.ia;
     if (ww instanceof Fun) {
       Value vba = (Value) ((Fun) ww).call(w);
@@ -74,7 +78,7 @@ public class AtBuiltin extends Dop {
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.create(ra, w.shape);
+          return Arr.createL(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.ind(w.shape, wwd, i, IO);

@@ -70,9 +70,11 @@ public class HArr extends Arr {
     if (ia == 0) return null;
     return arr[0].safePrototype();
   }
-  @Override
   public Value[] values() {
     return arr;
+  }
+  public Value[] valuesCopy() {
+    return arr.clone();
   }
   public Value ofShape(int[] sh) {
     assert ia == Arr.prod(sh);

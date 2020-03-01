@@ -24,7 +24,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     this.rank = rank;
   }
   public int[] asIntVec() { // succeeds on rank ≤ 1
-    RankError.must(rank<=1, "using rank "+rank+" array as vector");
+    RankError.must(rank<=1, "using rank "+rank+" array as an integer vector");
     return asIntArr();
   }
   public abstract int[] asIntArr();
@@ -118,6 +118,9 @@ public abstract class Value extends Obj implements Iterable<Value> {
   
   
   public Value[] values() {
+    return valuesCopy();
+  }
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = get(i);
     return vs;

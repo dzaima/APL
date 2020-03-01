@@ -43,4 +43,19 @@ public class JotBuiltin extends Dop {
     }
     return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
   }
+  public boolean strInv(Obj aa, Obj ww) {
+    if (!(ww instanceof Fun)) return false;
+    Fun wwf = (Fun) ww;
+    return aa instanceof Fun? ((Fun) aa).strInv() && wwf.strInv() : wwf.strInvW();
+  }
+  public Value strInv(Obj aa, Obj ww, Value w, Value origW) {
+    Fun wwf = (Fun) ww;
+    if (aa instanceof Fun) {
+      Fun aaf = (Fun) aa;
+      Value gI = aaf.strInv(w, (Value) wwf.call(origW));
+      return wwf.strInv(gI, origW);
+    } else {
+      return wwf.strInvW((Value) aa, w, origW);
+    }
+  }
 }

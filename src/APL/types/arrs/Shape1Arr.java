@@ -48,7 +48,7 @@ public class Shape1Arr extends Arr {
   }
   
   @Override
-  public Value[] values() {
+  public Value[] valuesCopy() {
     return new Value[]{item};
   }
   

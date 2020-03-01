@@ -37,6 +37,10 @@ public abstract class Mop extends Scopeable {
   public Obj callInvA(Obj f, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
+  public boolean strInv(Obj f) { return false; }
+  public boolean strInvW(Obj f) { return false; }
+  public Value strInv(Obj f, Value w, Value origW) { throw new IllegalStateException("calling unsupported mop.strInv(w, origW)"); }
+  public Value strInvW(Obj f, Value a, Value w, Value origW) { throw new IllegalStateException("calling unsupported mop.strInvW(a, w, origW)"); }
   
   public String toString() {
     return repr();

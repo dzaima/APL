@@ -16,7 +16,7 @@ public class UpArrowBuiltin extends Builtin {
   public UpArrowBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Value a, Value w) { // TODO ⍴⍴⍺ < ⍴⍴⍵
+  public Obj call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
     int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
@@ -145,5 +145,39 @@ public class UpArrowBuiltin extends Builtin {
     }
   }
   
-  
+  public boolean strInvW() { return true; }
+  public Value strInvW(Value a, Value w, Value origW) {
+    return strInv(a.asIntVec(), w, origW);
+  }
+  public static Value strInv(int[] e, Value w, Value origW) {
+    Value[] r = new Value[origW.ia];
+    int[] s = origW.shape;
+    Indexer idx = new Indexer(s, 0);
+    int[] tmp = new int[e.length];
+    for (int[] i : idx) {
+      Value c;
+      boolean in = true;
+      for (int j = 0; j < e.length; j++) {
+        int ep = e[j];
+        int ip = i[j];
+        int lp = s[j];
+        if (ep<0? ip <= lp+ep-1 : ip >= ep) {
+          in = false;
+          break;
+        }
+      }
+      if (in) {
+        for (int j = 0; j < e.length; j++) {
+          tmp[j] = e[j]<0? i[j]-e[j]-s[j]: i[j];
+        }
+        c = w.simpleAt(tmp);
+      } else {
+        c = origW.simpleAt(i);
+      }
+      r[idx.pos()] = c;
+      
+    }
+    
+    return Arr.create(r, s);
+  }
 }

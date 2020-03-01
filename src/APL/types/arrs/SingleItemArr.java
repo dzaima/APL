@@ -58,7 +58,7 @@ public class SingleItemArr extends Arr {
   public boolean quickDoubleArr() {
     return item instanceof Num;
   }
-  public Value[] values() {
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = item;
     return vs;

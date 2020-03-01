@@ -100,4 +100,11 @@ public class CatBuiltin extends Builtin implements DimDFn {
     }
   }
   
+  
+  
+  public boolean strInv() { return true; }
+  public Value strInv(Value w, Value origW) {
+    if (w.ia != origW.ia) throw new DomainError("⍢, expected equal amount of output & output items", this);
+    return w.ofShape(origW.shape);
+  }
 }

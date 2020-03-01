@@ -51,7 +51,7 @@ public class EachBuiltin extends Mop {
     return Arr.create(n, w.shape);
   }
   
-  @Override public Obj callInv(Obj f, Value w) {
+  public Obj callInv(Obj f, Value w) {
     if (!(f instanceof Fun)) throw new DomainError("can't invert A¨");
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
@@ -59,5 +59,28 @@ public class EachBuiltin extends Mop {
     }
     if (w.rank == 0 && n[0] instanceof Primitive) return n[0];
     return Arr.create(n, w.shape);
+  }
+  
+  public boolean strInv(Obj f) {
+    return f instanceof Fun && ((Fun) f).strInv();
+  }
+  public Value strInv(Obj f, Value w, Value origW) {
+    Fun ff = (Fun) f;
+    Value[] res = new Value[origW.ia];
+    for (int i = 0; i < res.length; i++) {
+      res[i] = ff.strInv(w.get(i), origW.get(i));
+    }
+    return Arr.create(res, origW.shape);
+  }
+  public boolean strInvW(Obj f) {
+    return f instanceof Fun && ((Fun) f).strInvW();
+  }
+  public Value strInvW(Obj f, Value a, Value w, Value origW) {
+    Fun ff = (Fun) f;
+    Value[] res = new Value[origW.ia];
+    for (int i = 0; i < res.length; i++) {
+      res[i] = ff.strInvW(a, w.get(i), origW.get(i));
+    }
+    return Arr.create(res, origW.shape);
   }
 }

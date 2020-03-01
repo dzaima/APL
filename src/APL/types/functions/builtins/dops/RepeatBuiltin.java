@@ -102,4 +102,22 @@ public class RepeatBuiltin extends Dop {
   
     throw new DomainError("inverting ⍺ of f⍣C is only possible when C∊¯1 1");
   }
+  
+  public boolean strInv(Obj aa, Obj ww) {
+    return aa instanceof Fun && ((Fun) aa).strInv() && ww instanceof Num;
+  }
+  public Value strInv(Obj aa, Obj ww, Value w, Value origW) {
+    int n = ((Num) ww).asInt();
+    Value[] origs = new Value[n];
+    Value corig = origW;
+    for (int i = 0; i < n; i++) {
+      origs[i] = corig;
+      corig = (Value) ((Fun) aa).call(corig);
+    }
+    Value c = w;
+    for (int i = n-1; i >= 0; i--) {
+      c = ((Fun) aa).strInv(c, origs[i]);
+    }
+    return c;
+  }
 }

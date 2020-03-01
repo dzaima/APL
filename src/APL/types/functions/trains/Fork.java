@@ -7,8 +7,8 @@ import APL.types.Obj;
 import APL.types.Value;
 
 public class Fork extends Fun {
-  private final Fun g, h;
   private final Obj f;
+  private final Fun g, h;
   public Fork(Obj f, Fun g, Fun h) {
     this.f = f;
     this.g = g;
@@ -50,5 +50,14 @@ public class Fork extends Fun {
   
   @Override public String repr() {
     return "("+f+" "+g+" "+h+")";
+  }
+  
+  public boolean strInv() {
+    return f instanceof Value && g.strInvW() && h.strInv();
+  }
+  public Value strInv(Value w, Value origW) { // made by inlining new Atop(new Atop(f, g), h).strInv(w, origW) :D
+    Value fA = (Value) f;
+    Value gI = g.strInvW(fA, w, (Value) h.call(origW));
+    return h.strInv(gI, origW);
   }
 }

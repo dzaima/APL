@@ -1,10 +1,12 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Main;
+import APL.*;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
+
+import java.util.Arrays;
 
 import static APL.Main.toAPL;
 
@@ -74,4 +76,32 @@ public class RhoBuiltin extends Builtin {
       return Arr.create(arr, sh);
     }
   }
+  
+  public boolean strInvW() { return true; }
+  public Value strInvW(Value a, Value w, Value origW) {
+    for (int i = 0; i < a.ia; i++) {
+      Value c = a.get(i);
+      if (!(c instanceof Num)) { // a⍬b ⍴ w - must use all items
+        if (origW.rank == 0 && w.first() instanceof Primitive) return w.first();
+        if (w.ia != origW.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items");
+        return w.ofShape(origW.shape);
+      }
+    }
+    int[] sh = a.asIntVec();
+    int am = Arr.prod(sh);
+    if (am > origW.ia) throw new DomainError("⍢("+ Main.formatAPL(sh)+"⍴) applied on array with less items than "+am, this);
+    if (!Arrays.equals(sh, w.shape)) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+    Value[] vs = new Value[origW.ia];
+    System.arraycopy(w.values(), 0, vs, 0, am);
+    System.arraycopy(origW.values(), am, vs, am, vs.length-am);
+    return Arr.createL(vs, origW.shape);
+  }
+  
+  // public boolean strInv() { return true; }
+  // public Value strInv(Value w, Value origW) {
+  //   int[] sh = w.asIntVec();
+  //  
+  //   if (Arr.prod(sh) != origW.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+  //   return origW.ofShape(sh);
+  // }
 }

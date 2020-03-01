@@ -52,8 +52,8 @@ public class EmptyArr extends Arr {
   
   private static final Value[] NO_VALUES = new Value[0];
   @Override
-  public Value[] values() {
-    return NO_VALUES;
+  public Value[] valuesCopy() {
+    return NO_VALUES; // safe, copy or not - doesn't matter
   }
   
   @Override

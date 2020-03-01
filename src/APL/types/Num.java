@@ -220,7 +220,7 @@ public class Num extends Primitive {
   }
   
   @Override
-  public Value[] values() {
+  public Value[] valuesCopy() {
     return new Value[]{this};
   }
   

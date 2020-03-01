@@ -30,4 +30,10 @@ public class DerivedMop extends Fun {
   @Override public String repr() {
     return aa.toString()+op.repr();
   }
+  
+  public boolean strInv() { return op.strInv(aa); }
+  public boolean strInvW() { return op.strInvW(aa); }
+  
+  public Value strInv(Value w, Value origW) { return op.strInv(aa, w, origW); }
+  public Value strInvW(Value a, Value w, Value origW) { return op.strInvW(aa, a, w, origW); }
 }

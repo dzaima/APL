@@ -50,7 +50,7 @@ public class DownArrowBuiltin extends Builtin {
     return new HArr(res, nsh);
   }
   
-  public Obj call(Value a, Value w) { // FIXME ⍴⍴⍺ < ⍴⍴⍵
+  public Obj call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
     int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
@@ -75,5 +75,15 @@ public class DownArrowBuiltin extends Builtin {
       i++;
     }
     return Arr.create(arr, shape);
+  }
+  
+  public boolean strInvW() { return true; }
+  public Value strInvW(Value a, Value w, Value origW) {
+    int[] ls = a.asIntVec();
+    int[] sh = origW.shape;
+    for (int i = 0; i < ls.length; i++) {
+      ls[i] = ls[i]>0? ls[i]-sh[i] : ls[i]+sh[i];
+    }
+    return UpArrowBuiltin.strInv(ls, w, origW);
   }
 }

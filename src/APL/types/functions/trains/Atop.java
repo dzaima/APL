@@ -1,7 +1,7 @@
 package APL.types.functions.trains;
 
 import APL.Type;
-import APL.errors.SyntaxError;
+import APL.errors.*;
 import APL.types.Fun;
 import APL.types.Obj;
 import APL.types.Value;
@@ -31,6 +31,16 @@ public class Atop extends Fun {
     return ((Fun) g).call((Value) h.call(a, w));
   }
   
+  public boolean strInv() { return g instanceof Fun? ((Fun) g).strInv() && h.strInv() : h.strInvW(); }
+  public Value strInv(Value w, Value origW) {
+    if (g instanceof Fun) {
+      Fun gf = (Fun) g;
+      Value gI = gf.strInv(w, (Value) h.call(origW));
+      return h.strInv(gI, origW);
+    } else {
+      return h.strInvW((Value) g, w, origW);
+    }
+  }
   @Override public String repr() {
     return "("+g+" "+h+")";
   }

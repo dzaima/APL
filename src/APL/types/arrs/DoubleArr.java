@@ -128,7 +128,7 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public Value[] values() {
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = new Num(arr[i]);
     return vs;

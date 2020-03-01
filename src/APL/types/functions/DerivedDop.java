@@ -32,4 +32,10 @@ public class DerivedDop extends Fun {
     if (!(ww instanceof Arr) && wws.length() != 1) wws = "("+wws+")";
     return aa.toString()+op.repr()+wws;
   }
+  
+  public boolean strInv() { return op.strInv(aa, ww); }
+  public boolean strInvW() { return op.strInvW(aa, ww); }
+  
+  public Value strInv(Value w, Value origW) { return op.strInv(aa, ww, w, origW); }
+  public Value strInvW(Value a, Value w, Value origW) { return op.strInvW(aa, ww, a, w, origW); }
 }
