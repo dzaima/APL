@@ -238,6 +238,11 @@ public abstract class Arr extends Value {
     return create(v, new int[]{v.length});
   }
   
+  public static Value createL(Value[] v, int[] sh) { // accepts ⊂Primitive; doesn't attempt individual item squeezing; TODO check more places where this should be used
+    if (sh.length == 0 && v[0] instanceof Primitive) return v[0];
+    return create(v, sh);
+  }
+  
   public static Arr create(Value[] v, int[] sh) { // note, doesn't attempt individual item squeezing
     if (v.length == 0) return new EmptyArr(sh, null);
     if (v[0] instanceof Num) {

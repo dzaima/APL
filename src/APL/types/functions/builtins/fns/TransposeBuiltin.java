@@ -13,6 +13,7 @@ public class TransposeBuiltin extends Builtin {
   
   
   public Obj call(Value w) {
+    if (w.scalar()) return w;
     if (w instanceof DoubleArr) {
       double[] dw = w.asDoubleArr();
       double[] res = new double[w.ia];

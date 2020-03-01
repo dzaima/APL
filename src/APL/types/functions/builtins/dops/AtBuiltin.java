@@ -48,8 +48,7 @@ public class AtBuiltin extends Dop {
           else ra[i] = w.get(i);
         }
       }
-      if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
-      return Arr.create(ra, w.shape);
+      return Arr.createL(ra, w.shape);
     } else {
   
       Value wwa = (Value) ww;
@@ -92,10 +91,7 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          if (ra.length == 1 && ra[0] instanceof Primitive) {
-            return ra[0];
-          }
-          return Arr.create(ra, w.shape);
+          return Arr.createL(ra, w.shape);
         }
         
         
@@ -115,7 +111,7 @@ public class AtBuiltin extends Dop {
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.create(ra, w.shape);
+          return Arr.createL(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
@@ -132,8 +128,7 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
-          return Arr.create(ra, w.shape);
+          return Arr.createL(ra, w.shape);
         }
   
       }

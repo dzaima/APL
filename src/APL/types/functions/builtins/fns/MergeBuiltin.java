@@ -36,6 +36,7 @@ public class MergeBuiltin extends Builtin {
       for (int i = 0; i < idx.length; i++) {
         ds[i] = wds[(int)idx[i] - IO][i];
       }
+      if (a.rank == 0) return new Num(ds[0]);
       return new DoubleArr(ds, a.shape);
     }
     Value[] vs = new Value[a.ia];
@@ -43,7 +44,7 @@ public class MergeBuiltin extends Builtin {
     for (int i = 0; i < idx.length; i++) {
       vs[i] = w.get((int)idx[i] - IO).get(i);
     }
-    return Arr.create(vs, a.shape);
+    return Arr.createL(vs, a.shape);
   }
   
   @Override public String repr() {
