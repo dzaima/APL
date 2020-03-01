@@ -57,62 +57,70 @@ static {
   Main.colorful = false;
 }
 
-{
-  dzaimaSC.set("app", new SimpleMap() {
-    String toString() { return "app"; }
-    
-    void setv(String k, Obj v) {
-      String s = k.toLowerCase();
-      switch (s) {
-        case "update":
-          layoutUpdate = (Fun) v;
-          layoutUpdate.call(Main.toAPL(kb.data.getString("fullName")), Main.toAPL(kb.layout));
-          kb.redraw();
-        return;
-        case "action": actionCalled = (Fun) v; return;
-        default: throw new DomainError("setting non-existing key "+s+" for app");
-      }
+
+class AppMap extends SimpleMap {
+  Value defGD = new DoubleArr(new double[]{1000, 1, 3, 1});
+  Value gd = defGD;
+  String toString() { return "app"; }
+  
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
+    switch (s) {
+      case "update":
+        layoutUpdate = (Fun) v;
+        layoutUpdate.call(Main.toAPL(kb.data.getString("fullName")), Main.toAPL(kb.layout));
+        kb.redraw();
+      return;
+      case "action": actionCalled = (Fun) v; return;
+      case "gd": gd = (Value) v; return;
+      default: throw new DomainError("setting non-existing key "+s+" for app");
     }
-    Obj getv(String k) {
-      String s = k.toLowerCase();
-      switch (s) {
-        case "layout": return Main.toAPL(kb.data.getString("fullName"));
-        case "set": return new Fun() {
-          public String repr() { return "app.set"; }
-          public Obj call(Value a, Value w) {
-            int[] is = a.asIntVec();
-            int x = is[0]; int y = is[1]; int dir = is[2];
-            Key key = kb.keys[y][x];
-            key.actions[dir] = new Action(parseJSONObject(w.asString()), kb, key);
-            return Num.ONE;
-          }
-        };
-        case "graph": return new Fun() {
-          public String repr() { return "app.graph"; }
-          public Obj call(Value w) {
-            topbar.toNew(new Grapher(w.asString()));
-            return Num.ONE;
-          }
-        };
-        case "cpy": return new Fun() {
-          public String repr() { return "app.cpy"; }
-          public Obj call(Value w) {
-            if (w.rank == 1) {
-              w = w.squeeze();
-              if (w instanceof ChrArr) {
-                copy(w.asString());
-                return Num.ONE;
-              }
+  }
+  Obj getv(String k) {
+    String s = k.toLowerCase();
+    switch (s) {
+      case "gd": return gd;
+      case "layout": return Main.toAPL(kb.data.getString("fullName"));
+      case "set": return new Fun() {
+        public String repr() { return "app.set"; }
+        public Obj call(Value a, Value w) {
+          int[] is = a.asIntVec();
+          int x = is[0]; int y = is[1]; int dir = is[2];
+          Key key = kb.keys[y][x];
+          key.actions[dir] = new Action(parseJSONObject(w.asString()), kb, key);
+          return Num.ONE;
+        }
+      };
+      case "graph": return new Fun() {
+        public String repr() { return "app.graph"; }
+        public Obj call(Value w) {
+          topbar.toNew(new Grapher(w.asString()));
+          return Num.ONE;
+        }
+      };
+      case "cpy": return new Fun() {
+        public String repr() { return "app.cpy"; }
+        public Obj call(Value w) {
+          if (w.rank == 1) {
+            w = w.squeeze();
+            if (w instanceof ChrArr) {
+              copy(w.asString());
+              return Num.ONE;
             }
-            copy(w.toString());
-            return Num.ONE;
           }
-        };
-        case "redraw": redrawAll(); return Num.ONE;
-        default: return Null.NULL;
-      }
+          copy(w.toString());
+          return Num.ONE;
+        }
+      };
+      case "redraw": redrawAll(); return Num.ONE;
+      default: return Null.NULL;
     }
-  });
+  }
+}
+static AppMap appobj;
+{
+  appobj = new AppMap();
+  dzaimaSC.set("app", appobj);
 }
 
 

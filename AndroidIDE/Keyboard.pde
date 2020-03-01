@@ -197,6 +197,7 @@ class Action {
     this.k = k;
   }
   void call() {
+    ctrl = shift = false;
     if (textInput == null) return;
     if (spec == null) {
       String toType = type;

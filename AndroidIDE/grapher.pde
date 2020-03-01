@@ -63,13 +63,18 @@ static class Graph extends Plane {
   
   void draw() {
     bounds();
-    Obj s = dzaimaSC.get("grapher");
+    Obj s = appobj.gd;
     boolean joined = true;
-    float ph = 3;
-    float mul = 1;
-    if (s == null) {
-      pts = 1000;
-    } else {
+    float ph;
+    float mul;
+    try {
+      pts = ((Value)s).get(0).asInt();
+      joined = ((Value)s).get(1).asDouble() != 0;
+      ph = (float) ((Value)s).get(2).asDouble();
+      mul = ((Value)s).get(3).asInt();
+    } catch (Throwable t) {
+      println("app.gr invalid; restoring to default");
+      s = appobj.gd = appobj.defGD;
       pts = ((Value)s).get(0).asInt();
       joined = ((Value)s).get(1).asDouble() != 0;
       ph = (float) ((Value)s).get(2).asDouble();
@@ -120,11 +125,13 @@ static class Graph extends Plane {
           Value res;
           try {
             res = (Value) fn.call(new DoubleArr(ds));
-          } catch (Throwable e) { res = null; e.printStackTrace(); }
+          } catch (Throwable e) { res = null; }
           
           for (int i = 0; i < ds.length; i++) {
-            if (res == null) ps.get(i).y = new double[0];
-            else ps.get(i).y = res.get(i).asDoubleArr();
+            ps.get(i).y = new double[0];
+            if (res != null) try {
+              ps.get(i).y = res.get(i).asDoubleArr();
+            } catch (Throwable t) { /*ignore */ }
           }
           ptsadded+= ds.length;
           

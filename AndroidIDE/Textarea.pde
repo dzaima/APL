@@ -12,7 +12,7 @@ static class APLTextarea extends Drawable implements TextReciever {
     super(x, y, w, h);
     lines = new ArrayList();
     lines.add("");
-    setsz(min(a.width, a.height)/20);
+    setsz(max(a.width, a.height)/40);
   }
   int tt = 0; // caret flicker timer
   int xoff = 0; // scroll

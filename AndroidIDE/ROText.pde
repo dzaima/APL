@@ -3,7 +3,7 @@ static class ROText extends Drawable {
   ROText(int x, int y, int w, int h) {
     super(x, y, w, h);
     s = new ArrayList();
-    setSize(min(d.width, d.height)/20);
+    setSize(max(d.width, d.height)/40);
   }
   int xoff = 0; // scroll
   int yoff = 0;

@@ -88,16 +88,26 @@ void draw() {
   pmousePressed = mousePressed;
 }
 static boolean shift, ctrl;
+void handleExtraJAVA2D(boolean pressed) {
+  if (key==65535) {
+    if (keyCode == 16) shift = pressed;
+    if (keyCode == 17) ctrl  = pressed;
+  }
+}
 void keyPressed(KeyEvent e) {
+  e = fixKE(e);
+  if (sketchRenderer().equals(JAVA2D) && !MOBILE) {
+    handleExtraJAVA2D(true);
+  } else {
+    shift = e.isShiftDown();
+    ctrl  = e.isControlDown();
+  }
   //if (key == 'Q') {
   //  surface.setSize(height, width);
   //  redrawAll();
   //}
-  e = fixKE(e);
-  //println(+key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
-  shift = e.isShiftDown();
-  ctrl  = e.isControlDown();
-  //println(e.getNative());
+  //println("P", +key, keyCode, shift, ctrl, e.isAltDown(), e.isMetaDown());
+  //println("P", e.getNative());
   if (key == 18 && keyCode == 82) {
     redrawAll();
     return;
@@ -121,7 +131,12 @@ void keyPressed(KeyEvent e) {
   //println(+key, keyCode);
 }
 void keyReleased(KeyEvent e) {
-  shift = e.isShiftDown();
+  if (sketchRenderer().equals(JAVA2D) && !MOBILE) {
+    handleExtraJAVA2D(false);
+  } else {
+    shift = e.isShiftDown();
+    ctrl  = e.isControlDown();
+  }
 }
 
 static boolean shift() {
