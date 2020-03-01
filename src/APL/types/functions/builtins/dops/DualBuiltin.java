@@ -41,7 +41,14 @@ public class DualBuiltin extends Dop {
   public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    return under.callInv( (Value) ((Fun)aa).call((Value) under.call(a), (Value) under.call(w)));
+    Value aS = (Value) under.call(a);
+    Value wS = (Value) under.call(w);
+    if (under.strInv()) {
+      Value obj = (Value) ((Fun) aa).call(aS, wS);
+      return under.strInv(obj, w);
+    }
+    
+    return under.callInv( (Value) ((Fun)aa).call(aS, wS));
   }
   public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
