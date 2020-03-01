@@ -252,7 +252,7 @@ public class Main {
     return execLines(t, sc);
   }
   
-  static public void printdbg(Object... args) {
+  public static void printdbg(Object... args) {
     if (!debug) return;
     if (args.length > 0) print(args[0] == null? "null" : args[0].toString());
     for (int i = 1; i < args.length; i++) {
@@ -297,7 +297,7 @@ public class Main {
   }
   
   
-  static public Obj execLines(TokArr<LineTok> lines, Scope sc) {
+  public static Obj execLines(TokArr<LineTok> lines, Scope sc) {
     Obj res = null;
     HashMap<EType, LineTok> eGuards = new HashMap<>();
     try {

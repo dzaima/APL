@@ -11,6 +11,7 @@ public class BigValue extends Primitive {
   public static final BigValue ZERO = new BigValue(BigInteger.ZERO);
   public static final BigValue ONE = new BigValue(BigInteger.ONE);
   public static final BigValue MINUS_ONE = new BigValue(BigInteger.valueOf(-1));
+  public static final BigValue TWO = new BigValue(BigInteger.valueOf(2));
   
   public static final BigInteger MAX_SAFE_DOUBLE = BigInteger.valueOf(Num.MAX_SAFE_INT);
   

@@ -95,7 +95,7 @@ public class UpArrowBuiltin extends Builtin {
     } else return w;
   }
   
-  static public Value merge(Value[] w) {
+  public static Value merge(Value[] w) {
     int[] def = new int[w[0].rank];
     System.arraycopy(w[0].shape, 0, def, 0, def.length);
     for (Value v : w) {

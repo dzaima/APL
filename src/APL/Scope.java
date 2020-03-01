@@ -6,6 +6,8 @@ import APL.tokenizer.types.BasicLines;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.*;
+import APL.types.functions.builtins.dops.OverBuiltin;
+import APL.types.functions.builtins.fns.*;
 
 import java.io.*;
 import java.net.*;
@@ -362,7 +364,7 @@ public class Scope {
     }
   }
   
-  static private class Ex extends Builtin {
+  private static class Ex extends Builtin {
     @Override public String repr() {
       return "⎕EX";
     }
@@ -376,7 +378,7 @@ public class Scope {
       return Main.exec(Main.readFile(path), sc);
     }
   }
-  static private class Lns extends Builtin {
+  private static class Lns extends Builtin {
     @Override public String repr() {
       return "⎕LNS";
     }
@@ -399,50 +401,61 @@ public class Scope {
     }
   
     @Override public Obj call(Value a, Value w) {
-      try {
-        URL url = new URL(w.asString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        APLMap m = (APLMap) a;
-        String content = get(m, "content", "");
-        conn.setRequestMethod(get(m, "method", "POST"));
+      if (a instanceof APLMap) {
+        try {
+          URL url = new URL(w.asString());
+          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+          APLMap m = (APLMap) a;
+          String content = get(m, "content", "");
+          conn.setRequestMethod(get(m, "method", "POST"));
         
-        conn.setRequestProperty("Content-Type", get(m, "type", "POST"));
-        conn.setRequestProperty("Content-Language", get(m, "language", "en-US"));
-        conn.setRequestProperty("Content-Length", Integer.toString(content.length()));
-  
-        Obj eo = m.getRaw("e");
-        if (eo != Null.NULL) {
-          APLMap e = (APLMap) eo;
-          for (Value k : e.allKeys()) {
-            Value v = (Value) e.getRaw(k);
-            conn.setRequestProperty(k.asString(), v.asString());
+          conn.setRequestProperty("Content-Type", get(m, "type", "POST"));
+          conn.setRequestProperty("Content-Language", get(m, "language", "en-US"));
+          conn.setRequestProperty("Content-Length", Integer.toString(content.length()));
+        
+          Obj eo = m.getRaw("e");
+          if (eo != Null.NULL) {
+            APLMap e = (APLMap) eo;
+            for (Value k : e.allKeys()) {
+              Value v = (Value) e.getRaw(k);
+              conn.setRequestProperty(k.asString(), v.asString());
+            }
           }
-        }
         
-        Obj cache = m.getRaw("cache");
-        conn.setUseCaches(cache!=Null.NULL && Main.bool(cache));
-        conn.setDoOutput(true);
+          Obj cache = m.getRaw("cache");
+          conn.setUseCaches(cache!=Null.NULL && Main.bool(cache));
+          conn.setDoOutput(true);
         
-        if (content.length() != 0) {
-          DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-          os.writeBytes(content);
-          os.close();
+          if (content.length() != 0) {
+            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+            os.writeBytes(content);
+            os.close();
+          }
+        
+        
+          InputStream is = conn.getInputStream();
+          ArrayList<Value> vs = new ArrayList<>();
+          try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
+            String ln;
+            while ((ln = rd.readLine()) != null) vs.add(Main.toAPL(ln));
+          }
+          return new HArr(vs.toArray(new Value[0]));
+        } catch (MalformedURLException e) {
+          throw new DomainError("bad URL: "+e.getMessage());
+        } catch (ProtocolException e) {
+          throw new DomainError("ProtocolException: "+e.getMessage());
+        } catch (IOException e) {
+          throw new DomainError("IOException: "+e.getMessage());
         }
-  
-  
-        InputStream is = conn.getInputStream();
-        ArrayList<Value> vs = new ArrayList<>();
-        try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
-          String ln;
-          while ((ln = rd.readLine()) != null) vs.add(Main.toAPL(ln));
+      } else {
+        String p = a.asString();
+        String s = w.asString();
+        try (PrintWriter pw = new PrintWriter(p)) {
+          pw.write(s);
+        } catch (FileNotFoundException e) {
+          throw new DomainError("File "+p+" not found: "+e.getMessage());
         }
-        return new HArr(vs.toArray(new Value[0]));
-      } catch (MalformedURLException e) {
-        throw new DomainError("bad URL: "+e.getMessage());
-      } catch (ProtocolException e) {
-        throw new DomainError("ProtocolException: "+e.getMessage());
-      } catch (IOException e) {
-        throw new DomainError("IOException: "+e.getMessage());
+        return w;
       }
     }
   }
@@ -549,7 +562,7 @@ public class Scope {
   }
   
   
-  static private class Hasher extends Builtin {
+  private static class Hasher extends Builtin {
     @Override public String repr() {
       return "⎕HASH";
     }
@@ -557,7 +570,7 @@ public class Scope {
       return Num.of(w.hashCode());
     }
   }
-  static private class Stdin extends Builtin {
+  private static class Stdin extends Builtin {
     @Override public String repr() {
       return "⎕STDIN";
     }
@@ -668,7 +681,7 @@ public class Scope {
     }
   }
   
-  private class DR extends Fun {
+  private static class DR extends Fun {
     /*
        0=100| - unknown
        1=100| - bit
@@ -682,7 +695,7 @@ public class Scope {
       0=÷∘100 - primitive
       1=÷∘100 - array
     */
-    @Override public Obj call(Value w) {
+    public Obj call(Value w) {
       if (w instanceof    BitArr) return Num.of(101);
       if (w instanceof      Char) return Num.of(  2);
       if (w instanceof    ChrArr) return Num.of(102);
@@ -697,10 +710,51 @@ public class Scope {
       return Num.of(200); // idk ¯\_(ツ)_/¯
     }
     public Obj call(Value a, Value w) {
-      throw new Error("TODO");
+      int[] is = a.asIntVec();
+      if (is.length != 2) throw new DomainError("⎕DR expected ⍺ to have 2 items");
+      int f = is[0];
+      int t = is[1];
+      if ((f==1 || f==3 || f==5)
+       && (t==1 || t==3 || t==5)
+       && (f==3 ^ t==3)) { // convert float to/from bits/long
+        // if (w instanceof Num) return new BigValue(Double.doubleToLongBits(w.asDouble()), false);
+        // return new Num(Double.longBitsToDouble(((BigValue) w).i.longValue()));
+        if (t==3) {
+          if (f==1) return OverBuiltin.on(this, new Fun() {
+            public String repr() { return ""; }
+            public Obj call(Value w) {
+              return new Num(Double.longBitsToDouble(((BigValue) UTackBuiltin.on(BigValue.TWO, w, DR.this)).i.longValueExact()));
+            }
+          }, 1, w);
+          if (f==5) return OverBuiltin.on(this, new Fun() {
+            public String repr() { return ""; }
+            public Obj call(Value w) {
+              return new Num(Double.longBitsToDouble(((BigValue) w).i.longValueExact()));
+            }
+          }, 0, w);
+        } else {
+          if (t==1) return OverBuiltin.on(this, new Fun() {
+            public String repr() { return ""; }
+            public Obj call(Value w) {
+              return new BitArr(new long[]{Long.reverse(Double.doubleToLongBits(w.asDouble()))}, new int[]{64});
+            }
+          }, 0, w);
+          if (t==5) return OverBuiltin.on(this, new Fun() {
+            public String repr() { return ""; }
+            public Obj call(Value w) {
+              return new BigValue(Double.doubleToLongBits(w.asDouble()));
+            }
+          }, 0, w);
+        }
+      }
+      throw new DomainError(a+"⎕DR not implemented");
     }
-    @Override public String repr() {
+    public Obj callInvW(Value a, Value w) {
+      return call(ReverseBuiltin.on(a), w);
+    }
+    public String repr() {
       return "⎕DR";
     }
   }
+  
 }

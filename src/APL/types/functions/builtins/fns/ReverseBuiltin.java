@@ -12,19 +12,22 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   }
   
   
-  @Override public Obj call(Value w, int dim) {
+  public Obj call(Value w, int dim) {
     return ((Arr) w).reverseOn(-dim-1);
   }
-  @Override public Obj call(Value w) {
+  public Obj call(Value w) {
+    return on(w);
+  }
+  public static Value on(Value w) {
     if (w instanceof Primitive) return w;
     return ((Arr) w).reverseOn(w.rank-1);
   }
-  @Override public Obj callInv(Value w) {
+  public Obj callInv(Value w) {
     return call(w);
   }
   
   
-  @Override public Obj call(Value a, Value w) {
+  public Obj call(Value a, Value w) {
     if (a instanceof Primitive) return call(a.asInt(), -1, w);
     if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵");
     int[] as = a.shape;
