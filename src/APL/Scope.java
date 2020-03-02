@@ -723,26 +723,26 @@ public class Scope {
           if (f==1) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
             public Obj call(Value w) {
-              return new Num(Double.longBitsToDouble(((BigValue) UTackBuiltin.on(BigValue.TWO, w, DR.this)).i.longValueExact()));
+              return new Num(Double.longBitsToDouble(((BigValue) UTackBuiltin.on(BigValue.TWO, w, DR.this)).longValue()));
             }
           }, 1, w);
           if (f==5) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
             public Obj call(Value w) {
-              return new Num(Double.longBitsToDouble(((BigValue) w).i.longValueExact()));
+              return new Num(Double.longBitsToDouble(((BigValue) w).longValue()));
             }
           }, 0, w);
         } else {
           if (t==1) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
             public Obj call(Value w) {
-              return new BitArr(new long[]{Long.reverse(Double.doubleToLongBits(w.asDouble()))}, new int[]{64});
+              return new BitArr(new long[]{Long.reverse(Double.doubleToRawLongBits(w.asDouble()))}, new int[]{64});
             }
           }, 0, w);
           if (t==5) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
             public Obj call(Value w) {
-              return new BigValue(Double.doubleToLongBits(w.asDouble()));
+              return new BigValue(Double.doubleToRawLongBits(w.asDouble()));
             }
           }, 0, w);
         }

@@ -83,4 +83,8 @@ public class BigValue extends Primitive {
     }
     return b.intValue();
   }
+  public long longValue() {
+    if (i.bitLength() > 64) throw new DomainError("using a bigint with more than 64 bits as long", this);
+    return i.longValue();
+  }
 }
