@@ -114,7 +114,9 @@ void keyPressed(KeyEvent e) {
   }
   if (textInput != null) {
     if (key == 65535) {
-      handleCoded(keyCode);
+           if (keyCode == java.awt.event.KeyEvent.VK_PAGE_UP   ) topbar.move(-1);
+      else if (keyCode == java.awt.event.KeyEvent.VK_PAGE_DOWN ) topbar.move( 1);
+      else handleCoded(keyCode);
     } else {
       if (key == 8) textInput.ldelete();
       else if (key ==  26 && keyCode ==  90) textInput.special("undo");

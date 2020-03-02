@@ -11,8 +11,8 @@ void psDraw() {
   else touches = new FakeTouch[0];
 }
 void settings() {
-  //size(540, 830);
-  size(1200, 800, JAVA2D);
+  size(540, 830);
+  //size(1200, 800, JAVA2D);
   //size(960, 540);
 }
 

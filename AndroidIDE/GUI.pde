@@ -52,6 +52,12 @@ static class TopBar extends Drawable {
     ctab.show();
     redraw();
   }
+  void move(int d) {
+    int i = tabs.indexOf(ctab) + d;
+    i%= tabs.size();
+    if (i < 0) i+= tabs.size();
+    to(tabs.get(i));
+  }
   void toNew(Tab t) {
     add(t);
     to(t);

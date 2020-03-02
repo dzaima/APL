@@ -1,8 +1,22 @@
-abstract static class Tab {
+abstract static class Tab extends SimpleMap {
   abstract void show();
   abstract void hide();
   abstract String name();
   void mouseWheel(int dir) { }
+  Obj getv(String k) {
+    switch (k) {
+      case "name": return Main.toAPL(name());
+      default: return Null.NULL;
+    }
+  }
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
+    switch (k) {
+      default: throw new DomainError("setting non-existing key "+s+" for tab");
+    }
+  }
+  String toString() { return "tab["+name()+"]"; }
+  boolean equals(Object o) { return this == o; }
 }
 
 
@@ -156,6 +170,14 @@ static class REPL extends Tab {
   String name() {
     return "REPL";
   }
+  Obj getv(String k) {
+    if (k.equals("eq")) return Main.toAPL(input.line);
+    return super.getv(k);
+  }
+  void setv(String k, Obj v) {
+    if (k.equals("eq")) { input.clear(); input.append(((Value) v).asString()); }
+    else super.setv(k, v);
+  }
 }
 
 
@@ -236,5 +258,39 @@ static class Grapher extends Tab {
   }
   void mouseWheel(int dir) {
     g.mouseWheel(dir);
+  }
+  Obj getv(String k) {
+    if (k.equals("eq")) return Main.toAPL(input.line);
+    if (k.equals("am")) return new Num(g.pts);
+    if (k.equals("ln")) return new Num(g.joined? 1 : 0);
+    if (k.equals("sz")) return new Num(g.ph);
+    if (k.equals("x" )) return new Num(g.fullX + (g.x + g.w/2)/g.fullS);
+    if (k.equals("y" )) return new Num(g.fullY + (g.y + g.h/2)/g.fullS);
+    if (k.equals("w" )) return new Num(g.w/g.fullS);
+    if (k.equals("freq")) return new Num(g.freq);
+    if (k.equals("batch")) return new Num(g.mul);
+    if (k.equals("gd")) return new DoubleArr(new double[]{g.pts, g.joined? 1 : 0, g.ph, g.mul});
+    return super.getv(k);
+  }
+  void setv(String k, Obj v) {
+    if (k.equals("eq")) { input.clear(); input.append(((Value) v).asString()); }
+    else if (k.equals("am"   )) g.pts = ((Value)v).asInt();
+    else if (k.equals("ln"   )) g.joined = Main.bool(v);
+    else if (k.equals("sz"   )) g.ph = (float)((Value)v).asDouble();
+    else if (k.equals("batch")) g.mul = ((Value)v).asInt();
+    else if (k.equals("x")) g.fullX = ((Value) v).asDouble() - (g.x + g.w/2)/g.fullS;
+    else if (k.equals("y")) g.fullY = ((Value) v).asDouble() - (g.y + g.h/2)/g.fullS;
+    else if (k.equals("w")) {
+      double wnt = g.w / (float) ((Value) v).asDouble();
+      double sc = wnt / g.fullS;
+      double pS = g.fullS;
+      g.fullS*= sc;
+      double scalechange = 1/g.fullS - 1/pS;
+      g.fullX-= ((g.x+g.w/2) * scalechange);
+      g.fullY-= ((g.y+g.h/2) * scalechange);
+    }
+    else if (k.equals("freq")) g.freq = ((Value) v).asInt();
+    else if (k.equals("gd")) { Value a = (Value) v; setv("am", a.get(0)); setv("ln", a.get(1)); setv("sz", a.get(2)); setv("batch", a.get(3)); }
+    else super.setv(k, v);
   }
 }

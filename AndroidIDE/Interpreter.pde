@@ -59,8 +59,6 @@ static {
 
 
 class AppMap extends SimpleMap {
-  Value defGD = new DoubleArr(new double[]{1000, 1, 3, 1});
-  Value gd = defGD;
   String toString() { return "app"; }
   
   void setv(String k, Obj v) {
@@ -72,14 +70,16 @@ class AppMap extends SimpleMap {
         kb.redraw();
       return;
       case "action": actionCalled = (Fun) v; return;
-      case "gd": gd = (Value) v; return;
       default: throw new DomainError("setting non-existing key "+s+" for app");
     }
   }
   Obj getv(String k) {
     String s = k.toLowerCase();
+    if (s.matches("t\\d+")) {
+      int i = Integer.parseInt(s.substring(1)) - dzaimaSC.IO;
+      if (i < topbar.tabs.size()) return topbar.tabs.get(i);
+    }
     switch (s) {
-      case "gd": return gd;
       case "layout": return Main.toAPL(kb.data.getString("fullName"));
       case "set": return new Fun() {
         public String repr() { return "app.set"; }
@@ -94,8 +94,9 @@ class AppMap extends SimpleMap {
       case "graph": return new Fun() {
         public String repr() { return "app.graph"; }
         public Obj call(Value w) {
-          topbar.toNew(new Grapher(w.asString()));
-          return Num.ONE;
+          Grapher g = new Grapher(w.asString());
+          topbar.toNew(g);
+          return g;
         }
       };
       case "cpy": return new Fun() {
@@ -113,6 +114,12 @@ class AppMap extends SimpleMap {
         }
       };
       case "redraw": redrawAll(); return Num.ONE;
+      case "ts": {
+        Value[] vs = new Value[topbar.tabs.size()];
+        for (int i = 0; i < vs.length; i++) vs[i] = topbar.tabs.get(i);
+        return new HArr(vs);
+      }
+      case "t": return topbar.ctab;
       default: return Null.NULL;
     }
   }
