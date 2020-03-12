@@ -65,7 +65,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
                   si = i;
                   pre = new ArrayList<>();
                   for (int j = 0; j < res.length(); j++) {
-                    pre.add(new Char(res.charAt(j)));
+                    pre.add(Char.of(res.charAt(j)));
                   }
                   break typed;
                 }

@@ -109,7 +109,7 @@ public final class BitArr extends Arr {
   }
   
   @Override public Value get(int i) {
-    return new Num((arr[i>>6] >> (i&63))  &  1);
+    return Num.NUMS[(int) ((arr[i>>6] >> (i&63)) & 1)]; // no branching!
   }
   
   @Override public String asString() {

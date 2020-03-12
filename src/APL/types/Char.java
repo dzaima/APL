@@ -8,28 +8,38 @@ import java.util.Arrays;
 import static APL.Main.quotestrings;
 
 public class Char extends Primitive {
-  public static final Char SPACE = new Char(' ');
   public char chr;
+  public static final Char[] ASCII;
+  static {
+    ASCII = new Char[128];
+    for (int i = 0; i < 128; i++) {
+      ASCII[i] = new Char((char) i);
+    }
+  }
+  
+  public static final Char SPACE = ASCII[' '];
+  
   public Char(char c) {
     chr = c;
   }
-  public Char(String s) {
-    assert(s.length() == 1);
-    chr = s.charAt(0);
+  
+  public static Char of(char c) {
+    if (c < 128) return ASCII[c];
+    return new Char(c);
   }
   
   public Char upper() {
-    return new Char(Character.toUpperCase(chr));
+    return Char.of(Character.toUpperCase(chr));
   }
   
   public Char lower() {
-    return new Char(Character.toLowerCase(chr));
+    return Char.of(Character.toLowerCase(chr));
   }
   
   public Char swap() {
     if (Character.isUpperCase(chr)) return lower();
     if (Character.isLowerCase(chr)) return upper();
-    return new Char(chr);
+    return Char.of(chr);
   }
   
   public int getCase() {

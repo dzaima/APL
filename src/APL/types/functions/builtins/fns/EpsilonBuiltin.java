@@ -1,8 +1,8 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.util.ArrayList;
@@ -25,7 +25,17 @@ public class EpsilonBuiltin extends Builtin {
     if (v instanceof Primitive) {
       arr.add(v);
     } else {
-      for (Value c : v) rec(arr, c);
+      if (v instanceof BitArr) {
+        BitArr ba = (BitArr) v;
+        for (int i = 0; i < ba.ia; i++) arr.add(ba.get(i));
+      } else if (v.quickDoubleArr()) {
+        for (double d : v.asDoubleArr()) arr.add(Num.of(d));
+      } else if (v instanceof ChrArr) {
+        String s = ((ChrArr) v).s;
+        for (int i = 0; i < s.length(); i++) {
+          arr.add(Char.of(s.charAt(i)));
+        }
+      } else for (Value c : v) rec(arr, c);
     }
   }
   

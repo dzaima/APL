@@ -12,7 +12,7 @@ public class ChrTok extends Token {
     super(line, spos, epos);
     parsed = str;
     
-    if (str.length() == 1) val = new Char(str);
+    if (str.length() == 1) val = Char.of(str.charAt(0));
     else val = Main.toAPL(str);
   }
   

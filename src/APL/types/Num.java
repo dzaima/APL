@@ -70,6 +70,12 @@ public class Num extends Primitive {
     if (n==-1) return MINUS_ONE;
     return new Num(n);
   }
+  public static Num of(double n) {
+    if (n>=0 && n<256 && n%1==0) {
+      return NUMS[(int) n];
+    }
+    return new Num(n);
+  }
   
   public Num plus(Num w) {
     return new Num(num + w.num);

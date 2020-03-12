@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Scope;
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
@@ -24,6 +24,10 @@ public class RShoeBuiltin extends Builtin {
     if (w instanceof APLMap) {
       APLMap map = (APLMap) w;
       return map.getRaw(a);
+    }
+    if (a instanceof Num) {
+      if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", w);
+      return w.get(a.asInt() - sc.IO);
     }
     for (Value v : a) {
       w = w.at(v.asIntVec(), sc.IO);

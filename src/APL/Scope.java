@@ -255,7 +255,7 @@ public class Scope {
     public Obj call(Value w) {
       return numChrM(new NumMV() {
         @Override public Value call(Num c) {
-          return new Char((char) c.asInt());
+          return Char.of((char) c.asInt());
         }
   
         @Override public boolean retNum() {

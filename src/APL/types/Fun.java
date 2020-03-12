@@ -59,7 +59,7 @@ public abstract class Fun extends Scopeable {
     Value call(Char w);
     default Arr call(ChrArr a) {
       Value[] res = new Value[a.ia];
-      for (int i = 0; i < a.ia; i++) res[i] = call(new Char(a.s.charAt(i)));
+      for (int i = 0; i < a.ia; i++) res[i] = call(Char.of(a.s.charAt(i)));
       return new HArr(res, a.shape);
     }
   }

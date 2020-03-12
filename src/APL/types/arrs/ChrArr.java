@@ -32,11 +32,11 @@ public class ChrArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return new Char(s.charAt(i));
+    return Char.of(s.charAt(i));
   }
   
   @Override public Value first() {
-    if (ia > 0) return new Char(s.charAt(0));
+    if (ia > 0) return Char.of(s.charAt(0));
     return Char.SPACE;
   }
   @Override
@@ -54,7 +54,7 @@ public class ChrArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    if (sh.length == 0 && !Main.enclosePrimitives) return new Char(s.charAt(0));
+    if (sh.length == 0 && !Main.enclosePrimitives) return Char.of(s.charAt(0));
     return new ChrArr(s, sh);
   }
   
