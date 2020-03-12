@@ -74,7 +74,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return new Num(arr[i]);
+    return Num.of(arr[i]);
   }
   
   @Override public Value first() {
