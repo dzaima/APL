@@ -14,6 +14,7 @@ public final class BitArr extends Arr {
   
   public BitArr(long[] arr, int[] shape) {
     super(shape);
+    assert Main.enclosePrimitives || shape.length != 0 : "Internal: attempting to create a BitArr of shape ⍬";
     assert sizeof(shape) == arr.length : arr.length+" not expected for shape "+Main.formatAPL(shape);
     this.arr = arr;
   }
@@ -290,6 +291,12 @@ public final class BitArr extends Arr {
   
     public void copy(BitArr arr) {
       this.arr = arr.arr;
+    }
+    public void set(int pos) {
+      arr[pos>>6]|= 1<<(pos&63);
+    }
+    public void clear(int pos) {
+      arr[pos>>6]&= ~(1<<(pos&63));
     }
   }
   public static BC create(int[] sh) {
