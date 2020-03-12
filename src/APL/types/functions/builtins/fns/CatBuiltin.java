@@ -25,28 +25,47 @@ public class CatBuiltin extends Builtin implements DimDFn {
   }
   public Obj call(Value a, Value w) {
     int dim = Math.max(a.rank, w.rank) - 1;
+    if (a.rank <= 1 && w.rank <= 1) {
+      if ((a instanceof BitArr || Main.isBool(a))
+       && (w instanceof BitArr || Main.isBool(w))) {
+        return catBit(a, w);
+      }
+      if (a instanceof DoubleArr && w instanceof DoubleArr) {
+        double[] r = new double[a.ia + w.ia];
+        System.arraycopy(a.asDoubleArr(), 0, r, 0, a.ia);
+        System.arraycopy(w.asDoubleArr(), 0, r, a.ia, w.ia);
+        return new DoubleArr(r);
+      }
+      Value[] r = new Value[a.ia + w.ia];
+      System.arraycopy(a.values(), 0, r, 0, a.ia);
+      System.arraycopy(w.values(), 0, r, a.ia, w.ia);
+      return Arr.create(r);
+    }
     return cat(a, w, dim);
   }
   public Obj call(Value a, Value w, int dim) {
     if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
     return cat(a, w, dim);
   }
+  private static BitArr catBit(Value a, Value w) {
+    boolean ab = a instanceof BitArr;
+    boolean wb = w instanceof BitArr;
+    int sz = a.ia + w.ia;
+    long[] ls = new long[BitArr.sizeof(sz)];
+  
+    BitArr.BA res = new BitArr.BA(ls);
+    if (ab) res.append((BitArr) a);
+    else    res.append(Main.bool(a));
+    if (wb) res.append((BitArr) w);
+    else    res.append(Main.bool(w));
+  
+    return new BitArr(ls, new int[]{sz});
+  }
   static Obj cat(Value a, Value w, int k) {
-    if ((a instanceof BitArr || w instanceof BitArr) && a.rank<=1 && w.rank<=1) {
-      boolean ab = a instanceof BitArr;
-      boolean wb = w instanceof BitArr;
-      if ((ab || Main.isBool(a))  &&  (wb || Main.isBool(w))) {
-        int sz = a.ia + w.ia;
-        long[] ls = new long[BitArr.sizeof(sz)];
-  
-        BitArr.BA res = new BitArr.BA(ls);
-        if (ab) res.append((BitArr) a);
-        else    res.append(Main.bool(a));
-        if (wb) res.append((BitArr) w);
-        else    res.append(Main.bool(w));
-  
-        return new BitArr(ls, new int[]{sz});
-      }
+    if (a.rank<=1 && w.rank<=1
+      && (a instanceof BitArr || Main.isBool(a))
+      && (w instanceof BitArr || Main.isBool(w))) {
+      return catBit(a, w);
     }
     boolean aScalar = a.scalar(), wScalar = w.scalar();
     if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0);

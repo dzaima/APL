@@ -17,7 +17,19 @@ public class FindBuiltin extends Builtin {
     if (a.rank != w.rank) throw new RankError("argument ranks for ⍷ should be equal ("+a.rank+" ≠ "+w.rank+")", w);
     BitArr.BC bc = new BitArr.BC(w.shape);
     if (a.rank == 1) {
-      if (a instanceof DoubleArr && w instanceof DoubleArr) {
+      if (a instanceof BitArr && w instanceof BitArr) {
+        long[] ab = ((BitArr) a).arr;
+        long[] wb = ((BitArr) w).arr;
+        w: for (int ir = 0; ir < w.ia-a.ia+1; ir++) {
+          for (int ia = 0; ia < a.ia; ia++) {
+            int iw = ia + ir;
+            long la = ab[ia>>6] >> (ia & 63);
+            long lw = wb[iw>>6] >> (iw & 63);
+            if ((la&1) != (lw&1)) continue w;
+          }
+          bc.set(ir);
+        }
+      } else if (a.quickDoubleArr() && w.quickDoubleArr()) {
         double[] ad = a.asDoubleArr();
         double[] wd = w.asDoubleArr();
         w: for (int ir = 0; ir < w.ia-a.ia+1; ir++) {
