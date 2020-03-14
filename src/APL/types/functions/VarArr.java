@@ -50,7 +50,7 @@ public class VarArr extends Settable {
     Obj fst = vs.get(0);
     if (fst instanceof Num) {
       if (((Num) fst).num == 0 || ((Num) fst).num == 1) {
-        BitArr.BC bc = new BitArr.BC(new int[]{sz});
+        BitArr.BA bc = new BitArr.BA(sz);
         int i = sz-1;
         while (i >= 0) {
           Obj c = vs.get(i);

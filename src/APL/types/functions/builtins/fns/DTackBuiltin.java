@@ -88,7 +88,7 @@ public class DTackBuiltin extends Builtin {
             else         for (int i = 0; i < len; i++) res[len-i-1] = wl.testBit(i)? BigValue.MINUS_ONE : BigValue.ZERO;
             return new HArr(res);
           } else if (sign == 1) {
-            BitArr.BC bc = new BitArr.BC(new int[]{len});
+            BitArr.BA bc = new BitArr.BA(len);
             for (int i = 0; i < len; i++) bc.add(wl.testBit(len-i-1));
             return bc.finish();
           } else {

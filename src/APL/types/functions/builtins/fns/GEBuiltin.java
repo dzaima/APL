@@ -17,13 +17,13 @@ public class GEBuiltin extends Builtin {
     public boolean on(double a, double w) {
       return a >= w;
     }
-    public void on(BitArr.BC res, double a, double[] w) {
+    public void on(BitArr.BA res, double a, double[] w) {
       for (double cw : w) res.add(a >= cw);
     }
-    public void on(BitArr.BC res, double[] a, double w) {
+    public void on(BitArr.BA res, double[] a, double w) {
       for (double ca : a) res.add(ca >= w);
     }
-    public void on(BitArr.BC res, double[] a, double[] w) {
+    public void on(BitArr.BA res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res.add(a[i] >= w[i]);
     }
     public Value call(BigValue a, BigValue w) {

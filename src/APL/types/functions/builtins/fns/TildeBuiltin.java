@@ -22,11 +22,10 @@ public class TildeBuiltin extends Builtin {
       }
       
       if (w.quickDoubleArr()) {
-        long[] res = new long[BitArr.sizeof(w)];
         // for (int i = 0; i < w.length; i++) if (w[i] == 0) res[i>>6]|= 1L << (i&63);
-        BitArr.BA a = new BitArr.BA(res);
-        for (double v : w.asDoubleArr()) a.append(v == 0);
-        return new BitArr(res, w.shape);
+        BitArr.BA a = new BitArr.BA(w.shape);
+        for (double v : w.asDoubleArr()) a.add(v == 0);
+        return a.finish();
       }
       
       Arr o = (Arr) w;

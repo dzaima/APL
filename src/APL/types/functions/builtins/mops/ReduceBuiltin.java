@@ -33,7 +33,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       if (f instanceof PlusBuiltin) return new Num(w.sum());
       if (f instanceof MulBuiltin) {
         double p = 1;
-        for (double d : w.asDoubleArr()) p *= d;
+        for (double d : w.asDoubleArr()) p*= d;
         return new Num(p);
       }
       if (f instanceof FloorBuiltin) {

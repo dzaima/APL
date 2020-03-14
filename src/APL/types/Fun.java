@@ -243,25 +243,25 @@ public abstract class Fun extends Scopeable {
   
   public abstract static class D_NNeB implements D_NN { // dyadic number-number equals boolean
     public abstract boolean on(double a, double w);
-    public abstract void on(BitArr.BC res, double a, double[] w);
-    public abstract void on(BitArr.BC res, double[] a, double w);
-    public abstract void on(BitArr.BC res, double[] a, double[] w);
+    public abstract void on(BitArr.BA res, double a, double[] w);
+    public abstract void on(BitArr.BA res, double[] a, double w);
+    public abstract void on(BitArr.BA res, double[] a, double[] w);
     
     public Value call(double a, double w) {
       return on(a, w)? Num.ONE : Num.ZERO;
     }
     public Value call(double[] a, double[] w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
     }
     public Value call(double a, double[] w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
     }
     public Value call(double[] a, double w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
     }

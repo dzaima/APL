@@ -161,21 +161,25 @@ public final class BitArr extends Arr {
     return r;
   }
   
-  public static class BA { // boolean append
-    long[] a;
+  public static class BA { // bit adder
+    private long[] a;
+    private int[] sh;
     private int i, o = 0; // index, offset
-    public BA(long[] a) {
-      this.a = a;
-    }
     public BA(int am) {
       this.a = new long[sizeof(am)];
+      sh = new int[]{am};
     }
-    public BA(long[] a, int start) {
+    public BA(int[] sh) {
+      this.a = new long[sizeof(sh)];
+      this.sh = sh;
+    }
+    public BA(long[] a, int start, int[] sh) {
       this.a = a;
       i = start>>6;
       o = start & 63;
+      this.sh = sh;
     }
-    public void append(boolean b) {
+    public void add(boolean b) {
       a[i] |= (b? 1L : 0L)<<o;
       o++;
       // i+= o==64? 1 : 0; // todo, idk ._.
@@ -186,11 +190,11 @@ public final class BitArr extends Arr {
       }
     }
   
-    public void append(BitArr a) {
-      append(a, 0, a.ia);
+    public void add(BitArr a) {
+      add(a, 0, a.ia);
     }
     
-    public void append(BitArr g, int s, int e) {
+    public void add(BitArr g, int s, int e) {
       // System.out.println(g.ia+" "+s+" "+e+" "+i+" "+o+" "+a.length);
       // a.setEnd(false);
       // ↓ too much work for rare speedup
@@ -234,15 +238,15 @@ public final class BitArr extends Arr {
       rd.skip(s);
       final int len = e-s;
       for (int i = 0; i < len; i++) {
-        append(rd.read());
+        add(rd.read());
       }
       // int fp = (o<<6) + i + e-s;
       // i = fp>>6;
       // o = fp&63;
     }
   
-    public BitArr finish(int[] shape) {
-      return new BitArr(a, shape);
+    public BitArr finish() {
+      return new BitArr(a, sh);
     }
   }
   
@@ -262,36 +266,18 @@ public final class BitArr extends Arr {
     return arr[i1]>>>o1 | arr[i2]<<(64-o1);
   }
   
-  public static class BC { // boolean creator; todo merge with BA?
+  public static class BC { // boolean creator
     public long[] arr;
     int[] sz;
-    private int i, o = 0; // index, offset
     public BC(int[] sz) {
       this.sz = sz;
       arr = new long[sizeof(sz)];
-    }
-    public void add(boolean b) {
-      arr[i] |= (b? 1L : 0L)<<o;
-      o++;
-      // i+= o==64? 1 : 0;
-      // o&= 63;
-      if (o == 64) {
-        o = 0;
-        i++;
-      }
-    }
-    public void add(long l) { // add a whole 64 bits; don't use together with add(bool)!
-      arr[i] = l;
-      i++;
     }
     public BitArr finish() {
       // assert (i<<6) + o == Arr.prod(sz); \\ idk man
       return new BitArr(arr, sz);
     }
-  
-    public void copy(BitArr arr) {
-      this.arr = arr.arr;
-    }
+    
     public void set(int pos) {
       arr[pos>>6]|= 1<<(pos&63);
     }

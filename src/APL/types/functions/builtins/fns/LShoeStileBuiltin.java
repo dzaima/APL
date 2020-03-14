@@ -28,7 +28,7 @@ public class LShoeStileBuiltin extends Builtin {
   @Override public Obj call(Value w) {
     RankError.must(w.rank == 1, "rank of ⍵ must be 1");
     HashSet<Value> encountered = new HashSet<>();
-    BitArr.BC res = new BitArr.BC(w.shape);
+    BitArr.BA res = new BitArr.BA(w.shape);
     for (Value cv : w) {
       if (encountered.contains(cv)) res.add(false);
       else {

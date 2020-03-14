@@ -47,19 +47,18 @@ public class CatBuiltin extends Builtin implements DimDFn {
     if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
     return cat(a, w, dim);
   }
-  private static BitArr catBit(Value a, Value w) {
+  private static BitArr catBit(Value a, Value w) { // for ranks <= 1
     boolean ab = a instanceof BitArr;
     boolean wb = w instanceof BitArr;
     int sz = a.ia + w.ia;
-    long[] ls = new long[BitArr.sizeof(sz)];
   
-    BitArr.BA res = new BitArr.BA(ls);
-    if (ab) res.append((BitArr) a);
-    else    res.append(Main.bool(a));
-    if (wb) res.append((BitArr) w);
-    else    res.append(Main.bool(w));
+    BitArr.BA res = new BitArr.BA(sz);
+    if (ab) res.add((BitArr) a);
+    else    res.add(Main.bool(a));
+    if (wb) res.add((BitArr) w);
+    else    res.add(Main.bool(w));
   
-    return new BitArr(ls, new int[]{sz});
+    return res.finish();
   }
   static Obj cat(Value a, Value w, int k) {
     if (a.rank<=1 && w.rank<=1

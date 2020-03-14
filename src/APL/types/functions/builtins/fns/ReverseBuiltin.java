@@ -89,10 +89,10 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
     // System.out.println(block+" "+rowsz+" "+bam+" "+sub+" "+pA+" "+pB);
     if (w instanceof BitArr && w.rank == 1) {
       BitArr wb = (BitArr) w;
-      BitArr.BA c = new BitArr.BA(wb.ia);
-      c.append(wb, a, wb.ia);
-      c.append(wb, 0, a);
-      return c.finish(wb.shape);
+      BitArr.BA c = new BitArr.BA(wb.shape);
+      c.add(wb, a, wb.ia);
+      c.add(wb, 0, a);
+      return c.finish();
     } else if (w.quickDoubleArr()) {
       double[] vs = w.asDoubleArr();
       double[] res = new double[w.ia];
