@@ -9,7 +9,7 @@ import APL.types.BigValue;
 
 public class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_∆".toCharArray();
-  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞…ᑈᐵ"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
+  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷→⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾…ᑈᐵ"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default
   private static boolean validNameStart(char c) {
     for (char l : validNames) if (l == c) return true;
     return false;
@@ -147,7 +147,13 @@ public class Tokenizer {
           var name = raw.substring(li, i);
           if (c == '⎕') name = name.toUpperCase();
           tokens.add(new NameTok(raw, li, i, name));
-        } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
+        } else if (c=='¯' && next=='∞') {
+          i+= 2;
+          tokens.add(new NumTok(raw, li, i, Double.NEGATIVE_INFINITY));
+        } else if (c == '∞') {
+          i++;
+          tokens.add(new NumTok(raw, li, i, Double.POSITIVE_INFINITY));
+        } else if (c>='0' && c<='9' || c=='¯' || c=='.' && next>='0' && next<='9') {
           boolean negative = c=='¯';
           if (negative) i++;
           int si = i;
