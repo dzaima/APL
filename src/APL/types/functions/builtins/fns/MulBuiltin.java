@@ -17,7 +17,8 @@ public class MulBuiltin extends Builtin {
   
   private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
-      return Num.of(w.compareTo(Num.ZERO));
+      double d = w.num;
+      return d>0? Num.ONE : d<0? Num.MINUS_ONE : Num.ZERO;
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = a[i]>0? 1 : a[i]<0? -1 : 0;

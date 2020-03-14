@@ -56,7 +56,7 @@ public class VarArr extends Settable {
           Obj c = vs.get(i);
           if (c instanceof Num) {
             double n = ((Num) c).num;
-            if (n == 0 || n == 1) {
+            if (Double.doubleToRawLongBits(n)==0 || n == 1) { // don't convert negative zero!
               bc.add(n == 1);
             } else { bc = null; break; }
           } else { bc = null; break; }

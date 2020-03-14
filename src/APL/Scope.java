@@ -59,8 +59,14 @@ public class Scope {
         Main.vind = Main.bool(val);
       break;
       case "⎕PP":
-        Num.setPrecision(((Value) val).asInt());
-      break;
+        if (val instanceof Primitive) {
+          Num.setPrecision(((Value) val).asInt());
+        } else {
+          int[] args = ((Value) val).asIntVec();
+          if (args.length == 3) Num.setPrecision(args[0], args[1], args[2]);
+          else throw new DomainError("⎕PP expected either a scalar number or array of 3 integers as ⍵");
+        }
+        break;
       default:
         vars.put(name, val);
     }
@@ -91,7 +97,7 @@ public class Scope {
         case "⎕HASH": return new Hasher();
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
-        case "⎕PP": return Num.of(Num.pp);
+        case "⎕PP": return new DoubleArr(new double[] {Num.pp, Num.sEr, Num.eEr});
         case "⎕PF": return new Profiler(this);
         case "⎕PFR": return Profiler.results();
         case "⎕STDIN": return new Stdin();
