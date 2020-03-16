@@ -27,6 +27,7 @@ public class RShoeBuiltin extends Builtin {
     }
     if (a instanceof Num) {
       if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", w);
+      if (w.ia == 0) throw new LengthError("⊃ on array with 0 elements", this, w);
       return w.get(a.asInt() - sc.IO);
     }
     for (Value v : a) {

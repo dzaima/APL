@@ -7,6 +7,7 @@ import APL.types.*;
 import java.util.*;
 
 public class DoubleArr extends Arr {
+  public static final double[] EMPTY = new double[0];
   final public double[] arr;
   public DoubleArr(double[] arr, int[] sh) {
     super(sh);

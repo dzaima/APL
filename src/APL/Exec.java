@@ -684,7 +684,7 @@ public class Exec {
         case '⍫': return new ObserveBuiltin();
         
         
-        case '⍬': return new DoubleArr(new double[0]);
+        case '⍬': return new DoubleArr(DoubleArr.EMPTY);
         case '⎕': return new Quad(sc);
         case '⍞': return new QuoteQuad();
         case '⍺': Obj o = sc.get("⍺"); if(o == null) throw new SyntaxError("No ⍺ found"); return o;

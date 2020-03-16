@@ -2,7 +2,6 @@ package APL.types.functions.builtins.fns;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
 import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
 
@@ -24,12 +23,12 @@ public class FlipBuiltin extends Builtin implements DimMFn, DimDFn {
   }
   
   @Override public Obj call(Value a, Value w) {
-    if (a instanceof Primitive) return ReverseBuiltin.call(a.asInt(), 0, w);
+    if (a instanceof Primitive) return ReverseBuiltin.on(a.asInt(), 0, w);
     throw new DomainError("A⊖B not implemented for non-scalar A");
   }
   
   @Override public Obj call(Value a, Value w, int dim) {
-    if (a instanceof Primitive) return ReverseBuiltin.call(a.asInt(), -dim-1, w);
+    if (a instanceof Primitive) return ReverseBuiltin.on(a.asInt(), -dim-1, w);
     throw new DomainError("A⊖[n]B not implemented for non-scalar A");
   }
   

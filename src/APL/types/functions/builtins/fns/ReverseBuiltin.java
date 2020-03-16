@@ -28,7 +28,7 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   
   public Obj call(Value a, Value w) {
-    if (a instanceof Primitive) return call(a.asInt(), -1, w);
+    if (a instanceof Primitive) return on(a.asInt(), -1, w);
     if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵");
     int[] as = a.shape;
     int[] ws = w.shape;
@@ -64,7 +64,7 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   }
   
   @Override public Obj call(Value a, Value w, int dim) {
-    if (a instanceof Primitive) return call(a.asInt(), dim, w);
+    if (a instanceof Primitive) return on(a.asInt(), dim, w);
     throw new DomainError("A⌽[n]B not implemented for non-scalar A");
   }
   
@@ -74,7 +74,8 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   
   
-  public static Value call(int a, int dim, Value w) {
+  public static Value on(int a, int dim, Value w) {
+    if (w.ia==0) return w;
     if (a == 0) return w;
     if (dim < 0) dim += w.rank;
     int rowsz = w.shape[dim];
