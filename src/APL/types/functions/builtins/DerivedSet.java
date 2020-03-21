@@ -17,7 +17,7 @@ public class DerivedSet extends AbstractSet {
     return w;
   }
   
-  @Override public String repr() {
-    return f.repr()+s.repr();
+  public String toString() {
+    return f.repr()+"←";
   }
 }

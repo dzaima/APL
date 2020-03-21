@@ -7,20 +7,12 @@ import APL.types.functions.*;
 public class SetBuiltin extends AbstractSet {
   public static SetBuiltin inst = new SetBuiltin();
   
-  @Override public String repr() {
+  public String toString() {
     return "←";
   }
   
   
   
-  public Value call(Value a, Value w) {
-    Obj o = callObj(a, w);
-    if (o instanceof Value) return (Value) o;
-    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
-  }
-  public Obj callObj(Value a, Value w) {
-    return callObj(a, w, false);
-  }
   
   public Obj callObj(Obj a, Obj w, boolean update) {
     if (!(a instanceof Settable)) throw new SyntaxError(a + " isn't settable", a);
