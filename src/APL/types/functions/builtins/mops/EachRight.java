@@ -13,7 +13,7 @@ public class EachRight extends Mop {
     Fun ff = (Fun) f;
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = ((Value) ff.call(a, w.get(i))).squeeze();
+      n[i] = ff.call(a, w.get(i)).squeeze();
     }
     return Arr.createL(n, w.shape);
   }

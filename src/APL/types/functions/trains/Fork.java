@@ -29,7 +29,7 @@ public class Fork extends Fun {
     if (f instanceof Fun) throw new DomainError("inverse of f g h not supported", this);
     var left = (Value) f;
     // System.out.println(f+";"+g+";"+h);
-    return h.callInv((Value) g.callInvW(left, w));
+    return h.callInv(g.callInvW(left, w));
   }
   public Value call(Value a, Value w) {
     var left = (Value) (f instanceof Fun? ((Fun)f).call(a, w) : f);
@@ -40,12 +40,12 @@ public class Fork extends Fun {
   @Override public Value callInvW(Value a, Value w) {
     if (f instanceof Fun) throw new DomainError("A(f g h)B cannot be inverted", this);
     Value left = (Value) f;
-    return h.callInvW(a, (Value) g.callInvW(left, w));
+    return h.callInvW(a, g.callInvW(left, w));
   }
   
   @Override public Value callInvA(Value a, Value w) {
     if (f instanceof Fun) throw new DomainError("A(f g h)B cannot be inverted", this);
-    return h.callInvA((Value) g.callInvW((Value) f, a), w);
+    return h.callInvA(g.callInvW((Value) f, a), w);
   }
   
   @Override public String repr() {
@@ -57,7 +57,7 @@ public class Fork extends Fun {
   }
   public Value strInv(Value w, Value origW) { // made by inlining new Atop(new Atop(f, g), h).strInv(w, origW) :D
     Value fA = (Value) f;
-    Value gI = g.strInvW(fA, w, (Value) h.call(origW));
+    Value gI = g.strInvW(fA, w, h.call(origW));
     return h.strInv(gI, origW);
   }
 }

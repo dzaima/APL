@@ -55,7 +55,7 @@ public class IotaUBBuiltin extends Builtin {
   }
   public Value callInv(Value w) {
     int IO = sc.IO;
-    int[] sh = ((Value) fn.call(w)).asIntVec();
+    int[] sh = fn.call(w).asIntVec();
     int ia = 1;
     for (int i = 0; i < sh.length; i++) {
       sh[i]+=1-IO;

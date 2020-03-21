@@ -51,7 +51,7 @@ public class KeyBuiltin extends Mop {
       var res = new Value[order.size()];
       i = 0;
       for (Value c : order) {
-        res[i++] = (Value) ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
+        res[i++] = ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
       }
       return new HArr(res);
     }

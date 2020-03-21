@@ -19,7 +19,7 @@ public class ScanBuiltin extends Mop {
     Value[] res = new Value[w.ia];
     res[0] = c;
     for (int i = 1; i<w.ia; i++) {
-      c = (Value) f.call(c, w.get(i));
+      c = f.call(c, w.get(i));
       res[i] = c;
     }
     return Arr.create(res);
@@ -38,7 +38,7 @@ public class ScanBuiltin extends Mop {
       for (int i = 0; i < res.length; i++) {
         double[] curr = new double[n];
         System.arraycopy(wa, i, curr, 0, n);
-        res[i] = (Value) ((Fun) aa).call(new DoubleArr(curr));
+        res[i] = ((Fun) aa).call(new DoubleArr(curr));
       }
       return Arr.create(res);
     }
@@ -49,7 +49,7 @@ public class ScanBuiltin extends Mop {
       Value[] curr = new Value[n];
       // for (int j = 0; j < n; j++) curr[j] = wa[i + j];
       System.arraycopy(wa, i, curr, 0, n);
-      res[i] = (Value) ((Fun) aa).call(Arr.create(curr));
+      res[i] = ((Fun) aa).call(Arr.create(curr));
     }
     return Arr.create(res);
   }

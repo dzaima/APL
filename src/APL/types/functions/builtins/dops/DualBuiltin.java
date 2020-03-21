@@ -14,50 +14,50 @@ public class DualBuiltin extends Dop {
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    Value sub = (Value) under.call(w);
+    Value sub = under.call(w);
     if (under.strInv()) {
-      Value obj = aa instanceof Value? (Value) aa : (Value) ((Fun) aa).call(sub);
+      Value obj = aa instanceof Value? (Value) aa : ((Fun) aa).call(sub);
       return under.strInv(obj, w);
     }
     
     if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
-    Value obj = (Value) ((Fun) aa).call(sub);
+    Value obj = ((Fun) aa).call(sub);
     return under.callInv(obj);
   }
   public Value callInv(Obj aa, Obj ww, Value w) {
     isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    Value sub = (Value) under.call(w);
+    Value sub = under.call(w);
     if (under.strInv()) {
-      Value obj = aa instanceof Value? (Value) aa : (Value) ((Fun) aa).callInv(sub);
+      Value obj = aa instanceof Value? (Value) aa : ((Fun) aa).callInv(sub);
       return under.strInv(obj, w);
     }
   
     if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
-    Value obj = (Value) ((Fun) aa).callInv(sub);
+    Value obj = ((Fun) aa).callInv(sub);
     return under.callInv(obj);
   }
   
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    Value aS = (Value) under.call(a);
-    Value wS = (Value) under.call(w);
+    Value aS = under.call(a);
+    Value wS = under.call(w);
     if (under.strInv()) {
-      Value obj = (Value) ((Fun) aa).call(aS, wS);
+      Value obj = ((Fun) aa).call(aS, wS);
       return under.strInv(obj, w);
     }
     
-    return under.callInv( (Value) ((Fun)aa).call(aS, wS));
+    return under.callInv(((Fun)aa).call(aS, wS));
   }
   public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    return under.callInv((Value) ((Fun) aa).callInvW((Value) under.call(a), (Value) under.call(w)));
+    return under.callInv(((Fun) aa).callInvW(under.call(a), under.call(w)));
   }
   public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
-    return under.callInv((Value) ((Fun) aa).callInvA((Value) under.call(a), (Value) under.call(w)));
+    return under.callInv(((Fun) aa).callInvA(under.call(a), under.call(w)));
   }
 }
