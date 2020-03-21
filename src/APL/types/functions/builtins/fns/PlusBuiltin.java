@@ -16,7 +16,7 @@ public class PlusBuiltin extends Builtin {
     return Num.ZERO;
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return allM(v -> {
       if (!(v instanceof Num)) throw new DomainError("Conjugating a non-number", this, w); // TODO decide whether this should exist
       return ((Num)v).conjugate();
@@ -40,15 +40,15 @@ public class PlusBuiltin extends Builtin {
       return new BigValue(a.i.add(w.i));
     }
   };
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numD(DNF, a, w);
   }
-  public Obj callInv(Value w) { return call(w); }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInv(Value w) { return call(w); }
+  public Value callInvW(Value a, Value w) {
     return numD(MinusBuiltin.DNF, w, a);
   }
   
-  @Override public Obj callInvA(Value a, Value w) {
+  @Override public Value callInvA(Value a, Value w) {
     return callInvW(w, a);
   }
 }

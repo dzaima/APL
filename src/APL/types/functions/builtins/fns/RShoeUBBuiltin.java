@@ -5,8 +5,6 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.util.Arrays;
-
 public class RShoeUBBuiltin extends Builtin {
   @Override public String repr() {
     return "⊇";
@@ -16,12 +14,16 @@ public class RShoeUBBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w.rank == 0) return w.get(0);
     return w;
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    return on(a, w, sc.IO);
+  }
+  
+  public static Value on(Value a, Value w, int IO) {
 //    return new EachBuiltin().derive(new SquadBuiltin(sc)).call(a, (Value)new LShoeBuiltin().call(w));
     if (a.ia == 0) return EmptyArr.SHAPE0Q;
     if (w instanceof APLMap) {
@@ -33,7 +35,7 @@ public class RShoeUBBuiltin extends Builtin {
       }
       return Arr.create(res, a.shape);
     }
-    if (a instanceof Primitive) return w.get((int) a.asDouble() - sc.IO);
+    if (a instanceof Primitive) return w.get((int) a.asDouble() - IO);
   
     if (Main.vind) { // ⎕VI←1
   
@@ -44,13 +46,13 @@ public class RShoeUBBuiltin extends Builtin {
         double[] wv = w.asDoubleArr();
         double[] res = new double[ml];
         for (int i = 0; i < ml; i++) {
-          res[i] = wv[Indexer.ind(w.shape, ind, i, sc.IO)];
+          res[i] = wv[Indexer.ind(w.shape, ind, i, IO)];
         }
         return new DoubleArr(res, a.shape);
       }
       Value[] res = new Value[ml];
       for (int i = 0; i < ml; i++) {
-        res[i] = w.ind(ind, i, sc.IO);
+        res[i] = w.ind(ind, i, IO);
       }
       return Arr.create(res, Indexer.indsh(a));
       
@@ -62,18 +64,18 @@ public class RShoeUBBuiltin extends Builtin {
         if (a.quickDoubleArr()) {
           double[] da = a.asDoubleArr();
           for (int i = 0; i < a.ia; i++) {
-            res[i] = wv[Indexer.fromShape(w.shape, new int[]{(int) da[i]}, sc.IO)];
+            res[i] = wv[Indexer.fromShape(w.shape, new int[]{(int) da[i]}, IO)];
           }
         } else {
           for (int i = 0; i < a.ia; i++) {
-            res[i] = wv[Indexer.fromShape(w.shape, a.get(i).asIntVec(), sc.IO)];
+            res[i] = wv[Indexer.fromShape(w.shape, a.get(i).asIntVec(), IO)];
           }
         }
         return new DoubleArr(res, a.shape);
       }
       Value[] res = new Value[a.ia];
       for (int i = 0; i < a.ia; i++) {
-        res[i] = w.at(a.get(i).asIntVec(), sc.IO);
+        res[i] = w.at(a.get(i).asIntVec(), IO);
       }
       return Arr.create(res, a.shape);
     }

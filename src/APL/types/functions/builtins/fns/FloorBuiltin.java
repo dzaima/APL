@@ -22,7 +22,7 @@ public class FloorBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.floor(a[i]);
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numChrM(NF, Char::lower, w);
   }
   
@@ -43,7 +43,7 @@ public class FloorBuiltin extends Builtin {
       return a.compareTo(w)>0? w : a;
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
 }

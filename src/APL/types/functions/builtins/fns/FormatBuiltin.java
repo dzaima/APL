@@ -12,7 +12,7 @@ public class FormatBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w.rank == 1) {
       w = w.squeeze();
       if (w instanceof ChrArr) return Main.toAPL(w.asString());

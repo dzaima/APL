@@ -16,7 +16,7 @@ public class IotaUBBuiltin extends Builtin {
   public IotaUBBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
     int IO = sc.IO;
     if (w.rank == 1) {
       int sum = (int)w.sum();
@@ -53,7 +53,7 @@ public class IotaUBBuiltin extends Builtin {
       return new HArr(sub);
     }
   }
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     int IO = sc.IO;
     int[] sh = ((Value) fn.call(w)).asIntVec();
     int ia = 1;

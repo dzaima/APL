@@ -33,13 +33,13 @@ public class LTBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numChrD(DNF, (ca, cw) -> ca<cw? Num.ONE : Num.ZERO,
       (ca, cw) -> { throw new DomainError("comparing "+ ca.humanType(true)+" and "+cw.humanType(true)); },
       a, w);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     var order = w.gradeUp();
     Value[] res = new Value[order.length];
     Arrays.setAll(res, i -> w.get(order[i]));

@@ -45,7 +45,7 @@ public class NEBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return ncbaD(DNF, DBF, (ca, cw) -> ca!=cw? Num.ONE : Num.ZERO, (ca, cw) -> ca.equals(cw)? Num.ZERO : Num.ONE, a, w);
   }
 }

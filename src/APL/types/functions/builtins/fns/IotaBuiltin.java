@@ -6,7 +6,6 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.math.BigInteger;
 import java.util.*;
 
 import static APL.Main.*;
@@ -20,7 +19,7 @@ public class IotaBuiltin extends Builtin {
     super(sc);
   }
     
-  public Obj call(Value w) {
+  public Value call(Value w) {
     int IO = sc.IO;
     if (w instanceof Primitive) {
       if (w instanceof Num) {
@@ -48,11 +47,13 @@ public class IotaBuiltin extends Builtin {
     return new HArr(arr, shape);
   }
   
-  @Override
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    return on(a, w, sc.IO);
+  }
+  
+  public static Value on(Value a, Value w, int IO) {
     if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
     if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
-    int IO = sc.IO;
     if (w.ia > 20 && a.ia > 20) {
       HashMap<Value, Integer> map = new HashMap<>();
       int ctr = 0;

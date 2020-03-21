@@ -22,7 +22,7 @@ public class MinusBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numChrM(NF, Char::swap, w);
   }
   
@@ -44,12 +44,12 @@ public class MinusBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numD(DNF, a, w);
   }
-  public Obj callInv(Value w) { return call(w); }
-  public Obj callInvW(Value a, Value w) { return call(a, w); }
-  public Obj callInvA(Value a, Value w) {
+  public Value callInv(Value w) { return call(w); }
+  public Value callInvW(Value a, Value w) { return call(a, w); }
+  public Value callInvA(Value a, Value w) {
     return numD(PlusBuiltin.DNF, a, w);
   }
 }

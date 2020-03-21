@@ -27,7 +27,7 @@ public class MulBuiltin extends Builtin {
       return Num.of(w.i.signum());
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numChrMapM(NF, c -> Num.of(c.getCase()), c -> c.size()>0? Num.ONE : Num.ZERO, w);
   }
   
@@ -48,11 +48,11 @@ public class MulBuiltin extends Builtin {
       return new BigValue(a.i.multiply(w.i));
     }
   };
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numD(DNF, a, w);
   }
   
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     try {
       return new DivBuiltin().call(w, a);
     } catch (DomainError e) {
@@ -60,7 +60,7 @@ public class MulBuiltin extends Builtin {
     }
   }
   
-  @Override public Obj callInvA(Value a, Value w) {
+  @Override public Value callInvA(Value a, Value w) {
     return callInvW(w, a);
   }
 }

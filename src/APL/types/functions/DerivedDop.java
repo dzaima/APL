@@ -12,20 +12,26 @@ public class DerivedDop extends Fun {
     token = op.token;
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return op.call(aa, ww, w, this);
   }
-  public Obj callInv(Value w) {
+  public Value call(Value a, Value w) {
+    return op.call(aa, ww, a, w, this);
+  }
+  public Obj callObj(Value w) {
+    return op.callObj(aa, ww, w, this);
+  }
+  public Obj callObj(Value a, Value w) {
+    return op.callObj(aa, ww, a, w, this);
+  }
+  public Value callInv(Value w) {
     return op.callInv(aa, ww, w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     return op.callInvW(aa, ww, a, w);
   }
-  public Obj callInvA(Value a, Value w) {
+  public Value callInvA(Value a, Value w) {
     return op.callInvA(aa, ww, a, w);
-  }
-  public Obj call(Value a, Value w) {
-    return op.call(aa, ww, a, w, this);
   }
   @Override public String repr() {
     String wws = ww.toString();

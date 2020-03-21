@@ -101,11 +101,11 @@ public class VarArr extends Settable {
       if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
       if (ow.ia != this.ia) throw new LengthError("← scatter argument lengths not equal", ow);
       for (int i = 0; i < this.ia; i++) {
-        SetBuiltin.inst.call(this.arr.get(i), ow.get(i), update);
+        SetBuiltin.inst.callObj(this.arr.get(i), ow.get(i), update);
       }
     } else {
       for (int i = 0; i < this.ia; i++) {
-        SetBuiltin.inst.call(this.arr.get(i), w, update);
+        SetBuiltin.inst.callObj(this.arr.get(i), w, update);
       }
     }
   }

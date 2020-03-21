@@ -20,7 +20,7 @@ public class TrigBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(NF, w);
   }
   static final D_NNeN DNF = new D_NNeN() {
@@ -56,7 +56,7 @@ public class TrigBuiltin extends Builtin {
       throw new DomainError("⍺ of ○ out of bounds");
     }
   };
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numD(DNF, a, w);
   }
 }

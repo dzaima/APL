@@ -15,7 +15,7 @@ public class CRepeatBuiltin extends Dop {
     super(sc);
   }
   
-  @Override public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  @Override public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     Fun aaf = (Fun) aa;
     ArrayList<Value> res = new ArrayList<>();

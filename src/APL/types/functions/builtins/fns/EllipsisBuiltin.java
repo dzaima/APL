@@ -14,7 +14,7 @@ public class EllipsisBuiltin extends Builtin {
   
   
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (a instanceof BigValue || w instanceof BigValue) {
       BigInteger al = BigValue.bigint(a);
       BigInteger wl = BigValue.bigint(w);

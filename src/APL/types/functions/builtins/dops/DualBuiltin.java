@@ -11,7 +11,7 @@ public class DualBuiltin extends Dop {
   
   
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(ww, '⍹');
     Fun under = (Fun) ww;
     Value sub = (Value) under.call(w);
@@ -24,7 +24,7 @@ public class DualBuiltin extends Dop {
     Value obj = (Value) ((Fun) aa).call(sub);
     return under.callInv(obj);
   }
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     isFn(ww, '⍹');
     Fun under = (Fun) ww;
     Value sub = (Value) under.call(w);
@@ -38,7 +38,7 @@ public class DualBuiltin extends Dop {
     return under.callInv(obj);
   }
   
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
     Value aS = (Value) under.call(a);
@@ -50,12 +50,12 @@ public class DualBuiltin extends Dop {
     
     return under.callInv( (Value) ((Fun)aa).call(aS, wS));
   }
-  public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
     return under.callInv((Value) ((Fun) aa).callInvW((Value) under.call(a), (Value) under.call(w)));
   }
-  public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     Fun under = (Fun) ww;
     return under.callInv((Value) ((Fun) aa).callInvA((Value) under.call(a), (Value) under.call(w)));

@@ -43,10 +43,10 @@ public class DepthBuiltin extends Builtin {
     return uneven? -sub : sub;
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return Num.of(full(w));
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return a.equals(w)? Num.ONE : Num.ZERO;
   }
 }

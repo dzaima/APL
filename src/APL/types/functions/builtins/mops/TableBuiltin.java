@@ -10,7 +10,7 @@ public class TableBuiltin extends Mop {
   }
   
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     int[] shape = new int[a.rank+w.rank];
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);

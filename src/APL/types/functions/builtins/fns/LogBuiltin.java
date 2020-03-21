@@ -31,10 +31,10 @@ public class LogBuiltin extends Builtin {
       return new Num(Math.log(d) + LN2*shift);
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(NF, w);
   }
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     return numM(StarBuiltin.NF, w);
   }
   
@@ -68,14 +68,14 @@ public class LogBuiltin extends Builtin {
       return new Num(res);
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
   
-  @Override public Obj callInvW(Value a, Value w) {
+  @Override public Value callInvW(Value a, Value w) {
     return numD(StarBuiltin.DNF, a, w);
   }
-  @Override public Obj callInvA(Value a, Value w) {
+  @Override public Value callInvA(Value a, Value w) {
     return numD(RootBuiltin.DNF, a, w);
   }
 }

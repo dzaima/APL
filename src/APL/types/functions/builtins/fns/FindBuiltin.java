@@ -13,7 +13,7 @@ public class FindBuiltin extends Builtin {
   
   
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (a.rank != w.rank) throw new RankError("argument ranks for ⍷ should be equal ("+a.rank+" ≠ "+w.rank+")", w);
     BitArr.BC bc = new BitArr.BC(w.shape);
     if (a.rank == 1) {

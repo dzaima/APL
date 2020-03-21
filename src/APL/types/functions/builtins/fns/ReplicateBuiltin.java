@@ -16,7 +16,11 @@ public class ReplicateBuiltin extends Builtin {
   
   
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    return replicate(a, w);
+  }
+  
+  public static Value replicate(Value a, Value w) {
     if (a.rank == 0) {
       RankError.must(w.rank<=1, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
       int sz = a.asInt();
@@ -151,7 +155,7 @@ public class ReplicateBuiltin extends Builtin {
   public Value strInvW(Value a, Value w, Value origW) {
     return AtBuiltin.at(w, new Fun() { // lazy version
       public String repr() { return "{⌿.⍺}"; }
-      public Obj call(Value w) { return a; }
+      public Value call(Value w) { return a; }
     }, origW, -1234);
   }
 }

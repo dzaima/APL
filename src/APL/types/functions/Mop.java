@@ -4,7 +4,6 @@ import APL.errors.*;
 import APL.types.*;
 import APL.*;
 
-@SuppressWarnings("UnusedParameters")
 public abstract class Mop extends Scopeable {
   
   protected Mop(Scope sc) {
@@ -22,19 +21,25 @@ public abstract class Mop extends Scopeable {
   public DerivedMop derive (Obj aa) {
     return new DerivedMop(aa, this);
   }
-  public Obj call(Obj f, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value w, DerivedMop derv) {
     throw new IncorrectArgsError(repr()+" can't be called monadically", this, w);
   }
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     throw new IncorrectArgsError(repr()+" can't be called dyadically", this, a);
   }
-  public Obj callInv(Obj f, Value w) {
+  public Obj callObj(Obj f, Value w, DerivedMop derv) { // if overridden, call(f, w, derv) must be overridden too!
+    return call(f, w, derv);
+  }
+  public Obj callObj(Obj f, Value a, Value w, DerivedMop derv) { // if overridden, call(f, a, w, derv) must be overridden too!
+    return call(f, a, w, derv);
+  }
+  public Value callInv(Obj f, Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
-  public Obj callInvW(Obj f, Value a, Value w) {
+  public Value callInvW(Obj f, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
-  public Obj callInvA(Obj f, Value a, Value w) {
+  public Value callInvA(Obj f, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
   public boolean strInv(Obj f) { return false; }

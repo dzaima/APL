@@ -13,7 +13,7 @@ public class RepeatBuiltin extends Dop {
   public RepeatBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
@@ -39,7 +39,7 @@ public class RepeatBuiltin extends Dop {
     }
   }
   
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) throw new DomainError("(f⍣g)A cannot be inverted", this);
@@ -55,7 +55,7 @@ public class RepeatBuiltin extends Dop {
     return w;
   }
   
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
@@ -82,7 +82,7 @@ public class RepeatBuiltin extends Dop {
     }
   }
   
-  public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am < 0) {
@@ -94,7 +94,7 @@ public class RepeatBuiltin extends Dop {
     }
     return w;
   }
-  public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am== 1) return ((Fun) aa).callInvA(a, w);

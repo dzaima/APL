@@ -10,7 +10,7 @@ public class ScanBuiltin extends Mop {
     return "\\";
   }
   
-  public Obj call(Obj aa, Value w, DerivedMop derv) {
+  public Value call(Obj aa, Value w, DerivedMop derv) {
     isFn(aa);
     // TODO ranks
     Fun f = (Fun) aa;
@@ -25,7 +25,7 @@ public class ScanBuiltin extends Mop {
     return Arr.create(res);
   }
   
-  public Obj call(Obj aa, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj aa, Value a, Value w, DerivedMop derv) {
     isFn(aa);
     int n = a.asInt();
     int len = w.ia;

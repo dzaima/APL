@@ -15,7 +15,7 @@ public class AndBuiltin extends Builtin {
     return Num.ONE;
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof BitArr) {
       BitArr wb = (BitArr) w;
       wb.setEnd(true);
@@ -59,7 +59,7 @@ public class AndBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return bitD(DNF, DBF, a, w);
   }
 }

@@ -15,7 +15,7 @@ public class OrBuiltin extends Builtin {
     return Num.ZERO;
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof BitArr) {
       BitArr wb = (BitArr) w;
       wb.setEnd(false);
@@ -58,7 +58,7 @@ public class OrBuiltin extends Builtin {
       return bc.finish();
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return bitD(DNF, DBF, a0, w0);
   }
 }

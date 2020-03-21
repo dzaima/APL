@@ -3,9 +3,8 @@ package APL.types.functions.builtins.fns;
 import APL.Scope;
 import APL.errors.*;
 import APL.types.*;
-import APL.types.functions.Builtin;
 
-public class RShoeBuiltin extends Builtin {
+public class RShoeBuiltin extends Fun {
   @Override public String repr() {
     return "⊃";
   }
@@ -14,13 +13,18 @@ public class RShoeBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof Primitive) return w;
     else if (w.ia == 0) throw new DomainError("⊃ on array with 0 elements", this, w);
     else return w.first();
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    Obj o = callObj(a, w);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Value a, Value w) {
     if (w instanceof APLMap) {
       APLMap map = (APLMap) w;
       return map.getRaw(a);

@@ -1,6 +1,5 @@
 package APL.types.functions.builtins;
 
-import APL.Type;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.*;
@@ -14,12 +13,16 @@ public class SetBuiltin extends AbstractSet {
   
   
   
-  @Override
-  public Obj call(Value a, Value w) {
-    return call(a, w, false);
+  public Value call(Value a, Value w) {
+    Obj o = callObj(a, w);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Value a, Value w) {
+    return callObj(a, w, false);
   }
   
-  public Obj call(Obj a, Obj w, boolean update) {
+  public Obj callObj(Obj a, Obj w, boolean update) {
     if (!(a instanceof Settable)) throw new SyntaxError(a + " isn't settable", a);
     Settable as = (Settable) a;
     if (update) {
@@ -32,8 +35,8 @@ public class SetBuiltin extends AbstractSet {
     return w;
   }
 
-  public Obj call(Fun f, Obj a, Value w) {
-    call(a, f.call((Value) ((Settable) a).get(), w), true);
+  public Obj callObj(Fun f, Obj a, Value w) {
+    callObj(a, f.call((Value) ((Settable) a).get(), w), true);
     return w;
   }
 }

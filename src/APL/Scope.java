@@ -105,7 +105,7 @@ public class Scope {
         case "⎕U": return new Builtin() {
           @Override public String repr() { return "⎕U"; }
   
-          @Override public Obj call(Value w) {
+          @Override public Value call(Value w) {
             Main.ucmd(Scope.this, w.asString());
             return null;
           }
@@ -148,7 +148,7 @@ public class Scope {
     }
   
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       return new DyingObj(w.toString());
     }
     class DyingObj extends Primitive {
@@ -186,10 +186,10 @@ public class Scope {
       super(sc);
       this.simple = simple;
     }
-    public Obj call(Value w) {
+    public Value call(Value w) {
       return call(Num.ONE, w);
     }
-    public Obj call(Value a, Value w) {
+    public Value call(Value a, Value w) {
       int[] options = a.asIntVec();
       int n = options[0];
       
@@ -227,7 +227,7 @@ public class Scope {
       super(sc);
     }
     
-    public Obj call(Value w) {
+    public Value call(Value w) {
       sc.set(w.asString(), null);
       return w;
     }
@@ -240,7 +240,7 @@ public class Scope {
       super(sc);
     }
     
-    public Obj call(Value w) {
+    public Value call(Value w) {
       long nsS = System.nanoTime();
       double ms = w.asDouble() * 1000;
       int ns = (int) ((ms%1)*1000000);
@@ -258,7 +258,7 @@ public class Scope {
       super(sc);
     }
     
-    public Obj call(Value w) {
+    public Value call(Value w) {
       return numChrM(new NumMV() {
         @Override public Value call(Num c) {
           return Char.of((char) c.asInt());
@@ -270,7 +270,7 @@ public class Scope {
       }, c->Num.of(c.chr), w);
     }
   
-    @Override public Obj callInv(Value w) {
+    @Override public Value callInv(Value w) {
       return call(w);
     }
   }
@@ -317,7 +317,7 @@ public class Scope {
     }
     
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       if (w instanceof StrMap) {
         return new StrMap(((StrMap) w));
       }
@@ -330,7 +330,7 @@ public class Scope {
     }
   
     @Override
-    public Obj call(Value a, Value w) {
+    public Value call(Value a, Value w) {
       if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", a);
       if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", w);
       if (a.ia != w.ia) throw new LengthError("both sides lengths should match", w);
@@ -350,7 +350,7 @@ public class Scope {
       super(sc);
     }
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       String name = w.asString();
       if (!(get(name) instanceof Value)) return Num.MINUS_ONE;
       Value v = (Value) get(name);
@@ -365,7 +365,7 @@ public class Scope {
       return "⎕CLASS";
     }
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       return new ChrArr(w.getClass().getCanonicalName());
     }
   }
@@ -378,8 +378,12 @@ public class Scope {
       super(sc);
     }
     
-    @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
+      Obj o = callObj(w);
+      if (o instanceof Value) return (Value) o;
+      throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+    }
+    public Obj callObj(Value w) {
       String path = w.asString();
       return Main.exec(Main.readFile(path), sc);
     }
@@ -390,7 +394,7 @@ public class Scope {
     }
     
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       String path = w.asString();
       String[] a = Main.readFile(path).split("\n");
       Value[] o = new Value[a.length];
@@ -406,7 +410,7 @@ public class Scope {
       return def;
     }
   
-    @Override public Obj call(Value a, Value w) {
+    @Override public Value call(Value a, Value w) {
       if (a instanceof APLMap) {
         try {
           URL url = new URL(w.asString());
@@ -473,12 +477,12 @@ public class Scope {
     }
     
     @Override
-    public Obj call(Value w) {
+    public Value call(Value w) {
       return exec(w, null, null, false);
     }
     
     @Override
-    public Obj call(Value a, Value w) {
+    public Value call(Value a, Value w) {
       APLMap m = (APLMap) a;
       
       File dir = null;
@@ -506,7 +510,7 @@ public class Scope {
       return exec(w, dir, inp, raw);
     }
     
-    public Obj exec(Value w, File f, byte[] inp, boolean raw) {
+    public Value exec(Value w, File f, byte[] inp, boolean raw) {
       try {
         Process p;
         if (w.get(0) instanceof Char) {
@@ -556,7 +560,7 @@ public class Scope {
       return "⎕NC";
     }
     
-    @Override public Obj call(Value w) {
+    @Override public Value call(Value w) {
       Obj obj = get(w.asString());
       if (obj == null) return Num.ZERO;
       if (obj instanceof Value) return Num.NUMS[2];
@@ -572,7 +576,7 @@ public class Scope {
     @Override public String repr() {
       return "⎕HASH";
     }
-    @Override public Obj call(Value w) {
+    @Override public Value call(Value w) {
       return Num.of(w.hashCode());
     }
   }
@@ -580,7 +584,7 @@ public class Scope {
     @Override public String repr() {
       return "⎕STDIN";
     }
-    @Override public Obj call(Value w) {
+    @Override public Value call(Value w) {
       if (w instanceof Num) {
         int n = w.asInt();
         ArrayList<Value> res = new ArrayList<>(n);
@@ -624,10 +628,15 @@ public class Scope {
     @Override public String repr() {
       return "⎕PF";
     }
-    @Override public Obj call(Value w) {
+    @Override public Value call(Value w) {
       return call(w, w);
     }
-    @Override public Obj call(Value a, Value w) {
+    public Value call(Value a, Value w) {
+      Obj o = callObj(a, w);
+      if (o instanceof Value) return (Value) o;
+      throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+    }
+    public Obj callObj(Value a, Value w) {
       String s = w.asString();
       String k = a.asString();
       if (!pfRes.containsKey(k)) pfRes.put(k, new Pr(Tokenizer.tokenize(s)));
@@ -654,7 +663,7 @@ public class Scope {
   }
   
   private static class Big extends Fun {
-    @Override public Obj call(Value w) {
+    @Override public Value call(Value w) {
       return rec(w);
     }
     private Value rec(Value w) {
@@ -668,7 +677,7 @@ public class Scope {
       return HArr.create(va, w.shape);
     }
     
-    @Override public Obj callInv(Value w) {
+    @Override public Value callInv(Value w) {
       return recN(w);
     }
     private Value recN(Value w) {
@@ -701,7 +710,7 @@ public class Scope {
       0=÷∘100 - primitive
       1=÷∘100 - array
     */
-    public Obj call(Value w) {
+    public Value call(Value w) {
       if (w instanceof    BitArr) return Num.of(101);
       if (w instanceof      Char) return Num.of(  2);
       if (w instanceof    ChrArr) return Num.of(102);
@@ -715,7 +724,7 @@ public class Scope {
       if (w instanceof Primitive) return Num.of(  0);
       return Num.of(200); // idk ¯\_(ツ)_/¯
     }
-    public Obj call(Value a, Value w) {
+    public Value call(Value a, Value w) {
       int[] is = a.asIntVec();
       if (is.length != 2) throw new DomainError("⎕DR expected ⍺ to have 2 items");
       int f = is[0];
@@ -728,26 +737,26 @@ public class Scope {
         if (t==3) {
           if (f==1) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
-            public Obj call(Value w) {
+            public Value call(Value w) {
               return new Num(Double.longBitsToDouble(((BigValue) UTackBuiltin.on(BigValue.TWO, w, DR.this)).longValue()));
             }
           }, 1, w);
           if (f==5) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
-            public Obj call(Value w) {
+            public Value call(Value w) {
               return new Num(Double.longBitsToDouble(((BigValue) w).longValue()));
             }
           }, 0, w);
         } else {
           if (t==1) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
-            public Obj call(Value w) {
+            public Value call(Value w) {
               return new BitArr(new long[]{Long.reverse(Double.doubleToRawLongBits(w.asDouble()))}, new int[]{64});
             }
           }, 0, w);
           if (t==5) return OverBuiltin.on(this, new Fun() {
             public String repr() { return ""; }
-            public Obj call(Value w) {
+            public Value call(Value w) {
               return new BigValue(Double.doubleToRawLongBits(w.asDouble()));
             }
           }, 0, w);
@@ -755,7 +764,7 @@ public class Scope {
       }
       throw new DomainError(a+"⎕DR not implemented");
     }
-    public Obj callInvW(Value a, Value w) {
+    public Value callInvW(Value a, Value w) {
       return call(ReverseBuiltin.on(a), w);
     }
     public String repr() {

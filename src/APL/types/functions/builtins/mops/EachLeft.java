@@ -8,7 +8,7 @@ public class EachLeft extends Mop {
     return "ᐵ";
   }
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     isFn(f);
     Fun ff = (Fun) f;
     Value[] n = new Value[a.ia];

@@ -42,11 +42,11 @@ public class ExclBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(NF, w);
   }
   
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return allD((a, w) -> {
       if (a instanceof BigValue || w instanceof BigValue) {
         

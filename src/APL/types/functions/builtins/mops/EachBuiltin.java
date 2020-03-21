@@ -15,8 +15,8 @@ public class EachBuiltin extends Mop {
   
   
   
-  public Obj call(Obj f, Value w, DerivedMop derv) {
-    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : f;
+  public Value call(Obj f, Value w, DerivedMop derv) {
+    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : (Value) f;
     if (f instanceof Fun) {
       Value[] n = new Value[w.ia];
       for (int i = 0; i < n.length; i++) {
@@ -27,7 +27,7 @@ public class EachBuiltin extends Mop {
       return new SingleItemArr(((Value) f), w.shape);
     }
   }
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     if (w.scalar()) {
       if (a.scalar()) return ((Fun)f).call(a, w);
       Value[] n = new Value[a.ia];
@@ -51,7 +51,7 @@ public class EachBuiltin extends Mop {
     return Arr.create(n, w.shape);
   }
   
-  public Obj callInv(Obj f, Value w) {
+  public Value callInv(Obj f, Value w) {
     if (!(f instanceof Fun)) throw new DomainError("can't invert A¨");
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {

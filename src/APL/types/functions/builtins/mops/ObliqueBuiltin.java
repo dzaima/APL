@@ -13,7 +13,7 @@ public class ObliqueBuiltin extends Mop {
   
   
 
-  public Obj call(Obj f, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value w, DerivedMop derv) {
     isFn(f);
     if (w.rank != 2) throw new DomainError("⍁ requires a rank-2 ⍵");
     Fun ff = (Fun) f;

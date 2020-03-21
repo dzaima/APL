@@ -9,20 +9,20 @@ public class ObserveBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     return ((Fun) aa).call(w);
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     return ((Fun) aa).call(a, w);
   }
   
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     isFn(ww, '⍹');
     return ((Fun) ww).call(w);
   }
-  public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(ww, '⍹');
     return ((Fun) ww).call(a, w);
   }

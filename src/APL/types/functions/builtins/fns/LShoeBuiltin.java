@@ -15,12 +15,12 @@ public class LShoeBuiltin extends Builtin {
   
   
 
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (!Main.enclosePrimitives && w instanceof Primitive) return w;
     return new Rank0Arr(w);
   }
   
-  @Override public Obj call(Value a, Value w) {
+  @Override public Value call(Value a, Value w) {
     if (w.rank != 1) throw new DomainError("⍵ of ⊂ should be of rank 1");
     if (a.rank != 1) throw new DomainError("⍺ of ⊂ should be of rank 1");
     if (a.ia+1 != w.ia) throw new LengthError("for ⊂, (1+≢⍺) ≡ ≢⍵ is required");

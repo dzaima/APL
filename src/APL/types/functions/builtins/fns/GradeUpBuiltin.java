@@ -14,7 +14,7 @@ public class GradeUpBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     double[] res = new double[w.ia];
     int IO = sc.IO;
     Integer[] na = w.gradeUp();

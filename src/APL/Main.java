@@ -293,7 +293,7 @@ public class Main {
     if (val instanceof VarArr) val = ((VarArr) val).get();
     if (val instanceof Settable) val = ((Settable) val).get();
     if (val instanceof Value) return val;
-    throw new SyntaxError("expected array, got " + val.humanType(true));
+    throw new SyntaxError("expected array, got " + val.humanType(true), s);
   }
   
   

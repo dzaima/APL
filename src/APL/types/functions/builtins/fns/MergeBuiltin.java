@@ -14,7 +14,7 @@ public class MergeBuiltin extends Builtin {
     super(sc);
   }
   
-  @Override public Obj call(Value a, Value w) {
+  @Override public Value call(Value a, Value w) {
     if (w.rank != 1) throw new DomainError("⍵ of % must be a vector");
     int IO = sc.IO;
     int[] sh = a.shape;

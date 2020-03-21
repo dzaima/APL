@@ -18,12 +18,12 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   
   
   @Override
-  public Obj call(Obj f, Value w, int dim) {
+  public Value call(Obj f, Value w, int dim) {
     if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     return ngnReduce(w, dim, (Fun)f);
   }
   
-  public Obj call(Obj f, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value w, DerivedMop derv) {
     if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
@@ -115,7 +115,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     return last.squeeze();
   }
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     isFn(f);
     if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", this, w);
     int n = a.asInt();

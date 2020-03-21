@@ -22,7 +22,7 @@ public class CeilingBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.ceil(a[i]);
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numChrM(NF, Char::upper, w);
   }
   
@@ -43,7 +43,7 @@ public class CeilingBuiltin extends Builtin {
       return a.compareTo(w)>0? a : w;
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
 }

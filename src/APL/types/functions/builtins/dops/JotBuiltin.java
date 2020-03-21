@@ -10,7 +10,7 @@ public class JotBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
         return ((Fun)aa).call((Value)((Fun)ww).call(w));
@@ -22,7 +22,7 @@ public class JotBuiltin extends Dop {
       throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
         return ((Fun)aa).call((Value)((Fun)ww).call(w));
@@ -34,7 +34,7 @@ public class JotBuiltin extends Dop {
       throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     if (!(aa instanceof Fun)) {
       throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍶ is "+aa.humanType(true), aa, this);
     }
