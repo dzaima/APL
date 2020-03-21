@@ -319,7 +319,7 @@ public class Scope {
     @Override
     public Value call(Value w) {
       if (w instanceof StrMap) {
-        return new StrMap(((StrMap) w));
+        return new StrMap((StrMap) w);
       }
       var map = new StrMap();
       for (Value v : w) {

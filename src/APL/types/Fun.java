@@ -373,7 +373,7 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
           if (w instanceof BitArr && Main.isBool(a)) {
-            return b.call(Main.bool(a), ((BitArr) w));
+            return b.call(Main.bool(a), (BitArr) w);
           }
           if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
@@ -507,7 +507,7 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
           if (w instanceof BitArr && Main.isBool(a)) {
-            return b.call(Main.bool(a), ((BitArr) w));
+            return b.call(Main.bool(a), (BitArr) w);
           }
           if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);

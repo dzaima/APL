@@ -528,7 +528,7 @@ public class Exec {
     boolean pass = false;
     barNode = FN.r;
     Node cn = fromStart? FN.r : LN.l;
-    for (int i = fromStart ? 0 : len - 1; (fromStart ? i < len : i >= 0); i += ptrinc) {
+    for (int i = fromStart ? 0 : len - 1; fromStart ? i<len : i>=0; i += ptrinc) {
       char p = pt.charAt(i);
       boolean inv = false;
       if (p == '|') {
@@ -576,7 +576,7 @@ public class Exec {
         }
         if (nf) return false;
       } else {
-        if ((p != type) ^ inv) return false;
+        if (p!=type ^ inv) return false;
       }
       cn = fromStart? cn.r : cn.l;
     }

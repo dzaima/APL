@@ -24,7 +24,7 @@ public class EachBuiltin extends Mop {
       }
       return Arr.create(n, w.shape);
     } else {
-      return new SingleItemArr(((Value) f), w.shape);
+      return new SingleItemArr((Value) f, w.shape);
     }
   }
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
