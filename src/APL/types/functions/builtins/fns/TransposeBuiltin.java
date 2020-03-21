@@ -12,7 +12,7 @@ public class TransposeBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w.scalar()) return w;
     if (w instanceof DoubleArr) {
       double[] dw = w.asDoubleArr();
@@ -58,7 +58,13 @@ public class TransposeBuiltin extends Builtin {
     }
     return Arr.create(arr, ns);
   }
-  @Override public Obj callInv(Value w) {
+  public Obj callInv(Value w) {
+    return call(w);
+  }
+  
+  public boolean strInv() { return true; }
+  
+  public Value strInv(Value w, Value origW) {
     return call(w);
   }
 }

@@ -125,4 +125,18 @@ public class CatBuiltin extends Builtin implements DimDFn {
     if (w.ia != origW.ia) throw new DomainError("⍢, expected equal amount of output & output items", this);
     return w.ofShape(origW.shape);
   }
+  
+  public boolean strInvW() { return true; }
+  public Value strInvW(Value a, Value w, Value origW) {
+    if (a.rank>1) throw new NYIError(", inverted on rank "+a.rank+" ⍺", this);
+    if (w.rank>1) throw new NYIError(", inverted on rank "+w.rank+" ⍵", this);
+    for (int i = 0; i < a.ia; i++) {
+      if (a.get(i) != w.get(i)) throw new DomainError("inverting , received non-equal prefixes");
+    }
+    if (origW.rank==0) {
+      if (a.ia+1 != w.ia) throw new DomainError("original ⍵ was of rank ⍬, which is not satisfiable", this);
+      return w.get(w.ia-1);
+    }
+    return DownArrowBuiltin.on(Num.of(a.ia), w, 0);
+  }
 }

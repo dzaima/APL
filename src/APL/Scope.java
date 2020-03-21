@@ -360,7 +360,7 @@ public class Scope {
       return Num.ONE;
     }
   }
-  private class ClassGetter extends Builtin {
+  private static class ClassGetter extends Builtin {
     @Override public String repr() {
       return "⎕CLASS";
     }
@@ -467,7 +467,7 @@ public class Scope {
   }
   
   
-  private class Shell extends Fun {
+  private static class Shell extends Fun {
     @Override public String repr() {
       return "⎕SH";
     }
