@@ -15,7 +15,6 @@ public class DownArrowBuiltin extends Builtin {
     super(sc);
   }
   
-  @Override
   public Obj call(Value w) {
     if (w instanceof Primitive) return w;
     if (w.rank <= 1) return new Rank0Arr(w);
@@ -51,7 +50,9 @@ public class DownArrowBuiltin extends Builtin {
   }
   
   public Obj call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
-    int IO = sc.IO;
+    return on(a, w, sc.IO);
+  }
+  public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵
     int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
     int ia = 1;
@@ -71,7 +72,7 @@ public class DownArrowBuiltin extends Builtin {
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
     for (int[] index : indexer) {
-      arr[i] = w.at(index, sc.IO).squeeze();
+      arr[i] = w.at(index, IO).squeeze();
       i++;
     }
     return Arr.create(arr, shape);
