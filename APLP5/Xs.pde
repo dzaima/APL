@@ -54,14 +54,14 @@ abstract class ForFA extends Fun {
   //  return w;
   //}
   Value w;
-  public Obj call(Value w) { // TODO input is 2D arr
+  public Value call(Value w) { // TODO input is 2D arr
     this.w = w;
     setup(null);
     for (double[] fa : f2D(w)) draw(fa);
     finish();
     return w;
   }
-  public Obj call(Value a, Value w) { // TODO input is 2D arr
+  public Value call(Value a, Value w) { // TODO input is 2D arr
     setup(a);
     for (double[] fa : f2D(w)) draw(fa);
     finish();

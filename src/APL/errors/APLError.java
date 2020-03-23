@@ -18,9 +18,9 @@ public class APLError extends Error {
     this.cause = cause;
   }
   public void print() {
-    String[] ns = getClass().getName().split("[$.]");
-    if (getMessage().length() == 0) colorprint(ns[ns.length - 1], 246);
-    else colorprint(ns[ns.length - 1] + ": " + getMessage(), 246);
+    String type = getClass().getSimpleName();
+    if (getMessage().length() == 0) colorprint(type, 246);
+    else colorprint(type + ": " + getMessage(), 246);
     ArrayList<Mg> l = new ArrayList<>();
     if (cause != null) l.add(new Mg(cause, '¯'));
     if (faulty != null) l.add(new Mg(faulty, '^'));
@@ -46,8 +46,7 @@ public class APLError extends Error {
       println(b.toString());
     }
   }
-  
-  class Mg {
+  static class Mg {
     final Tokenable t;
     final char c;
   

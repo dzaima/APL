@@ -178,13 +178,13 @@ public class Scope {
     }
   }
   static class Timer extends Builtin {
-    final boolean simple;
+    final boolean raw;
     @Override public String repr() {
       return "⎕TIME";
     }
-    Timer(Scope sc, boolean simple) {
+    Timer(Scope sc, boolean raw) {
       super(sc);
-      this.simple = simple;
+      this.raw = raw;
     }
     public Value call(Value w) {
       return call(Num.ONE, w);
@@ -193,29 +193,37 @@ public class Scope {
       int[] options = a.asIntVec();
       int n = options[0];
       
-      boolean testTokenizing = true;
-      if (options.length >= 2) {
-        testTokenizing = options[1] != 0;
-      }
+      boolean separate = false;
+      if (options.length >= 2) separate = options[1]==1;
+      
       
       String test = w.asString();
-      long start = System.nanoTime();
-      if (testTokenizing) {
-        for (int i = 0; i < n; i++) Main.exec(test, sc);
+      
+      BasicLines testTokenized = Tokenizer.tokenize(test);
+      
+      if (separate) {
+        double[] r = new double[n];
+        for (int i = 0; i < n; i++) {
+          long start = System.nanoTime();
+          Main.execLines(testTokenized, sc);
+          long end = System.nanoTime();
+          r[i] = end-start;
+        }
+        return new DoubleArr(r);
       } else {
-        BasicLines testTokenized = Tokenizer.tokenize(test);
+        long start = System.nanoTime();
         for (int i = 0; i < n; i++) Main.execLines(testTokenized, sc);
-      }
-      long end = System.nanoTime();
-      if (simple) {
-        return new Num((end-start)/n);
-      } else {
-        double t = end-start;
-        t/= n;
-        if (t < 1000) return Main.toAPL(new Num(t)+" nanos");
-        t/= 1e6;
-        if (t > 500) return Main.toAPL(new Num(t/1000d)+" seconds");
-        return Main.toAPL(new Num(t)+" millis");
+        long end = System.nanoTime();
+        if (raw) {
+          return new Num((end-start)/n);
+        } else {
+          double t = end-start;
+          t/= n;
+          if (t < 1000) return Main.toAPL(new Num(t)+" nanos");
+          t/= 1e6;
+          if (t > 500) return Main.toAPL(new Num(t/1000d)+" seconds");
+          return Main.toAPL(new Num(t)+" millis");
+        }
       }
     }
   }
