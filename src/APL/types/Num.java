@@ -195,7 +195,30 @@ public class Num extends Primitive {
     }
     return res;
   }
+  public static double gcd2(double num0, double num1) {
+    double res = num0;
+    double b = num1;
+    while (b != 0) {
+      double t = b;
+      b = res % b;
+      res = t;
+    }
+    return res;
+  }
   
+  public static double lcm2(double num0, double num1) {
+    double res = num0;
+    double a = num1;
+    double b = res;
+    while (b != 0) {
+      double t = b;
+      b = a % b;
+      a = t;
+    }
+    if (a == 0) res = 0;
+    else res = (num1 * res) / a;
+    return res;
+  }
   public static double lcm(double... nums) {
     if (nums.length == 0) return 1;
     double res = nums[0];
@@ -208,7 +231,7 @@ public class Num extends Primitive {
         a = t;
       }
       if (a == 0) res = 0;
-      else res = (nums[i] * res) / a;
+      else res = (a * res) / a;
       if (res == 0) return 0;
     }
     return res;

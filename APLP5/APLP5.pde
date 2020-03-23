@@ -60,7 +60,7 @@ void call(Fun f, Value a, Value w) {
 void call(Fun f, Value w) {
   if (f == null) return;
   try {
-    f.call(w);
+    f.callObj(w);
   } catch (APLError e) {
     e.print();
     e.printStackTrace();

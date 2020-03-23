@@ -10,7 +10,7 @@ public class OverBuiltin extends Dop {
     return "⍥";
   }
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     int d = ((Value) ww).asInt();
     return on(derv, (Fun) aa, d, w);
@@ -21,7 +21,7 @@ public class OverBuiltin extends Dop {
       int fd = DepthBuiltin.full(w);
       if (d>0 && d!=fd) throw new DomainError(caller+" can't match a depth " + fd + " array", caller, w);
       if (d <= fd) {
-        return (Value) f.call(w);
+        return f.call(w);
       }
     }
     if (d>0 && ld < d) throw new DomainError(caller+" can't match a depth "+DepthBuiltin.full(w)+" array", caller, w);
@@ -31,9 +31,9 @@ public class OverBuiltin extends Dop {
     }
     return Arr.createL(res, w.shape);
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
     var WW = (Fun) ww;
-    return ((Fun)aa).call((Value) WW.call(a), (Value) WW.call(w));
+    return ((Fun)aa).call(WW.call(a), WW.call(w));
   }
 }

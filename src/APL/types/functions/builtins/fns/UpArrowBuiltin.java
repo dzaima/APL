@@ -6,8 +6,6 @@ import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class UpArrowBuiltin extends Builtin {
   @Override public String repr() {
     return "↑";
@@ -16,7 +14,7 @@ public class UpArrowBuiltin extends Builtin {
   public UpArrowBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
+  public Value call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
     int IO = sc.IO;
     int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
@@ -39,7 +37,7 @@ public class UpArrowBuiltin extends Builtin {
     }
     return Arr.create(arr, shape);
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof Arr) {
       if (w instanceof DoubleArr || w instanceof ChrArr || w instanceof BitArr) return w;
       Value[] subs = w.values();

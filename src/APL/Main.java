@@ -174,13 +174,13 @@ public class Main {
           e.print();
         } catch (Throwable e) {
           lastError = e;
-          colorprint(e + ": " + e.getMessage(), 246);
-          if (faulty != null && faulty.getToken() != null) {
-            String s = repeat(" ", faulty.getToken().spos);
-            colorprint(faulty.getToken().raw, 217);
-            colorprint(s + "^", 217);
-          }
-          e.printStackTrace();
+          // colorprint(e + ": " + e.getMessage(), 246);
+          // if (faulty != null && faulty.getToken() != null) {
+          //   String s = repeat(" ", faulty.getToken().spos);
+          //   colorprint(faulty.getToken().raw, 217);
+          //   colorprint(s + "^", 217);
+          // }
+          new ImplementationError(e.getMessage() + "; )stack for stacktrace").print();
         }
         if (!silentREPL) print("> ");
       }
@@ -242,7 +242,13 @@ public class Main {
       byte[] encoded = Files.readAllBytes(Paths.get(path));
       return new String(encoded, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw new DomainError("File "+path+" not found");
+      String msg = "File " + path + " not found";
+      if (path.startsWith("'") && path.endsWith("'")  ||  path.startsWith("\"") && path.endsWith("\"")) {
+        msg+= " (argument shouldn't be surrounded in quotes)";
+      }
+      DomainError ne = new DomainError(msg);
+      ne.initCause(e);
+      throw ne;
     }
   }
   
@@ -293,7 +299,7 @@ public class Main {
     if (val instanceof VarArr) val = ((VarArr) val).get();
     if (val instanceof Settable) val = ((Settable) val).get();
     if (val instanceof Value) return val;
-    throw new SyntaxError("expected array, got " + val.humanType(true));
+    throw new SyntaxError("expected array, got " + val.humanType(true), s);
   }
   
   

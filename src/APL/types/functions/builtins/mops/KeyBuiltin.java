@@ -17,7 +17,12 @@ public class KeyBuiltin extends Mop {
     super(sc);
   }
   
-  public Obj call(Obj aa, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value w, DerivedMop derv) {
+    Obj o = callObj(f, w, derv);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Obj aa, Value w, DerivedMop derv) {
     if (aa instanceof APLMap) {
       if (w.rank > 1) {
         Value[] arr = new Value[w.ia];
@@ -46,14 +51,14 @@ public class KeyBuiltin extends Mop {
       var res = new Value[order.size()];
       i = 0;
       for (Value c : order) {
-        res[i++] = (Value) ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
+        res[i++] = ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
       }
       return new HArr(res);
     }
     throw new DomainError("⌸ ⍶ not map nor function");
   }
   
-  public Obj call(Obj aa, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj aa, Value a, Value w, DerivedMop derv) {
     if (aa instanceof APLMap) {
       ((APLMap)aa).set(a, w);
       return w;

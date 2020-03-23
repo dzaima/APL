@@ -22,7 +22,7 @@ public class DivBuiltin extends Builtin {
       throw new DomainError("reciprocal of biginteger", w);
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(NF, w);
   }
   
@@ -43,14 +43,14 @@ public class DivBuiltin extends Builtin {
       return new BigValue(a.i.divide(w.i));
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
   
-  public Obj callInv(Value w) { return call(w); }
-  public Obj callInvW(Value a, Value w) { return call(a, w); }
+  public Value callInv(Value w) { return call(w); }
+  public Value callInvW(Value a, Value w) { return call(a, w); }
   
-  @Override public Obj callInvA(Value a, Value w) {
+  @Override public Value callInvA(Value a, Value w) {
     return numD(MulBuiltin.DNF, a, w);
   }
 }

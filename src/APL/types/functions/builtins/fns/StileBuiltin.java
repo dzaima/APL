@@ -23,7 +23,7 @@ public class StileBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numChrMapM(NF, c->{ throw new DomainError("|char", this, w); }, c -> Num.of(c.size()), w);
   }
   
@@ -84,7 +84,7 @@ public class StileBuiltin extends Builtin {
       return new BigValue(w.i.remainder(a.i));
     }
   };
-  public Obj call(Value a0, Value w0) {
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
 }

@@ -13,15 +13,15 @@ public class RepeatBuiltin extends Dop {
   public RepeatBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
       Fun g = (Fun) ww;
       Value prev = w;
-      Value curr = (Value) f.call(w);
+      Value curr = f.call(w);
       while (!Main.bool(g.call(prev, curr))) {
-        Value next = (Value) f.call(curr);
+        Value next = f.call(curr);
         prev = curr;
         curr = next;
       }
@@ -30,16 +30,16 @@ public class RepeatBuiltin extends Dop {
       int am = ((Num) ww).asInt();
       if (am < 0) {
         for (int i = 0; i < -am; i++) {
-          w = (Value) f.callInv(w);
+          w = f.callInv(w);
         }
       } else for (int i = 0; i < am; i++) {
-        w = (Value) f.call(w);
+        w = f.call(w);
       }
       return w;
     }
   }
   
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) throw new DomainError("(f⍣g)A cannot be inverted", this);
@@ -47,23 +47,23 @@ public class RepeatBuiltin extends Dop {
     int am = ((Num) ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
-        w = (Value) f.call(w);
+        w = f.call(w);
       }
     } else for (int i = 0; i < am; i++) {
-      w = (Value) f.callInv(w);
+      w = f.callInv(w);
     }
     return w;
   }
   
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶');
     Fun f = (Fun) aa;
     if (ww instanceof Fun) {
       Fun g = (Fun) ww;
       Value prev = w;
-      Value curr = (Value) f.call(a, w);
+      Value curr = f.call(a, w);
       while (!Main.bool(g.call(prev, curr))) {
-        Value next = (Value) f.call(a, curr);
+        Value next = f.call(a, curr);
         prev = curr;
         curr = next;
       }
@@ -73,28 +73,28 @@ public class RepeatBuiltin extends Dop {
       int am = ((Num) ww).asInt();
       if (am < 0) {
         for (int i = 0; i < -am; i++) {
-          w = (Value) f.callInvW(a, w);
+          w = f.callInvW(a, w);
         }
       } else for (int i = 0; i < am; i++) {
-        w = (Value) f.call(a, w);
+        w = f.call(a, w);
       }
       return w;
     }
   }
   
-  public Obj callInvW(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
-        w = (Value)((Fun)aa).call(a, w);
+        w = ((Fun)aa).call(a, w);
       }
     } else for (int i = 0; i < am; i++) {
-      w = (Value)((Fun)aa).callInvW(a, w);
+      w = ((Fun)aa).callInvW(a, w);
     }
     return w;
   }
-  public Obj callInvA(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     isFn(aa, '⍶');
     int am = ((Num)ww).asInt();
     if (am== 1) return ((Fun) aa).callInvA(a, w);
@@ -112,7 +112,7 @@ public class RepeatBuiltin extends Dop {
     Value corig = origW;
     for (int i = 0; i < n; i++) {
       origs[i] = corig;
-      corig = (Value) ((Fun) aa).call(corig);
+      corig = ((Fun) aa).call(corig);
     }
     Value c = w;
     for (int i = n-1; i >= 0; i--) {

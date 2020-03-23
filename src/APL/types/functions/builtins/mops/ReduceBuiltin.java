@@ -18,12 +18,12 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   
   
   @Override
-  public Obj call(Obj f, Value w, int dim) {
+  public Value call(Obj f, Value w, int dim) {
     if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     return ngnReduce(w, dim, (Fun)f);
   }
   
-  public Obj call(Obj f, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value w, DerivedMop derv) {
     if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
@@ -110,12 +110,12 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     }
     Value last = a[a.length-1];
     for (int i = a.length-2; i >= 0; i--) {
-      last = (Value) ff.call(a[i], last);
+      last = ff.call(a[i], last);
     }
     return last.squeeze();
   }
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     isFn(f);
     if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", this, w);
     int n = a.asInt();
@@ -125,7 +125,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (int i = 0; i < ra.length; i++) {
         Value r = wa[i+n-1];
         for (int j = n-2; j >= 0; j--) {
-          r = (Value) ((Fun) f).call(wa[i + j], r);
+          r = ((Fun) f).call(wa[i + j], r);
         }
         ra[i] = r;
       }
@@ -134,7 +134,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (int i = 0; i < ra.length; i++) {
         Value r = wa[i];
         for (int j = 1; j < n; j++) {
-          r = (Value) ((Fun) f).call(wa[i + j], r);
+          r = ((Fun) f).call(wa[i + j], r);
         }
         ra[i] = r;
       }
@@ -158,7 +158,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (int k = 0; k < n2; k++) {
         Value c = x.get(i*n1*n2 + (n1-1)*n2 + k);
         for (int j = n1 - 2; j >= 0; j--) {
-          c = (Value) f.call(x.get(i*n1*n2 + j*n2 + k), c);
+          c = f.call(x.get(i*n1*n2 + j*n2 + k), c);
         }
         r[i*n2 + k] = c.squeeze();
       }

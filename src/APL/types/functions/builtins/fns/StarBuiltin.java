@@ -21,10 +21,10 @@ public class StarBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.exp(a[i]);
     }
   };
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(NF, w);
   }
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     return numM(LogBuiltin.NF, w);
   }
   
@@ -50,13 +50,13 @@ public class StarBuiltin extends Builtin {
       return new BigValue(a.i.pow(w.i.intValue()));
     }
   };
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return numD(DNF, a, w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     return numD(LogBuiltin.DNF, a, w);
   }
-  public Obj callInvA(Value a, Value w) {
+  public Value callInvA(Value a, Value w) {
     return numD(RootBuiltin.DNF, w, a);
   }
 }

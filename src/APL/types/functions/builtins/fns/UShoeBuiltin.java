@@ -12,7 +12,7 @@ public class UShoeBuiltin extends Builtin {
   
   
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     var res = new ArrayList<Value>();
     HashSet<Value> ws = new HashSet<>(Arrays.asList(w.values()));
     for (Value v : a) if (ws.contains(v)) res.add(v);

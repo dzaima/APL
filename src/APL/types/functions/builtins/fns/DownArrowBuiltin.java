@@ -15,7 +15,7 @@ public class DownArrowBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof Primitive) return w;
     if (w.rank <= 1) return new Rank0Arr(w);
     // TODO stupid dimensions
@@ -49,7 +49,7 @@ public class DownArrowBuiltin extends Builtin {
     return new HArr(res, nsh);
   }
   
-  public Obj call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
+  public Value call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
     return on(a, w, sc.IO);
   }
   public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵

@@ -9,7 +9,7 @@ import java.util.*;
 
 public class LShoeStileBuiltin extends Builtin {
   
-  @Override public Obj call(Value a, Value w) {
+  @Override public Value call(Value a, Value w) {
     HashMap<Value, Integer> counts = new HashMap<>();
     for (Value ca : a) counts.put(ca, 0);
     for (Value cw : w) {
@@ -25,7 +25,7 @@ public class LShoeStileBuiltin extends Builtin {
     return DoubleArr.safe(res, a.shape);
   }
   
-  @Override public Obj call(Value w) {
+  @Override public Value call(Value w) {
     RankError.must(w.rank == 1, "rank of ⍵ must be 1");
     HashSet<Value> encountered = new HashSet<>();
     BitArr.BA res = new BitArr.BA(w.shape);

@@ -45,10 +45,10 @@ public class NorBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return bitD(DNF, DBF, a, w);
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof BitArr) {
       BitArr wb = (BitArr) w;
       wb.setEnd(false);

@@ -12,10 +12,10 @@ public class DotBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     throw up;
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    return new ReduceBuiltin().derive(aa).call((Value) ((Fun) ww).call(a, w)); // TODO not lazy
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+    return new ReduceBuiltin().derive(aa).call(((Fun) ww).call(a, w)); // TODO not lazy
   }
 }

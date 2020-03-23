@@ -1,7 +1,6 @@
 package APL.types.functions;
 
 import APL.types.*;
-import APL.types.arrs.HArr;
 
 public class FunArr extends Fun {
   private final Obj[] os;
@@ -22,18 +21,18 @@ public class FunArr extends Fun {
     return res.toString();
   }
   
-  @Override public Obj call(Value w) {
+  @Override public Value call(Value w) {
     Value[] vs = new Value[os.length];
     for (int i = 0; i < os.length; i++) {
-      vs[i] = (Value) ((Fun) os[i]).call(w);
+      vs[i] = ((Fun) os[i]).call(w);
     }
     return Arr.create(vs);
   }
   
-  @Override public Obj call(Value a, Value w) {
+  @Override public Value call(Value a, Value w) {
     Value[] vs = new Value[os.length];
     for (int i = 0; i < os.length; i++) {
-      vs[i] = (Value) ((Fun) os[i]).call(a, w);
+      vs[i] = ((Fun) os[i]).call(a, w);
     }
     return Arr.create(vs);
   }

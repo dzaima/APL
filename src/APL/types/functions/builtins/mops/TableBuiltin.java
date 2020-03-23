@@ -10,7 +10,7 @@ public class TableBuiltin extends Mop {
   }
   
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
     int[] shape = new int[a.rank+w.rank];
     System.arraycopy(a.shape, 0, shape, 0, a.rank);
     System.arraycopy(w.shape, 0, shape, a.rank, w.rank);
@@ -21,7 +21,7 @@ public class TableBuiltin extends Mop {
     
     
     int i = 0;
-    Value first = (Value) ff.call(a.first(), w.first());
+    Value first = ff.call(a.first(), w.first());
   
     if (first instanceof Num) {
       double[] dres = new double[a.ia * w.ia];
@@ -32,7 +32,7 @@ public class TableBuiltin extends Mop {
       numatt: for (Value na : a) {
         for (Value nw : w) {
           Value r;
-          if (firstSkipped) r = (Value) ff.call(na, nw);
+          if (firstSkipped) r = ff.call(na, nw);
           else {
             firstSkipped = true;
             r = first;
@@ -57,13 +57,13 @@ public class TableBuiltin extends Mop {
         if (i%w.ia != 0) { // finish the damn row..
           Value va = a.get(i / w.ia);
           for (int wi = i % w.ia; wi < w.ia; wi++) {
-            res[i++] = (Value) ff.call(va, w.get(wi));
+            res[i++] = ff.call(va, w.get(wi));
           }
         }
         for (int ai = (i+w.ia-1)/w.ia; ai < a.ia; ai++) { // and do the rest, slowly and horribly
           Value va = a.get(ai);
           for (Value vw : w) {
-            res[i++] = (Value) ff.call(va, vw);
+            res[i++] = ff.call(va, vw);
           }
         }
         if (shape.length == 0 && res[0] instanceof Primitive) return res[0];
@@ -74,7 +74,7 @@ public class TableBuiltin extends Mop {
     Value[] arr = new Value[a.ia*w.ia];
     for (Value na : a) {
       for (Value nw : w) {
-        if (firstSkipped) arr[i++] = (Value) ff.call(na, nw);
+        if (firstSkipped) arr[i++] = ff.call(na, nw);
         else {
           firstSkipped = true;
           arr[i++] = first;

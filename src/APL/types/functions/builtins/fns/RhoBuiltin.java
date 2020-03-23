@@ -16,7 +16,7 @@ public class RhoBuiltin extends Builtin {
   }
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
 
     int[] sh = w.shape;
     //ArrayList<ArrVal> res = new ArrayList<ArrVal>();
@@ -25,7 +25,7 @@ public class RhoBuiltin extends Builtin {
     //}
     return toAPL(sh);
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
     int[] sh = new int[a.ia];
     int ia = 1;

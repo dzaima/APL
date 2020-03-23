@@ -1,6 +1,5 @@
 package APL.types.functions.builtins;
 
-import APL.Type;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.*;
@@ -8,18 +7,14 @@ import APL.types.functions.*;
 public class SetBuiltin extends AbstractSet {
   public static SetBuiltin inst = new SetBuiltin();
   
-  @Override public String repr() {
+  public String toString() {
     return "←";
   }
   
   
   
-  @Override
-  public Obj call(Value a, Value w) {
-    return call(a, w, false);
-  }
   
-  public Obj call(Obj a, Obj w, boolean update) {
+  public Obj callObj(Obj a, Obj w, boolean update) {
     if (!(a instanceof Settable)) throw new SyntaxError(a + " isn't settable", a);
     Settable as = (Settable) a;
     if (update) {
@@ -32,8 +27,8 @@ public class SetBuiltin extends AbstractSet {
     return w;
   }
 
-  public Obj call(Fun f, Obj a, Value w) {
-    call(a, f.call((Value) ((Settable) a).get(), w), true);
+  public Obj callObj(Fun f, Obj a, Value w) {
+    callObj(a, f.call((Value) ((Settable) a).get(), w), true);
     return w;
   }
 }

@@ -58,7 +58,7 @@ public class TransposeBuiltin extends Builtin {
     }
     return Arr.create(arr, ns);
   }
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     return call(w);
   }
   

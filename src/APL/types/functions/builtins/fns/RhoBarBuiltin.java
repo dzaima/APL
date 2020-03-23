@@ -15,7 +15,7 @@ public class RhoBarBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     int IO = sc.IO;
     if (w.rank != 1) throw new DomainError("argument to ϼ must be a vector");
     int dim = w.ia;

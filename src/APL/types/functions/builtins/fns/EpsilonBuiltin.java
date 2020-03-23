@@ -15,7 +15,7 @@ public class EpsilonBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     var res = new ArrayList<Value>();
     rec(res, w);
     return Arr.create(res.toArray(new Value[0]));
@@ -39,7 +39,7 @@ public class EpsilonBuiltin extends Builtin {
     }
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (a.scalar()) {
       Value a1 = a.first();
       for (Value v : w) {

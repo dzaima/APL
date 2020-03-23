@@ -73,20 +73,20 @@ class P5 extends SimpleMap {
       case "fc": case "framecount": return new Num(frameCount);
       case "scroll": return new Num(scrolled);
       case "color": case "col": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           return new Num(col(w));
         }
         public String repr() {return "P5.bg"; }
       };
       case "exit": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           System.exit(w.asInt());
           return null;
         }
         public String repr() {return "P5.exit"; }
       };
       case "noise": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           double[] da = w.asDoubleArr();
           double res = 0;
           if (da.length == 1) res = noise((float)da[0]);
@@ -99,19 +99,19 @@ class P5 extends SimpleMap {
       // files
       
       case "bytes": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           return APL(loadBytes(w.asString()));
         }
         public String repr() {return "P5.bytes"; }
       };
       case "lines": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           return APL(loadStrings(w.asString()));
         }
         public String repr() {return "P5.lines"; }
       };
       case "image": case "img": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           if (w.rank == 2) {
             int[] pixels = new int[w.ia];
             double[] wv = w.asDoubleArr();
@@ -128,12 +128,12 @@ class P5 extends SimpleMap {
       };
       case "lerp": return new Mop() {
         float p;
-        @Override public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
+        @Override public Value call(Obj f, Value a, Value w, DerivedMop derv) {
           p = (float) ((Value) f).asDouble();
           return new Fn().rec(DNF, a, w);
         }
         class Fn extends Builtin {
-          Obj rec(DNf f, Value a, Value w) {
+          Value rec(DNf f, Value a, Value w) {
             return numD(f, a, w);
           }
           public String repr(){return "";}
@@ -149,7 +149,7 @@ class P5 extends SimpleMap {
         public String repr() {return "P5.lerp"; }
       };
       case "pressed": return new Fun() {
-        public Obj call(Value w) {
+        public Value call(Value w) {
           return pressedKeys.contains(w.asString())? Num.ONE : Num.ZERO;
         }
         public String repr() {return "P5.lines"; }

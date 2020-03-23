@@ -18,19 +18,26 @@ public abstract class Fun extends Scopeable {
   protected Fun() {
     super(null);
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
     throw new IncorrectArgsError("function "+toString()+" called monadically", this, w);
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     throw new IncorrectArgsError("function "+toString()+" called dyadically", this, a);
   }
-  public Obj callInv(Value w) {
+  public Obj callObj(Value w) { // if overridden, call(w) must be overridden too!
+    return call(w);
+  }
+  public Obj callObj(Value a, Value w) { // if overridden, call(a, w) must be overridden too!
+    return call(a, w);
+  }
+  
+  public Value callInv(Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
-  public Obj callInvA(Value a, Value w) {
+  public Value callInvA(Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
   
@@ -366,7 +373,7 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
           if (w instanceof BitArr && Main.isBool(a)) {
-            return b.call(Main.bool(a), ((BitArr) w));
+            return b.call(Main.bool(a), (BitArr) w);
           }
           if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
@@ -500,7 +507,7 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
           if (w instanceof BitArr && Main.isBool(a)) {
-            return b.call(Main.bool(a), ((BitArr) w));
+            return b.call(Main.bool(a), (BitArr) w);
           }
           if (a instanceof Num && w.quickDoubleArr()) {
             return n.call(a.asDouble(), w.asDoubleArr(), w.shape);

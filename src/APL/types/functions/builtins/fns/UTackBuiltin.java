@@ -15,22 +15,22 @@ public class UTackBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return call(Num.NUMS[2], w);
   }
   
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     return DTackBuiltin.copy.call(w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     return DTackBuiltin.copy.call(a, w);
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return on(a, w, this);
   }
   
-  public static Obj on(Value a, Value w, Tokenable t) {
+  public static Value on(Value a, Value w, Tokenable t) {
     if (w.rank == 0) throw new DomainError("A⊥num is pointless", t);
     if (a instanceof BigValue || a.first() instanceof BigValue || w.first() instanceof BigValue) {
       if (a.rank == 0) {

@@ -16,18 +16,18 @@ public class DTackBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return call(Num.NUMS[2], w);
   }
   
-  public Obj callInv(Value w) {
+  public Value callInv(Value w) {
     return UTackBuiltin.copy.call(w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     return UTackBuiltin.copy.call(a, w);
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (!(a instanceof Primitive)) {
       if (w instanceof BigValue) {
         ArrayList<Value> res = new ArrayList<>();

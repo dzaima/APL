@@ -12,11 +12,11 @@ public class SemiUBBuiltin extends Builtin {
   
   
   @Override
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return new Shape1Arr(w);
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (a instanceof Num && w instanceof Num) {
       return new DoubleArr(new double[]{((Num) a).num, ((Num) w).num});
     }

@@ -15,7 +15,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
   }
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof Primitive) {
       if (w instanceof Num) return new DoubleArr(new double[]{((Num) w).num});
       if (w instanceof Char) return new ChrArr(String.valueOf(((Char) w).chr));
@@ -23,7 +23,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
     }
     return w.ofShape(new int[]{w.ia});
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     int dim = Math.max(a.rank, w.rank) - 1;
     if (a.rank <= 1 && w.rank <= 1) {
       if ((a instanceof BitArr || Main.isBool(a))
@@ -43,7 +43,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
     }
     return cat(a, w, dim);
   }
-  public Obj call(Value a, Value w, int dim) {
+  public Value call(Value a, Value w, int dim) {
     if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
     return cat(a, w, dim);
   }
@@ -60,7 +60,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
   
     return res.finish();
   }
-  static Obj cat(Value a, Value w, int k) {
+  static Value cat(Value a, Value w, int k) {
     if (a.rank<=1 && w.rank<=1
       && (a instanceof BitArr || Main.isBool(a))
       && (w instanceof BitArr || Main.isBool(w))) {

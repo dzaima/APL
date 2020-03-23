@@ -167,7 +167,7 @@ public class Exec {
         var f = lastFun();
         var a = lastVal();
         Main.faulty = f;
-        var res = f.call(a, w);
+        var res = f.callObj(a, w);
         if (res == null && (left.size() > 0 || llSize > 0)) throw new SyntaxError("trying to use result of function which returned nothing", a);
         if (res != null) addE(res);
         else return;
@@ -208,7 +208,7 @@ public class Exec {
         var w = lastVal();
         var f = lastFun();
         Main.faulty = f;
-        var res = f.call(w);
+        var res = f.callObj(w);
         if (res == null && (left.size() > 0 || llSize > 0)) throw new SyntaxError("trying to use result of function which returned nothing", f);
         if (res != null) addE(res);
         else return;
@@ -224,7 +224,7 @@ public class Exec {
         var s = (AbstractSet) popE(); // ←
         var a = popE(); // variable
         Main.faulty = s;
-        var res = s.call(a, w, false);
+        var res = s.callObj(a, w, false);
         addE(res);
         continue;
       }
@@ -246,7 +246,7 @@ public class Exec {
         var f = lastFun();
         Obj a = popE(); // variable
         Main.faulty = f;
-        Obj res = s.call(f, a, w);
+        Obj res = s.callObj(f, a, w);
         if (res != null) addE(res);
         continue;
       }
@@ -528,7 +528,7 @@ public class Exec {
     boolean pass = false;
     barNode = FN.r;
     Node cn = fromStart? FN.r : LN.l;
-    for (int i = fromStart ? 0 : len - 1; (fromStart ? i < len : i >= 0); i += ptrinc) {
+    for (int i = fromStart ? 0 : len - 1; fromStart ? i<len : i>=0; i += ptrinc) {
       char p = pt.charAt(i);
       boolean inv = false;
       if (p == '|') {
@@ -576,7 +576,7 @@ public class Exec {
         }
         if (nf) return false;
       } else {
-        if ((p != type) ^ inv) return false;
+        if (p!=type ^ inv) return false;
       }
       cn = fromStart? cn.r : cn.l;
     }

@@ -83,7 +83,7 @@ class AppMap extends SimpleMap {
       case "layout": return Main.toAPL(kb.data.getString("fullName"));
       case "set": return new Fun() {
         public String repr() { return "app.set"; }
-        public Obj call(Value a, Value w) {
+        public Value call(Value a, Value w) {
           int[] is = a.asIntVec();
           int x = is[0]; int y = is[1]; int dir = is[2];
           Key key = kb.keys[y][x];
@@ -93,7 +93,7 @@ class AppMap extends SimpleMap {
       };
       case "graph": return new Fun() {
         public String repr() { return "app.graph"; }
-        public Obj call(Value w) {
+        public Value call(Value w) {
           Grapher g = new Grapher(w.asString());
           topbar.toNew(g);
           return g;
@@ -101,7 +101,7 @@ class AppMap extends SimpleMap {
       };
       case "cpy": return new Fun() {
         public String repr() { return "app.cpy"; }
-        public Obj call(Value w) {
+        public Value call(Value w) {
           if (w.rank == 1) {
             w = w.squeeze();
             if (w instanceof ChrArr) {

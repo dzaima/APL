@@ -8,8 +8,8 @@ public class JotUBBuiltin extends Dop {
     return "⍛";
   }
   
-  @Override public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  @Override public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     isFn(aa, '⍶'); isFn(ww, '⍹');
-    return ((Fun) ww).call((Value) ((Fun) aa).call(a), w);
+    return ((Fun) ww).call(((Fun) aa).call(a), w);
   }
 }

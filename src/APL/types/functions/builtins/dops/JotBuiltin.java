@@ -10,10 +10,10 @@ public class JotBuiltin extends Dop {
   }
   
   
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
-        return ((Fun)aa).call((Value)((Fun)ww).call(w));
+        return ((Fun)aa).call(((Fun)ww).call(w));
       } else {
         return ((Fun)ww).call((Value)aa, w);
       }
@@ -22,10 +22,10 @@ public class JotBuiltin extends Dop {
       throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
-  public Obj callInv(Obj aa, Obj ww, Value w) {
+  public Value callInv(Obj aa, Obj ww, Value w) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
-        return ((Fun)aa).call((Value)((Fun)ww).call(w));
+        return ((Fun)aa).call(((Fun)ww).call(w));
       } else {
         return ((Fun)ww).callInvW((Value)aa, w);
       }
@@ -34,14 +34,14 @@ public class JotBuiltin extends Dop {
       throw new SyntaxError("arr∘arr makes no sense", this);
     }
   }
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     if (!(aa instanceof Fun)) {
       throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍶ is "+aa.humanType(true), aa, this);
     }
     if (!(ww instanceof Fun)) {
       throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍹ is "+ww.humanType(true), ww, this);
     }
-    return ((Fun)aa).call(a, (Value)((Fun)ww).call(w));
+    return ((Fun)aa).call(a, ((Fun)ww).call(w));
   }
   public boolean strInv(Obj aa, Obj ww) {
     if (!(ww instanceof Fun)) return false;
@@ -52,7 +52,7 @@ public class JotBuiltin extends Dop {
     Fun wwf = (Fun) ww;
     if (aa instanceof Fun) {
       Fun aaf = (Fun) aa;
-      Value gI = aaf.strInv(w, (Value) wwf.call(origW));
+      Value gI = aaf.strInv(w, wwf.call(origW));
       return wwf.strInv(gI, origW);
     } else {
       return wwf.strInvW((Value) aa, w, origW);

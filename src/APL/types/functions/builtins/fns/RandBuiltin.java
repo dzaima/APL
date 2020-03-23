@@ -38,11 +38,11 @@ public class RandBuiltin extends Builtin {
     }
   };
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     return numM(nf, w);
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     int IO = sc.IO;
     ArrayList<Integer> vs = new ArrayList<>(w.ia);
     int wi = w.asInt();

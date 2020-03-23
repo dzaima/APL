@@ -10,7 +10,7 @@ public class TildeBuiltin extends Builtin {
   @Override public String repr() {
     return "~";
   }
-  public Obj call(Value w) { return rec(w); }
+  public Value call(Value w) { return rec(w); }
   
   private Value rec(Value w) {
     if (w instanceof Arr) {
@@ -46,7 +46,7 @@ public class TildeBuiltin extends Builtin {
     return bc.finish();
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     int ia = 0;
     boolean[] leave = new boolean[a.ia];
     a: for (int i = 0; i < a.ia; i++) {

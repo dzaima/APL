@@ -10,6 +10,6 @@ public class RTackBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) { return w; }
-  public Obj call(Value a, Value w) { return w; }
+  public Value call(Value w) { return w; }
+  public Value call(Value a, Value w) { return w; }
 }
