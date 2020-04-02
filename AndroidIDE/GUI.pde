@@ -77,4 +77,13 @@ static class TopBar extends Drawable {
     if (i < 0) i = 0;
     to(tabs.get(i));
   }
+  void close(Tab t) {
+    if (tabs.size() == 1) return;
+    int i = tabs.indexOf(t);
+    tabs.remove(i);
+    i--;
+    if (i < 0) i = 0;
+    if (t==ctab) to(tabs.get(i));
+    else redraw();
+  }
 }

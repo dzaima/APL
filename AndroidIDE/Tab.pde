@@ -6,6 +6,13 @@ abstract static class Tab extends SimpleMap {
   Obj getv(String k) {
     switch (k) {
       case "name": return Main.toAPL(name());
+      case "close": return new Fun() {
+        String repr() { return Tab.this+".close"; }
+        Value call(Value w) {
+          topbar.close(Tab.this);
+          return Num.ONE;
+        }
+      };
       default: return Null.NULL;
     }
   }
