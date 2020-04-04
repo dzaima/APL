@@ -65,13 +65,13 @@ public class EpsilonBuiltin extends Builtin {
   }
   
   
-  public boolean strInv() { return true; }
-  public Value strInv(Value w, Value origW) {
-    Value[] vs = w.values();
-    Value[] res = new Value[origW.ia];
-    int e = copyIn(res, vs, origW, 0);
-    if (e != w.ia) throw new DomainError("⍢∊ expected equal amount of output & output items", this);
-    return Arr.create(res, origW.shape);
+  public Value under(Obj o, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    Value[] vs = v.values();
+    Value[] res = new Value[w.ia];
+    int e = copyIn(res, vs, w, 0);
+    if (e != v.ia) throw new DomainError("⍢∊ expected equal amount of output & output items", this);
+    return Arr.create(res, w.shape);
   }
   private int copyIn(Value[] res, Value[] vs, Value orig, int s) {
     for (int i = 0; i < orig.ia; i++) {

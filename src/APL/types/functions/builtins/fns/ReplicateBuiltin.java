@@ -151,11 +151,11 @@ public class ReplicateBuiltin extends Builtin {
   }
   
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
-    return AtBuiltin.at(w, new Fun() { // lazy version
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return AtBuiltin.at(v, new Fun() { // lazy version
       public String repr() { return "{⌿.⍺}"; }
       public Value call(Value w) { return a; }
-    }, origW, -1234);
+    }, w, -1234);
   }
 }

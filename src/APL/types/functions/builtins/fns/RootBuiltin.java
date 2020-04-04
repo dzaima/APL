@@ -18,8 +18,19 @@ public class RootBuiltin extends Builtin {
       for (int i = 0; i < a.length; i++) res[i] = Math.sqrt(a[i]);
     }
   };
+  private static final NumMV NFi = new NumMV() {
+    public Value call(Num w) {
+      return Num.of(w.num*w.num);
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = a[i]*a[i];
+    }
+  };
   public Value call(Value w) {
     return numM(NF, w);
+  }
+  public Value callInv(Value w) {
+    return numM(NFi, w);
   }
   
   public static final D_NNeN DNF = new D_NNeN() {
@@ -39,5 +50,12 @@ public class RootBuiltin extends Builtin {
   };
   public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
+  }
+  
+  public Value callInvW(Value a, Value w) {
+    return numD(StarBuiltin.DNF, w, a);
+  }
+  public Value callInvA(Value a, Value w) {
+    return numD(LogBuiltin.DNF, a, w);
   }
 }

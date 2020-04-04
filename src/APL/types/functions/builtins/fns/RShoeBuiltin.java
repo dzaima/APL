@@ -32,32 +32,33 @@ public class RShoeBuiltin extends Fun {
     if (a instanceof Num) {
       if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", w);
       if (w.ia == 0) throw new LengthError("⊃ on array with 0 elements", this, w);
-      return w.get(a.asInt() - sc.IO);
+      int p = a.asInt() - sc.IO;
+      if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+(w.ia-1));
+      return w.get(p);
     }
     for (Value v : a) {
       w = w.at(v.asIntVec(), sc.IO);
     }
     return w;
   }
-  public boolean strInv() { return true; }
-  public Value strInv(Value w, Value origW) {
-    assert origW.ia != 0;
-    Value[] vs = origW.valuesCopy();
-    vs[0] = w;
-    return Arr.createL(vs, origW.shape);
+  
+  public Value under(Obj o, Value w) {
+    Value[] vs = w.valuesCopy();
+    vs[0] = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    return Arr.createL(vs, w.shape);
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
     if (a instanceof Primitive) {
-      Value[] vs = origW.valuesCopy();
-      vs[a.asInt() - sc.IO] = w;
-      return Arr.createL(vs, origW.shape);
+      Value[] vs = w.valuesCopy();
+      vs[a.asInt() - sc.IO] = v;
+      return Arr.createL(vs, w.shape);
     } else {
-      Value[] vs = origW.valuesCopy();
+      Value[] vs = w.valuesCopy();
       int[] is = a.asIntVec();
-      replace(vs, w, is, 0);
-      return Arr.createL(vs, origW.shape);
+      replace(vs, v, is, 0);
+      return Arr.createL(vs, w.shape);
     }
   }
   private void replace(Value[] vs, Value w, int[] d, int i) {

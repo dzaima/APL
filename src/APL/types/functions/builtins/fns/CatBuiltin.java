@@ -120,23 +120,23 @@ public class CatBuiltin extends Builtin implements DimDFn {
   
   
   
-  public boolean strInv() { return true; }
-  public Value strInv(Value w, Value origW) {
-    if (w.ia != origW.ia) throw new DomainError("⍢, expected equal amount of output & output items", this);
-    return w.ofShape(origW.shape);
+  public Value under(Obj o, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    if (v.ia != w.ia) throw new DomainError("⍢, expected equal amount of output & output items", this);
+    return v.ofShape(w.shape);
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
     if (a.rank>1) throw new NYIError(", inverted on rank "+a.rank+" ⍺", this);
-    if (w.rank>1) throw new NYIError(", inverted on rank "+w.rank+" ⍵", this);
+    if (v.rank>1) throw new NYIError(", inverted on rank "+v.rank+" ⍵", this);
     for (int i = 0; i < a.ia; i++) {
-      if (a.get(i) != w.get(i)) throw new DomainError("inverting , received non-equal prefixes");
+      if (a.get(i) != v.get(i)) throw new DomainError("inverting , received non-equal prefixes");
     }
-    if (origW.rank==0) {
-      if (a.ia+1 != w.ia) throw new DomainError("original ⍵ was of rank ⍬, which is not satisfiable", this);
-      return w.get(w.ia-1);
+    if (w.rank==0) {
+      if (a.ia+1 != v.ia) throw new DomainError("original ⍵ was of rank ⍬, which is not satisfiable", this);
+      return v.get(v.ia-1);
     }
-    return DownArrowBuiltin.on(Num.of(a.ia), w, 0);
+    return DownArrowBuiltin.on(Num.of(a.ia), v, 0);
   }
 }

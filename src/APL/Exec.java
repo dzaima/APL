@@ -594,7 +594,7 @@ public class Exec {
       OpTok t1 = (OpTok) t;
       switch (t1.op.charAt(0)) {
         // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
-        // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺⍤
+        // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺
         // fns
         case '+': return new PlusBuiltin();
         case '-': return new MinusBuiltin();

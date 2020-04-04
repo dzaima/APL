@@ -3,7 +3,7 @@ package APL.types.functions.builtins.mops;
 import APL.Main;
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.SingleItemArr;
+import APL.types.arrs.*;
 import APL.types.functions.*;
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class EachBuiltin extends Mop {
       }
       return Arr.create(n, w.shape);
     }
-    if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")");
+    if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")", derv, w);
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
       n[i] = ((Fun)f).call(a.get(i), w.get(i)).squeeze();
@@ -52,7 +52,7 @@ public class EachBuiltin extends Mop {
   }
   
   public Value callInv(Obj f, Value w) {
-    if (!(f instanceof Fun)) throw new DomainError("can't invert A¨");
+    if (!(f instanceof Fun)) throw new DomainError("can't invert A¨", this);
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
       n[i] = ((Fun) f).callInv(w.get(i)).squeeze();
@@ -61,26 +61,52 @@ public class EachBuiltin extends Mop {
     return Arr.create(n, w.shape);
   }
   
-  public boolean strInv(Obj f) {
-    return f instanceof Fun && ((Fun) f).strInv();
+  public Value under(Obj aa, Obj o, Value w, DerivedMop derv) {
+    isFn(aa);
+    Value[] res2 = new Value[w.ia];
+    rec((Fun) aa, o, w, 0, new Value[w.ia], new Value[1], res2);
+    return Arr.create(res2, w.shape);
   }
-  public Value strInv(Obj f, Value w, Value origW) {
-    Fun ff = (Fun) f;
-    Value[] res = new Value[origW.ia];
-    for (int i = 0; i < res.length; i++) {
-      res[i] = ff.strInv(w.get(i), origW.get(i));
+  
+  private static void rec(Fun aa, Obj o, Value w, int i, Value[] args, Value[] resPre, Value[] res) {
+    if (i == args.length) {
+      Value v = o instanceof Fun? ((Fun) o).call(Arr.create(args, w.shape)) : (Value) o;
+      resPre[0] = v;
+    } else {
+      res[i] = aa.under(new Fun() { public String repr() { return aa.repr()+"¨"; }
+        public Value call(Value w1) {
+          args[i] = w1;
+          rec(aa, o, w, i+1, args, resPre, res);
+          return resPre[0].get(i);
+        }
+      }, w.get(i));
     }
-    return Arr.create(res, origW.shape);
   }
-  public boolean strInvW(Obj f) {
-    return f instanceof Fun && ((Fun) f).strInvW();
+  
+  
+  public Value underW(Obj aa, Obj o, Value a, Value w, DerivedMop derv) {
+    isFn(aa);
+    if (a.rank!=0 && w.rank!=0 && !Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")", derv, w);
+    int ia = Math.max(a.ia, w.ia);
+    Value[] res2 = new Value[ia];
+    if (a.rank==0 && !(a instanceof Primitive)) a = new Rank0Arr(a.first()); // abuse that get doesn't check indexes for simple scalar extension
+    if (w.rank==0 && !(w instanceof Primitive)) w = new Rank0Arr(a.first());
+    rec((Fun) aa, o, a, w, 0, new Value[ia], new Value[1], res2);
+    return Arr.create(res2, w.shape);
   }
-  public Value strInvW(Obj f, Value a, Value w, Value origW) {
-    Fun ff = (Fun) f;
-    Value[] res = new Value[origW.ia];
-    for (int i = 0; i < res.length; i++) {
-      res[i] = ff.strInvW(a, w.get(i), origW.get(i));
+  
+  private static void rec(Fun aa, Obj o, Value a, Value w, int i, Value[] args, Value[] resPre, Value[] res) {
+    if (i == args.length) {
+      Value v = o instanceof Fun? ((Fun) o).call(Arr.create(args, w.shape)) : (Value) o;
+      resPre[0] = v;
+    } else {
+      res[i] = aa.underW(new Fun() { public String repr() { return aa.repr()+"¨"; }
+        public Value call(Value w1) {
+          args[i] = w1;
+          rec(aa, o, a, w, i+1, args, resPre, res);
+          return resPre[0].get(i);
+        }
+      }, a.get(i), w.get(i));
     }
-    return Arr.create(res, origW.shape);
   }
 }

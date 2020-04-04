@@ -39,9 +39,13 @@ public class DerivedDop extends Fun {
     return aa.toString()+op.repr()+wws;
   }
   
-  public boolean strInv() { return op.strInv(aa, ww); }
-  public boolean strInvW() { return op.strInvW(aa, ww); }
-  
-  public Value strInv(Value w, Value origW) { return op.strInv(aa, ww, w, origW); }
-  public Value strInvW(Value a, Value w, Value origW) { return op.strInvW(aa, ww, a, w, origW); }
+  public Value under(Obj o, Value w) {
+    return op.under(aa, ww, o, w, this);
+  }
+  public Value underW(Obj o, Value a, Value w) {
+    return op.underW(aa, ww, o, a, w, this);
+  }
+  public Value underA(Obj o, Value a, Value w) {
+    return op.underA(aa, ww, o, a, w, this);
+  }
 }

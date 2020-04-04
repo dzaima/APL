@@ -77,31 +77,31 @@ public class RhoBuiltin extends Builtin {
     }
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
     for (int i = 0; i < a.ia; i++) {
       Value c = a.get(i);
       if (!(c instanceof Num)) { // a⍬b ⍴ w - must use all items
-        if (origW.rank == 0 && w.first() instanceof Primitive) return w.first();
-        if (w.ia != origW.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items");
-        return w.ofShape(origW.shape);
+        if (w.rank == 0 && v.first() instanceof Primitive) return v.first();
+        if (v.ia != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items");
+        return v.ofShape(w.shape);
       }
     }
     int[] sh = a.asIntVec();
     int am = Arr.prod(sh);
-    if (am > origW.ia) throw new DomainError("⍢("+ Main.formatAPL(sh)+"⍴) applied on array with less items than "+am, this);
-    if (!Arrays.equals(sh, w.shape)) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
-    Value[] vs = new Value[origW.ia];
-    System.arraycopy(w.values(), 0, vs, 0, am);
-    System.arraycopy(origW.values(), am, vs, am, vs.length-am);
-    return Arr.createL(vs, origW.shape);
+    if (am > w.ia) throw new DomainError("⍢("+ Main.formatAPL(sh)+"⍴) applied on array with less items than "+am, this);
+    if (!Arrays.equals(sh, v.shape)) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+    Value[] vs = new Value[w.ia];
+    System.arraycopy(v.values(), 0, vs, 0, am);
+    System.arraycopy(w.values(), am, vs, am, vs.length-am);
+    return Arr.createL(vs, w.shape);
   }
   
-  // public boolean strInv() { return true; }
-  // public Value strInv(Value w, Value origW) {
-  //   int[] sh = w.asIntVec();
+  // public Value under(Obj o, Value w) {
+  //   Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+  //   int[] sh = v.asIntVec();
   //  
-  //   if (Arr.prod(sh) != origW.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
-  //   return origW.ofShape(sh);
+  //   if (Arr.prod(sh) != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+  //   return w.ofShape(sh);
   // }
 }

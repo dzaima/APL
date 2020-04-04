@@ -81,12 +81,12 @@ public class RShoeUBBuiltin extends Builtin {
     }
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
-    Value[] vs = origW.valuesCopy();
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    Value[] vs = w.valuesCopy();
     for (int i = 0; i < a.ia; i++) {
-      vs[Indexer.fromShape(origW.shape, a.get(i).asIntVec(), sc.IO)] = w.get(i);
+      vs[Indexer.fromShape(w.shape, a.get(i).asIntVec(), sc.IO)] = v.get(i);
     }
-    return Arr.createL(vs, origW.shape);
+    return Arr.createL(vs, w.shape);
   }
 }

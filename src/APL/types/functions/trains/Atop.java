@@ -31,16 +31,29 @@ public class Atop extends Fun {
     return ((Fun) g).call(h.call(a, w));
   }
   
-  public boolean strInv() { return g instanceof Fun? ((Fun) g).strInv() && h.strInv() : h.strInvW(); }
-  public Value strInv(Value w, Value origW) {
+  public Value callInvW(Value a, Value w) {
+    if (!(g instanceof Fun)) throw new SyntaxError("inverting a dyadically called A f train");
+    return h.callInvW(a, ((Fun) g).callInv(w));
+  }
+  
+  public Value callInvA(Value a, Value w) {
+    if (!(g instanceof Fun)) throw new SyntaxError("inverting a dyadically called A f train");
+    return h.callInvA(((Fun) g).callInv(a), w);
+  }
+  
+  public Value under(Obj o, Value w) {
     if (g instanceof Fun) {
       Fun gf = (Fun) g;
-      Value gI = gf.strInv(w, h.call(origW));
-      return h.strInv(gI, origW);
+      return h.under(new Fun() { public String repr() { return gf.repr(); }
+        public Value call(Value w) {
+          return gf.under(o, w);
+        }
+      }, w);
     } else {
-      return h.strInvW((Value) g, w, origW);
+      return h.underW(o, (Value) g, w);
     }
   }
+  
   @Override public String repr() {
     return "("+g+" "+h+")";
   }

@@ -103,21 +103,20 @@ public class RepeatBuiltin extends Dop {
     throw new DomainError("inverting ⍺ of f⍣C is only possible when C∊¯1 1");
   }
   
-  public boolean strInv(Obj aa, Obj ww) {
-    return aa instanceof Fun && ((Fun) aa).strInv() && ww instanceof Num;
-  }
-  public Value strInv(Obj aa, Obj ww, Value w, Value origW) {
+  public Value under(Obj aa, Obj ww, Obj o, Value w, DerivedDop derv) {
+    isFn(aa, '⍶');
     int n = ((Num) ww).asInt();
-    Value[] origs = new Value[n];
-    Value corig = origW;
-    for (int i = 0; i < n; i++) {
-      origs[i] = corig;
-      corig = ((Fun) aa).call(corig);
+    return repeat((Fun) aa, n, o, w);
+  }
+  public Value repeat(Fun aa, int n, Obj o, Value w) { // todo don't do recursion?
+    if (n==0) {
+      return o instanceof Fun? ((Fun) o).call(w) : (Value) o;
     }
-    Value c = w;
-    for (int i = n-1; i >= 0; i--) {
-      c = ((Fun) aa).strInv(c, origs[i]);
-    }
-    return c;
+    
+    return repeat(aa, n-1, new Fun() { public String repr() { return aa.repr(); }
+      public Value call(Value w) {
+        return aa.under(o, w);
+      }
+    }, w);
   }
 }

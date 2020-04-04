@@ -13,16 +13,28 @@ public class TrigBuiltin extends Builtin {
   
   private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
-      return new Num(Math.PI * w.num);
+      return new Num(w.num * Math.PI);
     }
     public void call(double[] res, double[] a) {
-      for (int i = 0; i < a.length; i++) res[i] = Math.PI * a[i];
+      for (int i = 0; i < a.length; i++) res[i] = a[i] * Math.PI;
+    }
+  };
+  private static final NumMV NFi = new NumMV() {
+    public Value call(Num w) {
+      return new Num(w.num / Math.PI);
+    }
+    public void call(double[] res, double[] a) {
+      for (int i = 0; i < a.length; i++) res[i] = a[i] / Math.PI;
     }
   };
   
   public Value call(Value w) {
     return numM(NF, w);
   }
+  public Value callInv(Value w) {
+    return numM(NFi, w);
+  }
+  
   static final D_NNeN DNF = new D_NNeN() {
     @Override public double on(double a, double w) {
       switch((int) a) {
@@ -58,5 +70,24 @@ public class TrigBuiltin extends Builtin {
   };
   public Value call(Value a, Value w) {
     return numD(DNF, a, w);
+  }
+  
+  
+  static final D_NNeN DNFi = new D_NNeN() {
+    @Override public double on(double a, double w) {
+      switch((int) a) {
+        case  1: return Math.asin(w);
+        case  2: return Math.acos(w);
+        case  3: return Math.atan(w);
+        
+        case -1: return Math.sin(w);
+        case -2: return Math.cos(w);
+        case -3: return Math.tan(w);
+      }
+      throw new DomainError("⍵ of ○⍣¯1 must be in (+,-)1…3");
+    }
+  };
+  public Value callInvW(Value a, Value w) {
+    return numD(DNFi, a, w);
   }
 }

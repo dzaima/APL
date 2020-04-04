@@ -37,9 +37,13 @@ public class DerivedMop extends Fun {
     return aa.toString()+op.repr();
   }
   
-  public boolean strInv() { return op.strInv(aa); }
-  public boolean strInvW() { return op.strInvW(aa); }
-  
-  public Value strInv(Value w, Value origW) { return op.strInv(aa, w, origW); }
-  public Value strInvW(Value a, Value w, Value origW) { return op.strInvW(aa, a, w, origW); }
+  public Value under(Obj o, Value w) {
+    return op.under(aa, o, w, this);
+  }
+  public Value underW(Obj o, Value a, Value w) {
+    return op.underW(aa, o, a, w, this);
+  }
+  public Value underA(Obj o, Value a, Value w) {
+    return op.underA(aa, o, a, w, this);
+  }
 }

@@ -162,7 +162,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     int x = 0;
     for (int i = 0; i < rank; i++) {
       if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], this);
-      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], this);
+      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+(shape[i]+IO-1), this);
       x+= pos[i]-IO;
       if (i != rank-1) x*= shape[i+1];
     }

@@ -78,13 +78,13 @@ public class DownArrowBuiltin extends Builtin {
     return Arr.create(arr, shape);
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
     int[] ls = a.asIntVec();
-    int[] sh = origW.shape;
+    int[] sh = w.shape;
     for (int i = 0; i < ls.length; i++) {
       ls[i] = ls[i]>0? ls[i]-sh[i] : ls[i]+sh[i];
     }
-    return UpArrowBuiltin.strInv(ls, w, origW);
+    return UpArrowBuiltin.undo(ls, v, w);
   }
 }

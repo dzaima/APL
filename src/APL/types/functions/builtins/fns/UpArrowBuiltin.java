@@ -143,11 +143,11 @@ public class UpArrowBuiltin extends Builtin {
     }
   }
   
-  public boolean strInvW() { return true; }
-  public Value strInvW(Value a, Value w, Value origW) {
-    return strInv(a.asIntVec(), w, origW);
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return undo(a.asIntVec(), v, w);
   }
-  public static Value strInv(int[] e, Value w, Value origW) {
+  public static Value undo(int[] e, Value w, Value origW) {
     Value[] r = new Value[origW.ia];
     int[] s = origW.shape;
     Indexer idx = new Indexer(s, 0);

@@ -61,10 +61,4 @@ public class TransposeBuiltin extends Builtin {
   public Value callInv(Value w) {
     return call(w);
   }
-  
-  public boolean strInv() { return true; }
-  
-  public Value strInv(Value w, Value origW) {
-    return call(w);
-  }
 }

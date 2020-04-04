@@ -1,8 +1,10 @@
 package APL.types.functions.builtins.dops;
 
-import APL.errors.SyntaxError;
+import APL.Main;
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.*;
+import APL.types.functions.builtins.mops.InvertBuiltin;
 
 public class DualBuiltin extends Dop {
   @Override public String repr() {
@@ -13,51 +15,53 @@ public class DualBuiltin extends Dop {
   
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     isFn(ww, '⍹');
-    Fun under = (Fun) ww;
-    Value sub = under.call(w);
-    if (under.strInv()) {
-      Value obj = aa instanceof Value? (Value) aa : ((Fun) aa).call(sub);
-      return under.strInv(obj, w);
-    }
-    
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
-    Value obj = ((Fun) aa).call(sub);
-    return under.callInv(obj);
+    return ((Fun) ww).under(aa, w);
   }
   public Value callInv(Obj aa, Obj ww, Value w) {
-    isFn(ww, '⍹');
-    Fun under = (Fun) ww;
-    Value sub = under.call(w);
-    if (under.strInv()) {
-      Value obj = aa instanceof Value? (Value) aa : ((Fun) aa).callInv(sub);
-      return under.strInv(obj, w);
-    }
-  
-    if (!(aa instanceof Fun)) throw new SyntaxError("⍶ of computational ⍢ must be a function", this);
-    Value obj = ((Fun) aa).callInv(sub);
-    return under.callInv(obj);
+    isFn(aa, '⍶'); isFn(ww, '⍹');
+    return ((Fun) ww).under(InvertBuiltin.invertM((Fun) aa), w);
   }
   
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    Fun under = (Fun) ww;
-    Value aS = under.call(a);
-    Value wS = under.call(w);
-    if (under.strInv()) {
-      Value obj = ((Fun) aa).call(aS, wS);
-      return under.strInv(obj, w);
-    }
-    
-    return under.callInv(((Fun)aa).call(aS, wS));
+    isFn(ww, '⍹'); Fun wwf = (Fun) ww;
+    return wwf.under(new BindA(wwf.call(a), ((Fun) aa)), w);
   }
   public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    Fun under = (Fun) ww;
-    return under.callInv(((Fun) aa).callInvW(under.call(a), under.call(w)));
+    isFn(aa, '⍶'); isFn(ww, '⍹'); Fun wwf = (Fun) ww;
+    return ((Fun) ww).under(new BindA(wwf.call(a), InvertBuiltin.invertW((Fun) aa)), w);
   }
-  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) { // structural inverse is not possible; fall back to computational inverse
     isFn(aa, '⍶'); isFn(ww, '⍹');
-    Fun under = (Fun) ww;
-    return under.callInv(((Fun) aa).callInvA(under.call(a), under.call(w)));
+    Fun wwf = (Fun) ww;
+    Value a1 = wwf.call(a);
+    Value w1 = wwf.call(w);
+    try { 
+      return wwf.callInv(((Fun) aa).callInvA(a1, w1));
+    } catch (DomainError e) { // but add a nice warning about it if a plausible error was received (todo better error management to not require parsing the message?)
+      String msg = e.getMessage();
+      if (msg.contains("doesn't support") && msg.contains("inverting")) {
+        throw new DomainError(msg + " (possibly caused by using f⍢g⍨⍣¯1, which only allows computational inverses)", Main.faulty, e.cause);
+      } throw e;
+    }
+  }
+  
+  public static class BindA extends Fun {
+    Value a;
+    Fun f;
+    public BindA(Value a, Fun f) {
+      this.a = a;
+      this.f = f;
+    }
+  
+    public Value call(Value w) {
+      return f.call(a, w);
+    }
+    public Value callInv(Value w) {
+      return f.callInvW(a, w);
+    }
+  
+    public String repr() {
+      return f.repr();
+    }
   }
 }

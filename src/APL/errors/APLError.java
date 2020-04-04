@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import static APL.Main.*;
 
-public class APLError extends Error {
+public class APLError extends RuntimeException {
   public Tokenable cause;
   
   APLError (String msg) {

@@ -18,14 +18,14 @@ public abstract class Mop extends Scopeable {
     return Type.mop;
   }
   
-  public DerivedMop derive (Obj aa) {
+  public DerivedMop derive(Obj aa) {
     return new DerivedMop(aa, this);
   }
   public Value call(Obj f, Value w, DerivedMop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called monadically", this, w);
+    throw new IncorrectArgsError(repr()+" can't be called monadically", derv, w);
   }
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called dyadically", this, a);
+    throw new IncorrectArgsError(repr()+" can't be called dyadically", derv, a);
   }
   public Obj callObj(Obj f, Value w, DerivedMop derv) { // if overridden, call(f, w, derv) must be overridden too!
     return call(f, w, derv);
@@ -42,10 +42,18 @@ public abstract class Mop extends Scopeable {
   public Value callInvA(Obj f, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
-  public boolean strInv(Obj f) { return false; }
-  public boolean strInvW(Obj f) { return false; }
-  public Value strInv(Obj f, Value w, Value origW) { throw new IllegalStateException("calling unsupported mop.strInv(w, origW)"); }
-  public Value strInvW(Obj f, Value a, Value w, Value origW) { throw new IllegalStateException("calling unsupported mop.strInvW(a, w, origW)"); }
+  public Value under(Obj aa, Obj o, Value w, DerivedMop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, w, derv)) : (Value) o;
+    return callInv(aa, v);
+  }
+  public Value underW(Obj aa, Obj o, Value a, Value w, DerivedMop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, a, w, derv)) : (Value) o;
+    return callInvW(aa, a, v);
+  }
+  public Value underA(Obj aa, Obj o, Value a, Value w, DerivedMop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, a, w, derv)) : (Value) o;
+    return callInvA(aa, v, w);
+  }
   
   public String toString() {
     return repr();

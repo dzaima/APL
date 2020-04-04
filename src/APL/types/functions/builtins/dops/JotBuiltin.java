@@ -25,7 +25,7 @@ public class JotBuiltin extends Dop {
   public Value callInv(Obj aa, Obj ww, Value w) {
     if (ww instanceof Fun) {
       if (aa instanceof Fun) {
-        return ((Fun)aa).call(((Fun)ww).call(w));
+        return ((Fun)ww).callInv(((Fun)aa).callInv(w));
       } else {
         return ((Fun)ww).callInvW((Value)aa, w);
       }
@@ -43,19 +43,31 @@ public class JotBuiltin extends Dop {
     }
     return ((Fun)aa).call(a, ((Fun)ww).call(w));
   }
-  public boolean strInv(Obj aa, Obj ww) {
-    if (!(ww instanceof Fun)) return false;
-    Fun wwf = (Fun) ww;
-    return aa instanceof Fun? ((Fun) aa).strInv() && wwf.strInv() : wwf.strInvW();
+  
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
+    isFn(aa, '⍶'); isFn(ww, '⍹');
+    return ((Fun) ww).callInv(((Fun) aa).callInvW(a, w));
   }
-  public Value strInv(Obj aa, Obj ww, Value w, Value origW) {
-    Fun wwf = (Fun) ww;
-    if (aa instanceof Fun) {
-      Fun aaf = (Fun) aa;
-      Value gI = aaf.strInv(w, wwf.call(origW));
-      return wwf.strInv(gI, origW);
+  
+  public Value under(Obj aa, Obj ww, Obj o, Value w, DerivedDop derv) {
+    if (ww instanceof Fun) {
+      Fun wwf = (Fun) ww;
+      if (aa instanceof Fun) {
+        Fun gf = (Fun) aa;
+        return wwf.under(new Fun() { public String repr() { return gf.repr(); }
+          public Value call(Value w) {
+            return gf.under(o, w);
+          }
+        }, w);
+      } else {
+        return wwf.underW(o, (Value) aa, w);
+      }
     } else {
-      return wwf.strInvW((Value) aa, w, origW);
+      if (aa instanceof Fun) {
+        return ((Fun) aa).underA(o, w, (Value) ww);
+      } else {
+        throw new SyntaxError("arr∘arr makes no sense", this);
+      }
     }
   }
 }

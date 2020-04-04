@@ -22,10 +22,10 @@ public abstract class Dop extends Scopeable {
     return new DerivedDop(aa, ww, this);
   }
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called monadically", this, w);
+    throw new IncorrectArgsError(repr()+" can't be called monadically", derv, w);
   }
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    throw new IncorrectArgsError(repr()+" can't be called dyadically", this, a);
+    throw new IncorrectArgsError(repr()+" can't be called dyadically", derv, a);
   }
   public Obj callObj(Obj aa, Obj ww, Value w, DerivedDop derv) { // if overridden, call(aa, ww, w, derv) must be overridden too!
     return call(aa, ww, w, derv);
@@ -42,10 +42,18 @@ public abstract class Dop extends Scopeable {
   public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
-  public boolean strInv(Obj aa, Obj ww) { return false; }
-  public boolean strInvW(Obj aa, Obj ww) { return false; }
-  public Value strInv(Obj aa, Obj ww, Value w, Value origW) { throw new IllegalStateException("calling unsupported dop.strInv(w, origW)"); }
-  public Value strInvW(Obj aa, Obj ww, Value a, Value w, Value origW) { throw new IllegalStateException("calling unsupported dop.strInvW(a, w, origW)"); }
+  public Value under(Obj aa, Obj ww, Obj o, Value w, DerivedDop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, ww, w, derv)) : (Value) o;
+    return callInv(aa, ww, v);
+  }
+  public Value underW(Obj aa, Obj ww, Obj o, Value a, Value w, DerivedDop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, ww, a, w, derv)) : (Value) o;
+    return callInvW(aa, ww, a, v);
+  }
+  public Value underA(Obj aa, Obj ww, Obj o, Value a, Value w, DerivedDop derv) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(aa, ww, a, w, derv)) : (Value) o;
+    return callInvA(aa, ww, v, w);
+  }
   
   public String toString() {
     return repr();

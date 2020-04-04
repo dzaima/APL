@@ -41,11 +41,19 @@ public abstract class Fun extends Scopeable {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
   }
   
-  public boolean strInv() { return false; } // can assume that this Fun has been called before of what's to be inverted
-  public boolean strInvW() { return false; }
   
-  public Value strInv(Value w, Value origW) { throw new IllegalStateException("calling unsupported strInv(w, origW)"); }
-  public Value strInvW(Value a, Value w, Value origW) { throw new IllegalStateException("calling unsupported strInvW(a, w, origW)"); }
+  public Value under(Obj o, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    return callInv(v);
+  }
+    public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return callInvW(a, v);
+  }
+  public Value underA(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return callInvA(v, w);
+  }
   
   public interface NumMV {
     Value call(Num w);
