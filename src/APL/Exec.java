@@ -202,6 +202,13 @@ public class Exec {
           addS(new Pick((Variable) f, w, sc));
           continue;
         }
+        if (is("N@", end, true)) {
+          if (Main.debug) printlvl("n[]");
+          var a = firstVal();
+          var w = (Brackets) popS();
+          addS(RShoeUBBuiltin.on(w.val, a, sc.IO));
+          continue;
+        }
       }
       if (is("[FM←]|FN", end, false)) {
         if (Main.debug) printlvl("FN");
@@ -218,7 +225,7 @@ public class Exec {
         var w = firstVar();
         addFirst(w.get());
       }
-      if (is("D!|V←[#NFMD],#←[#NFMD],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
+      if (is("D!|V←[#NFMD],#←[#NFMDV],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         var w = lastObj();
         var s = (AbstractSet) popE(); // ←
@@ -335,7 +342,13 @@ public class Exec {
     throw new SyntaxError("Expected function, got "+r, r);
   }
   
-  
+  private Value firstVal() {
+    var r = popB();
+    if (r instanceof Settable) r = ((Settable) r).get();
+    if (r instanceof Value) return (Value) r;
+    if (r instanceof VarArr) return ((VarArr) r).get();
+    throw new SyntaxError("Expected value, got "+r, r);
+  }
   private Dop firstDop() {
     var r = popB();
     if (r instanceof Settable) r = ((Settable) r).get();

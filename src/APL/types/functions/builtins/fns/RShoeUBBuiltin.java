@@ -35,7 +35,11 @@ public class RShoeUBBuiltin extends Builtin {
       }
       return Arr.create(res, a.shape);
     }
-    if (a instanceof Primitive) return w.get((int) a.asDouble() - IO);
+    if (a instanceof Primitive) {
+      Value r = w.get((int) a.asDouble() - IO);
+      if (r instanceof Primitive) return r;
+      else return new Rank0Arr(r);
+    }
   
     if (Main.vind) { // ⎕VI←1
   

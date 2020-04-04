@@ -2,30 +2,40 @@ package APL.types.dimensions;
 
 import APL.*;
 import APL.types.*;
+import APL.types.functions.builtins.dops.AtBuiltin;
+import APL.types.functions.builtins.fns.RShoeUBBuiltin;
 
 import java.util.Arrays;
 
 public class Pick extends Settable {
+  private final Variable var;
+  private final Value val;
+  private final Value idx;
+  private final int IO;
   
-  
-  private final int[] pos;
-  private final Variable variable;
-  private final Scope sc;
-  
-  public Pick(Variable v, Brackets where, Scope sc) {
-    super(v.getAt(where.val.asIntVec(), sc));
-    pos = where.val.asIntVec();
-    variable = v;
-    this.sc = sc;
+  public Pick(Variable var, Brackets where, Scope sc) {
+    super(null);
+    this.var = var;
+    this.val = (Value) var.get();
+    this.idx = where.val;
+    this.IO = sc.IO;
   }
   
   @Override
   public void set(Obj v) {
-    variable.setAt(Indexer.sub(pos, sc.IO), (Value) v);
+    var.update(AtBuiltin.at(v, idx, val, IO));
+  }
+  
+  public Obj get() {
+    return RShoeUBBuiltin.on(idx, val, IO);
+  }
+  
+  public Obj getOrThis() {
+    return get();
   }
   
   @Override
   public String toString() {
-    return variable.name+"["+ Arrays.toString(pos) +"]";
+    return var.name+"["+ val +"]";
   }
 }
