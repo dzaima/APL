@@ -16,8 +16,7 @@ public class CRepeatBuiltin extends Dop {
   }
   
   @Override public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    isFn(aa, '⍶');
-    Fun aaf = (Fun) aa;
+    Fun aaf = isFn(aa, '⍶');
     ArrayList<Value> res = new ArrayList<>();
     if (ww instanceof Fun) {
       Value prev = w;
@@ -31,7 +30,6 @@ public class CRepeatBuiltin extends Dop {
         next = aaf.call(prev);
         res.add(next);
       }
-      return Arr.create(res.toArray(new Value[0]));
     } else {
       int n = ((Value) ww).asInt();
       Value curr = w;
@@ -39,7 +37,7 @@ public class CRepeatBuiltin extends Dop {
         curr = aaf.call(curr);
         res.add(curr);
       }
-      return Arr.create(res.toArray(new Value[0]));
     }
+    return Arr.create(res.toArray(new Value[0]));
   }
 }

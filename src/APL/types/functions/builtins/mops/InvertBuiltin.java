@@ -7,19 +7,18 @@ import APL.types.functions.*;
 public class InvertBuiltin extends Mop { // separate ⍵-inverse (equal to f⍣¯1)
   
   public Value call(Obj f, Value w, DerivedMop derv) {
-    isFn(f);
-    return ((Fun) f).callInv(w);
+    Fun ff = isFn(f);
+    return ff.callInv(w);
   }
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
-    isFn(f);
-    return ((Fun) f).callInvW(a, w);
+    Fun ff = isFn(f);
+    return ff.callInvW(a, w);
   }
   public Value callInvW(Obj f, Value a, Value w) {
-    isFn(f);
-    return ((Fun) f).call(a, w);
+    Fun ff = isFn(f);
+    return ff.call(a, w);
   }
   public Value callInvA(Obj f, Value a, Value w) {
-    isFn(f);
     throw new NYIError("InvertBuiltin invert ⍺", this);
   }
   

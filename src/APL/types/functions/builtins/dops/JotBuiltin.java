@@ -45,14 +45,12 @@ public class JotBuiltin extends Dop {
   }
   
   public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    return ((Fun) ww).callInv(((Fun) aa).callInvW(a, w));
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.callInv(aaf.callInvW(a, w));
   }
   
   public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    Fun wwf = (Fun) ww;
-    Fun aaf = (Fun) aa;
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
     return aaf.callInvA(a, wwf.call(w));
   }
   

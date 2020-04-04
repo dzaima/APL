@@ -14,29 +14,28 @@ public class DualBuiltin extends Dop {
   
   
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    isFn(ww, '⍹');
-    return ((Fun) ww).under(aa, w);
+    Fun wwf = isFn(ww, '⍹');
+    return wwf.under(aa, w);
   }
   public Value callInv(Obj aa, Obj ww, Value w) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    return ((Fun) ww).under(InvertBuiltin.invertM((Fun) aa), w);
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.under(InvertBuiltin.invertM(aaf), w);
   }
   
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    isFn(ww, '⍹'); Fun wwf = (Fun) ww;
-    return wwf.under(new BindA(wwf.call(a), ((Fun) aa)), w);
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.under(new BindA(wwf.call(a), aaf), w);
   }
   public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
-    isFn(aa, '⍶'); isFn(ww, '⍹'); Fun wwf = (Fun) ww;
-    return ((Fun) ww).under(new BindA(wwf.call(a), InvertBuiltin.invertW((Fun) aa)), w);
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.under(new BindA(wwf.call(a), InvertBuiltin.invertW(aaf)), w);
   }
   public Value callInvA(Obj aa, Obj ww, Value a, Value w) { // structural inverse is not possible; fall back to computational inverse
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    Fun wwf = (Fun) ww;
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
     Value a1 = wwf.call(a);
     Value w1 = wwf.call(w);
     try { 
-      return wwf.callInv(((Fun) aa).callInvA(a1, w1));
+      return wwf.callInv(aaf.callInvA(a1, w1));
     } catch (DomainError e) { // but add a nice warning about it if a plausible error was received (todo better error management to not require parsing the message?)
       String msg = e.getMessage();
       if (msg.contains("doesn't support") && msg.contains("inverting")) {

@@ -2,7 +2,7 @@ package APL.types.functions.builtins.mops;
 
 import APL.errors.*;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.*;
 
 public class ScanBuiltin extends Mop {
@@ -11,22 +11,21 @@ public class ScanBuiltin extends Mop {
   }
   
   public Value call(Obj aa, Value w, DerivedMop derv) {
-    isFn(aa);
+    Fun aaf = isFn(aa);
     // TODO ranks
-    Fun f = (Fun) aa;
     if (w.ia == 0) return w;
     Value c = w.get(0);
     Value[] res = new Value[w.ia];
     res[0] = c;
     for (int i = 1; i<w.ia; i++) {
-      c = f.call(c, w.get(i));
+      c = aaf.call(c, w.get(i));
       res[i] = c;
     }
     return Arr.create(res);
   }
   
   public Value call(Obj aa, Value a, Value w, DerivedMop derv) {
-    isFn(aa);
+    Fun aaf = isFn(aa);
     int n = a.asInt();
     int len = w.ia;
     DomainError.must(n>=0, "⍺ of \\ should be non-negative (was "+n+")");
@@ -38,7 +37,7 @@ public class ScanBuiltin extends Mop {
       for (int i = 0; i < res.length; i++) {
         double[] curr = new double[n];
         System.arraycopy(wa, i, curr, 0, n);
-        res[i] = ((Fun) aa).call(new DoubleArr(curr));
+        res[i] = aaf.call(new DoubleArr(curr));
       }
       return Arr.create(res);
     }
@@ -49,7 +48,7 @@ public class ScanBuiltin extends Mop {
       Value[] curr = new Value[n];
       // for (int j = 0; j < n; j++) curr[j] = wa[i + j];
       System.arraycopy(wa, i, curr, 0, n);
-      res[i] = ((Fun) aa).call(Arr.create(curr));
+      res[i] = aaf.call(Arr.create(curr));
     }
     return Arr.create(res);
   }

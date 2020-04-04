@@ -116,7 +116,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   }
   
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
-    isFn(f);
+    Fun ff = isFn(f);
     if (w.rank != 1) throw new NYIError("A f/ B with 2≤⍴⍴B hasn't been implemented", this, w);
     int n = a.asInt();
     Value[] ra = new Value[w.ia - Math.abs(n) + 1];
@@ -125,7 +125,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (int i = 0; i < ra.length; i++) {
         Value r = wa[i+n-1];
         for (int j = n-2; j >= 0; j--) {
-          r = ((Fun) f).call(wa[i + j], r);
+          r = ff.call(wa[i + j], r);
         }
         ra[i] = r;
       }
@@ -134,7 +134,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
       for (int i = 0; i < ra.length; i++) {
         Value r = wa[i];
         for (int j = 1; j < n; j++) {
-          r = ((Fun) f).call(wa[i + j], r);
+          r = ff.call(wa[i + j], r);
         }
         ra[i] = r;
       }

@@ -9,8 +9,7 @@ public class EachLeft extends Mop {
   }
   
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
-    isFn(f);
-    Fun ff = (Fun) f;
+    Fun ff = isFn(f);
     Value[] n = new Value[a.ia];
     for (int i = 0; i < n.length; i++) {
       n[i] = ff.call(a.get(i), w).squeeze();

@@ -11,9 +11,9 @@ public class OverBuiltin extends Dop {
   }
   
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    isFn(aa, '⍶');
+    Fun aaf = isFn(aa, '⍶');
     int d = ((Value) ww).asInt();
-    return on(derv, (Fun) aa, d, w);
+    return on(derv, aaf, d, w);
   }
   public static Value on(Fun caller, Fun f, int d, Value w) {
     int ld = DepthBuiltin.lazy(w);
@@ -32,8 +32,7 @@ public class OverBuiltin extends Dop {
     return Arr.createL(res, w.shape);
   }
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    isFn(aa, '⍶'); isFn(ww, '⍹');
-    var WW = (Fun) ww;
-    return ((Fun)aa).call(WW.call(a), WW.call(w));
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return aaf.call(wwf.call(a), wwf.call(w));
   }
 }
