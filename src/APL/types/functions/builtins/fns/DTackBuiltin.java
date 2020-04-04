@@ -125,8 +125,9 @@ public class DTackBuiltin extends Builtin {
     double base = a.asDouble();
     double num = w.asDouble();
     if (base <= 1) {
-      if (base == 1 && num > 0) throw new DomainError("⍺=1 and ⍵>0 isn't possible", this, w);
-      if (base < 0) throw new DomainError("⊤: ⍺ < 0", this);
+      if (base == 0) return Num.of(num);
+      if (base < 0) throw new DomainError("⊤: ⍺ < 0", this, a);
+      throw new DomainError("⊤: ⍺ < 1", this, a);
     }
     var res = new ArrayList<Double>();
     if (num < 0) {

@@ -42,13 +42,14 @@ fns:
 …     NYI; range
 ⍕  format; NYI
 ⍎    eval; NYI
-⍋ grade up  ; NYI
-⍒ grade down; NYI
-⌿     NYI; replicate
+⌿  expand; replicate
 ∪  unique; union
 ∩     NYI; intersection
 ⊂ enclose; split
 ⊃   first; pick
+%     NYI; merge - 1 2 2 3%4↑¨⎕a⎕l⎕d → 'Abc3'
+⍋ grade up  ; NYI
+⍒ grade down; NYI
 ⊇ first if enclosed; select
 ⍉ transpose; NYI
 ⍧ is first; count
@@ -81,7 +82,7 @@ dyadic ops
 ⍡  cumulative repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
 ⍤  atop (←→ {⍺⍺ ⍺ ⍵⍵ ⍵} )
-⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵} )
+⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵}; also structural inverse )
 ⍫  obverse - define inverse: ⍶ - regular function, ⍹ - inverse
 @  at; right op = indices or function giving boolean array, left op = replacement array or function
 ⍁  for each diagonal

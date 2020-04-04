@@ -593,7 +593,7 @@ public class Exec {
     if (t instanceof OpTok) {
       OpTok t1 = (OpTok) t;
       switch (t1.op.charAt(0)) {
-        // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend? (todo)
+        // slashes: / - reduce; ⌿ - replicate; \ - reduce (r[3]←(r[2] ← (r[1]←a) f b) f c); ⍀ - extend
         // in Dyalog but not at least partially implemented: ⊆⌹→  &⌶⌺
         // fns
         case '+': return new PlusBuiltin();
@@ -648,6 +648,7 @@ public class Exec {
         case '⍋': return new GradeUpBuiltin(sc);
         case '⍒': return new GradeDownBuiltin(sc);
         case '⌿': return new ReplicateBuiltin();
+        case '⍀': return new ExpandBuiltin();
         case '⍧': return new LShoeStileBuiltin();
         case '%': return new MergeBuiltin(sc);
         
