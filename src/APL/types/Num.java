@@ -20,7 +20,7 @@ public class Num extends Primitive {
   static {
     setPrecision(14, -10, 10);
   }
-  private static final char[] buf = new char[40];
+  private static final char[] buf = new char[400];
   public static String format(double d) {
     double a = Math.abs(d);
     if (d == 0) {
@@ -117,6 +117,7 @@ public class Num extends Primitive {
   }
   public static void setPrecision(int p, int s, int e) {
     pp = Math.min(p, 20);
+    if (s<-90 | e>90) throw new DomainError("⎕PP standard notation range too big");
     sEr = s;
     eEr = e;
   }
