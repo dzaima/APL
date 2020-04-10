@@ -325,7 +325,7 @@ public final class BitArr extends Arr {
   }
   
   @Override public Value squeeze() {
-    return this; // we don't need no squeezing! 
+    return this; // we don't need no squeezing!
   }
   
   public BR read() {

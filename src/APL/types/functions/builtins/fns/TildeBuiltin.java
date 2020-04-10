@@ -40,7 +40,7 @@ public class TildeBuiltin extends Builtin {
           }
         }
         if (a != null) return a.finish();
-        // could make it reuse the progress made, but ¯\_(ツ)_/¯ 
+        // could make it reuse the progress made, but ¯\_(ツ)_/¯
       }
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {

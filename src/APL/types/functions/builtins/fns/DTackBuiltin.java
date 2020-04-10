@@ -43,10 +43,9 @@ public class DTackBuiltin extends Builtin {
       }
       int[] sh = new int[w.rank+a.rank];
       if (a.rank != 1) throw new NYIError("⍺ of ⊤ with rank≥2 not yet implemented", this);
-//      for (int i = 0; i < a.rank; i++) sh[i] = a.shape[i];
-//      for (int i = 0; i < w.rank; i++) sh[i+a.rank] = w.shape[i];
-      System.arraycopy(a.shape, 0, sh, 0, a.rank); // yes yes this only works for a.rank==1
-      System.arraycopy(w.shape, 0, sh, a.rank, w.rank);
+      
+      System.arraycopy(a.shape, 0, sh, 0, a.rank); // ≡ for (int i = 0; i < a.rank; i++) sh[i] = a.shape[i];
+      System.arraycopy(w.shape, 0, sh, a.rank, w.rank); // ≡ for (int i = 0; i < w.rank; i++) sh[i+a.rank] = w.shape[i];
       if (a.ia == 0) return new EmptyArr(sh, Num.ZERO);
       double[] c = w.asDoubleArrClone();
       double[] b = a.asDoubleArr();
@@ -62,8 +61,7 @@ public class DTackBuiltin extends Builtin {
         }
       }
       if (b[0] == 0) {
-//        for (int j = 0; j < w.ia; j++) res[j] = c[j];
-        System.arraycopy(c, 0, res, 0, w.ia);
+        System.arraycopy(c, 0, res, 0, w.ia); // ≡ for (int j = 0; j < w.ia; j++) res[j] = c[j];
       }
       return new DoubleArr(res, sh);
     }

@@ -109,7 +109,7 @@ public class RhoBuiltin extends Builtin {
   // public Value under(Obj o, Value w) {
   //   Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
   //   int[] sh = v.asIntVec();
-  //  
+  //   
   //   if (Arr.prod(sh) != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
   //   return w.ofShape(sh);
   // }

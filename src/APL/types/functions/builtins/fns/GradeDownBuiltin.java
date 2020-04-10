@@ -23,8 +23,4 @@ public class GradeDownBuiltin extends Builtin {
     }
     return new DoubleArr(res);
   }
-  
-//  public Obj call(Value a, Value w) {
-//
-//  }
 }

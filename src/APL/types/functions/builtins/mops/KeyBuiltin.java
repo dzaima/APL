@@ -91,6 +91,6 @@ public class KeyBuiltin extends Mop {
       }
       return Arr.create(res);
     }
-    throw new DomainError("⌸: ⍶ must be a function or a map, was "+aa.humanType(true), derv, aa); 
+    throw new DomainError("⌸: ⍶ must be a function or a map, was "+aa.humanType(true), derv, aa);
   }
 }

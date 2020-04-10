@@ -227,14 +227,6 @@ public abstract class Arr extends Value {
     return Arr.create(res, shape);
   }
   
-  @Override
-  public Value with(Value what, int[] where) { // pls override
-    Value[] nvals = new Value[ia];
-    System.arraycopy(values(), 0, nvals, 0, ia);
-    nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return Arr.create(nvals, shape);
-  }
-  
   
   public static Value createL(Value[] v, int[] sh) { // accepts ⊂Primitive; doesn't attempt individual item squeezing; TODO check more places where this should be used
     if (sh.length == 0 && v[0] instanceof Primitive) return v[0];

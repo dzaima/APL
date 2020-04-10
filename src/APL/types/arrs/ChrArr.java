@@ -56,12 +56,6 @@ public class ChrArr extends Arr {
     return new ChrArr(s, sh);
   }
   
-//  @Override TODO finish
-//  public Value with(Value what, int[] where) {
-//    if (!(what instanceof Char)) return super.with(what, where);
-//    String n =
-//  }
-  
   @Override
   public Value squeeze() {
     return this;

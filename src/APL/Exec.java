@@ -131,8 +131,6 @@ public class Exec {
     update(true);
     
     
-//    if (done.size() != 1) update(done, true); // e.g. for f←1+
-    
     Main.printlvl--;
     if (Main.debug) printlvl("END:", llToString());
     if (llSize != 1) {

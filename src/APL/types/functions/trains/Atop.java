@@ -16,11 +16,11 @@ public class Atop extends Fun {
     if (g instanceof Fun) return ((Fun) g).call(h.call(w));
     return h.call((Value) g, w);
   }
-//  public Obj callInvW(Value a, Value w) {
-//    if (!(a instanceof Value)) throw new DomainError("");
-//  }
+  // public Obj callInvW(Value a, Value w) {
+  //   if (!(a instanceof Value)) throw new DomainError("");
+  // }
   public Value callInv(Value w) {
-//    if (g instanceof Fun) return ((Fun) g).callInv((Value) h.callInv(w));
+    // if (g instanceof Fun) return ((Fun) g).callInv((Value) h.callInv(w));
     if (g instanceof Fun) return h.callInv(((Fun) g).callInv(w));
     return h.callInvW((Value) g, w);
   }

@@ -34,7 +34,7 @@ public class DualBuiltin extends Dop {
     Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
     Value a1 = wwf.call(a);
     Value w1 = wwf.call(w);
-    try { 
+    try {
       return wwf.callInv(aaf.callInvA(a1, w1));
     } catch (DomainError e) { // but add a nice warning about it if a plausible error was received (todo better error management to not require parsing the message?)
       String msg = e.getMessage();

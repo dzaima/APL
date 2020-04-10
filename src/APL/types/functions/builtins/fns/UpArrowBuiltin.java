@@ -84,7 +84,7 @@ public class UpArrowBuiltin extends Builtin {
       for (Value v : subs) {
         Value proto = v.prototype();
         for (int[] sh : new Indexer(def, 0)) {
-//          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
+          // System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
           allVals[i++] = v.at(sh, proto);
         }
       }
@@ -135,7 +135,7 @@ public class UpArrowBuiltin extends Builtin {
       for (Value v : w) {
         Value proto = v.prototype();
         for (int[] sh : new Indexer(def, 0)) {
-//          System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
+          // System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
           allVals[i++] = v.at(sh, proto);
         }
       }

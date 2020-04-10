@@ -23,10 +23,10 @@ public class MergeBuiltin extends Builtin {
     for (Value v : w) {
       if (!Arrays.equals(v.shape, sh)) throw new DomainError("shape of item "+(i1+IO)+" in ⍵ of % didn't match ⍺ ("+Main.formatAPL(sh)+" vs "+Main.formatAPL(v.shape)+")");
       i1++;
-      if (!v.quickDoubleArr()) allds = false; 
+      if (!v.quickDoubleArr()) allds = false;
     }
-    // if (IO==0 && a instanceof BitArr) {
-    //  
+    // if (IO==0 && a instanceof BitArr) { TODO
+    //   
     // }
     if (allds) {
       double[] ds = new double[a.ia];

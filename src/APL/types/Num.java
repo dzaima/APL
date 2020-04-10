@@ -34,7 +34,7 @@ public class Num extends Primitive {
     }
     int exp = (fa[pp+4]-'0')*10  +   fa[pp+5]-'0'; // exponent
     /* ⎕pp←4:
-       4.0000e+03  
+       4.0000e+03
        0123456789
      ∆ 43210123456
        ¯¯¯¯
@@ -104,7 +104,7 @@ public class Num extends Primitive {
         System.arraycopy(fa, 1, buf, len, ls); // all given digits; ≡  for (int i = 0; i < ls; i++) buf[len+i] = fa[i+1];
         len+= ls;
         for (int i = 0; i < exp-ls+1; i++) buf[len+i] = '0'; // pad with zeroes
-        len+= exp-ls+1; 
+        len+= exp-ls+1;
       }
     }
     // System.out.println(f+": sig="+ls+"; exp="+exp+"; len="+len);

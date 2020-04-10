@@ -158,16 +158,6 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public Value with(Value what, int[] where) {
-    if (what instanceof Num) {
-      double[] da = arr.clone();
-      da[Indexer.fromShape(shape, where, 0)] = ((Num) what).num;
-      return new DoubleArr(da, shape);
-    }
-    return super.with(what, where);
-  }
-  
-  @Override
   public boolean equals(Obj o) {
     if (o instanceof DoubleArr) {
       DoubleArr da = (DoubleArr) o;

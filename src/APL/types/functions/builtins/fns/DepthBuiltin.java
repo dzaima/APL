@@ -36,7 +36,7 @@ public class DepthBuiltin extends Builtin {
         sub = cd;
       } else if (sub != cd) {
         sub = Math.max(sub, cd);
-        uneven = true;  
+        uneven = true;
       }
     }
     sub++;

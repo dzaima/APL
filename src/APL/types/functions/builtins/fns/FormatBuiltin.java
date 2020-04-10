@@ -19,8 +19,4 @@ public class FormatBuiltin extends Builtin {
     }
     return Main.toAPL(w.toString());
   }
-  
-//  public Obj call(Value a, Value w) { TODO
-//
-//  }
 }

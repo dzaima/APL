@@ -1,6 +1,5 @@
 package APL.types.arrs;
 
-import APL.Indexer;
 import APL.errors.DomainError;
 import APL.types.*;
 
@@ -87,10 +86,4 @@ public class HArr extends Arr {
     return new HArr(arr, sh);
   }
   
-  @Override
-  public Value with(Value what, int[] where) {
-    Value[] nvals = arr.clone();
-    nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return Arr.create(nvals, shape);
-  }
 }
