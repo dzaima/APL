@@ -19,6 +19,8 @@ dfns:
 
 monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
 
+arguments of dyadic ⌸ are swapped
+
 A¨ ←→ {A}¨ (though A is evaluated only once)
 
 ⊥ & ⊤ default left arg = 2
