@@ -78,7 +78,6 @@ public class AtBuiltin extends Dop {
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.createL(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.ind(w.shape, wwd, i, IO);
@@ -95,8 +94,8 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          return Arr.createL(ra, w.shape);
         }
+        return Arr.createL(ra, w.shape);
         
         
       } else { // ⎕VI←0
@@ -115,7 +114,6 @@ public class AtBuiltin extends Dop {
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.createL(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
@@ -132,9 +130,8 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          return Arr.createL(ra, w.shape);
         }
-  
+        return Arr.createL(ra, w.shape);
       }
     }
   }

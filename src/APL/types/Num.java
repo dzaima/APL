@@ -159,7 +159,7 @@ public class Num extends Primitive {
     return new Num(n);
   }
   
-  private static Num NEG_ZERO = new Num(-0.0);
+  private static final Num NEG_ZERO = new Num(-0.0);
   public static Num of(double n) {
     if (n == 0) {
       return Double.doubleToRawLongBits(n)==0? NUMS[0] : NEG_ZERO;

@@ -159,8 +159,8 @@ public final class BitArr extends Arr {
   }
   
   public static class BA { // bit adder
-    private long[] a; // no trailing garbage allowed!
-    private int[] sh;
+    private final long[] a; // no trailing garbage allowed!
+    private final int[] sh;
     private int i, o = 0; // index, offset
     public BA(int am) {
       this.a = new long[sizeof(am)];

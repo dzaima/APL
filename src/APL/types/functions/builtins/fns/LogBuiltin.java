@@ -10,6 +10,7 @@ public class LogBuiltin extends Builtin {
   }
   
   
+  static final double LN2 = Math.log(2);
   
   public static final NumMV NF = new NumMV() {
     public Value call(Num w) {
@@ -18,7 +19,6 @@ public class LogBuiltin extends Builtin {
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.log(a[i]);
     }
-    double LN2 = Math.log(2);
     public Num call(BigValue w) {
       if (w.i.signum() <= 0) {
         if (w.i.signum() == -1) throw new DomainError("logarithm of negative number", w);

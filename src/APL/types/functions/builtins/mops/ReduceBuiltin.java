@@ -55,7 +55,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
           int si = 0;
           typed: {
             if (first instanceof ChrArr || first instanceof Char) {
-              StringBuilder res = new StringBuilder();
+              StringBuilder res = new StringBuilder(w.ia);
               for (int i = 0; i < w.ia; i++) {
                 Value v = w.get(i);
                 if (v.rank > 1) break special; // oh nooo
@@ -63,7 +63,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
                 else if (v instanceof ChrArr) res.append(((ChrArr) v).s);
                 else {
                   si = i;
-                  pre = new ArrayList<>();
+                  pre = new ArrayList<>(res.length());
                   for (int j = 0; j < res.length(); j++) {
                     pre.add(Char.of(res.charAt(j)));
                   }
@@ -73,7 +73,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
               return Main.toAPL(res.toString());
             }
             if (first.quickDoubleArr()) {
-              ArrayList<Double> ds = new ArrayList<>();
+              ArrayList<Double> ds = new ArrayList<>(w.ia);
               for (int i = 0; i < w.ia; i++) {
                 Value v = w.get(i);
                 if (v.rank > 1) break special; // :/

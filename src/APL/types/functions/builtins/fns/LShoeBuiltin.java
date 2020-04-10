@@ -41,7 +41,6 @@ public class LShoeBuiltin extends Builtin {
       }
       cpart.add(vals[vals.length - 1]);
       parts.add(new DoubleArr(cpart));
-      return Arr.create(parts);
     } else {
       Value[] vals = w.values();
       ArrayList<Value> cpart = new ArrayList<>();
@@ -56,7 +55,7 @@ public class LShoeBuiltin extends Builtin {
       }
       cpart.add(vals[vals.length - 1]);
       parts.add(Arr.create(cpart));
-      return Arr.create(parts);
     }
+    return Arr.create(parts);
   }
 }
