@@ -1,8 +1,7 @@
 package APL.types.functions.builtins;
 
 import APL.Type;
-import APL.types.*;
-import APL.types.functions.*;
+import APL.types.Obj;
 
 public abstract class AbstractSet extends Obj {
   public abstract Obj callObj(Obj a, Obj w, boolean update);

@@ -282,8 +282,8 @@ public final class BitArr extends Arr {
   }
   
   public static class BC { // boolean creator
-    public long[] arr;
-    int[] sz;
+    public final long[] arr;
+    final int[] sz;
     public BC(int[] sz) {
       this.sz = sz;
       arr = new long[sizeof(sz)];

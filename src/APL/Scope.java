@@ -588,7 +588,7 @@ public class Scope {
       super(sc);
     }
     
-    static HashMap<String, Pr> pfRes = new HashMap<>();
+    static final HashMap<String, Pr> pfRes = new HashMap<>();
     static double cam = 0;
     static Obj results() {
       Value[] arr = new Value[pfRes.size()*4];

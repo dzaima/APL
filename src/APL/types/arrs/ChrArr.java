@@ -4,8 +4,6 @@ import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class ChrArr extends Arr {
   public String s;
   

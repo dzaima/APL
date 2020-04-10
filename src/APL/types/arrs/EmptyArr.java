@@ -3,8 +3,6 @@ package APL.types.arrs;
 import APL.errors.*;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class EmptyArr extends Arr {
   public static final EmptyArr SHAPE0Q = new EmptyArr(new int[]{0}, null);
   public static final EmptyArr SHAPE0N = new EmptyArr(new int[]{0}, Num.ZERO);

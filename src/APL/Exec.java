@@ -489,7 +489,7 @@ public class Exec {
           type = '#';
           break;
         default:
-          throw up;
+          throw new IllegalStateException();
       }
     }
     Obj remove() {

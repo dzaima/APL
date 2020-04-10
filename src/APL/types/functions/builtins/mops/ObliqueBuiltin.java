@@ -19,8 +19,8 @@ public class ObliqueBuiltin extends Mop {
     int[] sz = w.shape;
     int H = sz[0];
     int W = sz[1];
-    int szM = H > W? H : W;
-    int szm = H > W? W : H;
+    int szM = Math.max(H, W);
+    int szm = Math.min(H, W);
     int ram = H + W - 1;
     if (ram <= 0) return new EmptyArr(EmptyArr.SHAPE0, w.safePrototype());
     

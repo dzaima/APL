@@ -3,8 +3,6 @@ package APL.types.arrs;
 import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class Shape1Arr extends Arr {
   private static final int[] SHAPE = new int[]{1};
   private final Value item;

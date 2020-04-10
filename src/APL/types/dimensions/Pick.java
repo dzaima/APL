@@ -1,11 +1,9 @@
 package APL.types.dimensions;
 
-import APL.*;
+import APL.Scope;
 import APL.types.*;
 import APL.types.functions.builtins.dops.AtBuiltin;
 import APL.types.functions.builtins.fns.RShoeUBBuiltin;
-
-import java.util.Arrays;
 
 public class Pick extends Settable {
   private final Variable var;

@@ -5,7 +5,6 @@ import APL.errors.DomainError;
 import APL.types.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class HArr extends Arr {
   private final Value[] arr;

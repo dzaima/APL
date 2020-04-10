@@ -73,8 +73,8 @@ public class BigValue extends Primitive {
   public Value safePrototype() {
     return ZERO;
   }
-  public static BigInteger MIN_INT = BigInteger.valueOf(Integer.MIN_VALUE);
-  public static BigInteger MAX_INT = BigInteger.valueOf(Integer.MAX_VALUE);
+  public static final BigInteger MIN_INT = BigInteger.valueOf(Integer.MIN_VALUE);
+  public static final BigInteger MAX_INT = BigInteger.valueOf(Integer.MAX_VALUE);
   public static int safeInt(BigInteger b) {
     if (b.signum()==-1) {
       if (b.compareTo(MIN_INT)<=0) return Integer.MIN_VALUE;

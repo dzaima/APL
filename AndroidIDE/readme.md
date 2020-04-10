@@ -2,7 +2,7 @@
 
 [Download APK](https://github.com/dzaima/APL/releases)
 
-By default this interprets dzaima/APL, but to connect to Dyalog APL (through JSONServer), in Dyalog do:
+By default, this interprets dzaima/APL, but to connect to Dyalog APL (through JSONServer), in Dyalog do:
 
 ```apl
 )LOAD path/to/JSONServer/Distribution/JSONServer.dws
@@ -10,7 +10,7 @@ S←⊃JSONServer.Run ⍬
 eval←{⎕←'  ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵}
 ```
 
-And connect to it:
+and to connect to it in the app:
 
 ```apl
 :i dyalog
@@ -27,7 +27,7 @@ Compile for android:
 
 1. generate the dzaima/APL interpreter jar file - run `./convert.py` in `app/`.
 2. in PS.pde, change start to `/*`
-3. either run in android mode with a device connected, or File → Export Signed Package to generate an APK.
+3. either run in Android Mode with a device connected, or File → Export Signed Package to generate an APK.
 
 Alternatively, Processing runs the project in Java mode just fine (keyboard input may be a bit funky though).
 

@@ -70,6 +70,7 @@ public abstract class Arr extends Value {
           for (Value v : this) {
             if (!(v instanceof Char)) {
               charmat = false;
+              break;
             }
           }
         }

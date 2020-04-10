@@ -23,7 +23,9 @@ public class SimpleIndexer implements Iterable<Integer> { // todo this is horrib
   
   @Override public Iterator<Integer> iterator() {
     boolean empty = true;
-    for (int i : chosen) if (i!=0) empty = false;
+    for (int i : chosen) {
+      if (i != 0) { empty = false; break; }
+    }
     boolean finalEmpty = empty & chosen.length!=0;
     //noinspection Convert2Diamond java 8
     return new Iterator<Integer>() {

@@ -3,8 +3,6 @@ package APL.types.arrs;
 import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class Rank0Arr extends Arr {
   private final static int[] SHAPE = new int[0];
   public final Value item;
@@ -31,16 +29,18 @@ public class Rank0Arr extends Arr {
   
   @Override
   public String asString() {
-    if (item instanceof Char) return String.valueOf(((Char)item).chr);
+    if (item instanceof Char) return String.valueOf(((Char) item).chr);
     throw new DomainError("array with non-char element used as string");
   }
   
   public Value prototype() {
     return item.prototype();
   }
+  
   public Value safePrototype() {
     return item.safePrototype();
   }
+  
   @Override
   public Value ofShape(int[] sh) {
     assert ia == Arr.prod(sh);

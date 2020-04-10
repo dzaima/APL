@@ -5,7 +5,7 @@ import APL.types.*;
 import APL.types.functions.*;
 
 public class SetBuiltin extends AbstractSet {
-  public static SetBuiltin inst = new SetBuiltin();
+  public final static SetBuiltin inst = new SetBuiltin();
   
   public String toString() {
     return "←";

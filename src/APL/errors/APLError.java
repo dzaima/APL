@@ -28,7 +28,7 @@ public class APLError extends RuntimeException {
       Token t = g.t.getToken();
       if (t == null) continue;
       int spos = t.spos;
-      int epos = t.epos==null? spos+1 : t.epos;
+      int epos = t.epos==Token.EPOS_DEF? spos+1 : t.epos;
       String start = t.raw.substring(0, spos);
       int lnn = start.split("\n").length-1;
       String ln = t.raw.split("\n")[lnn==-1? 0 : lnn];

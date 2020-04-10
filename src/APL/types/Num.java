@@ -4,8 +4,6 @@ import APL.Main;
 import APL.errors.DomainError;
 import APL.types.arrs.SingleItemArr;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class Num extends Primitive {
@@ -100,7 +98,7 @@ public class Num extends Primitive {
         System.arraycopy(fa, 1, buf, len, exp+1); // digits before '.'; ≡  for (int i = 0; i < exp+1; i++) buf[len+i] = fa[i+1];
         len+= exp+1;
         buf[len++] = '.';
-        if (ls - exp - 1 >= 0) System.arraycopy(fa, 2+exp, buf, len, ls-exp-1); // ≡  for (int i = 0; i < ls-exp-1; i++) buf[len+i] = fa[i+(2+exp)];
+        System.arraycopy(fa, 2+exp, buf, len, ls-exp-1); // ≡  for (int i = 0; i < ls-exp-1; i++) buf[len+i] = fa[i+(2+exp)];
         len+= ls-exp-1;
       } else {
         System.arraycopy(fa, 1, buf, len, ls); // all given digits; ≡  for (int i = 0; i < ls; i++) buf[len+i] = fa[i+1];

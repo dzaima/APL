@@ -45,8 +45,8 @@ public class DualBuiltin extends Dop {
   }
   
   public static class BindA extends Fun {
-    Value a;
-    Fun f;
+    final Value a;
+    final Fun f;
     public BindA(Value a, Fun f) {
       this.a = a;
       this.f = f;

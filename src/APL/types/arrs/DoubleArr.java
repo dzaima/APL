@@ -18,14 +18,7 @@ public class DoubleArr extends Arr {
     super(new int[]{arr.length});
     this.arr = arr;
   }
-  public DoubleArr(Integer[] arr) { // 1D
-    super(new int[]{arr.length});
-    double[] a = new double[ia];
-    for (int i = 0; i < ia; i++) {
-      a[i] = arr[i];
-    }
-    this.arr = a;
-  }
+  
   public DoubleArr(int[] arr) { // 1D
     super(new int[]{arr.length});
     double[] a = new double[ia];

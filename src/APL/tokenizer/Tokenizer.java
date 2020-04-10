@@ -55,13 +55,11 @@ public class Tokenizer {
   static class Block { // temp storage of multiple lines
     final ArrayList<Line> a;
     final char b;
-    private final String raw;
     private final int pos;
   
-    Block(ArrayList<Line> a, char b, String raw, int pos) {
+    Block(ArrayList<Line> a, char b, int pos) {
       this.a = a;
       this.b = b;
-      this.raw = raw;
       this.pos = pos;
     }
     public String toString() {
@@ -78,7 +76,7 @@ public class Tokenizer {
     int len = raw.length();
   
     var levels = new ArrayList<Block>();
-    levels.add(new Block(new ArrayList<>(), '⋄', raw, 0));
+    levels.add(new Block(new ArrayList<>(), '⋄', 0));
     levels.get(0).a.add(new Line(raw, 0, new ArrayList<>()));
 
     for (int i = 0; i < len; li = i) {
@@ -104,7 +102,7 @@ public class Tokenizer {
             default:
               throw new Error("this should really not happen");
           }
-          levels.add(new Block(new ArrayList<>(), match, raw, i));
+          levels.add(new Block(new ArrayList<>(), match, i));
           lines = levels.get(levels.size() - 1).a;
           lines.add(new Line(raw, i));
     
@@ -292,7 +290,10 @@ public class Tokenizer {
           if (pointless) tokens.add(new ErrTok(raw, i, i + 1));
           else {
             String hex = Integer.toHexString(c);
-            while(hex.length() < 4) hex = "0"+hex;
+            
+            while(hex.length() < 4)
+              //noinspection StringConcatenationInLoop \\ shut UUuuppp
+              hex = "0"+hex;
             throw new SyntaxError("unknown token `" + c + "` (\\u"+hex+")");
           }
           i++;

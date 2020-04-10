@@ -3,8 +3,6 @@ package APL.types;
 import APL.Type;
 import APL.types.arrs.SingleItemArr;
 
-import java.util.Arrays;
-
 public class Null extends Primitive {
   public static final Null NULL = new Null();
   private Null() { }

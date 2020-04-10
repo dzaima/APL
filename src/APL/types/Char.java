@@ -3,8 +3,6 @@ package APL.types;
 import APL.Main;
 import APL.types.arrs.ChrArr;
 
-import java.util.Arrays;
-
 import static APL.Main.quotestrings;
 
 public class Char extends Primitive {
