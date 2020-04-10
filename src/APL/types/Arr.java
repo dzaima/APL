@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.DomainError;
 import APL.types.arrs.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 public abstract class Arr extends Value {
   public Arr(int[] shape) {
@@ -234,15 +234,15 @@ public abstract class Arr extends Value {
     return Arr.create(nvals, shape);
   }
   
-  public static Arr create(Value[] v) {
-    return create(v, new int[]{v.length});
-  }
   
   public static Value createL(Value[] v, int[] sh) { // accepts ⊂Primitive; doesn't attempt individual item squeezing; TODO check more places where this should be used
     if (sh.length == 0 && v[0] instanceof Primitive) return v[0];
     return create(v, sh);
   }
   
+  public static Arr create(Value[] v) {
+    return create(v, new int[]{v.length});
+  }
   public static Arr create(Value[] v, int[] sh) { // note, doesn't attempt individual item squeezing
     if (v.length == 0) return new EmptyArr(sh, null);
     if (v[0] instanceof Num) {
@@ -267,16 +267,37 @@ public abstract class Arr extends Value {
       }
       if (s != null) return new ChrArr(s.toString(), sh);
     }
-//    Value[] opt = new Value[v.length]; // do this in the caller please
-//    boolean anyBetter = false;
-//    for (int i = 0; i < v.length; i++) {
-//      Value c = v[i];
-//      Value o = c.squeeze();
-//      opt[i] = o;
-//      if (c != o) anyBetter = true;
-//    }
-//    if (anyBetter) return new HArr(opt, sh);
-//    else
+    return new HArr(v, sh);
+  }
+  
+  public static Arr create(ArrayList<Value> v) {
+    return create(v, new int[]{v.size()});
+  }
+  public static Arr create(ArrayList<Value> v, int[] sh) { // note, doesn't attempt individual item squeezing
+    if (v.size() == 0) return new EmptyArr(sh, null);
+    Value f = v.get(0);
+    if (f instanceof Num) {
+      double[] da = new double[v.size()];
+      for (int i = 0; i < v.size(); i++) {
+        if (v.get(i) instanceof Num) da[i] = ((Num) v.get(i)).num;
+        else {
+          da = null;
+          break;
+        }
+      }
+      if (da != null) return new DoubleArr(da, sh);
+    }
+    if (f instanceof Char) {
+      StringBuilder s = new StringBuilder();
+      for (Value aV : v) {
+        if (aV instanceof Char) s.append(((Char) aV).chr);
+        else {
+          s = null;
+          break;
+        }
+      }
+      if (s != null) return new ChrArr(s.toString(), sh);
+    }
     return new HArr(v, sh);
   }
   

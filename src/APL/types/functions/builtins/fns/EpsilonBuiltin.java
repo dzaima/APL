@@ -18,7 +18,7 @@ public class EpsilonBuiltin extends Builtin {
   public Value call(Value w) {
     var res = new ArrayList<Value>();
     rec(res, w);
-    return Arr.create(res.toArray(new Value[0]));
+    return Arr.create(res);
   }
   
   private void rec(ArrayList<Value> arr, Value v) {

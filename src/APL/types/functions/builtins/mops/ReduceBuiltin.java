@@ -98,7 +98,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
             if (v.rank > 1) break special; // :|
             for (Value c : v) pre.add(c);
           }
-          return HArr.create(pre.toArray(new Value[0]));
+          return HArr.create(pre);
         }
       }
     }

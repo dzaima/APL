@@ -16,6 +16,6 @@ public class UShoeBuiltin extends Builtin {
     var res = new ArrayList<Value>();
     HashSet<Value> ws = new HashSet<>(Arrays.asList(w.values()));
     for (Value v : a) if (ws.contains(v)) res.add(v);
-    return Arr.create(res.toArray(new Value[0]));
+    return Arr.create(res);
   }
 }

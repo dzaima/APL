@@ -51,7 +51,7 @@ public class KeyBuiltin extends Mop {
       var res = new Value[order.size()];
       i = 0;
       for (Value c : order) {
-        res[i++] = ((Fun)aa).call(c, Arr.create(vals.get(c).toArray(new Value[0])));
+        res[i++] = ((Fun)aa).call(c, Arr.create(vals.get(c)));
       }
       return new HArr(res);
     }
@@ -86,7 +86,7 @@ public class KeyBuiltin extends Mop {
       Value[] res = new Value[order.size()];
       for (int i = 0; i < order.size(); i++) {
         Value k = order.get(i);
-        Value vs = Arr.create(vals.get(k).toArray(new Value[0])); // TODO make an ArrayList HArr?
+        Value vs = Arr.create(vals.get(k));
         res[i] = aaf.call(k, vs);
       }
       return Arr.create(res);

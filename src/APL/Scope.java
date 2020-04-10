@@ -432,7 +432,7 @@ public class Scope {
             String ln;
             while ((ln = rd.readLine()) != null) vs.add(Main.toAPL(ln));
           }
-          return new HArr(vs.toArray(new Value[0]));
+          return new HArr(vs);
         } catch (MalformedURLException e) {
           throw new DomainError("bad URL: "+e.getMessage());
         } catch (ProtocolException e) {

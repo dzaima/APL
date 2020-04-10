@@ -53,21 +53,19 @@ public class StrMap extends APLMap {
   
   @Override
   public Arr allValues() {
-    Obj[] a = vals.values().toArray(new Obj[0]);
     var items = new ArrayList<Value>();
-    for (Obj o : a) {
+    for (Obj o : vals.values()) {
       if (o instanceof Value) items.add((Value) o);
     }
-    return Arr.create(items.toArray(new Value[0]));
+    return Arr.create(items);
   }
   
   @Override public Arr allKeys() {
-    String[] a = vals.keySet().toArray(new String[0]);
     var items = new ArrayList<Value>();
-    for (String o : a) {
+    for (String o : vals.keySet()) {
       items.add(Main.toAPL(o));
     }
-    return Arr.create(items.toArray(new Value[0]));
+    return Arr.create(items);
   }
   
   @Override public Arr kvPair() {
@@ -80,8 +78,8 @@ public class StrMap extends APLMap {
       }
     });
     return new HArr(new Value[]{
-      HArr.create(ks.toArray(new Value[0])),
-       Arr.create(vs.toArray(new Value[0]))});
+      HArr.create(ks),
+       Arr.create(vs)});
   }
   
   @Override

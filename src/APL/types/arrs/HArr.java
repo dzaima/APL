@@ -13,12 +13,19 @@ public class HArr extends Arr {
     super(sh, v.length, sh.length);
     arr = v;
   }
+  
   public HArr(ArrayList<Value> v) { // 1D
-    this(v.toArray(new Value[0]));
+    super(new int[]{v.size()});
+    arr = v.toArray(new Value[0]);
   }
   public HArr(Value[] v) { // 1D
     super(new int[]{v.length}, v.length, 1);
     arr = v;
+  }
+  
+  public HArr(ArrayList<Value> v, int[] sh) {
+    super(sh);
+    arr = v.toArray(new Value[0]);
   }
   
   @Override

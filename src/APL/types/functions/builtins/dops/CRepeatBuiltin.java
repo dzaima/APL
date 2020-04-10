@@ -38,6 +38,6 @@ public class CRepeatBuiltin extends Dop {
         res.add(curr);
       }
     }
-    return Arr.create(res.toArray(new Value[0]));
+    return Arr.create(res);
   }
 }
