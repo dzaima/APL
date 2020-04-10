@@ -2,6 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Indexer;
 import APL.Scope;
+import APL.errors.DomainError;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 import APL.types.*;
@@ -53,6 +54,31 @@ public class DownArrowBuiltin extends Builtin {
     return on(a, w, sc.IO);
   }
   public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵
+    // TODO redo this, merge with UpArrowBuiltin
+    if (w instanceof BitArr && w.rank == 1) {
+      BitArr wb = (BitArr) w;
+      int n;
+      if (a instanceof Num) n = a.asInt();
+      else {
+        int[] ns = a.asIntVec();
+        if(ns.length != 1) throw new DomainError("↓ expected (≢⍺) ≡ ≢⍴⍵");
+        n = ns[0];
+      }
+      if (n < 0) {
+        int am = w.ia+n;
+        if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
+        long[] ls = new long[BitArr.sizeof(am)];
+        System.arraycopy(wb.arr, 0, ls, 0, ls.length);
+        return new BitArr(ls, new int[]{am});
+      } else {
+        int am = w.ia - n;
+        if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
+        BitArr.BA res = new BitArr.BA(am);
+        res.add(wb, n, w.ia);
+        return res.finish();
+      }
+    }
+    
     int[] shape = a.asIntVec();
     if (shape.length == 0) return w;
     int ia = 1;

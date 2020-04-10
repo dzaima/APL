@@ -32,6 +32,10 @@ public class SingleItemArr extends Arr {
     return item;
   }
   
+  public Value first() {
+    return item;
+  }
+  
   @Override
   public String asString() {
     if (rank >= 2) throw new DomainError("using rank≥2 array as string");

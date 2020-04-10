@@ -29,6 +29,19 @@ public class TildeBuiltin extends Builtin {
       }
       
       Arr o = (Arr) w;
+      if (o.ia>0 && o.get(0) instanceof Num) {
+        BitArr.BA a = new BitArr.BA(w.ia); // it's probably worth going all-in on creating a bitarr
+        for (int i = 0; i < o.ia; i++) {
+          Value v = o.get(i);
+          if (v instanceof Num) a.add(!Main.bool(v));
+          else {
+            a = null;
+            break;
+          }
+        }
+        if (a != null) return a.finish();
+        // could make it reuse the progress made, but ¯\_(ツ)_/¯ 
+      }
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
         arr[i] = rec(o.get(i));

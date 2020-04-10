@@ -138,6 +138,9 @@ public class Scope {
   public double rand(double d) { // TODO seeds
     return rnd.nextDouble()*d;
   } // with ⎕IO←0
+  public long randLong() { // TODO seeds
+    return rnd.nextLong();
+  } // with ⎕IO←0
   public int rand(int n) {
     return rnd.nextInt(n);
   } // with ⎕IO←0

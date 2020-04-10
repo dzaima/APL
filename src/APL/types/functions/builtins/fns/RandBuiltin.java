@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.Scope;
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
+import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
 import java.math.BigInteger;
@@ -39,6 +39,16 @@ public class RandBuiltin extends Builtin {
   };
   
   public Value call(Value w) {
+    if (sc.IO==0 && w instanceof SingleItemArr) {
+      Value f = w.first();
+      if (f instanceof Num && ((Num) f).num==2) {
+        long[] ls = new long[BitArr.sizeof(w.ia)];
+        for (int i = 0; i < ls.length; i++) {
+          ls[i] = sc.randLong();
+        }
+        return new BitArr(ls, w.shape);
+      }
+    }
     return numM(nf, w);
   }
   

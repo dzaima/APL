@@ -7,8 +7,8 @@ abstract static class Tab extends SimpleMap {
     switch (k) {
       case "name": return Main.toAPL(name());
       case "close": return new Fun() {
-        String repr() { return Tab.this+".close"; }
-        Value call(Value w) {
+        public String repr() { return Tab.this+".close"; }
+        public Value call(Value w) {
           topbar.close(Tab.this);
           return Num.ONE;
         }

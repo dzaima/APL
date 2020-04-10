@@ -134,12 +134,9 @@ public final class BitArr extends Arr {
   public int llen() { // long length
     return arr.length;
   }
-  public boolean extra() { // long length
-    return (ia&63) != 0;
-  }
   
   public void setEnd(boolean on) {
-    if (extra()) {
+    if ((ia&63) != 0) {
       int extra = ia&63;
       long tail = -(1L<<extra); // bits outside of the array
       long last = arr[arr.length - 1]; // last item of the array
@@ -162,7 +159,7 @@ public final class BitArr extends Arr {
   }
   
   public static class BA { // bit adder
-    private long[] a;
+    private long[] a; // no trailing garbage allowed!
     private int[] sh;
     private int i, o = 0; // index, offset
     public BA(int am) {
@@ -195,54 +192,72 @@ public final class BitArr extends Arr {
     }
     
     public void add(BitArr g, int s, int e) {
-      // System.out.println(g.ia+" "+s+" "+e+" "+i+" "+o+" "+a.length);
-      // a.setEnd(false);
-      // ↓ too much work for rare speedup
-      // if ((o-s & 63) == 0 && g.ia > 64) {
-      //   int si = s>>6;
-      //   int so = s&63;
-      //   int ei = e>>6;
-      //   int eo = e&63;
-      //   int li =  e-1 >> 6; // last required item
-      //   int lo = (e-1 & 63) + 1;
-      //   long sI = a[si]; // for fixing up later
-      //   long eI = a[li];
-      //   System.arraycopy(g.arr, si, a, i, li-si+1);
-      //   long sm = (1L<<so) - 1;
-      //   a[si] = (a[si] & ~sm) | (sI&sm);
-      //
-      //   int fp = i*64 + o;
-      //   fp+= e-s;
-      //   i = fp>>6;
-      //   o = fp&63;
-      // }
-  
       if (s==e) return;
   
       g.setEnd(false);
       if (o == 0 && (s&63) == 0) {
         int si = s>>6;
-        int li = (e-1)>>6;
+        int li = (e-1)>>6; // incl
         System.arraycopy(g.arr, si, a, i, li-si+1);
-        
+    
         i+= (e-s)>>6;
         o = e&63;
         return;
       }
       
+      long[] garr = g.arr;
       
-      long pM = (1L<<o) - 1; // mask of what's already in a[i]
-      // System.out.println(str64(g.longFrom(s)));
-      // System.out.println(str64(pM));
-      BR rd = g.read();
-      rd.skip(s);
-      final int len = e-s;
-      for (int i = 0; i < len; i++) {
-        add(rd.read());
+      int  startI = i;
+      long start = a[i];
+      long startMask = (1<<o) - 1; // mask of what's already written
+      
+      int Spos = i*64 + o; // start of where to insert
+      int Epos = Spos+e-s; // end of where to insert; excl
+      int Li = (Epos-1) >> 6; // incl
+      int shl = o-s;
+      int pG = s >> 6;
+      if (shl < 0) {
+        shl+= 64;
+        pG++;
       }
-      // int fp = (o<<6) + i + e-s;
-      // i = fp>>6;
-      // o = fp&63;
+      int shr = 64-shl;
+      // System.out.println(i+"…"+Li+": s="+s+" o="+o+" e="+e+" pG="+pG+" shl="+shl);
+      
+      /* some unrolling of
+            for (int pT = i; pT <= Li; pT++) {
+              if (pG<garr.length) a[pT]|= garr[pG]<<shl;
+              if (pG-1>=0) a[pT]|= garr[pG-1]>>>shr;
+              pG++;
+            }
+      */
+      {
+        int pT = i;
+        if (pG<garr.length) a[pT]|= garr[pG]<<shl;
+        if (pG-1>=0) a[pT]|= garr[pG-1]>>>shr;
+        pG++;
+      }
+      for (int pT = i+1; pT < Li; pT++) {
+        a[pT]|= garr[pG]<<shl;
+        a[pT]|= garr[pG-1]>>>shr;
+        pG++;
+      }
+      if (i+1<=Li) {
+        int pT = Li;
+        if (pG<garr.length) a[pT]|= garr[pG]<<shl;
+        a[pT]|= garr[pG-1]>>>shr;
+        pG++;
+      }
+      
+      
+      a[startI]&= ~startMask; // clear out garbage
+      a[startI]|= start; // and fill with non-garbage
+      i = Epos>>6;
+      o = Epos&63;
+      // for (long l : a) {
+      //   String b = Long.toBinaryString(l);
+      //   while (b.length()<64)b="0"+b;
+      //   System.out.println(b);
+      // }
     }
   
     public BitArr finish() {
