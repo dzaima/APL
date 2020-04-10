@@ -285,6 +285,9 @@ public class Tokenizer {
           i++;
           while (i < len && raw.charAt(i) != '\n') i++;
           if (pointless) tokens.add(new CommentTok(raw, li, i));
+        } else if (c == '#') {
+          tokens.add(new ScopeTok(raw, i, i+1));
+          i++;
         } else if (c == ' ' || c == '\t') {i++;} else {
           if (pointless) tokens.add(new ErrTok(raw, i, i + 1));
           else {

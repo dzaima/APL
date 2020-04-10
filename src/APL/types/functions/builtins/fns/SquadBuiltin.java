@@ -16,7 +16,7 @@ public class SquadBuiltin extends Builtin {
   
   public Value call(Value w) {
     if (w instanceof Arr) return w;
-    if (w instanceof APLMap) return ((APLMap) w).allValues();
+    if (w instanceof APLMap) return ((APLMap) w).kvPair();
     throw new DomainError("⍵ not array nor map", this, w);
   }
   

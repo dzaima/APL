@@ -51,8 +51,7 @@ bigints:
   ⎕HASH arr: get hash of the array
   ⎕BIG arr : convert array to bigintegers (⍣¯1 to invert)
   ⎕NC 'v'  : array→2; function→3; dop→4; mop→5
-  ⎕DEATHLOGGER 'name': log message upon getting garbage collected. This may be removed at any point in time without warning.
-    Meant for testing for memory leaks (though make sure to call ⎕GC before concluding anything!)
+  ⎕GCLOG'v': log message upon getting garbage collected; Meant for testing for memory leaks (make sure to call ⎕GC before concluding anything!)
   ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
     monadic: create from key-value pairs
     dyadic: left - keys; right - values

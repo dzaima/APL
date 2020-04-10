@@ -722,21 +722,23 @@ public class Exec {
       LineTok fst = ts.get(0);
       if (size == 1 && fst.colonPos() == -1) return Main.exec(ts.get(0), sc);
       if (fst.tokens != null && fst.colonPos() != -1) {
-        StrMap map = new StrMap();
+        Scope nsc = new Scope(sc);
+        StrMap res = new StrMap(nsc);
         for (LineTok ct : ts) {
           Token name = ct.tokens.get(0);
           if (ct.colonPos() ==-1)         SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
           if (ct.colonPos() != 1)         SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
-          String kname;
-          if (name instanceof NameTok) kname = ((NameTok) name).name;
-          else if (name instanceof StrTok) kname = ((StrTok) name).parsed;
-          else if (name instanceof ChrTok) kname = ((ChrTok) name).parsed;
+          String key;
+          if (name instanceof NameTok) key = ((NameTok) name).name;
+          else if (name instanceof StrTok) key = ((StrTok) name).parsed;
+          else if (name instanceof ChrTok) key = ((ChrTok) name).parsed;
           else throw SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
-          
-          map.setStr(kname, Main.oexec(LineTok.inherit(tokens), sc));
+  
+          Obj val = oexec(LineTok.inherit(tokens), nsc);
+          res.setStr(key, val);
         }
-        return map;
+        return res;
       } else {
         Obj fo = Main.oexec(fst, sc);
         if (fo instanceof Value) {
@@ -762,6 +764,7 @@ public class Exec {
     if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
     if (t instanceof BacktickTok) return new ArrFun((BacktickTok) t, sc);
     if (t instanceof BigTok) return ((BigTok) t).val;
+    if (t instanceof ScopeTok) return new StrMap(sc);
     throw new NYIError("Unknown type: " + Main.explain(t), t);
   }
 }

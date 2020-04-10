@@ -16,7 +16,7 @@ import java.util.*;
 
 
 public class Scope {
-  private final HashMap<String, Obj> vars = new HashMap<>();
+  public final HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
   public boolean alphaDefined;
   public int IO;
@@ -87,11 +87,10 @@ public class Scope {
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser(this);
         case "⎕GC": System.gc(); return Num.ONE;
-        case "⎕DEATHLOGGER": return new DeathLogger();
+        case "⎕GCLOG": return new GCLog();
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕DL": return new Delay(this);
-        case "⎕SCOPE": return new ScopeViewer(this);
         case "⎕DR": return new DR();
         case "⎕UCS": return new UCS(this);
         case "⎕HASH": return new Hasher();
@@ -145,38 +144,35 @@ public class Scope {
     return rnd.nextInt(n);
   } // with ⎕IO←0
   
-  static class DeathLogger extends Builtin {
+  static class GCLog extends Builtin {
     @Override public String repr() {
-      return "⎕DEATHLOGGER";
+      return "⎕GCLOG";
     }
   
     @Override
     public Value call(Value w) {
-      return new DyingObj(w.toString());
+      return new Logger(w.toString());
     }
-    class DyingObj extends Primitive {
+    static class Logger extends Primitive {
       final String msg;
-      DyingObj(String s) {
+      Logger(String s) {
         this.msg = s;
       }
   
-      @SuppressWarnings("deprecation") // as this thing is only used for debugging, this should be fine
+      @SuppressWarnings("deprecation") // this is this things purpose
       @Override
       protected void finalize() {
-        Main.println(msg+" died");
+        Main.println(msg+" was GCed");
       }
       public String toString() {
-        return "⎕DEATHLOGGER["+msg+"]";
-      }
-  
-      @Override
-      public Type type() {
-        return Type.array;
+        return "⎕GCLOG["+msg+"]";
       }
   
       @Override
       public Value ofShape(int[] sh) {
-        throw new DomainError("you're shaping ⎕DEATHLOGGER? what?");
+        if (sh.length == 0 && !Main.enclosePrimitives) return this;
+        assert Arr.prod(sh) == 1;
+        return new SingleItemArr(this, sh);
       }
     }
   }
@@ -286,42 +282,6 @@ public class Scope {
     }
   }
   
-  static class ScopeViewer extends SimpleMap {
-    
-    private final Scope sc;
-    
-    ScopeViewer(Scope sc) {
-      this.sc = sc;
-    }
-    
-    @Override
-    public Obj getv(String k) {
-      if (k.equals("parent")) return new ScopeViewer(sc.parent);
-      return sc.vars.get(k);
-    }
-    
-    @Override
-    public void setv(String k, Obj v) {
-      throw new SyntaxError("No setting scope things!", v instanceof Value? (Value) v : null);
-    }
-    
-    @Override
-    public String toString() {
-      StringBuilder res = new StringBuilder("(");
-      sc.vars.forEach((key, value) -> {
-        if (value instanceof ScopeViewer) return;
-        if (res.length() != 1) res.append("⋄");
-        res.append(key).append(":").append(value);
-      });
-      return res + ")";
-    }
-    
-    @Override
-    public Value ofShape(int[] sh) {
-      throw new DomainError("⎕SCOPE is a debugging tool, not a toy.");
-    }
-  }
-  
   private static class MapGen extends Builtin {
     @Override public String repr() {
       return "⎕MAP";
@@ -330,7 +290,19 @@ public class Scope {
     @Override
     public Value call(Value w) {
       if (w instanceof StrMap) {
-        return new StrMap((StrMap) w);
+        StrMap wm = (StrMap) w;
+        // Scope sc;
+        // HashMap<String, Obj> vals;
+        // if (wm.sc == null) {
+        //   sc = null;
+        //   vals = new HashMap<>(wm.vals);
+        // } else {
+        //   sc = new Scope(wm.sc.parent);
+        //   sc.vars.putAll(wm.vals);
+        //   vals = sc.vars;
+        // }
+        // return new StrMap(sc, vals);
+        return new StrMap(new HashMap<>(wm.vals));
       }
       var map = new StrMap();
       for (Value v : w) {
