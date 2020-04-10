@@ -1,11 +1,11 @@
 package APL.tokenizer;
 
-import java.math.BigInteger;
-import java.util.*;
-
-import APL.errors.*;
+import APL.errors.SyntaxError;
 import APL.tokenizer.types.*;
 import APL.types.BigValue;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_∆".toCharArray();

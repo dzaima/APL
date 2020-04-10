@@ -1,9 +1,9 @@
 package APL.types.functions.userDefined;
 
 import APL.*;
-import APL.tokenizer.*;
+import APL.tokenizer.Token;
 import APL.tokenizer.types.*;
-import APL.types.*;
+import APL.types.Obj;
 
 public class UserDefined {
   public static Obj of(DfnTok ts, Scope sc) {

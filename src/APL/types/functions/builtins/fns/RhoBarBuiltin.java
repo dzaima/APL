@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Scope;
 import APL.errors.DomainError;
-import APL.types.*;
+import APL.types.Value;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 

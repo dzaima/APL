@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.fns;
 
-import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.Value;
+import APL.types.arrs.EmptyArr;
 import APL.types.functions.Builtin;
 
 public class CommaBarBuiltin extends Builtin {

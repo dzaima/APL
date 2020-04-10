@@ -1,10 +1,8 @@
 package APL.types.functions.trains;
 
 import APL.Type;
-import APL.errors.*;
-import APL.types.Fun;
-import APL.types.Obj;
-import APL.types.Value;
+import APL.errors.SyntaxError;
+import APL.types.*;
 
 public class Atop extends Fun {
   private final Obj g;

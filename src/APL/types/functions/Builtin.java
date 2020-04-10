@@ -1,7 +1,7 @@
 package APL.types.functions;
 
-import APL.*;
-import APL.types.*;
+import APL.Scope;
+import APL.types.Fun;
 
 public abstract class Builtin extends Fun {
   protected Builtin(Scope sc) {

@@ -6,7 +6,7 @@ import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.*;
 
-import static APL.Main.*;
+import static APL.Main.printdbg;
 
 
 public class Ddop extends Dop {

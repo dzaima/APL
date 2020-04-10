@@ -1,6 +1,6 @@
 package APL.tokenizer.types;
 
-import java.util.*;
+import java.util.List;
 
 public class ParenTok extends TokArr<LineTok> {
   public ParenTok(String line, int spos, int epos, List<LineTok> tokens) {

@@ -1,7 +1,7 @@
 package APL;
 
 import APL.errors.*;
-import APL.tokenizer.*;
+import APL.tokenizer.Tokenizer;
 import APL.tokenizer.types.BasicLines;
 import APL.types.*;
 import APL.types.arrs.*;
@@ -11,7 +11,7 @@ import APL.types.functions.builtins.fns.*;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 

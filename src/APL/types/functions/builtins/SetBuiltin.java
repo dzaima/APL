@@ -1,8 +1,8 @@
 package APL.types.functions.builtins;
 
-import APL.errors.*;
+import APL.errors.SyntaxError;
 import APL.types.*;
-import APL.types.functions.*;
+import APL.types.functions.VarArr;
 
 public class SetBuiltin extends AbstractSet {
   public final static SetBuiltin inst = new SetBuiltin();

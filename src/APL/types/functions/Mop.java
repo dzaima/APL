@@ -1,8 +1,8 @@
 package APL.types.functions;
 
+import APL.*;
 import APL.errors.*;
 import APL.types.*;
-import APL.*;
 
 public abstract class Mop extends Scopeable {
   

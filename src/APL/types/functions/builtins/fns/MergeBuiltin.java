@@ -3,7 +3,7 @@ package APL.types.functions.builtins.fns;
 import APL.*;
 import APL.errors.DomainError;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 import java.util.Arrays;

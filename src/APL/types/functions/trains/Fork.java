@@ -2,9 +2,7 @@ package APL.types.functions.trains;
 
 import APL.Type;
 import APL.errors.DomainError;
-import APL.types.Fun;
-import APL.types.Obj;
-import APL.types.Value;
+import APL.types.*;
 
 public class Fork extends Fun {
   private final Obj f;

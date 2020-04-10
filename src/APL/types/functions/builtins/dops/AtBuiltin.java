@@ -1,9 +1,9 @@
 package APL.types.functions.builtins.dops;
 
 import APL.*;
-import APL.errors.*;
+import APL.errors.RankError;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.Shape1Arr;
 import APL.types.functions.*;
 
 public class AtBuiltin extends Dop {

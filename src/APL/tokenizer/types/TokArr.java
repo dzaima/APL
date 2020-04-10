@@ -2,7 +2,7 @@ package APL.tokenizer.types;
 
 import APL.tokenizer.Token;
 
-import java.util.*;
+import java.util.List;
 
 abstract public class TokArr<T extends Token> extends Token {
   public final List<T> tokens;

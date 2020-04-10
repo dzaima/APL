@@ -1,14 +1,14 @@
 package APL.types.functions.builtins.fns;
 
 import APL.*;
-import APL.errors.*;
+import APL.errors.RankError;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.util.*;
+import java.util.HashMap;
 
-import static APL.Main.*;
+import static APL.Main.toAPL;
 
 public class IotaBuiltin extends Builtin {
   @Override public String repr() {

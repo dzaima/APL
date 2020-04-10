@@ -1,7 +1,7 @@
 package APL.types.functions.builtins.fns;
 
 import APL.errors.DomainError;
-import APL.types.*;
+import APL.types.Value;
 import APL.types.functions.Builtin;
 
 public class RTackBuiltin extends Builtin {

@@ -1,9 +1,9 @@
 package APL.types.functions.builtins.fns;
 
-import APL.*;
+import APL.Indexer;
 import APL.errors.RankError;
-import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.Value;
+import APL.types.arrs.BitArr;
 import APL.types.functions.Builtin;
 
 public class FindBuiltin extends Builtin {

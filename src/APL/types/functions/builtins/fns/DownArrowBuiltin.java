@@ -1,11 +1,10 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Indexer;
-import APL.Scope;
+import APL.*;
 import APL.errors.DomainError;
+import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
-import APL.types.*;
 
 public class DownArrowBuiltin extends Builtin {
   @Override public String repr() {

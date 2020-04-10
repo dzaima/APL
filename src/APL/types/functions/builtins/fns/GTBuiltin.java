@@ -5,7 +5,7 @@ import APL.types.*;
 import APL.types.arrs.BitArr;
 import APL.types.functions.Builtin;
 
-import java.util.*;
+import java.util.Arrays;
 
 
 public class GTBuiltin extends Builtin {

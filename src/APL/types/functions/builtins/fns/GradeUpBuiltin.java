@@ -1,8 +1,8 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Scope;
-import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.Value;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 public class GradeUpBuiltin extends Builtin {

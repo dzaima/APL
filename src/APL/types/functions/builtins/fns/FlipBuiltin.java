@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.errors.*;
+import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
