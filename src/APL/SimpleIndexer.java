@@ -1,9 +1,8 @@
 package APL;
 
 import java.util.Iterator;
-import java.util.stream.IntStream;
 
-public class SimpleIndexer implements Iterable<Integer> {
+public class SimpleIndexer implements Iterable<Integer> { // todo this is horrible (or at least i think so, i can't be bothered to understand it)
   private final int[] shape;
   private final int[] chosen;
   private final int[] shapeTP;
@@ -22,11 +21,16 @@ public class SimpleIndexer implements Iterable<Integer> {
     }
   }
   
-  /*@NotNull */@Override public Iterator<Integer> iterator() {
+  @Override public Iterator<Integer> iterator() {
+    boolean empty = true;
+    for (int i : chosen) {
+      if (i != 0) { empty = false; break; }
+    }
+    boolean finalEmpty = empty & chosen.length!=0;
     //noinspection Convert2Diamond java 8
     return new Iterator<Integer>() {
       int index = 0;
-      boolean hasNext = IntStream.of(chosen).allMatch(c -> c!=0);
+      boolean hasNext = !finalEmpty;
       @Override public boolean hasNext() {
         return hasNext;
       }

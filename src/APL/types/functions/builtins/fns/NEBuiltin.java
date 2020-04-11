@@ -12,21 +12,24 @@ public class NEBuiltin extends Builtin {
   
   
   
-  static class DNf extends D_NNeB {
+  private static final D_NNeB DNF = new D_NNeB() {
     public boolean on(double a, double w) {
       return a != w;
     }
-    public void on(BitArr.BC res, double a, double[] w) {
+    public void on(BitArr.BA res, double a, double[] w) {
       for (double cw : w) res.add(a != cw);
     }
-    public void on(BitArr.BC res, double[] a, double w) {
+    public void on(BitArr.BA res, double[] a, double w) {
       for (double ca : a) res.add(ca != w);
     }
-    public void on(BitArr.BC res, double[] a, double[] w) {
+    public void on(BitArr.BA res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res.add(a[i] != w[i]);
     }
-  }
-  static class DBf implements D_BB {
+    public Value call(BigValue a, BigValue w) {
+      return a.equals(w)? Num.ZERO : Num.ONE;
+    }
+  };
+  private static final D_BB DBF = new D_BB() {
     @Override public Value call(boolean a, BitArr w) {
       if (a) return TildeBuiltin.call(w);
       return w;
@@ -40,11 +43,9 @@ public class NEBuiltin extends Builtin {
       for (int i = 0; i < bc.arr.length; i++) bc.arr[i] = a.arr[i] ^ w.arr[i];
       return bc.finish();
     }
-  }
-  private static final DNf DNF = new DNf();
-  private static final DBf DBF = new DBf();
+  };
   
-  public Obj call(Value a, Value w) {
-    return ncbaD(DNF, DBF, (ca, cw) -> ca!=cw? Num.ONE : Num.ZERO, (ca, cw) -> ca.equals(cw)? Num.ONE : Num.ZERO, a, w);
+  public Value call(Value a, Value w) {
+    return ncbaD(DNF, DBF, (ca, cw) -> ca!=cw? Num.ONE : Num.ZERO, (ca, cw) -> ca.equals(cw)? Num.ZERO : Num.ONE, a, w);
   }
 }

@@ -18,6 +18,6 @@ public class LengthError extends APLError {
   }
   
   public static void must(boolean b, String msg) {
-      if (!b) throw new LengthError(msg);
+    if (!b) throw new LengthError(msg);
   }
 }

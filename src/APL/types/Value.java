@@ -24,7 +24,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     this.rank = rank;
   }
   public int[] asIntVec() { // succeeds on rank ≤ 1
-    RankError.must(rank<=1, "using rank "+rank+" array as vector");
+    RankError.must(rank<=1, "using rank "+rank+" array as an integer vector");
     return asIntArr();
   }
   public abstract int[] asIntArr();
@@ -49,6 +49,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     if (l instanceof Char         && r instanceof Char        ) return ((Char) l).compareTo((Char) r);
     if (l instanceof  Num         && (r instanceof Char || rA)) return -1;
     if ((l instanceof Char || lA) && r instanceof Num         ) return 1;
+    if (l instanceof BigValue     && r instanceof BigValue    ) return ((BigValue) l).i.compareTo(((BigValue) r).i);
     if (!lA && !rA) {
       throw new DomainError("Failed to compare "+ l +" and "+r, r);
     }
@@ -58,7 +59,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     if (l.rank != r.rank) throw new RankError("Expected ranks to be equal for compared elements", r);
     
     if (l.rank > 1) throw new DomainError("Expected rank of compared array to be ≤ 2", l);
-  
+    
     int min = Math.min(l.ia, r.ia);
     for (int i = 0; i < min; i++) {
       int cr = l.get(i).compareTo(r.get(i));
@@ -104,6 +105,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   }
   
   public abstract Value prototype(); // what to append to this array
+  public abstract Value safePrototype();
   
   public String oneliner(int[] where) {
     return toString();
@@ -116,6 +118,9 @@ public abstract class Value extends Obj implements Iterable<Value> {
   
   
   public Value[] values() {
+    return valuesCopy();
+  }
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = get(i);
     return vs;
@@ -157,7 +162,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     int x = 0;
     for (int i = 0; i < rank; i++) {
       if (pos[i] < IO) throw new DomainError("Tried to access item at position "+pos[i], this);
-      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+shape[i], this);
+      if (pos[i] >= shape[i]+IO) throw new DomainError("Tried to access item at position "+pos[i]+" while max was "+(shape[i]+IO-1), this);
       x+= pos[i]-IO;
       if (i != rank-1) x*= shape[i+1];
     }
@@ -182,7 +187,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
   }
   
   public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape! ()
-  public abstract Value with(Value what, int[] where);
+  
   public double sum() {
     double res = 0;
     for (Value v : this) {

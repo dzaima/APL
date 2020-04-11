@@ -1,9 +1,9 @@
-class APLTextarea extends Drawable implements TextReciever {
+static class APLTextarea extends Drawable implements TextReciever {
   float tsz, chw; // text size, char width
   void setsz(float sz) {
     tsz = sz;
-    g.textSize(sz);
-    chw = g.textWidth('H');
+    d.textSize(sz);
+    chw = d.textWidth('H');
   }
   SyntaxHighlight hl;
   Theme th = new Theme();
@@ -12,13 +12,14 @@ class APLTextarea extends Drawable implements TextReciever {
     super(x, y, w, h);
     lines = new ArrayList();
     lines.add("");
-    setsz(min(width, height)/20);
+    setsz(max(a.width, a.height)/40);
   }
   int tt = 0; // caret flicker timer
   int xoff = 0; // scroll
   int yoff = 0;
 
   void redraw() {
+    if (hl!=null) hl.g = d;
   }
   boolean saveUndo = true;
   boolean modified = false;
@@ -28,7 +29,7 @@ class APLTextarea extends Drawable implements TextReciever {
   int hptr = 0; // points to the current modification
   void tick() {
     if (!visible) return;
-    if (mousePressed && !pmousePressed && smouseIn()) {
+    if (a.mousePressed && !pmousePressed && smouseIn()) {
       textInput = this;
     }
     if (cy < 0 || cy > lines.size() || cx < 0 || cx > lines.get(cy).length()) {
@@ -44,7 +45,7 @@ class APLTextarea extends Drawable implements TextReciever {
     if (modified || saveUndo) {
       StringBuilder all = new StringBuilder();
       for (String s : lines) all.append(s).append("\n");
-      hl = new SyntaxHighlight(all.toString(), th, g);
+      hl = new SyntaxHighlight(all.toString(), th, d);
       modified = false;
     }
     if (saveUndo) {
@@ -53,10 +54,10 @@ class APLTextarea extends Drawable implements TextReciever {
       history[hptr] = new State(allText(), cx, cy);
       saveUndo = false;
     }
-    clip(x, y, w, h);
-    if (mousePressed && smouseIn()) {
-      yoff+= mouseY-pmouseY;
-      xoff+= mouseX-pmouseX;
+    beginClip(d, x, y, w, h);
+    if (a.mousePressed && smouseIn()) {
+      yoff+= a.mouseY-a.pmouseY;
+      xoff+= a.mouseX-a.pmouseX;
       int max = 0;
       for (String s : lines) max = max(max, s.length());
       float maxx = (max - 2)*chw;
@@ -68,9 +69,9 @@ class APLTextarea extends Drawable implements TextReciever {
       if (yoff > 0) yoff = 0;
       if (xoff > 0) xoff = 0;
     }
-    if (pmousePressed && !mousePressed && smouseIn() && dist(mouseX, mouseY, smouseX, smouseY) < 10) {
-      cy = constrain(floor((mouseY-y-yoff)/tsz), 0, lines.size()-1);
-      cx = constrain(round((mouseX-x-xoff)/chw), 0, lines.get(cy).length());
+    if (pmousePressed && !a.mousePressed && smouseIn() && dist(a.mouseX, a.mouseY, smouseX, smouseY) < 10) {
+      cy = constrain(floor((a.mouseY-y-yoff)/tsz), 0, lines.size()-1);
+      cx = constrain(round((a.mouseX-x-xoff)/chw), 0, lines.get(cy).length());
       tt = 0;
       //if (cy < 0) {
       //  lines.append("CY<0!!1!11!!");
@@ -79,11 +80,11 @@ class APLTextarea extends Drawable implements TextReciever {
       //if (cy >= lines.size()) cy = lines.size()-1;
     }
     //fill(#333333);
-    fill(#101010);
-    noStroke();
-    rectMode(CORNER);
-    rect(x, y, w, h);
-    textAlign(LEFT, TOP);
+    d.fill(#101010);
+    d.noStroke();
+    d.rectMode(CORNER);
+    d.rect(x, y, w, h);
+    d.textAlign(LEFT, TOP);
     //textSize(tsz);
     //int dy = 0;
     //for (String s : lines) {
@@ -99,10 +100,10 @@ class APLTextarea extends Drawable implements TextReciever {
       float px;
       //if (mousePressed) px = x + max(textWidth(lines.get(cy).substring(0, cx)), 3) + xoff; else
       px = x + max(chw * cx, 3) + xoff;
-      stroke(th.caret);
-      line(px, tsz*cy + yoff + y, px, tsz*(cy+1) + yoff + y);
+      d.stroke(th.caret);
+      d.line(px, tsz*cy + yoff + y, px, tsz*(cy+1) + yoff + y);
     }
-    noClip();
+    endClip(d);
   }
 
   ArrayList<String> lines;
@@ -222,7 +223,7 @@ class APLTextarea extends Drawable implements TextReciever {
       to(history[hptr]);
       modified = true;
     } else if (s.equals("paste")) {
-      paste(this);
+      a.paste(this);
     } else if (s.equals("match")) {
       int sel = hl.sel(fullPos());
       if (sel != -1) to(sel);

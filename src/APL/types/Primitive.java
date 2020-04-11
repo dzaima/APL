@@ -2,8 +2,6 @@ package APL.types;
 
 import APL.errors.DomainError;
 
-import java.util.Arrays;
-
 public abstract class Primitive extends Value {
   private static final int[] SHAPE = new int[0];
   
@@ -39,15 +37,13 @@ public abstract class Primitive extends Value {
     throw new DomainError("using " + this.oneliner() + " as string", this);
   }
   
-  @Override
-  public Value prototype() {
-    throw new DomainError("getting prototype of "+this, this);
+  public final Value prototype() {
+    Value v = safePrototype();
+    if (v==null) throw new DomainError("getting prototype of "+this, this);
+    return v;
   }
-  
-  @Override
-  public Value with(Value what, int[] where) {
-    if (where.length == 0) return what;
-    throw new DomainError("trying to set an item in a scalar at "+ Arrays.toString(where));
+  public Value safePrototype() {
+    return null;
   }
   
   @Override public Value squeeze() { // primitives are already pretty squeezed

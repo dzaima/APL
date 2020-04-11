@@ -1,7 +1,7 @@
 package APL.types;
 
-import APL.*;
-import APL.errors.*;
+import APL.Type;
+import APL.errors.ValueError;
 
 public abstract class Settable extends Obj {
   final Obj v;

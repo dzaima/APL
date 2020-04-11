@@ -1,48 +1,48 @@
-class TopBar extends Drawable {
+static class TopBar extends Drawable {
   Tab ctab;
   ArrayList<Tab> tabs = new ArrayList();
   TopBar(int x, int y, int w, int h) {
     super(x, y, w, h);
   }
   void tick() {
-    if (smouseIn() && mousePressed && !pmousePressed) {
-      textSize(h*.8);
+    if (smouseIn() && a.mousePressed && !pmousePressed) {
+      d.textSize(h*.8);
       int cx = x;
       for (Tab t : tabs) {
         String n = t.name();
-        int dx = max(2*h, ceil(textWidth(n)) + h/2);
-        if (mouseX > cx && mouseX < cx + dx) to(t);
+        int dx = max(2*h, ceil(d.textWidth(n)) + h/2);
+        if (a.mouseX > cx && a.mouseX < cx + dx) to(t);
         cx+= dx;
         redraw();
       }
     }
   }
   void redraw() {
-    textSize(h*.8);
+    d.textSize(h*.8);
     if (!visible) return;
-    rectMode(CORNER);
-    fill(#222222);
-    noStroke();
-    rect(x, y, w, h);
+    d.rectMode(CORNER);
+    d.fill(#222222);
+    d.noStroke();
+    d.rect(x, y, w, h);
     
     int cx = x;
     for (Tab t : tabs) {
       String n = t.name();
-      int dx = max(2*h, ceil(textWidth(n)) + h/2);
+      int dx = max(2*h, ceil(d.textWidth(n)) + h/2);
       if (t == ctab) {
-        fill(#333333);
-        rect(cx, y, dx, h);
+        d.fill(#333333);
+        d.rect(cx, y, dx, h);
       }
       cx+= dx;
     }
     
-    fill(#D2D2D2);
-    textAlign(CENTER, CENTER);
+    d.fill(#D2D2D2);
+    d.textAlign(CENTER, CENTER);
     cx = x;
     for (Tab t : tabs) {
       String n = t.name();
-      int dx = max(2*h, ceil(textWidth(n)) + h/2);
-      text(n, cx + dx/2, y + h*.4);
+      int dx = max(2*h, ceil(d.textWidth(n)) + h/2);
+      d.text(n, cx + dx/2, y + h*.4);
       cx+= dx;
     }
   }
@@ -51,6 +51,12 @@ class TopBar extends Drawable {
     ctab = t;
     ctab.show();
     redraw();
+  }
+  void move(int d) {
+    int i = tabs.indexOf(ctab) + d;
+    i%= tabs.size();
+    if (i < 0) i+= tabs.size();
+    to(tabs.get(i));
   }
   void toNew(Tab t) {
     add(t);
@@ -70,5 +76,14 @@ class TopBar extends Drawable {
     i--;
     if (i < 0) i = 0;
     to(tabs.get(i));
+  }
+  void close(Tab t) {
+    if (tabs.size() == 1) return;
+    int i = tabs.indexOf(t);
+    tabs.remove(i);
+    i--;
+    if (i < 0) i = 0;
+    if (t==ctab) to(tabs.get(i));
+    else redraw();
   }
 }

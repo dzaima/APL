@@ -1,9 +1,7 @@
 package APL.types;
 
 import APL.Main;
-import APL.types.arrs.*;
-
-import java.util.Arrays;
+import APL.types.arrs.SingleItemArr;
 
 public abstract class APLMap extends Primitive {
   
@@ -23,9 +21,10 @@ public abstract class APLMap extends Primitive {
   abstract public void set(Value k, Obj v);
   abstract public Arr allValues();
   abstract public Arr allKeys();
+  abstract public Arr kvPair();
   abstract public int size();
   
-  public class MapPointer extends Settable {
+  public static class MapPointer extends Settable {
     private final APLMap map;
     private final Value k;
     
@@ -39,7 +38,7 @@ public abstract class APLMap extends Primitive {
     public void set(Obj v) {
       map.set(k, v);
     }
-  
+    
     @Override
     public String toString() {
       if (Main.debug) return v == null? "map@"+k : "ptr@"+k+":"+v;
@@ -50,7 +49,7 @@ public abstract class APLMap extends Primitive {
   @Override
   public Value ofShape(int[] sh) {
     if (sh.length == 0 && Main.enclosePrimitives) return this;
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new SingleItemArr(this, sh);
   }
 }

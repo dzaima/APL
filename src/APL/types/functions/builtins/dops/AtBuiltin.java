@@ -1,9 +1,9 @@
 package APL.types.functions.builtins.dops;
 
 import APL.*;
-import APL.errors.*;
+import APL.errors.RankError;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.Shape1Arr;
 import APL.types.functions.*;
 
 public class AtBuiltin extends Dop {
@@ -14,11 +14,15 @@ public class AtBuiltin extends Dop {
   public AtBuiltin(Scope sc) {
     super(sc);
   }
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    int IO = sc.IO;
+  
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+    return at(aa, ww, w, sc.IO);
+  }
+  
+  public static Value at(Obj aa, Obj ww, Value w, int IO) {
     int ia = w.ia;
     if (ww instanceof Fun) {
-      Value vba = (Value) ((Fun) ww).call(w);
+      Value vba = ((Fun) ww).call(w);
       boolean[] ba = new boolean[ia];
       int matchingCount = 0;
       for (int i = 0; i < ia; i++) {
@@ -32,7 +36,7 @@ public class AtBuiltin extends Dop {
         for (int i = 0; i < ia; i++) {
           if (ba[i]) matching[ptr++] = w.get(i);
         }
-        aaa = (Value) ((Fun) aa).call(Arr.create(matching));
+        aaa = ((Fun) aa).call(Arr.create(matching));
       } else aaa = (Value) aa;
       Value[] ra = new Value[ia];
       if (aaa.rank == 0) {
@@ -48,10 +52,9 @@ public class AtBuiltin extends Dop {
           else ra[i] = w.get(i);
         }
       }
-      if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
-      return Arr.create(ra, w.shape);
+      return Arr.createL(ra, w.shape);
     } else {
-  
+      
       Value wwa = (Value) ww;
       
       if (wwa.ia == 0) return w;
@@ -70,12 +73,11 @@ public class AtBuiltin extends Dop {
             indexes[i] = Indexer.ind(w.shape, wwd, i, IO);
             matching[i] = w.get(indexes[i]);
           }
-          Value[] replacement = ((Value) ((Fun) aa).call(Arr.create(matching))).values();
+          Value[] replacement = ((Fun) aa).call(Arr.create(matching)).values();
           System.arraycopy(w.values(), 0, ra, 0, ia);
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.create(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.ind(w.shape, wwd, i, IO);
@@ -92,11 +94,8 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          if (ra.length == 1 && ra[0] instanceof Primitive) {
-            return ra[0];
-          }
-          return Arr.create(ra, w.shape);
         }
+        return Arr.createL(ra, w.shape);
         
         
       } else { // ⎕VI←0
@@ -110,12 +109,11 @@ public class AtBuiltin extends Dop {
             indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
             matching[i] = w.get(indexes[i]);
           }
-          Value[] replacement = ((Value) ((Fun) aa).call(Arr.create(matching))).values();
+          Value[] replacement = ((Fun) aa).call(Arr.create(matching)).values();
           System.arraycopy(w.values(), 0, ra, 0, ia);
           for (int i = 0; i < matchingCount; i++) {
             ra[indexes[i]] = replacement[i];
           }
-          return Arr.create(ra, w.shape);
         } else {
           for (int i = 0; i < matchingCount; i++) {
             indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
@@ -132,10 +130,8 @@ public class AtBuiltin extends Dop {
               ra[indexes[i]] = aaa.get(i);
             }
           }
-          if (w.rank == 0 && ra[0] instanceof Primitive) return ra[0];
-          return Arr.create(ra, w.shape);
         }
-  
+        return Arr.createL(ra, w.shape);
       }
     }
   }

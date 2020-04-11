@@ -12,17 +12,17 @@ public class ObliqueBuiltin extends Mop {
   }
   
   
-
-  public Obj call(Obj f, Value w, DerivedMop derv) {
+  
+  public Value call(Obj f, Value w, DerivedMop derv) {
     if (w.rank != 2) throw new DomainError("⍁ requires a rank-2 ⍵");
-    Fun ff = (Fun) f;
+    Fun ff = isFn(f);
     int[] sz = w.shape;
     int H = sz[0];
     int W = sz[1];
-    int szM = H > W? H : W;
-    int szm = H > W? W : H;
+    int szM = Math.max(H, W);
+    int szm = Math.min(H, W);
     int ram = H + W - 1;
-    if (ram <= 0) return EmptyArr.SHAPE0;
+    if (ram <= 0) return new EmptyArr(EmptyArr.SHAPE0, w.safePrototype());
     
     Value[] res = new Value[ram];
     
@@ -41,10 +41,10 @@ public class ObliqueBuiltin extends Mop {
           rows[ri][s] = v;
         }
       }
-      res[0] = (Value) ff.call(new DoubleArr(rows[0]));
+      res[0] = ff.call(new DoubleArr(rows[0]));
       int rrank = res[0].rank; // required rank
       for (int i = 0; i < ram; i++) {
-        Value v = (Value) ff.call(new DoubleArr(rows[i]));
+        Value v = ff.call(new DoubleArr(rows[i]));
         if (v.rank != rrank) throw new RankError("⍶ of ⍁ must return equal rank arrays");
         res[i] = v;
       }
@@ -63,15 +63,15 @@ public class ObliqueBuiltin extends Mop {
           rows[ri][s] = v;
         }
       }
-      res[0] = (Value) ff.call(new HArr(rows[0]));
+      res[0] = ff.call(new HArr(rows[0]));
       int rrank = res[0].rank; // required rank
       for (int i = 0; i < ram; i++) {
-        Value v = (Value) ff.call(new HArr(rows[i]));
-        if (v.rank != rrank) throw new Error("⍶ of ⍁ must return equal rank arrays");
+        Value v = ff.call(new HArr(rows[i]));
+        if (v.rank != rrank) throw new DomainError("⍶ of ⍁ must return equal rank arrays");
         res[i] = v;
       }
     }
-  
+    
     return UpArrowBuiltin.merge(res);
   }
 }

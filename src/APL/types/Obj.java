@@ -34,6 +34,7 @@ public abstract class Obj implements Tokenable {
     if (this instanceof Dop     )return article? "dyadic operator" : "a dyadic operator";
     if (this instanceof ArrFun  )return article? "an arrayified function": "arrayified function";
     if (this instanceof APLMap.MapPointer)return article? "a map item": "map item";
+    if (this instanceof BigValue)return article? "a biginteger" : "biginteger";
     return "some type that dzaima hasn't named in Obj.humanType ಠ_ಠ (class = "+getClass()+")";
   }
   
@@ -54,6 +55,10 @@ public abstract class Obj implements Tokenable {
   @Override
   public int hashCode() {
     throw new NYIError("hash not supported for "+this, this);
+  }
+  
+  final protected int actualHashCode() {
+    return super.hashCode();
   }
   
   @Override

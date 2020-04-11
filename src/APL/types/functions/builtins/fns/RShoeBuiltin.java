@@ -15,48 +15,47 @@ public class RShoeBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (!Main.enclosePrimitives && w instanceof Primitive) return w;
     return new Rank0Arr(w);
   }
   
-  @Override public Obj call(Value a, Value w) {
+  @Override public Value call(Value a, Value w) {
     if (w.rank != 1) throw new DomainError("⍵ of ⊃ should be of rank 1");
     if (a.rank != 1) throw new DomainError("⍺ of ⊃ should be of rank 1");
-    if (a.ia+1 != w.ia) throw new LengthError("for ⊃, (1+≢⍺) ≡ ≢⍵ is required");
-    int[] aa = a.asIntVec();
+    if (w.ia+1 != a.ia) throw new LengthError("for ⊃, (1+≢⍺) ≡ ≢⍵ is required");
+    int[] aa = w.asIntVec();
     ArrayList<Value> parts = new ArrayList<>();
     
-    if (w.quickDoubleArr()) {
-      double[] vals = w.asDoubleArr();
+    if (a.quickDoubleArr()) {
+      double[] vals = a.asDoubleArr();
       ArrayList<Double> cpart = new ArrayList<>();
       for (int i = 0; i < aa.length; i++) {
         int am = aa[i];
         cpart.add(vals[i]);
         if (am > 0) {
           parts.add(new DoubleArr(cpart));
-          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0);
+          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0N);
           cpart.clear();
         }
       }
       cpart.add(vals[vals.length - 1]);
       parts.add(new DoubleArr(cpart));
-      return Arr.create(parts.toArray(new Value[0]));
     } else {
-      Value[] vals = w.values();
+      Value[] vals = a.values();
       ArrayList<Value> cpart = new ArrayList<>();
       for (int i = 0; i < aa.length; i++) {
         int am = aa[i];
         cpart.add(vals[i]);
         if (am > 0) {
           parts.add(Arr.create(cpart.toArray(new Value[0])));
-          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0);
+          for (int j = 0; j < am - 1; j++) parts.add(EmptyArr.SHAPE0N);
           cpart.clear();
         }
       }
       cpart.add(vals[vals.length - 1]);
       parts.add(Arr.create(cpart.toArray(new Value[0])));
-      return Arr.create(parts.toArray(new Value[0]));
     }
+    return Arr.create(parts.toArray(new Value[0]));
   }
 }

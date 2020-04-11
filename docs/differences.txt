@@ -1,6 +1,7 @@
 / - only reduce (/[] for first axis)
 ⌿ - only replicate
 \ - only scan; executes left-to-right - aka isn't O(n^2)
+⍀ - only expand
 
 
 dfns:
@@ -10,45 +11,49 @@ dfns:
   
 
 
-⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
-
+⍺ of ⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
+ᐵ and ᑈ - each-left and each-right
 
 "c" ←→ ,'c'
 'abc' ←→ "abc"
 
 monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
 
+arguments of dyadic ⌸ are swapped
+
 A¨ ←→ {A}¨ (though A is evaluated only once)
 
 ⊥ & ⊤ default left arg = 2
 ⊤ with a scalar left arg is like Dyalogs ⊥⍣¯1
 
-√ exists (2√ ←→ √)
-⍥ & ⍢ & f⍤g & ⍫ & ⊇ & ⍮ exist from https://github.com/abrudz/dyalog-apl-extensions
-⍡ & ⍁ have been added
-
+√ (2√ ←→ √), …, ⍥, ⍸, f⍤g, ⍢, ⍫, ⊇, ⍮, ⍛, ⍧ and ⍨ are implemented/updated as found in https://github.com/abrudz/dyalog-apl-extensions
 ⍸ works for input values outside of 0 & 1 (also ⍸⍣¯1 works)
+
+⍡ & ⍁ have been added
 monadic > & < sort
-∨ & ∧ & ⍱ & ⍲ monadically are lcm(= some)/gcd(= all)/none/not-all of the array respectively (note that for the last two they're not just f/!)
+∨ & ∧ & ⍱ & ⍲ monadically are lcm(= some)/gcd(= all)/none/not-all of the array respectively (note that for the last two they're not just ⍲/ or ⍱/ !)
 ⌊, ⌈, ×, - for things with char cases
+
+bigints:
+  123L, ⎕BIG (most regular math functions work on them, even with regular numbers if there'd be no rounding; ⌊2⍟ is exact; √ floors)
 
 ⌽[dim] takes dim reversed
 
 ⎕-s:
-  ⎕IO       : IO. Can be set freely, but who knows what'll happen with ~⎕IO∊0 1
-  ⎕VI       : vector indexing. changes behavior if ⍳vec, ⊇, etc.
-  ⎕MILLIS   : time since starting
-  ⎕TIME     : time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
-  ⎕HTIME    : as above but convert to a human-readable format
-  ⎕EX 'path': execute the APL program in the file
-  ⎕L/⎕LA    : lowercase alphabet
-  ⎕ERASE    : 'varname': erase the variable
-  ⎕GC       : force Java garbage collection
-  ⎕NULL     : null object (value of undefined keys in maps)
-  ⎕HASH     : get hash of the array
-  
-  ⎕DEATHLOGGER 'name': log message upon getting garbage collected. This may be removed at any point in time without warning.
-    Meant for testing for memory leaks (though make sure to call ⎕GC before concluding anything!)
+  ⎕IO      : index origin; 0 or 1
+  ⎕VI      : vector indexing. changes behavior if ⍳vec, ⊇, etc.
+  ⎕MILLIS  : time since starting
+  ⎕TIME    : time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
+  ⎕HTIME   : as above but convert to a human-readable format
+  ⎕EX'path': execute the APL program in the file
+  ⎕L/⎕LA   : lowercase alphabet
+  ⎕ERASE'v': 'varname': erase the variable
+  ⎕GC      : force Java garbage collection
+  ⎕NULL    : null object (value of undefined keys in maps)
+  ⎕HASH arr: get hash of the array
+  ⎕BIG arr : convert array to bigintegers (⍣¯1 to invert)
+  ⎕NC 'v'  : array→2; function→3; dop→4; mop→5
+  ⎕GCLOG'v': log message upon getting garbage collected; Meant for testing for memory leaks (make sure to call ⎕GC before concluding anything!)
   ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
     monadic: create from key-value pairs
     dyadic: left - keys; right - values

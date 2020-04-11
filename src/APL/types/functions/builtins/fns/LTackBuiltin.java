@@ -1,6 +1,7 @@
 package APL.types.functions.builtins.fns;
 
-import APL.types.*;
+import APL.errors.DomainError;
+import APL.types.Value;
 import APL.types.functions.Builtin;
 
 public class LTackBuiltin extends Builtin {
@@ -10,6 +11,16 @@ public class LTackBuiltin extends Builtin {
   
   
   
-  public Obj call(Value w) { return w; }
-  public Obj call(Value a, Value w) { return a; }
+  public Value call(Value w) { return w; }
+  public Value call(Value a, Value w) { return a; }
+  
+  public Value callInv(Value w) {
+    return w;
+  }
+  public Value callInvW(Value a, Value w) {
+    throw new DomainError("⊣⍣¯1 is impossible");
+  }
+  public Value callInvA(Value a, Value w) {
+    return a;
+  }
 }

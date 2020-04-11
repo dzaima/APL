@@ -1,14 +1,14 @@
 package APL.types.functions.builtins.fns;
 
 import APL.*;
-import APL.errors.*;
+import APL.errors.RankError;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
-import java.util.*;
+import java.util.HashMap;
 
-import static APL.Main.*;
+import static APL.Main.toAPL;
 
 public class IotaBuiltin extends Builtin {
   @Override public String repr() {
@@ -18,18 +18,26 @@ public class IotaBuiltin extends Builtin {
   public IotaBuiltin(Scope sc) {
     super(sc);
   }
-    
-  public Obj call(Value w) {
+  
+  public Value call(Value w) {
     int IO = sc.IO;
     if (w instanceof Primitive) {
-      double[] res = new double[w.asInt()];
-      if (IO == 0) for (int i = 0; i < res.length; i++) res[i] = i;
-      else         for (int i = 0; i < res.length; i++) res[i] = i + 1;
-      return new DoubleArr(res);
+      if (w instanceof Num) {
+        double[] res = new double[w.asInt()];
+        if (IO == 0) for (int i = 0; i < res.length; i++) res[i] = i;
+        else for (int i = 0; i < res.length; i++) res[i] = i + 1;
+        return new DoubleArr(res);
+      } else if (w instanceof BigValue) {
+        Value[] res = new Value[w.asInt()];
+        for (int i = 0; i < res.length; i++) {
+          res[i] = new BigValue(i+IO);
+        }
+        return new HArr(res);
+      }
     }
     if (Main.vind) return new RhoBarBuiltin(sc).call(w);
     int[] shape = w.asIntVec();
-    int ia = Arrays.stream(shape).reduce(1, (a, b) -> a * b);
+    int ia = Arr.prod(shape);
     Value[] arr = new Value[ia];
     int i = 0;
     for (int[] c : new Indexer(shape, IO)) {
@@ -39,11 +47,13 @@ public class IotaBuiltin extends Builtin {
     return new HArr(arr, shape);
   }
   
-  @Override
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    return on(a, w, sc.IO);
+  }
+  
+  public static Value on(Value a, Value w, int IO) {
     if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
     if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
-    int IO = sc.IO;
     if (w.ia > 20 && a.ia > 20) {
       HashMap<Value, Integer> map = new HashMap<>();
       int ctr = 0;
@@ -73,6 +83,7 @@ public class IotaBuiltin extends Builtin {
       res[i++] = j+IO;
     }
     if (w instanceof Primitive) return new Num(res[0]);
+    if (w.rank == 0) return new Num(res[0]);
     return new DoubleArr(res, w.shape);
   }
 }

@@ -1,6 +1,7 @@
 package APL.types.functions.userDefined;
 
 import APL.*;
+import APL.errors.DomainError;
 import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.VarArr;
@@ -11,7 +12,12 @@ public class Dfn extends Fun {
     super(sc);
     code = t;
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
+    Obj o = callObj(w);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Value w) {
     Main.printdbg("dfn call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍺", new Variable(nsc, "⍺"));
@@ -22,7 +28,12 @@ public class Dfn extends Fun {
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
+    Obj o = callObj(a, w);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Value a, Value w) {
     Main.printdbg("dfn call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍺", a);

@@ -1,11 +1,12 @@
 package APL.types.functions.userDefined;
 
 import APL.*;
+import APL.errors.DomainError;
 import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.*;
 
-import static APL.Main.*;
+import static APL.Main.printdbg;
 
 
 public class Dmop extends Mop {
@@ -19,7 +20,13 @@ public class Dmop extends Mop {
     super(sc);
     code = t;
   }
-  public Obj call(Obj aa, Value w, DerivedMop derv) {
+  
+  public Value call(Obj f, Value w, DerivedMop derv) {
+    Obj o = callObj(f, w, derv);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Obj aa, Value w, DerivedMop derv) {
     printdbg("dmop call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
@@ -31,7 +38,13 @@ public class Dmop extends Mop {
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
-  public Obj call(Obj aa, Value a, Value w, DerivedMop derv) {
+  
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
+    Obj o = callObj(f, a, w, derv);
+    if (o instanceof Value) return (Value) o;
+    throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
+  }
+  public Obj callObj(Obj aa, Value a, Value w, DerivedMop derv) {
     printdbg("dmop call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);

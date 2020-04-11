@@ -1,16 +1,16 @@
-Interpreter it = new DzaimaAPL(); // current interpreter
+static Interpreter it = new DzaimaAPL(); // current interpreter
 
 
-abstract class Interpreter {
+abstract static class Interpreter {
   abstract String[] get(String code);
   abstract String[] special(String ex);
 }
-class Dyalog extends Interpreter {
+static class Dyalog extends Interpreter {
   String[] get(String code) {
     try {
       Scanner s = send("eval", code);
       String ln = s.nextLine();
-      return parseJSONArray(ln).getStringArray();
+      return a.parseJSONArray(ln).getStringArray();
     } catch (Exception e) {
       e.printStackTrace();
       return new String[]{"failed to request:", e.toString()};
@@ -57,52 +57,81 @@ static {
   Main.colorful = false;
 }
 
+
+class AppMap extends SimpleMap {
+  String toString() { return "app"; }
+  
+  void setv(String k, Obj v) {
+    String s = k.toLowerCase();
+    switch (s) {
+      case "update":
+        layoutUpdate = (Fun) v;
+        layoutUpdate.call(Main.toAPL(kb.data.getString("fullName")), Main.toAPL(kb.layout));
+        kb.redraw();
+      return;
+      case "action": actionCalled = (Fun) v; return;
+      default: throw new DomainError("setting non-existing key "+s+" for app");
+    }
+  }
+  Obj getv(String k) {
+    String s = k.toLowerCase();
+    if (s.matches("t\\d+")) {
+      int i = Integer.parseInt(s.substring(1)) - dzaimaSC.IO;
+      if (i < topbar.tabs.size()) return topbar.tabs.get(i);
+    }
+    switch (s) {
+      case "layout": return Main.toAPL(kb.data.getString("fullName"));
+      case "set": return new Fun() {
+        public String repr() { return "app.set"; }
+        public Value call(Value a, Value w) {
+          int[] is = a.asIntVec();
+          int x = is[0]; int y = is[1]; int dir = is[2];
+          Key key = kb.keys[y][x];
+          key.actions[dir] = new Action(parseJSONObject(w.asString()), kb, key);
+          return Num.ONE;
+        }
+      };
+      case "graph": return new Fun() {
+        public String repr() { return "app.graph"; }
+        public Value call(Value w) {
+          Grapher g = new Grapher(w.asString());
+          topbar.toNew(g);
+          return g;
+        }
+      };
+      case "cpy": return new Fun() {
+        public String repr() { return "app.cpy"; }
+        public Value call(Value w) {
+          if (w.rank == 1) {
+            w = w.squeeze();
+            if (w instanceof ChrArr) {
+              copy(w.asString());
+              return Num.ONE;
+            }
+          }
+          copy(w.toString());
+          return Num.ONE;
+        }
+      };
+      case "redraw": redrawAll(); return Num.ONE;
+      case "ts": {
+        Value[] vs = new Value[topbar.tabs.size()];
+        for (int i = 0; i < vs.length; i++) vs[i] = topbar.tabs.get(i);
+        return new HArr(vs);
+      }
+      case "t": return topbar.ctab;
+      default: return Null.NULL;
+    }
+  }
+}
+static AppMap appobj;
 {
-  dzaimaSC.set("app", new SimpleMap() {
-    String toString() { return "app"; }
-    
-    void setv(String k, Obj v) {
-      String s = k.toLowerCase();
-      switch (s) {
-        case "update":
-          layoutUpdate = (Fun) v;
-          layoutUpdate.call(Main.toAPL(kb.data.getString("fullName")), Main.toAPL(kb.layout));
-          kb.redraw();
-        return;
-        case "action": actionCalled = (Fun) v; return;
-        default: throw new DomainError("setting non-existing key "+s+" for app");
-      }
-    }
-    Obj getv(String k) {
-      String s = k.toLowerCase();
-      switch (s) {
-        case "layout": return Main.toAPL(kb.data.getString("fullName"));
-        case "set": return new Fun() {
-          public String repr() { return "app.set"; }
-          public Obj call(Value a, Value w) {
-            int[] is = a.asIntVec();
-            int x = is[0]; int y = is[1]; int dir = is[2];
-            Key key = kb.keys[y][x];
-            key.actions[dir] = new Action(parseJSONObject(w.asString()), kb, key);
-            return Num.ONE;
-          }
-        };
-        case "graph": return new Fun() {
-          public String repr() { return "app.graph"; }
-          public Obj call(Value w) {
-            topbar.toNew(new Grapher(w.asString()));
-            return Num.ONE;
-          }
-        };
-        case "redraw": redrawAll(); return Num.ONE;
-        default: return Null.NULL;
-      }
-    }
-  });
+  appobj = new AppMap();
+  dzaimaSC.set("app", appobj);
 }
 
 
-class DzaimaAPL extends Interpreter {
+static class DzaimaAPL extends Interpreter {
   
   Obj eval(String code) {
     try {
@@ -118,9 +147,8 @@ class DzaimaAPL extends Interpreter {
       if (v == null) return new String[0];
       return v.toString().split("\n");
     } catch (APLError e) {
-      TPs nSout = new TPs();
       e.print();
-      return nSout.end().split("\n");
+      return new String[0];
     } catch (Throwable e) {
       ArrayList<String> lns = new ArrayList();
       lns.add(e + ": " + e.getMessage());
@@ -133,60 +161,25 @@ class DzaimaAPL extends Interpreter {
       return lns.toArray(new String[0]);
     }
   }
-  class TPs extends OutputStream {
-    PrintStream oSout;
-    TPs() {
-      oSout = System.out;
-      System.setOut(new PrintStream(this));
-    }
-    ArrayList<Byte> bs = new ArrayList<Byte>();
-    void write(int i) {
-      bs.add((byte)(i&0xff));
-    }
-    String all() {
-      byte[] ba = new byte[bs.size()];
-      int i = 0;
-      for (byte b : bs) {
-        ba[i] = b;
-        i++;
-      }
-      return new String(ba);
-    }
-    String end() {
-      System.out.flush();
-      System.setOut(oSout);
-      return this.all();
-    }
-  }
-  class Ed extends Editor {
-    Ed(String name, String val) {
-      super(name, val);
-    }
-    void save(String val) {
-      dzaimaSC.set(name, Main.exec(val, dzaimaSC));
-    }
-  }
   String[] special(String ex) {
-    if (ex.toLowerCase().startsWith("ed ")) {
-      String nm = ex.substring(3);
-      Obj o = dzaimaSC.get(nm);
-      if (o instanceof Dfn) {
-        topbar.toNew(new Ed(nm, ((Dfn ) o).code.source()));
-      }
-      if (o instanceof Dmop) {
-        topbar.toNew(new Ed(nm, ((Dmop) o).code.source()));
-      }
-      if (o instanceof Ddop) {
-        topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
-      }
-      return new String[0];
-    }
-    TPs nSout = new TPs();
     try {
       Main.ucmd(dzaimaSC, ex);
     } catch (Throwable e) {
       e.printStackTrace();
     }
-    return nSout.end().split("\n");
+    return new String[0];
+  }
+}
+static class Ed extends Editor {
+  Ed(String name, String val) {
+    super(name, val);
+  }
+  void save(String val) {
+    try {
+      dzaimaSC.set(name, Main.exec(val, dzaimaSC));
+    } catch (Throwable t) {
+      println(t.getMessage());
+      Main.lastError = t;
+    }
   }
 }

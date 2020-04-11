@@ -14,19 +14,19 @@ public class FloorBuiltin extends Builtin {
     return Num.POSINF;
   }
   
-  static class Nf implements NumMV {
+  private static final NumMV NF = new NumMV() {
     public Value call(Num w) {
       return w.floor();
     }
     public void call(double[] res, double[] a) {
       for (int i = 0; i < a.length; i++) res[i] = Math.floor(a[i]);
     }
-  }
-  private static final Nf NF = new Nf();
-  public Obj call(Value w) {
+  };
+  public Value call(Value w) {
     return numChrM(NF, Char::lower, w);
   }
-  static class DNf extends D_NNeN {
+  
+  private static final D_NNeN DNF = new D_NNeN() {
     public double on(double a, double w) {
       return Math.min(a, w);
     }
@@ -39,9 +39,11 @@ public class FloorBuiltin extends Builtin {
     public void on(double[] res, double[] a, double[] w) {
       for (int i = 0; i < a.length; i++) res[i] = Math.min(a[i], w[i]);
     }
-  }
-  private static final DNf DNF = new DNf();
-  public Obj call(Value a0, Value w0) {
+    public Value call(BigValue a, BigValue w) {
+      return a.compareTo(w)>0? w : a;
+    }
+  };
+  public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
   }
 }

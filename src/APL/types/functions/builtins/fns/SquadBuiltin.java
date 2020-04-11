@@ -14,13 +14,13 @@ public class SquadBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (w instanceof Arr) return w;
-    if (w instanceof APLMap) return ((APLMap) w).allValues();
+    if (w instanceof APLMap) return ((APLMap) w).kvPair();
     throw new DomainError("⍵ not array nor map", this, w);
   }
   
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return a.at(w.asIntVec(), sc.IO);
   }
 }

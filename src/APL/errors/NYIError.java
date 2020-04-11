@@ -1,7 +1,7 @@
 package APL.errors;
 
 import APL.Main;
-import APL.types.*;
+import APL.types.Tokenable;
 
 public class NYIError extends APLError { // AKA LazyError
   public NYIError(String s) {

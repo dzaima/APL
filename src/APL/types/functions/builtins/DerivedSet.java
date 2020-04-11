@@ -1,6 +1,5 @@
 package APL.types.functions.builtins;
 
-import APL.Type;
 import APL.types.*;
 
 public class DerivedSet extends AbstractSet {
@@ -13,12 +12,12 @@ public class DerivedSet extends AbstractSet {
     this.f = f;
   }
   
-  @Override public Obj call(Obj a, Obj w, boolean update) {
-    s.call(a, f.call((Value) ((Settable) a).get(), (Value) w), update);
+  @Override public Obj callObj(Obj a, Obj w, boolean update) {
+    s.callObj(a, f.call((Value) ((Settable) a).get(), (Value) w), update);
     return w;
   }
   
-  @Override public String repr() {
-    return f.repr()+s.repr();
+  public String toString() {
+    return f.repr()+"←";
   }
 }

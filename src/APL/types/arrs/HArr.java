@@ -1,11 +1,9 @@
 package APL.types.arrs;
 
-import APL.Indexer;
 import APL.errors.DomainError;
 import APL.types.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class HArr extends Arr {
   private final Value[] arr;
@@ -13,12 +11,19 @@ public class HArr extends Arr {
     super(sh, v.length, sh.length);
     arr = v;
   }
+  
   public HArr(ArrayList<Value> v) { // 1D
-    this(v.toArray(new Value[0]));
+    super(new int[]{v.size()});
+    arr = v.toArray(new Value[0]);
   }
   public HArr(Value[] v) { // 1D
     super(new int[]{v.length}, v.length, 1);
     arr = v;
+  }
+  
+  public HArr(ArrayList<Value> v, int[] sh) {
+    super(sh);
+    arr = v.toArray(new Value[0]);
   }
   
   @Override
@@ -47,33 +52,38 @@ public class HArr extends Arr {
     Value v = (Value) o;
     if (!Arrays.equals(shape, v.shape)) return false;
     assert ia == v.ia;
-    return IntStream.range(0, ia).allMatch(i -> arr[i].equals(v.get(i)));
+    for (int i = 0; i < ia; i++) {
+      if (!arr[i].equals(v.get(i))) return false;
+    }
+    return true;
   }
   
   public String asString() {
-    if (!Arrays.stream(arr).allMatch(c -> c instanceof Char)) throw new DomainError("Converting non-char array to string");
-    return Arrays.stream(arr).map(Value::asString).collect(Collectors.joining());
+    StringBuilder r = new StringBuilder(ia);
+    for (Value v : arr) {
+      if (!(v instanceof Char)) throw new DomainError("Converting non-char array to string");
+      r.append(((Char) v).chr);
+    }
+    return r.toString();
   }
   
-  @Override
   public Value prototype() {
-    if (ia == 0) return EmptyArr.SHAPE0;
-    return get(0) instanceof Primitive? get(0).prototype() : EmptyArr.SHAPE0;
+    if (ia == 0) throw new DomainError("failed to get prototype", this);
+    return arr[0].prototype();
   }
-  
-  @Override
+  public Value safePrototype() {
+    if (ia == 0) return null;
+    return arr[0].safePrototype();
+  }
   public Value[] values() {
     return arr;
   }
+  public Value[] valuesCopy() {
+    return arr.clone();
+  }
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new HArr(arr, sh);
   }
   
-  @Override
-  public Value with(Value what, int[] where) {
-    Value[] nvals = arr.clone();
-    nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return Arr.create(nvals, shape);
-  }
 }

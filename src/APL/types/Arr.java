@@ -4,8 +4,7 @@ import APL.*;
 import APL.errors.DomainError;
 import APL.types.arrs.*;
 
-import java.util.Arrays;
-import java.util.stream.*;
+import java.util.*;
 
 public abstract class Arr extends Value {
   public Arr(int[] shape) {
@@ -36,10 +35,11 @@ public abstract class Arr extends Value {
   }
   public String toString() {
     if (ia == 0) {
-      if (rank == 1) return prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬";
+      String mr = safePrototype() instanceof Char? "''" : "⍬";
+      if (rank == 1) return mr;
       else {
-        String s = IntStream.range(0, rank).mapToObj(i -> String.valueOf(shape[i])).collect(Collectors.joining(" "));
-        return s + "⍴" + (prototype() == Num.ZERO? "⍬" : prototype() instanceof Char? "''" : "⍬");
+        String s = Main.formatAPL(shape);
+        return s + "⍴" + mr;
       }
     }
     String qs = string(Main.quotestrings || Main.noBoxing);
@@ -70,6 +70,7 @@ public abstract class Arr extends Value {
           for (Value v : this) {
             if (!(v instanceof Char)) {
               charmat = false;
+              break;
             }
           }
         }
@@ -114,7 +115,7 @@ public abstract class Arr extends Value {
         }
         int borderSize = simple? 0 : 1;
         int rw = simple? -1 : 1,
-          rh = borderSize ; // result w&h;
+        rh = borderSize ; // result w&h;
         for (x = 0; x < w; x++) rw+= widths[x]+1;
         for (y = 0; y < h; y++) rh+= heights[y]+borderSize;
         char[][] chars = new char[rh][rw];
@@ -226,20 +227,17 @@ public abstract class Arr extends Value {
     return Arr.create(res, shape);
   }
   
-  @Override
-  public Value with(Value what, int[] where) { // pls override
-    Value[] nvals = new Value[ia];
-    System.arraycopy(values(), 0, nvals, 0, ia);
-    nvals[Indexer.fromShape(shape, where, 0)] = what;
-    return Arr.create(nvals, shape);
+  
+  public static Value createL(Value[] v, int[] sh) { // accepts ⊂Primitive; doesn't attempt individual item squeezing; TODO check more places where this should be used
+    if (sh.length == 0 && v[0] instanceof Primitive) return v[0];
+    return create(v, sh);
   }
   
   public static Arr create(Value[] v) {
     return create(v, new int[]{v.length});
   }
-  
   public static Arr create(Value[] v, int[] sh) { // note, doesn't attempt individual item squeezing
-    if (v.length == 0) return new EmptyArr(sh);
+    if (v.length == 0) return new EmptyArr(sh, null);
     if (v[0] instanceof Num) {
       double[] da = new double[v.length];
       for (int i = 0; i < v.length; i++) {
@@ -262,16 +260,37 @@ public abstract class Arr extends Value {
       }
       if (s != null) return new ChrArr(s.toString(), sh);
     }
-//    Value[] opt = new Value[v.length]; // do this in the caller please
-//    boolean anyBetter = false;
-//    for (int i = 0; i < v.length; i++) {
-//      Value c = v[i];
-//      Value o = c.squeeze();
-//      opt[i] = o;
-//      if (c != o) anyBetter = true;
-//    }
-//    if (anyBetter) return new HArr(opt, sh);
-//    else
+    return new HArr(v, sh);
+  }
+  
+  public static Arr create(ArrayList<Value> v) {
+    return create(v, new int[]{v.size()});
+  }
+  public static Arr create(ArrayList<Value> v, int[] sh) { // note, doesn't attempt individual item squeezing
+    if (v.size() == 0) return new EmptyArr(sh, null);
+    Value f = v.get(0);
+    if (f instanceof Num) {
+      double[] da = new double[v.size()];
+      for (int i = 0; i < v.size(); i++) {
+        if (v.get(i) instanceof Num) da[i] = ((Num) v.get(i)).num;
+        else {
+          da = null;
+          break;
+        }
+      }
+      if (da != null) return new DoubleArr(da, sh);
+    }
+    if (f instanceof Char) {
+      StringBuilder s = new StringBuilder();
+      for (Value aV : v) {
+        if (aV instanceof Char) s.append(((Char) aV).chr);
+        else {
+          s = null;
+          break;
+        }
+      }
+      if (s != null) return new ChrArr(s.toString(), sh);
+    }
     return new HArr(v, sh);
   }
   
@@ -288,18 +307,30 @@ public abstract class Arr extends Value {
     }
     return true;
   }
-  private int hash;
+  protected int hash;
   @Override
   public int hashCode() {
-    if (hash != 0) return hash;
-    // hash = 0;
-    for (Value v : this) {
-      hash = hash*31 + v.hashCode();
+    if (hash == 0) {
+      for (Value v : this) {
+        hash = hash*31 + v.hashCode();
+      }
     }
-    return hash;
+    return shapeHash(hash);
   }
   
-  // note for me when transforming new HArr to Arr.create, which ends up being "new Arr.create"; ignore pls ._.
-  private class delete_new_pls extends Exception{}
-  public class create extends Main {create(Object...FO) throws delete_new_pls{}}
+  protected int shapeHash(int hash) {
+    int h = 0;
+    for (int i : shape) {
+      h = h*31 + i;
+    }
+    int res = hash*113 + h;
+    if (res == 0) return 100003;
+    return res;
+  }
+  
+  public static int prod(int[] ia) {
+    int r = 1;
+    for (int i : ia) r*= i;
+    return r;
+  }
 }

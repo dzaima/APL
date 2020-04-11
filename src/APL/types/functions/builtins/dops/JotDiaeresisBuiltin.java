@@ -11,7 +11,18 @@ public class JotDiaeresisBuiltin extends Dop {
   
   
   @Override
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    return ((Fun) aa).call((Value) ((Fun) ww).call(a, w));
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return aaf.call(wwf.call(a, w));
+  }
+  
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return aaf.call(wwf.call(w));
+  }
+  
+  public Value callInv(Obj aa, Obj ww, Value w) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return aaf.call(wwf.call(w));
   }
 }

@@ -8,12 +8,12 @@ public class EachRight extends Mop {
     return "ᑈ";
   }
   
-  public Obj call(Obj f, Value a, Value w, DerivedMop derv) {
-    Fun ff = (Fun) f;
+  public Value call(Obj f, Value a, Value w, DerivedMop derv) {
+    Fun ff = isFn(f);
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = ((Value) ff.call(a, w.get(i))).squeeze();
+      n[i] = ff.call(a, w.get(i)).squeeze();
     }
-    return Arr.create(n, w.shape);
+    return Arr.createL(n, w.shape);
   }
 }

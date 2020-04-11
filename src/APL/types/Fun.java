@@ -6,7 +6,6 @@ import APL.types.arrs.*;
 
 import java.util.*;
 
-@SuppressWarnings({"Convert2streamapi", "Java8ArraySetAll"}) // class for getting overridden & being fast so no streams
 public abstract class Fun extends Scopeable {
   
   public Value identity() {
@@ -19,20 +18,41 @@ public abstract class Fun extends Scopeable {
   protected Fun() {
     super(null);
   }
-  public Obj call(Value w) {
+  public Value call(Value w) {
     throw new IncorrectArgsError("function "+toString()+" called monadically", this, w);
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     throw new IncorrectArgsError("function "+toString()+" called dyadically", this, a);
   }
-  public Obj callInv(Value w) {
+  public Obj callObj(Value w) { // if overridden, call(w) must be overridden too!
+    return call(w);
+  }
+  public Obj callObj(Value a, Value w) { // if overridden, call(a, w) must be overridden too!
+    return call(a, w);
+  }
+  
+  public Value callInv(Value w) {
     throw new DomainError(this+" doesn't support monadic inverting", this, w);
   }
-  public Obj callInvW(Value a, Value w) {
+  public Value callInvW(Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍵", this, w);
   }
-  public Obj callInvA(Value a, Value w) {
+  public Value callInvA(Value a, Value w) {
     throw new DomainError(this+" doesn't support dyadic inverting of ⍺", this, w);
+  }
+  
+  
+  public Value under(Obj o, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    return callInv(v);
+  }
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return callInvW(a, v);
+  }
+  public Value underA(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return callInvA(v, w);
   }
   
   public interface NumMV {
@@ -46,12 +66,15 @@ public abstract class Fun extends Scopeable {
     default void call(double[] res, double[] a) {
       for (int i = 0; i < res.length; i++) res[i] = call(a[i]);
     }
+    default Value call(BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
+    }
   }
   public interface ChrMV {
     Value call(Char w);
     default Arr call(ChrArr a) {
       Value[] res = new Value[a.ia];
-      for (int i = 0; i < a.ia; i++) res[i] = call(new Char(a.s.charAt(i)));
+      for (int i = 0; i < a.ia; i++) res[i] = call(Char.of(a.s.charAt(i)));
       return new HArr(res, a.shape);
     }
   }
@@ -89,8 +112,10 @@ public abstract class Fun extends Scopeable {
         arr[i] = numM(nf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected number, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected number, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrM(NumMV nf, ChrMV cf, Value w) {
@@ -107,9 +132,11 @@ public abstract class Fun extends Scopeable {
         arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Char) return cf.call((Char)w);
-    else if (w instanceof Num) return nf.call((Num) w);
-    else throw new DomainError("Expected either number or character argument, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Char    ) return cf.call((Char    ) w);
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected either number or character argument, got "+w.humanType(false), this, w);
   }
   
   protected Value numChrMapM(NumMV nf, ChrMV cf, MapMV mf, Value w) {
@@ -125,10 +152,12 @@ public abstract class Fun extends Scopeable {
         arr[i] = numChrM(nf, cf, o.get(i));
       }
       return new HArr(arr, o.shape);
-    } else if (w instanceof Char  ) return cf.call((Char  ) w);
-      else if (w instanceof Num   ) return nf.call((Num   ) w);
-      else if (w instanceof APLMap) return mf.call((APLMap) w);
-    else throw new DomainError("Expected either number/char/map, got "+w.humanType(false), this, w);
+    }
+    if (w instanceof Char    ) return cf.call((Char    ) w);
+    if (w instanceof Num     ) return nf.call((Num     ) w);
+    if (w instanceof APLMap  ) return mf.call((APLMap  ) w);
+    if (w instanceof BigValue) return nf.call((BigValue) w);
+    throw new DomainError("Expected either number/char/map, got "+w.humanType(false), this, w);
   }
   
   
@@ -222,31 +251,37 @@ public abstract class Fun extends Scopeable {
       on(res, a, w);
       return new DoubleArr(res, sh);
     }
+    public Value call(BigValue a, BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
+    }
   }
   
   public abstract static class D_NNeB implements D_NN { // dyadic number-number equals boolean
     public abstract boolean on(double a, double w);
-    public abstract void on(BitArr.BC res, double a, double[] w);
-    public abstract void on(BitArr.BC res, double[] a, double w);
-    public abstract void on(BitArr.BC res, double[] a, double[] w);
+    public abstract void on(BitArr.BA res, double a, double[] w);
+    public abstract void on(BitArr.BA res, double[] a, double w);
+    public abstract void on(BitArr.BA res, double[] a, double[] w);
     
     public Value call(double a, double w) {
       return on(a, w)? Num.ONE : Num.ZERO;
     }
     public Value call(double[] a, double[] w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
     }
     public Value call(double a, double[] w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
     }
     public Value call(double[] a, double w, int[] sh) {
-      BitArr.BC res = BitArr.create(sh);
+      BitArr.BA res = new BitArr.BA(sh);
       on(res, a, w);
       return res.finish();
+    }
+    public Value call(BigValue a, BigValue w) {
+      throw new DomainError("bigintegers not allowed here", w);
     }
   }
   
@@ -256,6 +291,10 @@ public abstract class Fun extends Scopeable {
     Value call(double[] a, double[] w, int[] sh);
     Value call(double   a, double[] w, int[] sh);
     Value call(double[] a, double   w, int[] sh);
+    Value call(BigValue a, BigValue w);
+    default Value call(double a, BigValue w) { // special requirement for log; only needs to be handled in numD
+      return call(new BigValue(a), w);
+    }
   }
   public interface D_BB {
     Value call(BitArr  a, BitArr  w);
@@ -271,12 +310,18 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return f.call(((Num) a).num, ((Num) w).num);
-          else throw new DomainError("calling a number-only function with "+w.humanType(true));
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return f.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn)) {
+            if (an) return f.call(((Num) a).num, (BigValue) w);
+            else return f.call((BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          }
+          throw new DomainError("calling a number-only function with "+w.humanType(true));
         } else return new Rank0Arr(numD(f, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
-        if (w.quickDoubleArr() && a instanceof Primitive) {
+        if (w.quickDoubleArr() && a instanceof Num) {
           return f.call(a.asDouble(), w.asDoubleArr(), w.shape);
         }
         Value af = a.first();
@@ -290,7 +335,7 @@ public abstract class Fun extends Scopeable {
       }
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
-        if (a.quickDoubleArr() && w instanceof Primitive) {
+        if (a.quickDoubleArr() && w instanceof Num) {
           return f.call(a.asDoubleArr(), w.asDouble(), a.shape);
         }
         Value wf = w.first();
@@ -325,17 +370,21 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
-          else throw new DomainError("calling a number-only function with "+w.humanType(true));
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          throw new DomainError("calling a number-only function with "+w.humanType(true));
         } else return new Rank0Arr(numD(n, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
-          if (w.quickDoubleArr()) {
-            return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
+          if (w instanceof BitArr && Main.isBool(a)) {
+            return b.call(Main.bool(a), (BitArr) w);
           }
-          if (w instanceof BitArr) {
-            return b.call(Main.bool(a), ((BitArr) w));
+          if (a instanceof Num && w.quickDoubleArr()) {
+            return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
           }
         }
         Value af = a.first();
@@ -350,11 +399,11 @@ public abstract class Fun extends Scopeable {
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
         if (w instanceof Primitive) {
-          if (a.quickDoubleArr()) {
-            return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
-          }
-          if (a instanceof BitArr) {
+          if (a instanceof BitArr && Main.isBool(w)) {
             return b.call((BitArr) a, Main.bool(w));
+          }
+          if (a instanceof Num && a.quickDoubleArr()) {
+            return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
           }
         }
         Value wf = w.first();
@@ -370,11 +419,12 @@ public abstract class Fun extends Scopeable {
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         
+        if (a instanceof BitArr && w instanceof BitArr) {
+          return b.call((BitArr) a, (BitArr) w);
+        }
+        
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
-        }
-        if (a instanceof BitArr && b instanceof BitArr) {
-          return b.call((BitArr) a, (BitArr) w);
         }
         
         Value[] arr = new Value[a.ia];
@@ -394,13 +444,17 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
-          else if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
-          else return def.call(a, w);
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
+          if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
+          if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
+          return def.call(a, w);
         } else return new Rank0Arr(numChrD(n, c, def, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
-        if (a instanceof Primitive && w.quickDoubleArr()) {
+        if (a instanceof Num && w.quickDoubleArr()) {
           return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
         }
         
@@ -415,7 +469,7 @@ public abstract class Fun extends Scopeable {
       }
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
-        if (w instanceof Primitive && a.quickDoubleArr()) {
+        if (w instanceof Num && a.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
         }
         Value wf = w.first();
@@ -449,18 +503,22 @@ public abstract class Fun extends Scopeable {
     if (a.scalar()) {
       if (w.scalar()) { // ⊃⍺ ⊃⍵
         if (a instanceof Primitive & w instanceof Primitive) {
-          if (a instanceof Num & w instanceof Num) return n.call(((Num) a).num, ((Num) w).num);
+          boolean an = a instanceof Num;
+          boolean wn = w instanceof Num;
+          if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
           else if (a instanceof Char & w instanceof Char) return c.call(((Char) a).chr, ((Char) w).chr);
+          else if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
+            return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
           else return def.call(a, w);
         } else return new Rank0Arr(ncbaD(n, b, c, def, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
-          if (w.quickDoubleArr()) {
-            return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
+          if (w instanceof BitArr && Main.isBool(a)) {
+            return b.call(Main.bool(a), (BitArr) w);
           }
-          if (w instanceof BitArr) {
-            return b.call(Main.bool(a), ((BitArr) w));
+          if (a instanceof Num && w.quickDoubleArr()) {
+            return n.call(a.asDouble(), w.asDoubleArr(), w.shape);
           }
         }
         
@@ -475,11 +533,11 @@ public abstract class Fun extends Scopeable {
     } else {
       if (w.scalar()) { // ⍺ ⍵¨
         if (w instanceof Primitive) {
-          if (a.quickDoubleArr()) {
-            return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
-          }
-          if (a instanceof BitArr) {
+          if (a instanceof BitArr && Main.isBool(w)) {
             return b.call((BitArr) a, Main.bool(w));
+          }
+          if (a instanceof Num && a.quickDoubleArr()) {
+            return n.call(a.asDoubleArr(), w.asDouble(), a.shape);
           }
         }
         Value wf = w.first();
@@ -495,11 +553,11 @@ public abstract class Fun extends Scopeable {
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         
+        if (a instanceof BitArr && w instanceof BitArr) {
+          return b.call((BitArr) a, (BitArr) w);
+        }
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
-        }
-        if (a instanceof BitArr && b instanceof BitArr) {
-          return b.call((BitArr) a, (BitArr) w);
         }
         
         Value[] arr = new Value[a.ia];
@@ -524,5 +582,13 @@ public abstract class Fun extends Scopeable {
   
   @Override public String toString() {
     return repr();
+  }
+  
+  // functions are equal per-object basis
+  @Override public int hashCode() {
+    return actualHashCode();
+  }
+  @Override public boolean equals(Obj o) {
+    return this == o;
   }
 }

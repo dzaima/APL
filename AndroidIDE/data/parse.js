@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 fs=require('fs');
 if (!process.argv[2]) {
-  console.error(`Usage: ${process.argv[1]} [layout.txt]
-`);
-  process.exit();
+  process.argv[2] = 'kbs.txt';
 }
 function chunks(arr, len) {
   let res = [];

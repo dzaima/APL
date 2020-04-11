@@ -37,6 +37,10 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
     }
   }
   
+  public int pos() {
+    return ci-1;
+  }
+  
   public boolean hasNext() {
     return ci < ia;
   }
@@ -110,7 +114,7 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
   }
   private static final int[] i1 = new int[1];
   private static final int[] i0 = new int[0];
-  public static final int[] indsh(Obj ov) { // must be called after inds(ov)
+  public static int[] indsh(Obj ov) { // must be called after inds(ov)
     Value v = (Value) ov;
     if (v instanceof Primitive) return i1;
     if (v.ia == 0) return i0;
@@ -119,7 +123,6 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
     return fst.shape;
   }
   
-  @SuppressWarnings("NullableProblems") // not using @NotNull for non-intelliJ compilers
   public Iterator<int[]> iterator() {
     return this;
   }

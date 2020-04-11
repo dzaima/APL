@@ -1,23 +1,27 @@
 package APL.types.functions;
 
 import APL.*;
+import APL.errors.DomainError;
 import APL.tokenizer.types.BacktickTok;
 import APL.types.*;
 import APL.types.arrs.HArr;
 
 public class ArrFun extends Primitive {
   
-  private final Fun f;
+  private final Obj f;
   
   public ArrFun(Fun f) {
     this.f = f;
   }
   
   public ArrFun(BacktickTok t, Scope sc) {
-    f = (Fun) Main.oexec(t.value(), sc);
+    f = Main.oexec(t.value(), sc);
+    if (!(f instanceof Fun) && !(f instanceof Mop) && !(f instanceof Dop)) {
+      throw new DomainError("can't arrayify " + f.humanType(true));
+    }
   }
   
-  public Fun fun() {
+  public Obj obj() {
     return f;
   }
   
@@ -27,6 +31,19 @@ public class ArrFun extends Primitive {
   }
   
   @Override public String toString() {
-    return "`"+f.repr();
+    if (f instanceof Fun) return "`"+((Fun) f).repr();
+    if (f instanceof Mop) return "`"+((Mop) f).repr();
+    if (f instanceof Dop) return "`"+((Dop) f).repr();
+    throw new InternalError("unexpected `"+f.humanType(false));
+  }
+  
+  @Override public int hashCode() {
+    return f.hashCode();
+  }
+  
+  @Override public boolean equals(Obj o) {
+    if (!(o instanceof ArrFun)) return false;
+    ArrFun w = (ArrFun) o;
+    return w.f.equals(f);
   }
 }

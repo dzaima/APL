@@ -24,13 +24,13 @@ public class DervDimDop extends Dop {
   }
   
   @Override
-  public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     if (!(f instanceof DimDDop)) throw new SyntaxError("Attempt to call function dyadically that doesn't support dimension specification", a);
     return ((DimDDop) f).call(aa, ww, a, w, dim);
   }
   
   @Override
-  public Obj call(Obj aa, Obj ww, Value w, DerivedDop derv) {
+  public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     if (!(f instanceof DimMDop)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", w);
     return ((DimMDop) f).call(aa, ww, w, dim);
   }

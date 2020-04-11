@@ -1,38 +1,42 @@
 package APL.tokenizer;
 
-import java.util.*;
-
-import APL.*;
-import APL.errors.*;
+import APL.errors.SyntaxError;
 import APL.tokenizer.types.*;
+import APL.types.BigValue;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Tokenizer {
   private static final char[] validNames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_∆".toCharArray();
-  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢∆⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾∞…ᑈᐵ"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default // "+-/⍳⍬⍴∘⎕⊂÷⍺⍵≢¨";
-  private static boolean validName(char i) {
-    for (char c : validNames) if (c == i) return true;
+  private static final String ops = "⍺⍳⍴⍵!%*+,-./<=>?@\\^|~⍬⊢⊣⌷¨⍨⌿⍀≤≥≠∨∧÷×∊↑↓○⌈⌊∇∘⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⌹⍕⍎⍫⍪≡≢⍷⎕⍞⍣⍶⍸⍹⌸⌺⍇⍢⍤⍁⍂⊆⊇⊙⌾⌻⌼⍃⍄⍅⍆⍈⍊⍌⍍⍏⍐⍑⍓⍔⍖⍗⍘⍚⍛⍜⍠⍡⍥⍦⍧⍩⍭⍮⍯⍰√‽⊗ϼ∍⋾…ᑈᐵ"; // stolen from https://bitbucket.org/zacharyjtaylor/rad/src/master/RAD_document.txt?fileviewer=file-view-default
+  private static boolean validNameStart(char c) {
+    for (char l : validNames) if (l == c) return true;
     return false;
+  }
+  public static boolean validNameMid(char c) {
+    return validNameStart(c) || c >= '0' && c <= '9';
   }
   static class Line {
     final ArrayList<Token> ts;
     final String line;
     final int pos;
     Integer annoyingBacktickPos;
-  
+    
     Line(String line, int pos, ArrayList<Token> ts) {
       this.ts = ts;
       this.line = line;
       this.pos = pos;
     }
-  
+    
     Line(String line, int pos) {
       this(line, pos, new ArrayList<>());
     }
-  
+    
     public int size() {
       return ts.size();
     }
-  
+    
     public void add(Token r) {
       if (annoyingBacktickPos != null) {
         ts.add(new BacktickTok(line, annoyingBacktickPos, r.epos, r));
@@ -41,7 +45,7 @@ public class Tokenizer {
         ts.add(r);
       }
     }
-  
+    
     LineTok tok() {
       if (annoyingBacktickPos != null) throw new SyntaxError("Nothing after backtick");
       int epos = size() == 0? pos : ts.get(size()-1).epos;
@@ -51,13 +55,11 @@ public class Tokenizer {
   static class Block { // temp storage of multiple lines
     final ArrayList<Line> a;
     final char b;
-    private final String raw;
     private final int pos;
-  
-    Block(ArrayList<Line> a, char b, String raw, int pos) {
+    
+    Block(ArrayList<Line> a, char b, int pos) {
       this.a = a;
       this.b = b;
-      this.raw = raw;
       this.pos = pos;
     }
     public String toString() {
@@ -72,11 +74,11 @@ public class Tokenizer {
   public static BasicLines tokenize(String raw, boolean pointless) { // pointless means unevaled things get tokens
     int li = 0;
     int len = raw.length();
-  
+    
     var levels = new ArrayList<Block>();
-    levels.add(new Block(new ArrayList<>(), '⋄', raw, 0));
+    levels.add(new Block(new ArrayList<>(), '⋄', 0));
     levels.get(0).a.add(new Line(raw, 0, new ArrayList<>()));
-
+    
     for (int i = 0; i < len; li = i) {
       Block expr = levels.get(levels.size() - 1);
       ArrayList<Line> lines = expr.a;
@@ -100,10 +102,10 @@ public class Tokenizer {
             default:
               throw new Error("this should really not happen");
           }
-          levels.add(new Block(new ArrayList<>(), match, raw, i));
+          levels.add(new Block(new ArrayList<>(), match, i));
           lines = levels.get(levels.size() - 1).a;
           lines.add(new Line(raw, i));
-    
+          
           i++;
         } else if (c == ')' || c == '}' || c == ']') {
           Block closed = levels.remove(levels.size() - 1);
@@ -116,7 +118,7 @@ public class Tokenizer {
             throw new SyntaxError("mismatched parentheses of " + c + " and " + closed.b);
           }
           if (lines.size() > 0 && lines.get(lines.size() - 1).size() == 0) lines.remove(lines.size() - 1); // no trailing empties!!
-    
+          
           var lineTokens = new ArrayList<LineTok>();
           for (Line ta : closed.a) lineTokens.add(ta.tok());
           Token r;
@@ -137,20 +139,66 @@ public class Tokenizer {
           tokens = lines.get(lines.size() - 1);
           tokens.add(r);
           i++;
-        } else if (validName(c) || c == '⎕' && validName(next)) {
+        } else if (validNameStart(c) || c == '⎕' && validNameStart(next)) {
           i++;
-          while (i < len && (validName(raw.charAt(i)) || raw.charAt(i) >= '0' && raw.charAt(i) <= '9')) i++;
+          while (i < len && validNameMid(raw.charAt(i))) i++;
           var name = raw.substring(li, i);
           if (c == '⎕') name = name.toUpperCase();
           tokens.add(new NameTok(raw, li, i, name));
-        } else if (c >= '0' && c <= '9' || c == '¯' || c == '.' && next >= '0' && next <= '9') {
+        } else if (c=='¯' && next=='∞') {
+          i+= 2;
+          tokens.add(new NumTok(raw, li, i, Double.NEGATIVE_INFINITY));
+        } else if (c == '∞') {
           i++;
-          boolean foundPoint = false;
-          while (i < len && (c = raw.charAt(i)) >= '0' && c <= '9' || c == '.' && !foundPoint) {
-            if (c == '.') foundPoint = true;
+          tokens.add(new NumTok(raw, li, i, Double.POSITIVE_INFINITY));
+        } else if (c>='0' && c<='9' || c=='¯' || c=='.' && next>='0' && next<='9') {
+          boolean negative = c=='¯';
+          if (negative) i++;
+          int si = i;
+          boolean hasPoint = false;
+          while(i < len) {
+            c = raw.charAt(i);
+            if (hasPoint) {
+              if (c<'0' || c>'9') break;
+            } else if (c<'0' || c>'9') {
+              if (c == '.') hasPoint = true;
+              else break;
+            }
             i++;
           }
-          tokens.add(new NumTok(raw, li, i, raw.substring(li, i)));
+          double f = Double.parseDouble(raw.substring(si,i));
+          if (negative) f = -f;
+          if (i < len) {
+            c = raw.charAt(i);
+            boolean hasE = c=='e' | c=='E';
+            if (hasE && i+1==len) throw new SyntaxError("unfinished number");
+            boolean hasExp = hasE && !validNameStart(raw.charAt(i+1));
+            if (hasExp) {
+              i++;
+              c = raw.charAt(i);
+              boolean negExp = c == '¯';
+              if (negExp) i++;
+              si = i;
+              while (i < len) {
+                c = raw.charAt(i);
+                if (c < '0' || c > '9') break;
+                i++;
+              }
+              int exp = Integer.parseInt(raw.substring(si, i));
+              if (negExp) exp = -exp;
+              f *= Math.pow(10, exp);
+            }
+            if (i<len && raw.charAt(i)=='L' && (i+1 == len || !validNameMid(raw.charAt(i+1)))) {
+              if (hasExp || hasPoint) {
+                if (hasExp) throw new SyntaxError("biginteger literal with exponent");
+                throw new SyntaxError("biginteger literal with decimal part");
+              }
+              i++;
+              BigInteger big = new BigInteger(raw.substring(si, i-1));
+              if (negative) big = big.negate();
+              tokens.add(new BigTok(raw, li, i, new BigValue(big)));
+            } else tokens.add(new NumTok(raw, li, i, f));
+          } else tokens.add(new NumTok(raw, li, i, f));
         } else if (ops.contains(cS)) {
           tokens.add(new OpTok(raw, i, i + 1, cS));
           i++;
@@ -226,7 +274,7 @@ public class Tokenizer {
           if (c == '⋄' && pointless) tokens.add(new DiamondTok(raw, i));
           
           if (c == ';') tokens.add(new SemiTok(raw, i, i + 1));
-    
+          
           if (tokens.size() > 0) {
             lines.add(new Line(raw, li));
           }
@@ -235,9 +283,19 @@ public class Tokenizer {
           i++;
           while (i < len && raw.charAt(i) != '\n') i++;
           if (pointless) tokens.add(new CommentTok(raw, li, i));
+        } else if (c == '#') {
+          tokens.add(new ScopeTok(raw, i, i+1));
+          i++;
         } else if (c == ' ' || c == '\t') {i++;} else {
           if (pointless) tokens.add(new ErrTok(raw, i, i + 1));
-          else Main.colorprint("warning: unknown token `" + c + "`", 206);
+          else {
+            String hex = Integer.toHexString(c);
+            
+            while(hex.length() < 4)
+              //noinspection StringConcatenationInLoop \\ shut UUuuppp
+              hex = "0"+hex;
+            throw new SyntaxError("unknown token `" + c + "` (\\u"+hex+")");
+          }
           i++;
         }
         //if (c != ' ') {
@@ -258,7 +316,7 @@ public class Tokenizer {
       // else, attempt to recover
       while (levels.size() > 1) {
         Block closed = levels.remove(levels.size() - 1);
-  
+        
         var lineTokens = new ArrayList<LineTok>();
         for (Line ta : closed.a) lineTokens.add(ta.tok());
         Token r;
@@ -276,7 +334,7 @@ public class Tokenizer {
             throw new Error("this should really not happen "+closed.b);
         }
         var lines = levels.get(levels.size() - 1).a;
-        var tokens = lines.get(lines.size() - 1);
+        Line tokens = lines.get(lines.size() - 1);
         tokens.add(r);
       }
     }

@@ -1,44 +1,44 @@
-class ROText extends Drawable {
+static class ROText extends Drawable {
   float tsz, chw;
   ROText(int x, int y, int w, int h) {
     super(x, y, w, h);
     s = new ArrayList();
-    setSize(min(width, height)/20);
+    setSize(max(d.width, d.height)/40);
   }
   int xoff = 0; // scroll
   int yoff = 0;
   int border = 10;
   boolean redraw;
   void redraw() {
-    clip(x+border, y, w-border*2, h);
-    fill(#101010);
-    noStroke();
-    rectMode(CORNER);
-    rect(x, y, w, h);
-    textAlign(LEFT, TOP);
-    fill(#D2D2D2);
-    stroke(#D2D2D2);
-    strokeWeight(2);
-    textSize(tsz);
-    line(x, y+h, x+w, y+h);
+    beginClip(d, x+border, y, w-border*2, h);
+    d.fill(#101010);
+    d.noStroke();
+    d.rectMode(CORNER);
+    d.rect(x, y, w, h);
+    d.textAlign(LEFT, TOP);
+    d.fill(#D2D2D2);
+    d.stroke(#D2D2D2);
+    d.strokeWeight(2);
+    d.textSize(tsz);
+    d.line(x, y+h, x+w, y+h);
     int dy = -s.size();
-    clip(x+border, y+3, w-border*2, h-6);
+    d.clip(x+border, y+3, w-border*2, h-6);
     for (String s : s) {
-      text(s, x+border + xoff, y + dy*tsz + yoff);
+      d.text(s, x+border + xoff, y + dy*tsz + yoff);
       dy++;
     }
-    noClip();
+    endClip(d);
     redraw = false;
   }
   void tick() {
     if (!visible) return;
-    if (mousePressed && smouseIn() && (mouseY!=pmouseY || mouseX!=pmouseX)) {
+    if (a.mousePressed && smouseIn() && (a.mouseY!=a.pmouseY || a.mouseX!=a.pmouseX)) {
       redraw = true;
-      yoff+= mouseY-pmouseY;
+      yoff+= a.mouseY-a.pmouseY;
       if (yoff < h-border) yoff = h-border;
       
       
-      xoff+= mouseX-pmouseX;
+      xoff+= a.mouseX-a.pmouseX;
       int max = 0;
       for (String s : s) max = max(max, s.length());
       float maxx = (max - 2)*chw;
@@ -51,22 +51,37 @@ class ROText extends Drawable {
   }
   
   ArrayList<String> s;
+  boolean newline;
+  void appendLns(String a) {
+    String[] lns = split(a, "\n");
+    if (newline) {
+      for (String s : lns) append(s);
+    } else {
+      if (s.size()==0) s.add("");
+      s.set(s.size()-1, s.get(s.size()-1)+lns[0]);
+      for (int i = 1; i < lns.length; i++) append(lns[i]);
+    }
+    newline = a.endsWith("\n");
+    if (newline)s.remove(s.size()-1);
+  }
   void append(String a) { // append a line
     s.add(a);
     yoff = h-border;
     xoff = 0;
+    newline = true;
     redraw = true;
   }
   void set(ArrayList<String> a) {
     s = a;
     yoff = h-border;
     xoff = 0;
+    newline = true;
     redraw = true;
   }
   void setSize(int sz) {
     tsz = sz;
-    textSize(tsz);
-    chw = g.textWidth('H');
+    a.textSize(tsz);
+    chw = d.textWidth('H');
     redraw = true;
   }
   void end() {

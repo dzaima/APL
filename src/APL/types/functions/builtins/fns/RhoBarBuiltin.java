@@ -2,7 +2,7 @@ package APL.types.functions.builtins.fns;
 
 import APL.Scope;
 import APL.errors.DomainError;
-import APL.types.*;
+import APL.types.Value;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
@@ -15,7 +15,7 @@ public class RhoBarBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     int IO = sc.IO;
     if (w.rank != 1) throw new DomainError("argument to ϼ must be a vector");
     int dim = w.ia;

@@ -1,6 +1,6 @@
 fns:
  dyadic  monadic
-+   add; conjugate
++   add; identity (no complex numbers)
 -   sub; negate / swap case
 ×   mul; sign / case (i.e. ×'Hi ' → 1 ¯1 0) / ×|map
 ÷   div; 1÷⍵
@@ -42,13 +42,14 @@ fns:
 …     NYI; range
 ⍕  format; NYI
 ⍎    eval; NYI
-⍋ grade up  ; NYI
-⍒ grade down; NYI
-⌿     NYI; replicate
+⌿  expand; replicate
 ∪  unique; union
 ∩     NYI; intersection
 ⊂ enclose; split
 ⊃   first; pick
+%     NYI; merge - 1 2 2 3%4↑¨⎕a⎕l⎕d → 'Abc3'
+⍋ grade up  ; NYI
+⍒ grade down; NYI
 ⊇ first if enclosed; select
 ⍉ transpose; NYI
 ⍧ is first; count
@@ -68,7 +69,7 @@ monadic ops:
 ¨  for each
 ⍨  selfie; commute
 ⌾  table (aka ∘.⍺⍺; _might_ get removed at some point?)
-⌸  get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
+⌸  key; group ⍺ by ⍵; get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
 ᐵ  each-left (A fᐵ B ≡ A f¨ ⊂B)
 ᑈ  each-right (A fᑈ B ≡ (⊂A) f¨ B)
 
@@ -81,7 +82,7 @@ dyadic ops
 ⍡  cumulative repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
 ⍤  atop (←→ {⍺⍺ ⍺ ⍵⍵ ⍵} )
-⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵} )
+⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵}; also structural inverse )
 ⍫  obverse - define inverse: ⍶ - regular function, ⍹ - inverse
 @  at; right op = indices or function giving boolean array, left op = replacement array or function
 ⍁  for each diagonal

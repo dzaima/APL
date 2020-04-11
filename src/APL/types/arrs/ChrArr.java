@@ -4,8 +4,6 @@ import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.Arrays;
-
 public class ChrArr extends Arr {
   public String s;
   
@@ -32,34 +30,31 @@ public class ChrArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return new Char(s.charAt(i));
+    return Char.of(s.charAt(i));
   }
   
   @Override public Value first() {
-    if (ia > 0) return new Char(s.charAt(0));
+    if (ia > 0) return Char.of(s.charAt(0));
     return Char.SPACE;
   }
   @Override
   public String asString() {
+    if (rank > 1) throw new DomainError("Using rank "+rank+" character array as string");
     return s;
   }
   
-  @Override
   public Value prototype() {
+    return Char.SPACE;
+  }
+  public Value safePrototype() {
     return Char.SPACE;
   }
   
   @Override
   public Value ofShape(int[] sh) {
-    if (sh.length == 0 && !Main.enclosePrimitives) return new Char(s.charAt(0));
+    if (sh.length == 0 && !Main.enclosePrimitives) return Char.of(s.charAt(0));
     return new ChrArr(s, sh);
   }
-  
-//  @Override TODO finish
-//  public Value with(Value what, int[] where) {
-//    if (!(what instanceof Char)) return super.with(what, where);
-//    String n =
-//  }
   
   @Override
   public Value squeeze() {
@@ -68,10 +63,12 @@ public class ChrArr extends Arr {
   
   @Override
   public int hashCode() {
-    int r = 0;
-    for (char c : s.toCharArray()) {
-      r = r*31 + c;
+    if (hash == 0) {
+      for (char c : s.toCharArray()) {
+        hash = hash*31 + c;
+      }
+      hash = shapeHash(hash);
     }
-    return r;
+    return hash;
   }
 }

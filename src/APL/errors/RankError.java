@@ -1,10 +1,16 @@
 package APL.errors;
 
-import APL.types.Value;
+import APL.Main;
+import APL.types.*;
 
 public class RankError extends APLError {
   public RankError(String s, Value cause) {
     super(s);
+    this.cause = cause;
+  }
+  public RankError(String s, Tokenable fun, Value cause) {
+    super(s);
+    Main.faulty = fun;
     this.cause = cause;
   }
   public RankError(String s) {

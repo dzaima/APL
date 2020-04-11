@@ -5,6 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
+import APL.types.functions.builtins.dops.AtBuiltin;
 
 import java.util.Arrays;
 
@@ -15,10 +16,14 @@ public class ReplicateBuiltin extends Builtin {
   
   
   
-  public Obj call(Value a, Value w) {
-    if (w.rank == 0) {
-      RankError.must(a.rank < 2, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
-      int sz = w.asInt();
+  public Value call(Value a, Value w) {
+    return replicate(a, w);
+  }
+  
+  public static Value replicate(Value a, Value w) {
+    if (a.rank == 0) {
+      RankError.must(w.rank<=1, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
+      int sz = a.asInt();
       if (sz < 0) {
         Value[] res = new Value[a.ia*-sz];
         Value n = a.first() instanceof Char? Char.SPACE : Num.ZERO;
@@ -37,8 +42,8 @@ public class ReplicateBuiltin extends Builtin {
     }
     
     // ⍺.rank ≠ 0
-    RankError.must(w.rank == a.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+w.rank+" vs "+a.rank + ")");
-    LengthError.must(Arrays.equals(w.shape, a.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(w.shape) + " vs " + Main.formatAPL(a.shape) + ")");
+    RankError.must(a.rank == w.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+a.rank+" vs "+w.rank + ")");
+    LengthError.must(Arrays.equals(a.shape, w.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")");
   
     if (w instanceof BitArr) {
       BitArr ab = (BitArr) w;
@@ -143,5 +148,14 @@ public class ReplicateBuiltin extends Builtin {
       }
       return Arr.create(res);
     }
+  }
+  
+  
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
+    return AtBuiltin.at(v, new Fun() { // lazy version
+      public String repr() { return "{⌿.⍺}"; }
+      public Value call(Value w) { return a; }
+    }, w, -1234);
   }
 }

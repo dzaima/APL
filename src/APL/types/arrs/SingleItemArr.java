@@ -1,10 +1,10 @@
 package APL.types.arrs;
 
-import APL.errors.*;
+import APL.Main;
+import APL.errors.DomainError;
 import APL.types.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Iterator;
 
 public class SingleItemArr extends Arr {
   private final Value item;
@@ -32,6 +32,10 @@ public class SingleItemArr extends Arr {
     return item;
   }
   
+  public Value first() {
+    return item;
+  }
+  
   @Override
   public String asString() {
     if (rank >= 2) throw new DomainError("using rank≥2 array as string");
@@ -42,14 +46,15 @@ public class SingleItemArr extends Arr {
     return s.toString();
   }
   
-  @Override
   public Value prototype() {
     return item.prototype();
   }
-  
+  public Value safePrototype() {
+    return item.safePrototype();
+  }
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     return new SingleItemArr(item, sh);
   }
   
@@ -57,7 +62,7 @@ public class SingleItemArr extends Arr {
   public boolean quickDoubleArr() {
     return item instanceof Num;
   }
-  public Value[] values() {
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = item;
     return vs;
@@ -85,15 +90,15 @@ public class SingleItemArr extends Arr {
   @Override
   public String oneliner(int[] where) {
     if (where.length == 0) {
-      String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-      return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner();
+      String r = Main.formatAPL(shape);
+      return r + "⍴" + item.oneliner();
     }
     return super.oneliner(where);
   }
   // @Override
   // public String toString() {
-  //   String r = Arrays.stream(shape).mapToObj(String::valueOf).collect(Collectors.joining(" "));
-  //   return (r.length() == 0? "⍬" : r) + "⍴" + item.oneliner(new int[0]);
+  //   String r = Main.formatAPL(shape);
+  //   return r + "⍴" + item.oneliner(new int[0]);
   // }
   
   @Override public Iterator<Value> iterator() {
@@ -103,7 +108,7 @@ public class SingleItemArr extends Arr {
       @Override public boolean hasNext() {
         return i < ia;
       }
-  
+      
       @Override public Value next() {
         i++;
         return item;

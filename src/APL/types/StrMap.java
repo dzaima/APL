@@ -1,19 +1,32 @@
 package APL.types;
 
-import APL.Main;
+import APL.*;
+import APL.types.arrs.HArr;
 
 import java.util.*;
 
 public class StrMap extends APLMap {
-  private final HashMap<String, Obj> map;
+  public final HashMap<String, Obj> vals;
+  // public final Scope sc;
+  
+  public StrMap(Scope sc) {
+    this.vals = sc.vars;
+    // this.sc = sc;
+  }
+  
+  public StrMap(HashMap<String, Obj> vals) {
+    this.vals = vals;
+  }
   
   public StrMap() {
-    map = new HashMap<>();
+    this.vals = new HashMap<>();
+    // this.sc = null;
   }
   
-  public StrMap(StrMap w) { // copy
-    map = new HashMap<>(w.map);
-  }
+  // public StrMap(Scope sc, HashMap<String, Obj> vals) {
+  //   this.sc = sc;
+  //   this.vals = vals;
+  // }
   
   
   @Override
@@ -22,56 +35,68 @@ public class StrMap extends APLMap {
   }
   @Override
   public Obj getRaw(String k) {
-    Obj v = map.get(k);
+    Obj v = vals.get(k);
     if (v == null) return Null.NULL;
     return v;
   }
   
   @Override
   public void set(Value k, Obj v) {
-    if (v == Null.NULL) map.remove(k.asString());
-    else map.put(k.asString(), v);
+    if (v == Null.NULL) vals.remove(k.asString());
+    else vals.put(k.asString(), v);
   }
   
   public void setStr(String k, Obj v) {
-    if (v == Null.NULL) map.remove(k);
-    else map.put(k, v);
+    if (v == Null.NULL) vals.remove(k);
+    else vals.put(k, v);
   }
   
   @Override
   public Arr allValues() {
-    Obj[] a = map.values().toArray(new Obj[0]);
     var items = new ArrayList<Value>();
-    for (Obj o : a) {
+    for (Obj o : vals.values()) {
       if (o instanceof Value) items.add((Value) o);
     }
-    return Arr.create(items.toArray(new Value[0]));
+    return Arr.create(items);
   }
   
   @Override public Arr allKeys() {
-    String[] a = map.keySet().toArray(new String[0]);
     var items = new ArrayList<Value>();
-    for (String o : a) {
+    for (String o : vals.keySet()) {
       items.add(Main.toAPL(o));
     }
-    return Arr.create(items.toArray(new Value[0]));
+    return Arr.create(items);
+  }
+  
+  @Override public Arr kvPair() {
+    ArrayList<Value> ks = new ArrayList<>();
+    ArrayList<Value> vs = new ArrayList<>();
+    vals.forEach((k, v) -> {
+      if (v instanceof Value) {
+        ks.add(Main.toAPL(k));
+        vs.add((Value) v);
+      }
+    });
+    return new HArr(new Value[]{
+      HArr.create(ks),
+       Arr.create(vs)});
   }
   
   @Override
   public int size() {
-    return map.size();
+    return vals.size();
   }
   
   @Override
   public boolean equals(Obj o) {
-    return o instanceof StrMap && map.equals(((StrMap) o).map);
+    return o instanceof StrMap && vals.equals(((StrMap) o).vals);
   }
   
   @Override
   public String toString() {
     StringBuilder res = new StringBuilder("(");
-    map.forEach((key, value) -> {
-      if (res.length() != 1) res.append("⋄");
+    vals.forEach((key, value) -> {
+      if (res.length() != 1) res.append(" ⋄ ");
       res.append(key).append(":").append(value);
     });
     return res + ")";

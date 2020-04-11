@@ -23,13 +23,13 @@ public class DervDimFn extends Fun {
   }
   
   @Override
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (!(f instanceof DimDFn)) throw new SyntaxError("Attempt to call function dyadically that doesn't support dimension specification", a);
     return ((DimDFn) f).call(a, w, dim);
   }
   
   @Override
-  public Obj call(Value w) {
+  public Value call(Value w) {
     if (!(f instanceof DimMFn)) throw new SyntaxError("Attempt to call function monadically that doesn't support dimension specification", w);
     return ((DimMFn) f).call(w, dim);
   }

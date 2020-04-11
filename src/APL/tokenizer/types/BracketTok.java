@@ -1,6 +1,6 @@
 package APL.tokenizer.types;
 
-import java.util.*;
+import java.util.List;
 
 public class BracketTok extends TokArr<LineTok> {
   

@@ -6,6 +6,8 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.Builtin;
 
+import java.util.Arrays;
+
 import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
@@ -14,8 +16,8 @@ public class RhoBuiltin extends Builtin {
   }
   
   
-  public Obj call(Value w) {
-
+  public Value call(Value w) {
+    
     int[] sh = w.shape;
     //ArrayList<ArrVal> res = new ArrayList<ArrVal>();
     //for (int i = 0; i < sh.length; i++) {
@@ -23,7 +25,7 @@ public class RhoBuiltin extends Builtin {
     //}
     return toAPL(sh);
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     if (w.rank > 1) throw new DomainError("multidimensional shape", this, w);
     int[] sh = new int[w.ia];
     int ia = 1;
@@ -51,7 +53,16 @@ public class RhoBuiltin extends Builtin {
       
     } else if (a.scalar()) {
       return new SingleItemArr(a.first(), sh);
-    
+      
+    } else if (a instanceof BitArr) {
+      if (sh.length == 0 && !Main.enclosePrimitives) return a.get(0);
+      BitArr wb = (BitArr) a;
+      BitArr.BA res = new BitArr.BA(sh);
+      int full = ia/wb.ia;
+      int frac = ia%wb.ia;
+      for (int i = 0; i < full; i++) res.add(wb);
+      res.add(wb, 0, frac);
+      return res.finish();
     } else if (a.quickDoubleArr()) {
       assert !(a instanceof Primitive);
       if (sh.length == 0 && !Main.enclosePrimitives) return a.get(0);
@@ -74,4 +85,32 @@ public class RhoBuiltin extends Builtin {
       return Arr.create(arr, sh);
     }
   }
+  
+  public Value underW(Obj o, Value a, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w, a)) : (Value) o;
+    for (int i = 0; i < w.ia; i++) {
+      Value c = w.get(i);
+      if (!(c instanceof Num)) { // a⍬b ⍴ w - must use all items
+        if (a.rank == 0 && v.first() instanceof Primitive) return v.first();
+        if (v.ia != a.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items");
+        return v.ofShape(a.shape);
+      }
+    }
+    int[] sh = w.asIntVec();
+    int am = Arr.prod(sh);
+    if (am > a.ia) throw new DomainError("⍢("+ Main.formatAPL(sh)+"⍴) applied on array with less items than "+am, this);
+    if (!Arrays.equals(sh, v.shape)) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+    Value[] vs = new Value[a.ia];
+    System.arraycopy(v.values(), 0, vs, 0, am);
+    System.arraycopy(a.values(), am, vs, am, vs.length-am);
+    return Arr.createL(vs, a.shape);
+  }
+  
+  // public Value under(Obj o, Value w) {
+  //   Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+  //   int[] sh = v.asIntVec();
+  //   
+  //   if (Arr.prod(sh) != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
+  //   return w.ofShape(sh);
+  // }
 }

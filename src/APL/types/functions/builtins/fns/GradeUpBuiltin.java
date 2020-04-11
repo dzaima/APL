@@ -1,8 +1,8 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Scope;
-import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.Value;
+import APL.types.arrs.DoubleArr;
 import APL.types.functions.Builtin;
 
 public class GradeUpBuiltin extends Builtin {
@@ -14,7 +14,7 @@ public class GradeUpBuiltin extends Builtin {
     super(sc);
   }
   
-  public Obj call(Value w) {
+  public Value call(Value w) {
     double[] res = new double[w.ia];
     int IO = sc.IO;
     Integer[] na = w.gradeUp();
@@ -24,7 +24,5 @@ public class GradeUpBuiltin extends Builtin {
     return new DoubleArr(res);
   }
   
-//  public Obj call(Value a, Value w) {
-//
-//  }
+  // TODO dyadic ⍋ & ⍒
 }

@@ -22,6 +22,10 @@ public abstract class SimpleMap extends APLMap {
     throw new SyntaxError("getting list of keys of "+name());
   }
   
+  @Override public Arr kvPair() {
+    throw new SyntaxError("getting entries of "+name());
+  }
+  
   @Override public int size() {
     throw new SyntaxError("getting size of "+name());
   }

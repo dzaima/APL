@@ -6,16 +6,15 @@ import APL.types.arrs.ChrArr;
 
 public class StrTok extends Token {
   public final ChrArr val;
-  private final String raw;
+  public final String parsed;
   
   public StrTok(String line, int spos, int epos, String str) {
     super(line, spos, epos);
-    raw = str;
-
+    parsed = str;
     this.val = Main.toAPL(str);
   }
   
   @Override public String toRepr() {
-    return "\"" + raw.replaceAll("\"", "\"\"") + "\"";
+    return source();
   }
 }

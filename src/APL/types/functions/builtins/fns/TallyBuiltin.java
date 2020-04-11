@@ -9,11 +9,11 @@ public class TallyBuiltin extends Builtin {
   }
   
   
-  public Obj call(Value w) {
-    if (w.scalar()) return Num.ONE;
-    return new Num(w.shape[0]);
+  public Value call(Value w) {
+    if (w.rank==0) return Num.ONE;
+    return Num.of(w.shape[0]);
   }
-  public Obj call(Value a, Value w) {
+  public Value call(Value a, Value w) {
     return a.equals(w)? Num.ZERO : Num.ONE;
   }
 }

@@ -7,6 +7,7 @@ import APL.types.*;
 import java.util.*;
 
 public class DoubleArr extends Arr {
+  public static final double[] EMPTY = new double[0];
   final public double[] arr;
   public DoubleArr(double[] arr, int[] sh) {
     super(sh);
@@ -17,7 +18,8 @@ public class DoubleArr extends Arr {
     super(new int[]{arr.length});
     this.arr = arr;
   }
-  public DoubleArr(Integer[] arr) { // 1D
+  
+  public DoubleArr(int[] arr) { // 1D
     super(new int[]{arr.length});
     double[] a = new double[ia];
     for (int i = 0; i < ia; i++) {
@@ -25,7 +27,7 @@ public class DoubleArr extends Arr {
     }
     this.arr = a;
   }
-  public DoubleArr(int[] arr) { // 1D
+  public DoubleArr(byte[] arr) { // 1D
     super(new int[]{arr.length});
     double[] a = new double[ia];
     for (int i = 0; i < ia; i++) {
@@ -37,9 +39,8 @@ public class DoubleArr extends Arr {
   public DoubleArr(ArrayList<Double> arr) {
     super(new int[]{arr.size()});
     double[] a = new double[ia];
-    Double[] da = arr.toArray(new Double[0]);
     for (int i = 0; i < a.length; i++) {
-      a[i] = da[i];
+      a[i] = arr.get(i);
     }
     this.arr = a;
   }
@@ -67,7 +68,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value get(int i) {
-    return new Num(arr[i]);
+    return Num.of(arr[i]);
   }
   
   @Override public Value first() {
@@ -80,23 +81,25 @@ public class DoubleArr extends Arr {
     throw new DomainError("using double array as string", this);
   }
   
-  @Override
   public Value prototype() {
+    return Num.ZERO;
+  }
+  public Value safePrototype() {
     return Num.ZERO;
   }
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arrays.stream(sh).reduce(1, (a, b) -> a*b);
+    assert ia == Arr.prod(sh);
     if (sh.length == 0 && !Main.enclosePrimitives) return new Num(arr[0]);
     return new DoubleArr(arr, sh);
   }
   
   @Override
   public double sum() {
-   double r = 0;
-   for (double val : arr) r += val;
-   return r;
+    double r = 0;
+    for (double val : arr) r += val;
+    return r;
   }
   
   @Override
@@ -119,7 +122,7 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public Value[] values() {
+  public Value[] valuesCopy() {
     Value[] vs = new Value[ia];
     for (int i = 0; i < ia; i++) vs[i] = new Num(arr[i]);
     return vs;
@@ -155,16 +158,6 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public Value with(Value what, int[] where) {
-    if (what instanceof Num) {
-      double[] da = arr.clone();
-      da[Indexer.fromShape(shape, where, 0)] = ((Num) what).num;
-      return new DoubleArr(da, shape);
-    }
-    return super.with(what, where);
-  }
-  
-  @Override
   public boolean equals(Obj o) {
     if (o instanceof DoubleArr) {
       DoubleArr da = (DoubleArr) o;
@@ -176,13 +169,13 @@ public class DoubleArr extends Arr {
     }
     return super.equals(o);
   }
-  int hash;
   @Override public int hashCode() {
-    if (hash != 0) return hash;
-    // hash = 0;
-    for (double d : arr) {
-      hash = hash*31;
-      if (d != 0d) hash+= Double.hashCode(d);
+    if (hash == 0) {
+      for (double d : arr) {
+        hash = hash*31;
+        if (d != 0d) hash += Double.hashCode(d); // ¯0 == 0
+      }
+      hash = shapeHash(hash);
     }
     return hash;
   }

@@ -1,6 +1,5 @@
 package APL.types.functions.builtins.dops;
 
-import APL.errors.SyntaxError;
 import APL.types.*;
 import APL.types.functions.*;
 
@@ -9,13 +8,18 @@ public class JotUBBuiltin extends Dop {
     return "⍛";
   }
   
-  @Override public Obj call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    if (!(aa instanceof Fun)) {
-      throw new SyntaxError("both operands of ⍛ must be functions", aa, this);
-    }
-    if (!(ww instanceof Fun)) {
-      throw new SyntaxError("both operands of ⍛ must be functions", ww, this);
-    }
-    return ((Fun) ww).call((Value) ((Fun) aa).call(a), w);
+  public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.call(aaf.call(a), w);
+  }
+  
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.callInvW(aaf.call(a), w);
+  }
+  
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return aaf.callInv(wwf.callInvA(a, w));
   }
 }

@@ -1,9 +1,12 @@
-class Graph extends Plane {
+static class Graph extends Plane {
   LL<Point> points = new LL<Point>();
   PQ<Double, Point> pq = new PQ<Double, Point>();
   double[] b;
   Fun fn;
-  int pts = 20000;
+  int pts = 1000;
+  float ph = 3;
+  int mul = 1;
+  boolean joined = true;
   
   Graph(int x, int y, int w, int h) {
     super(x, y, w, h);
@@ -35,46 +38,34 @@ class Graph extends Plane {
         if (Double.isNaN(y)) {
           if (drawing) {
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else if (y == Double.POSITIVE_INFINITY) {
           if (drawing) {
-            vertex(realX(x*scale), realY(fullY));
+            d.vertex(realX(x), realY(fullY));
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else if (y==Double.NEGATIVE_INFINITY) {
           if (drawing) {
-            vertex(realX(x*scale), realY(fullY + height/fullS));
+            d.vertex(realX(x), realY(fullY + d.height/fullS));
             drawing = false;
-            endShape();
+            d.endShape();
           }
         } else {
           if (!drawing) {
             drawing = true;
-            beginShape();
+            d.beginShape();
           }
-          vertex(realX(x*scale), realY(-y*scale));
+          d.vertex(realX(x), realY(-y));
         }
       }
-      if (drawing) endShape();
+      if (drawing) d.endShape();
     }
   }
   
   void draw() {
     bounds();
-    Obj s = dzaimaSC.get("grapher");
-    boolean joined = true;
-    float ph = 3;
-    float mul = 1;
-    if (s == null) {
-      pts = 1000;
-    } else {
-      pts = ((Value)s).get(0).asInt();
-      joined = ((Value)s).get(1).asDouble() != 0;
-      ph = (float) ((Value)s).get(2).asDouble();
-      mul = ((Value)s).get(3).asInt();
-    }
     double sCut = b[0]-b[2];
     double eCut = b[1]+b[2];
     double sEnd = b[0]+b[2];
@@ -120,11 +111,13 @@ class Graph extends Plane {
           Value res;
           try {
             res = (Value) fn.call(new DoubleArr(ds));
-          } catch (Throwable e) { res = null; e.printStackTrace(); }
+          } catch (Throwable e) { res = null; }
           
           for (int i = 0; i < ds.length; i++) {
-            if (res == null) ps.get(i).y = new double[0];
-            else ps.get(i).y = res.get(i).asDoubleArr();
+            ps.get(i).y = new double[0];
+            if (res != null) try {
+              ps.get(i).y = res.get(i).asDoubleArr();
+            } catch (Throwable t) { /*ignore */ }
           }
           ptsadded+= ds.length;
           
@@ -146,9 +139,9 @@ class Graph extends Plane {
       } else break;
     }
     
-    noFill();
-    stroke(0xffd2d2d2);
-    strokeWeight(ph);
+    d.noFill();
+    d.stroke(0xffd2d2d2);
+    d.strokeWeight(ph);
     n = points.first();
     if (joined && n != points.end && n.next != points.end) {
       ArrayList<Line> lns = new ArrayList<Line>();
@@ -173,13 +166,13 @@ class Graph extends Plane {
       }
       for(Line l : lns) l.draw();
     } else {
-      fill(0xffd2d2d2);
-      noStroke();
+      d.fill(0xffd2d2d2);
+      d.noStroke();
       //beginShape(POINTS);
       //strokeWeight(ph);
       while (n != points.end) {
-        //for (double y : n.v.y) vertex ((float)(n.v.x*scale), -(float)(y*scale));
-          for (double y : n.v.y) ellipse(realX(n.v.x*scale), realY(-y*scale), ph, ph);
+        //for (double y : n.v.y) d.vertex ((float)(n.v.x), -(float)(y));
+          for (double y : n.v.y) d.ellipse(realX(n.v.x), realY(-y), ph, ph);
         n = n.next;
       }
       //endShape();
@@ -234,9 +227,9 @@ class Graph extends Plane {
   
   void bounds() {
     b = new double[] {
-      fullX/scale, // starting visible x
-      (fullX + width/fullS)/scale, // ending visible x
-      (width/fullS)/scale / pts,
+      fullX, // starting visible x
+      fullX + d.width/fullS, // ending visible x
+      (d.width/fullS) / pts,
     };
   }
   
@@ -337,8 +330,8 @@ class Graph extends Plane {
     double pS = fullS;
     fullS*= sc;
     double scalechange = 1/fullS - 1/pS;
-    fullX-= (mouseX * scalechange);
-    fullY-= (mouseY * scalechange);
+    fullX-= (a.mouseX * scalechange);
+    fullY-= (a.mouseY * scalechange);
   }
 
 }

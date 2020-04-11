@@ -27,14 +27,6 @@ public class Variable extends Settable {
     sc.update(name, v);
   }
   
-  public void setAt(int[] pos, Value what) { // pos has to be ⎕IO=0
-    update(((Value) v).with(what, pos));
-  }
-  public Value getAt(int[] pos, Scope sc) {
-    Arr a = (Arr) v;
-    return a.at(pos, sc.IO);
-  }
-  
   @Override
   public String toString() {
     if (Main.debug) return v == null? "var:"+name : "var:"+v;

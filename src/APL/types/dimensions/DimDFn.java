@@ -1,7 +1,7 @@
 package APL.types.dimensions;
 
-import APL.types.*;
+import APL.types.Value;
 
 public interface DimDFn {
-  Obj call (Value a, Value w, int dim);
+  Value call (Value a, Value w, int dim);
 }
