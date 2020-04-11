@@ -49,7 +49,7 @@ public class APLError extends RuntimeException {
   static class Mg {
     final Tokenable t;
     final char c;
-  
+    
     Mg(Tokenable t, char c) {
       this.t = t;
       this.c = c;

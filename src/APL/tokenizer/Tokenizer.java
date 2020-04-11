@@ -22,21 +22,21 @@ public class Tokenizer {
     final String line;
     final int pos;
     Integer annoyingBacktickPos;
-  
+    
     Line(String line, int pos, ArrayList<Token> ts) {
       this.ts = ts;
       this.line = line;
       this.pos = pos;
     }
-  
+    
     Line(String line, int pos) {
       this(line, pos, new ArrayList<>());
     }
-  
+    
     public int size() {
       return ts.size();
     }
-  
+    
     public void add(Token r) {
       if (annoyingBacktickPos != null) {
         ts.add(new BacktickTok(line, annoyingBacktickPos, r.epos, r));
@@ -45,7 +45,7 @@ public class Tokenizer {
         ts.add(r);
       }
     }
-  
+    
     LineTok tok() {
       if (annoyingBacktickPos != null) throw new SyntaxError("Nothing after backtick");
       int epos = size() == 0? pos : ts.get(size()-1).epos;
@@ -56,7 +56,7 @@ public class Tokenizer {
     final ArrayList<Line> a;
     final char b;
     private final int pos;
-  
+    
     Block(ArrayList<Line> a, char b, int pos) {
       this.a = a;
       this.b = b;
@@ -74,11 +74,11 @@ public class Tokenizer {
   public static BasicLines tokenize(String raw, boolean pointless) { // pointless means unevaled things get tokens
     int li = 0;
     int len = raw.length();
-  
+    
     var levels = new ArrayList<Block>();
     levels.add(new Block(new ArrayList<>(), '⋄', 0));
     levels.get(0).a.add(new Line(raw, 0, new ArrayList<>()));
-
+    
     for (int i = 0; i < len; li = i) {
       Block expr = levels.get(levels.size() - 1);
       ArrayList<Line> lines = expr.a;
@@ -105,7 +105,7 @@ public class Tokenizer {
           levels.add(new Block(new ArrayList<>(), match, i));
           lines = levels.get(levels.size() - 1).a;
           lines.add(new Line(raw, i));
-    
+          
           i++;
         } else if (c == ')' || c == '}' || c == ']') {
           Block closed = levels.remove(levels.size() - 1);
@@ -118,7 +118,7 @@ public class Tokenizer {
             throw new SyntaxError("mismatched parentheses of " + c + " and " + closed.b);
           }
           if (lines.size() > 0 && lines.get(lines.size() - 1).size() == 0) lines.remove(lines.size() - 1); // no trailing empties!!
-    
+          
           var lineTokens = new ArrayList<LineTok>();
           for (Line ta : closed.a) lineTokens.add(ta.tok());
           Token r;
@@ -274,7 +274,7 @@ public class Tokenizer {
           if (c == '⋄' && pointless) tokens.add(new DiamondTok(raw, i));
           
           if (c == ';') tokens.add(new SemiTok(raw, i, i + 1));
-    
+          
           if (tokens.size() > 0) {
             lines.add(new Line(raw, li));
           }
@@ -316,7 +316,7 @@ public class Tokenizer {
       // else, attempt to recover
       while (levels.size() > 1) {
         Block closed = levels.remove(levels.size() - 1);
-  
+        
         var lineTokens = new ArrayList<LineTok>();
         for (Line ta : closed.a) lineTokens.add(ta.tok());
         Token r;

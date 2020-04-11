@@ -459,7 +459,7 @@ public class Exec {
       this.l = l;
       this.r = r;
       this.val = val;
-  
+      
       switch (val.type()) {
         case array:
           type = 'N';
@@ -732,7 +732,7 @@ public class Exec {
           else if (name instanceof ChrTok) key = ((ChrTok) name).parsed;
           else throw SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
-  
+          
           Obj val = oexec(LineTok.inherit(tokens), nsc);
           res.setStr(key, val);
         }

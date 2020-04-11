@@ -59,7 +59,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     if (l.rank != r.rank) throw new RankError("Expected ranks to be equal for compared elements", r);
     
     if (l.rank > 1) throw new DomainError("Expected rank of compared array to be ≤ 2", l);
-  
+    
     int min = Math.min(l.ia, r.ia);
     for (int i = 0; i < min; i++) {
       int cr = l.get(i).compareTo(r.get(i));

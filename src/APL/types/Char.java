@@ -43,7 +43,7 @@ public class Char extends Primitive {
   public int getCase() {
     return Character.isUpperCase(chr)? 1 : Character.isLowerCase(chr)? -1 : 0;
   }
-
+  
   public String toString() {
     if (quotestrings) return "'"+chr+"'";
     else return String.valueOf(chr);

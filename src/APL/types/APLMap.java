@@ -38,7 +38,7 @@ public abstract class APLMap extends Primitive {
     public void set(Obj v) {
       map.set(k, v);
     }
-  
+    
     @Override
     public String toString() {
       if (Main.debug) return v == null? "map@"+k : "ptr@"+k+":"+v;

@@ -108,7 +108,7 @@ public class SingleItemArr extends Arr {
       @Override public boolean hasNext() {
         return i < ia;
       }
-  
+      
       @Override public Value next() {
         i++;
         return item;

@@ -98,7 +98,7 @@ public class RepeatBuiltin extends Dop {
     int am = ((Num) ww).asInt();
     if (am== 1) return aaf.callInvA(a, w);
     if (am==-1) return aaf.callInvA(w, a);
-  
+    
     throw new DomainError("inverting ⍺ of f⍣C is only possible when C∊¯1 1");
   }
   

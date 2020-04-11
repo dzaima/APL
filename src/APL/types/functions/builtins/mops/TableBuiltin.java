@@ -22,7 +22,7 @@ public class TableBuiltin extends Mop {
     
     int i = 0;
     Value first = ff.call(a.first(), w.first());
-  
+    
     if (first instanceof Num) {
       double[] dres = new double[a.ia * w.ia];
       boolean allNums = true;

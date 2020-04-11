@@ -51,14 +51,14 @@ public class DualBuiltin extends Dop {
       this.a = a;
       this.f = f;
     }
-  
+    
     public Value call(Value w) {
       return f.call(a, w);
     }
     public Value callInv(Value w) {
       return f.callInvW(a, w);
     }
-  
+    
     public String repr() {
       return f.repr();
     }

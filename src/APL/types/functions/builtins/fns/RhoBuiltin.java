@@ -17,7 +17,7 @@ public class RhoBuiltin extends Builtin {
   
   
   public Value call(Value w) {
-
+    
     int[] sh = w.shape;
     //ArrayList<ArrVal> res = new ArrayList<ArrVal>();
     //for (int i = 0; i < sh.length; i++) {
@@ -53,7 +53,7 @@ public class RhoBuiltin extends Builtin {
       
     } else if (w.scalar()) {
       return new SingleItemArr(w.first(), sh);
-    
+      
     } else if (w instanceof BitArr) {
       if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
       BitArr wb = (BitArr) w;

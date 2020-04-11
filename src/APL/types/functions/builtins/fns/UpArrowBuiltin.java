@@ -105,7 +105,7 @@ public class UpArrowBuiltin extends Builtin {
     int[] totalShape = new int[def.length + 1];
     totalShape[0] = w.length;
     System.arraycopy(def, 0, totalShape, 1, def.length);
-  
+    
     boolean allNums = true;
     for (Value v : w) {
       if (!v.quickDoubleArr()) {
@@ -130,7 +130,7 @@ public class UpArrowBuiltin extends Builtin {
       return new DoubleArr(allVals, totalShape);
     } else {
       Value[] allVals = new Value[totalIA];
-  
+      
       int i = 0;
       for (Value v : w) {
         Value proto = v.prototype();

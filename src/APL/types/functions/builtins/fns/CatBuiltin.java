@@ -51,13 +51,13 @@ public class CatBuiltin extends Builtin implements DimDFn {
     boolean ab = a instanceof BitArr;
     boolean wb = w instanceof BitArr;
     int sz = a.ia + w.ia;
-  
+    
     BitArr.BA res = new BitArr.BA(sz);
     if (ab) res.add((BitArr) a);
     else    res.add(Main.bool(a));
     if (wb) res.add((BitArr) w);
     else    res.add(Main.bool(w));
-  
+    
     return res.finish();
   }
   static Value cat(Value a, Value w, int k) {
@@ -81,7 +81,7 @@ public class CatBuiltin extends Builtin implements DimDFn {
     int n2 = 1; for (int i = k + 1; i < rs.length; i++) n2 *= rs[i]; // product of minor dimensions
     int ad = aScalar ? n2 : a.shape[k] * n2;                         // chunk size for ⍺
     int wd = wScalar ? n2 : w.shape[k] * n2;                         // chunk size for ⍵
-  
+    
     if (a.quickDoubleArr() && w.quickDoubleArr()) {
       double[] rv = new double[n0 * n1 * n2];                            // result values
       copyChunksD(aScalar, a.asDoubleArr(), rv,  0, ad, ad + wd);

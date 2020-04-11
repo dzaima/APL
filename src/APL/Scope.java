@@ -38,7 +38,7 @@ public class Scope {
     else if (parent == null) return null;
     else return parent.owner(name);
   }
-
+  
   public void update (String name, Obj val) { // sets wherever var already exists
     Scope sc = owner(name);
     if (sc == null) sc = this;
@@ -148,7 +148,7 @@ public class Scope {
     @Override public String repr() {
       return "⎕GCLOG";
     }
-  
+    
     @Override
     public Value call(Value w) {
       return new Logger(w.toString());
@@ -158,7 +158,7 @@ public class Scope {
       Logger(String s) {
         this.msg = s;
       }
-  
+      
       @SuppressWarnings("deprecation") // this is this things purpose
       @Override
       protected void finalize() {
@@ -167,7 +167,7 @@ public class Scope {
       public String toString() {
         return "⎕GCLOG["+msg+"]";
       }
-  
+      
       @Override
       public Value ofShape(int[] sh) {
         if (sh.length == 0 && !Main.enclosePrimitives) return this;
@@ -276,7 +276,7 @@ public class Scope {
         }
       }, c->Num.of(c.chr), w);
     }
-  
+    
     @Override public Value callInv(Value w) {
       return call(w);
     }
@@ -311,7 +311,7 @@ public class Scope {
       }
       return map;
     }
-  
+    
     @Override
     public Value call(Value a, Value w) {
       if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", a);
@@ -392,7 +392,7 @@ public class Scope {
       if (got != Null.NULL) return got.asString();
       return def;
     }
-  
+    
     @Override public Value call(Value a, Value w) {
       if (a instanceof APLMap) {
         try {
@@ -401,11 +401,11 @@ public class Scope {
           APLMap m = (APLMap) a;
           String content = get(m, "content", "");
           conn.setRequestMethod(get(m, "method", "POST"));
-        
+          
           conn.setRequestProperty("Content-Type", get(m, "type", "POST"));
           conn.setRequestProperty("Content-Language", get(m, "language", "en-US"));
           conn.setRequestProperty("Content-Length", Integer.toString(content.length()));
-        
+          
           Obj eo = m.getRaw("e");
           if (eo != Null.NULL) {
             APLMap e = (APLMap) eo;
@@ -414,18 +414,18 @@ public class Scope {
               conn.setRequestProperty(k.asString(), v.asString());
             }
           }
-        
+          
           Obj cache = m.getRaw("cache");
           conn.setUseCaches(cache!=Null.NULL && Main.bool(cache));
           conn.setDoOutput(true);
-        
+          
           if (content.length() != 0) {
             DataOutputStream os = new DataOutputStream(conn.getOutputStream());
             os.writeBytes(content);
             os.close();
           }
-        
-        
+          
+          
           InputStream is = conn.getInputStream();
           ArrayList<Value> vs = new ArrayList<>();
           try (BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
@@ -607,7 +607,7 @@ public class Scope {
       if (cam > 100) cam = 0;
       return new HArr(arr, new int[]{pfRes.size(), 4});
     }
-  
+    
     @Override public String repr() {
       return "⎕PF";
     }
@@ -639,7 +639,7 @@ public class Scope {
     private final BasicLines tok;
     int am;
     double ms;
-  
+    
     public Pr(BasicLines tok) {
       this.tok = tok;
     }

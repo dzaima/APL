@@ -18,7 +18,7 @@ public class IotaBuiltin extends Builtin {
   public IotaBuiltin(Scope sc) {
     super(sc);
   }
-    
+  
   public Value call(Value w) {
     int IO = sc.IO;
     if (w instanceof Primitive) {

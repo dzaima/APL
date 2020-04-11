@@ -26,10 +26,9 @@ public class SetBuiltin extends AbstractSet {
     }
     return w;
   }
-
+  
   public Obj callObj(Fun f, Obj a, Value w) {
     callObj(a, f.call((Value) ((Settable) a).get(), w), true);
     return w;
   }
 }
-

@@ -53,7 +53,7 @@ public class BigValue extends Primitive {
   @Override public boolean equals(Obj o) {
     return o instanceof BigValue && i.equals(((BigValue) o).i);
   }
-
+  
   public Num num() {
     return new Num(i.doubleValue());
   }

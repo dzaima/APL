@@ -97,9 +97,9 @@ public class DoubleArr extends Arr {
   
   @Override
   public double sum() {
-   double r = 0;
-   for (double val : arr) r += val;
-   return r;
+    double r = 0;
+    for (double val : arr) r += val;
+    return r;
   }
   
   @Override

@@ -64,7 +64,7 @@ public class LogBuiltin extends Builtin {
           repr--; // should be safe as positive int values are always well into the proper double domain
           return new Num(Double.longBitsToDouble(repr));
         }
-        }
+      }
       return new Num(res);
     }
   };

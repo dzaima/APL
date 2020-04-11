@@ -54,7 +54,7 @@ public class AtBuiltin extends Dop {
       }
       return Arr.createL(ra, w.shape);
     } else {
-  
+      
       Value wwa = (Value) ww;
       
       if (wwa.ia == 0) return w;

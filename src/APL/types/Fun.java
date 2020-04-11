@@ -46,7 +46,7 @@ public abstract class Fun extends Scopeable {
     Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
     return callInv(v);
   }
-    public Value underW(Obj o, Value a, Value w) {
+  public Value underW(Obj o, Value a, Value w) {
     Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
     return callInvW(a, v);
   }
@@ -552,7 +552,7 @@ public abstract class Fun extends Scopeable {
       } else { // ⍺ ¨ ⍵
         if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
         if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-  
+        
         if (a instanceof BitArr && w instanceof BitArr) {
           return b.call((BitArr) a, (BitArr) w);
         }

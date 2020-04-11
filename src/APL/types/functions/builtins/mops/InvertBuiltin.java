@@ -36,7 +36,7 @@ public class InvertBuiltin extends Mop { // separate ⍵-inverse (equal to f⍣�
       public Value call(Value a, Value w) {
         return f.callInvW(a, w);
       }
-  
+      
       public Value callInvW(Value a, Value w) {
         return f.call(a, w);
       }
@@ -48,7 +48,7 @@ public class InvertBuiltin extends Mop { // separate ⍵-inverse (equal to f⍣�
       public Value call(Value a, Value w) {
         return f.callInvA(a, w);
       }
-  
+      
       public Value callInvA(Value a, Value w) {
         return f.call(a, w);
       }

@@ -66,7 +66,7 @@ public class UTackBuiltin extends Builtin {
         System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
         int layers = w.shape[0];
         double[] r = new double[w.ia / layers];
-  
+        
         System.arraycopy(d, 0, r, 0, r.length);
         for (int i = 1; i < layers; i++) {
           for (int j = 0; j < r.length; j++) {
@@ -84,7 +84,7 @@ public class UTackBuiltin extends Builtin {
       System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
       int layers = w.shape[0];
       double[] r = new double[w.ia /layers];
-  
+      
       System.arraycopy(d, 0, r, 0, r.length);
       for (int i = 1; i < layers; i++) {
         double base = bases[i];

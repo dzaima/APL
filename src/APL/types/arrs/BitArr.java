@@ -186,20 +186,20 @@ public final class BitArr extends Arr {
         i++;
       }
     }
-  
+    
     public void add(BitArr a) {
       add(a, 0, a.ia);
     }
     
     public void add(BitArr g, int s, int e) {
       if (s==e) return;
-  
+      
       g.setEnd(false);
       if (o == 0 && (s&63) == 0) {
         int si = s>>6;
         int li = (e-1)>>6; // incl
         System.arraycopy(g.arr, si, a, i, li-si+1);
-    
+        
         i+= (e-s)>>6;
         o = e&63;
         return;
@@ -259,7 +259,7 @@ public final class BitArr extends Arr {
       //   System.out.println(b);
       // }
     }
-  
+    
     public BitArr finish() {
       return new BitArr(a, sh);
     }
@@ -316,7 +316,7 @@ public final class BitArr extends Arr {
       }
       return r;
     }
-  
+    
     public void skip(int n) {
       int fp = (i<<6) + o + n;
       i = fp>>6;

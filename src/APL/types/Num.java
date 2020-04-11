@@ -44,7 +44,7 @@ public class Num extends Primitive {
       if (d < 0) {
         buf[len++] = '¯';
       }
-  
+      
       int ls = pp+1; // last significant digit position
       while (fa[ls] == '0') ls--;
       if (ls == 1) ls = 0;
@@ -66,7 +66,7 @@ public class Num extends Primitive {
       return new String(buf, 0, len);
     }
     
-  
+    
     // generic standard notation
     /* ⎕pp←4:
        _31416e+00
@@ -261,7 +261,7 @@ public class Num extends Primitive {
     if (  num % 1 != 0) throw new DomainError("binomial of non-integer ⍺", this);
     if (w.num % 1 != 0) throw new DomainError("binomial of non-integer ⍵", w);
     if (w.num > num) return Num.ZERO;
-  
+    
     double res = 1;
     double a = num;
     double b = w.num;
@@ -278,7 +278,7 @@ public class Num extends Primitive {
   public Num ceil() {
     return new Num(Math.ceil(num));
   }
-
+  
   public int compareTo(Num n) {
     return Double.compare(num, n.num);
   }

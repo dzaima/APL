@@ -12,7 +12,7 @@ public class ObliqueBuiltin extends Mop {
   }
   
   
-
+  
   public Value call(Obj f, Value w, DerivedMop derv) {
     if (w.rank != 2) throw new DomainError("⍁ requires a rank-2 ⍵");
     Fun ff = isFn(f);
@@ -71,7 +71,7 @@ public class ObliqueBuiltin extends Mop {
         res[i] = v;
       }
     }
-  
+    
     return UpArrowBuiltin.merge(res);
   }
 }

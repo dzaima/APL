@@ -115,7 +115,7 @@ public abstract class Arr extends Value {
         }
         int borderSize = simple? 0 : 1;
         int rw = simple? -1 : 1,
-          rh = borderSize ; // result w&h;
+        rh = borderSize ; // result w&h;
         for (x = 0; x < w; x++) rw+= widths[x]+1;
         for (y = 0; y < h; y++) rh+= heights[y]+borderSize;
         char[][] chars = new char[rh][rw];

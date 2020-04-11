@@ -39,10 +39,10 @@ public class RShoeUBBuiltin extends Builtin {
       if (r instanceof Primitive) return r;
       else return new Rank0Arr(r);
     }
-  
+    
     if (Main.vind) { // ⎕VI←1
-  
-  
+      
+      
       double[][] ind = Indexer.inds(a);
       int ml = ind[0].length;
       if (w.quickDoubleArr()) {
@@ -60,7 +60,7 @@ public class RShoeUBBuiltin extends Builtin {
       return Arr.create(res, Indexer.indsh(a));
       
     } else { // ⎕VI←0
-  
+      
       if (w.quickDoubleArr()) {
         double[] wv = w.asDoubleArr();
         double[] res = new double[a.ia];

@@ -44,7 +44,7 @@ public class ReplicateBuiltin extends Builtin {
     // ⍺.rank ≠ 0
     RankError.must(a.rank == w.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+a.rank+" vs "+w.rank + ")");
     LengthError.must(Arrays.equals(a.shape, w.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")");
-  
+    
     if (a instanceof BitArr) {
       BitArr ab = (BitArr) a;
       ab.setEnd(false);
