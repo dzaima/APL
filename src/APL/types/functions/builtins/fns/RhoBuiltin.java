@@ -57,7 +57,7 @@ public class RhoBuiltin extends Builtin {
     } else if (w instanceof BitArr) {
       if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
       BitArr wb = (BitArr) w;
-      BitArr.BA res = new BitArr.BA(ia);
+      BitArr.BA res = new BitArr.BA(sh);
       int full = ia/wb.ia;
       int frac = ia%wb.ia;
       for (int i = 0; i < full; i++) res.add(wb);
