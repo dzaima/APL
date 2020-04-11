@@ -31,8 +31,8 @@ public class Ddop extends Dop {
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍹", ww);
-    nsc.set("⍺", new Variable(nsc, "⍺"));
-    nsc.set("⍵", w);
+    nsc.set("⍵", new Variable(nsc, "⍵"));
+    nsc.set("⍺", w);
     nsc.set("∇", derv);
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
@@ -53,7 +53,7 @@ public class Ddop extends Dop {
     nsc.set("⍺", a);
     nsc.set("⍵", w);
     nsc.set("∇", derv);
-    nsc.alphaDefined = true;
+    nsc.omegaDefined = true;
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
     if (res instanceof Settable) return ((Settable)res).get();

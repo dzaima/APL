@@ -18,8 +18,8 @@ public class UserDefined {
     if (!(i instanceof DfnTok) || first) for (Token t : i.tokens) {
       if (t instanceof OpTok) {
         String op = ((OpTok) t).op;
-        if (op.equals("⍶")) type = Type.mop;
-        else if (op.equals("⍹")) return Type.dop;
+        if (op.equals("⍹")) type = Type.mop;
+        else if (op.equals("⍶")) return Type.dop;
       } else if (t instanceof TokArr<?>) {
         Type n = funType((TokArr<?>) t, false);
         if (n == Type.mop) type = Type.mop;

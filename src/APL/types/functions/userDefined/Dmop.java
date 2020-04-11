@@ -29,9 +29,9 @@ public class Dmop extends Mop {
   public Obj callObj(Obj aa, Value w, DerivedMop derv) {
     printdbg("dmop call", w);
     Scope nsc = new Scope(sc);
-    nsc.set("⍶", aa);
-    nsc.set("⍺", new Variable(nsc, "⍺"));
-    nsc.set("⍵", w);
+    nsc.set("⍹", aa);
+    nsc.set("⍵", new Variable(nsc, "⍵"));
+    nsc.set("⍺", w);
     nsc.set("∇", derv);
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
@@ -47,11 +47,11 @@ public class Dmop extends Mop {
   public Obj callObj(Obj aa, Value a, Value w, DerivedMop derv) {
     printdbg("dmop call", a, w);
     Scope nsc = new Scope(sc);
-    nsc.set("⍶", aa);
+    nsc.set("⍹", aa);
     nsc.set("⍺", a);
     nsc.set("⍵", w);
     nsc.set("∇", derv);
-    nsc.alphaDefined = true;
+    nsc.omegaDefined = true;
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
     if (res instanceof Settable) return ((Settable)res).get();

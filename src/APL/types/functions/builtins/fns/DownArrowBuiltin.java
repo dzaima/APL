@@ -49,37 +49,37 @@ public class DownArrowBuiltin extends Builtin {
     return new HArr(res, nsh);
   }
   
-  public Value call(Value a, Value w) {
+  public Value call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
     return on(a, w, sc.IO);
   }
-  public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵; a - amount; w - array
+  public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵
     // TODO redo this, merge with UpArrowBuiltin
-    if (w instanceof BitArr && w.rank == 1) {
-      BitArr wb = (BitArr) w;
+    if (a instanceof BitArr && a.rank == 1) {
+      BitArr wb = (BitArr) a;
       int n;
-      if (a instanceof Num) n = a.asInt();
+      if (w instanceof Num) n = w.asInt();
       else {
-        int[] ns = a.asIntVec();
+        int[] ns = w.asIntVec();
         if(ns.length != 1) throw new DomainError("↓ expected (≢⍺) ≡ ≢⍴⍵");
         n = ns[0];
       }
       if (n < 0) {
-        int am = w.ia+n;
+        int am = a.ia+n;
         if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
         long[] ls = new long[BitArr.sizeof(am)];
         System.arraycopy(wb.arr, 0, ls, 0, ls.length);
         return new BitArr(ls, new int[]{am});
       } else {
-        int am = w.ia - n;
+        int am = a.ia - n;
         if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
         BitArr.BA res = new BitArr.BA(am);
-        res.add(wb, n, w.ia);
+        res.add(wb, n, a.ia);
         return res.finish();
       }
     }
     
-    int[] shape = a.asIntVec();
-    if (shape.length == 0) return w;
+    int[] shape = w.asIntVec();
+    if (shape.length == 0) return a;
     int ia = 1;
     int[] offsets = new int[shape.length];
     for (int i = 0; i < shape.length; i++) {
@@ -97,19 +97,19 @@ public class DownArrowBuiltin extends Builtin {
     Indexer indexer = new Indexer(shape, offsets);
     int i = 0;
     for (int[] index : indexer) {
-      arr[i] = w.at(index, IO).squeeze();
+      arr[i] = a.at(index, IO).squeeze();
       i++;
     }
     return Arr.create(arr, shape);
   }
   
   public Value underW(Obj o, Value a, Value w) {
-    Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;
-    int[] ls = a.asIntVec();
-    int[] sh = w.shape;
+    Value v = o instanceof Fun? ((Fun) o).call(call(w, a)) : (Value) o;
+    int[] ls = w.asIntVec();
+    int[] sh = a.shape;
     for (int i = 0; i < ls.length; i++) {
       ls[i] = ls[i]>0? ls[i]-sh[i] : ls[i]+sh[i];
     }
-    return UpArrowBuiltin.undo(ls, v, w);
+    return UpArrowBuiltin.undo(ls, v, a);
   }
 }

@@ -18,7 +18,7 @@ import java.util.*;
 public class Scope {
   public final HashMap<String, Obj> vars = new HashMap<>();
   private Scope parent = null;
-  public boolean alphaDefined;
+  public boolean omegaDefined;
   public int IO;
   private Num nIO;
   public Random rnd;

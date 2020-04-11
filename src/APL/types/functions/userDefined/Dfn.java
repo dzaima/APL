@@ -20,8 +20,8 @@ public class Dfn extends Fun {
   public Obj callObj(Value w) {
     Main.printdbg("dfn call", w);
     Scope nsc = new Scope(sc);
-    nsc.set("⍺", new Variable(nsc, "⍺"));
-    nsc.set("⍵", w);
+    nsc.set("⍵", new Variable(nsc, "⍵"));
+    nsc.set("⍺", w);
     nsc.set("∇", this);
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
@@ -39,7 +39,7 @@ public class Dfn extends Fun {
     nsc.set("⍺", a);
     nsc.set("⍵", w);
     nsc.set("∇", this);
-    nsc.alphaDefined = true;
+    nsc.omegaDefined = true;
     var res = Main.execLines(code, nsc);
     if (res instanceof VarArr) return ((VarArr)res).get();
     if (res instanceof Settable) return ((Settable)res).get();

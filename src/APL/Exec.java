@@ -41,8 +41,8 @@ public class Exec {
   public Obj exec() {
     if (tokens.size() > 0) Main.faulty = tokens.get(0);
     else Main.faulty = allToken;
-    if (sc.alphaDefined && tokens.size() >= 2 && tokens.get(0) instanceof OpTok && ((OpTok) tokens.get(0)).op.equals("⍺") && tokens.get(1) instanceof SetTok) {
-      if (Main.debug) printlvl("skipping cuz it's →⍺");
+    if (sc.omegaDefined && tokens.size() >= 2 && tokens.get(tokens.size()-1) instanceof OpTok && ((OpTok) tokens.get(tokens.size()-1)).op.equals("⍵") && tokens.get(tokens.size()-2) instanceof SetTok) {
+      if (Main.debug) printlvl("skipping cuz it's →⍵");
       return null;
     }
     left = new Stack<>();
@@ -303,11 +303,11 @@ public class Exec {
         addE(new Atop(g, h));
         continue;
       }
-      if (llSize >= 3 && FN.r.r.val instanceof JotBuiltin && FN.r.val instanceof DotBuiltin) {
+      if (llSize >= 3 && FN.r.val instanceof JotBuiltin && FN.r.r.val instanceof DotBuiltin) {
         if (Main.debug) printlvl("∘.");
-        var fn = popS();
-        popS(); // .
         var jot = popS();
+        popS(); // .
+        var fn = popS();
         if (fn instanceof Settable) fn = ((Settable) fn).get();
         if (fn instanceof VarArr) fn = ((VarArr) fn).get();
         var TB = new TableBuiltin();
