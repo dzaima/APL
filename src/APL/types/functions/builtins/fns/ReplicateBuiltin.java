@@ -25,12 +25,38 @@ public class ReplicateBuiltin extends Builtin {
       RankError.must(w.rank<=1, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
       int sz = a.asInt();
       if (sz < 0) {
-        Value[] res = new Value[w.ia*-sz];
+        int am = w.ia*-sz;
+        Value pr = w.prototype();
+        if (pr instanceof Num) return new DoubleArr(new double[am]);
+        Value[] res = new Value[am];
         Value n = w.first() instanceof Char? Char.SPACE : Num.ZERO;
         Arrays.fill(res, n);
         return Arr.create(res);
       }
-      Value[] res = new Value[w.ia*sz];
+  
+      int am = w.ia*sz;
+      if (w instanceof BitArr) {
+        BitArr.BA res = new BitArr.BA(am);
+        BitArr.BR r = ((BitArr) w).read();
+        for (int i = 0; i < w.ia; i++) {
+          if (r.read()) res.fill(sz);
+          else          res.skip(sz);
+        }
+        return res.finish();
+      }
+      if (w.quickDoubleArr()) {
+        double[] res = new double[am];
+        double[] ds = w.asDoubleArr();
+        int ptr = 0;
+        for (int i = 0; i < w.ia; i++) {
+          double c = ds[i];
+          for (int j = 0; j < sz; j++) {
+            res[ptr++] = c;
+          }
+        }
+        return new DoubleArr(res);
+      }
+      Value[] res = new Value[am];
       int ptr = 0;
       for (int i = 0; i < w.ia; i++) {
         Value c = w.get(i);
@@ -49,6 +75,27 @@ public class ReplicateBuiltin extends Builtin {
       BitArr ab = (BitArr) a;
       ab.setEnd(false);
       int sum = ab.isum();
+      if (w instanceof BitArr) {
+        BitArr.BA res = new BitArr.BA(sum);
+        long[] wba = ((BitArr) w).arr;
+        ((BitArr) a).setEnd(false);
+        long[] aba = ((BitArr) a).arr;
+        int ia = wba.length;
+        
+        for (int i = 0; i < ia; i++) {
+          long wcb = wba[i];
+          long acb = aba[i];
+          for (int o = 0; o < 64; o++) {
+            if ((acb&1)!=0) {
+              res.add(wcb&1);
+            }
+            wcb>>= 1;
+            acb>>= 1;
+          }
+        }
+        System.out.println("repl");
+        return res.finish();
+      }
       if (w.quickDoubleArr()) {
         if (sum > w.ia*.96) {
           double[] ds = w.asDoubleArr();
@@ -95,6 +142,18 @@ public class ReplicateBuiltin extends Builtin {
         // }
         // return new DoubleArr(res);
       }
+      if (w instanceof ChrArr) {
+        String ws = ((ChrArr) w).s;
+        char[] chars = new char[sum];
+        BitArr.BR r = ab.read();
+        int pos = 0;
+        for (int i = 0; i < w.ia; i++) {
+          if (r.read()) {
+            chars[pos++] = ws.charAt(i);
+          }
+        }
+        return new ChrArr(new String(chars));
+      }
       Value[] res = new Value[sum];
       BitArr.BR r = ab.read();
       int pos = 0;
@@ -113,6 +172,16 @@ public class ReplicateBuiltin extends Builtin {
       total+= Math.abs(sizes[i]);
     }
     
+    if (w instanceof BitArr) {
+      BitArr.BA res = new BitArr.BA(total);
+      BitArr.BR r = ((BitArr) w).read();
+      for (int i = 0; i < w.ia; i++) {
+        int am = sizes[i];
+        if (r.read()) res.fill(am);
+        else          res.skip(am);
+      }
+      return res.finish();
+    }
     if (w.quickDoubleArr()) {
       int ptr = 0;
       double[] wi = w.asDoubleArr();

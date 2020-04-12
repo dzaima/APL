@@ -49,19 +49,19 @@ public class EpsilonBuiltin extends Builtin {
       }
       return Num.ZERO;
     }
-    Value[] res = new Value[a.ia];
+    BitArr.BA ba = new BitArr.BA(a.shape);
     for (int i = 0; i < a.ia; i++) {
       Value av = a.get(i);
-      Num b = Num.ZERO;
+      boolean b = false;
       for (Value v : w) {
         if (v.equals(av)) {
-          b = Num.ONE;
+          b = true;
           break;
         }
       }
-      res[i] = b;
+      ba.add(b);
     }
-    return Arr.create(res, a.shape);
+    return ba.finish();
   }
   
   

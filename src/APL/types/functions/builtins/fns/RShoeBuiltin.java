@@ -15,7 +15,7 @@ public class RShoeBuiltin extends Fun {
   
   public Value call(Value w) {
     if (w instanceof Primitive) return w;
-    else if (w.ia == 0) throw new DomainError("⊃ on array with 0 elements", this, w);
+    else if (w.ia == 0) return w.prototype();
     else return w.first();
   }
   

@@ -8,9 +8,9 @@ import java.util.*;
 
 
 public abstract class Value extends Obj implements Iterable<Value> {
-  final public int[] shape;
-  final public int rank;
-  final public int ia; // item amount
+  public final int[] shape;
+  public final int rank;
+  public final int ia; // item amount
   Value(int[] shape) {
     this.shape = shape;
     rank = shape.length;

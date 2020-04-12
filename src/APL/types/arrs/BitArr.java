@@ -186,6 +186,15 @@ public final class BitArr extends Arr {
         i++;
       }
     }
+  
+    public void add(long l) { // expects a 0 or 1
+      a[i] |= l<<o;
+      o++;
+      if (o == 64) {
+        o = 0;
+        i++;
+      }
+    }
     
     public void add(BitArr a) {
       add(a, 0, a.ia);
@@ -209,7 +218,7 @@ public final class BitArr extends Arr {
       
       int  startI = i;
       long start = a[i];
-      long startMask = (1<<o) - 1; // mask of what's already written
+      long startMask = (1L<<o) - 1; // mask of what's already written
       
       int Spos = i*64 + o; // start of where to insert
       int Epos = Spos+e-s; // end of where to insert; excl
@@ -253,11 +262,40 @@ public final class BitArr extends Arr {
       a[startI]|= start; // and fill with non-garbage
       i = Epos>>6;
       o = Epos&63;
+      
+      // TODO clear out end?
       // for (long l : a) {
       //   String b = Long.toBinaryString(l);
       //   while (b.length()<64)b="0"+b;
       //   System.out.println(b);
       // }
+    }
+    
+    @SuppressWarnings("ConstantExpression") // i _want_ ~0L :|
+    public void fill(int n) {
+      int off = o+n;
+      if (off < 64) { // start & end being in the same cell is annoying
+        if (n==0) return;
+        a[i]|= ((1L<<n)-1) << o;
+        o = off;
+      } else {
+        a[i]|= (~0L) << o;
+        int li = i + ((off-1) >> 6);
+        for (int j = i+1; j <= li; j++) {
+          a[j] = ~0L;
+        }
+        i+= off>>6;
+        o = off&63;
+  
+        if (o != 0) {
+          a[i] = (1L<<o)-1;
+        }
+      }
+    }
+    public void skip(int n) {
+      int off = o+n;
+      o = off&63;
+      i+= off>>6;
     }
     
     public BitArr finish() {
@@ -294,10 +332,10 @@ public final class BitArr extends Arr {
     }
     
     public void set(int pos) {
-      arr[pos>>6]|= 1<<(pos&63);
+      arr[pos>>6]|= 1L<<(pos&63);
     }
     public void clear(int pos) {
-      arr[pos>>6]&= ~(1<<(pos&63));
+      arr[pos>>6]&= ~(1L<<(pos&63));
     }
   }
   public static BC create(int[] sh) {
@@ -330,5 +368,25 @@ public final class BitArr extends Arr {
   
   public BR read() {
     return new BR();
+  }
+  
+  public Value[] valuesCopy() {
+    Value[] vs = new Value[ia];
+    int o = 0;
+    for (int i = 0; i < ia/64; i++) {
+      long l = arr[i];
+      for (int j = 0; j < 64; j++) {
+        vs[o++] = Num.NUMS[(int) (l&1)];
+        l>>= 1;
+      }
+    }
+    if (o!=ia) {
+      long l = arr[arr.length-1];
+      for (int i = 0; i < ia%64; i++) {
+        vs[o++] = Num.NUMS[(int) (l&1)];
+        l>>= 1;
+      }
+    }
+    return vs;
   }
 }
