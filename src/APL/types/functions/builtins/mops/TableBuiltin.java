@@ -4,9 +4,9 @@ import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.*;
 
-public class TableBuiltin extends Mop {
+public final class TableBuiltin extends Mop {
   @Override public String repr() {
-    return "⌾";
+    return "∘.";
   }
   
   

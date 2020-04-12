@@ -1,7 +1,7 @@
 package APL.types;
 
-import APL.*;
-import APL.errors.DomainError;
+import APL.Main;
+import APL.errors.*;
 import APL.types.arrs.*;
 
 import java.util.*;
@@ -332,5 +332,14 @@ public abstract class Arr extends Value {
     int r = 1;
     for (int i : ia) r*= i;
     return r;
+  }
+  
+  public static void eqShapes(Value a, Value w) {
+    int[] as = a.shape;
+    int[] ws = w.shape;
+    if (as.length != ws.length) throw new RankError("ranks don't equal (shapes: " + Main.formatAPL(as) + " vs " + Main.formatAPL(ws) + ")", w);
+    for (int i = 0; i < as.length; i++) {
+      if (as[i] != ws[i]) throw new LengthError("shapes don't match (" + Main.formatAPL(as) + " vs " + Main.formatAPL(ws) + ")", w);
+    }
   }
 }

@@ -149,7 +149,7 @@ public abstract class Fun extends Scopeable {
       Arr o = (Arr) w;
       Value[] arr = new Value[o.ia];
       for (int i = 0; i < o.ia; i++) {
-        arr[i] = numChrM(nf, cf, o.get(i));
+        arr[i] = numChrMapM(nf, cf, mf, o.get(i));
       }
       return new HArr(arr, o.shape);
     }
@@ -169,8 +169,7 @@ public abstract class Fun extends Scopeable {
       
       if (w.scalar()) {
         return new Rank0Arr(allD(f, af, w.first()));
-        
-      } else {
+      } else { // ⍺ ⍵¨
         Value[] arr = new Value[w.ia];
         Iterator<Value> wi = w.iterator();
         for (int i = 0; i < w.ia; i++) {
@@ -180,7 +179,7 @@ public abstract class Fun extends Scopeable {
         
       }
     } else {
-      if (w.scalar()) {
+      if (w.scalar()) { // ⍺¨ ⍵
         Value wf = w.first();
         
         Value[] arr = new Value[a.ia];
@@ -190,9 +189,8 @@ public abstract class Fun extends Scopeable {
         }
         return new HArr(arr, a.shape);
         
-      } else {
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+      } else { // ⍺ ¨ ⍵
+        Arr.eqShapes(a, w);
         assert a.ia == w.ia;
         Value[] arr = new Value[a.ia];
         Iterator<Value> ai = a.iterator();
@@ -348,8 +346,7 @@ public abstract class Fun extends Scopeable {
         return new HArr(vs, a.shape);
         
       } else { // ⍺ ¨ ⍵
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        Arr.eqShapes(a, w);
         
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return f.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
@@ -376,7 +373,7 @@ public abstract class Fun extends Scopeable {
           if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
             return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
           throw new DomainError("calling a number-only function with "+w.humanType(true));
-        } else return new Rank0Arr(numD(n, a.first(), w.first()));
+        } else return new Rank0Arr(bitD(n, b, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
         if (a instanceof Primitive) {
@@ -391,7 +388,7 @@ public abstract class Fun extends Scopeable {
         Iterator<Value> wi = w.iterator();
         Value[] vs = new Value[w.ia];
         for (int i = 0; i < w.ia; i++) {
-          vs[i] = numD(n, af, wi.next());
+          vs[i] = bitD(n, b, af, wi.next());
         }
         return new HArr(vs, w.shape);
         
@@ -410,14 +407,13 @@ public abstract class Fun extends Scopeable {
         Iterator<Value> ai = a.iterator();
         Value[] vs = new Value[a.ia];
         for (int i = 0; i < a.ia; i++) {
-          vs[i] = numD(n, ai.next(), wf);
+          vs[i] = bitD(n, b, ai.next(), wf);
         }
         
         return new HArr(vs, a.shape);
         
       } else { // ⍺ ¨ ⍵
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        Arr.eqShapes(a, w);
         
         if (a instanceof BitArr && w instanceof BitArr) {
           return b.call((BitArr) a, (BitArr) w);
@@ -431,7 +427,7 @@ public abstract class Fun extends Scopeable {
         Iterator<Value> ai = a.iterator();
         Iterator<Value> wi = w.iterator();
         for (int i = 0; i < a.ia; i++) {
-          arr[i] = numD(n, ai.next(), wi.next());
+          arr[i] = bitD(n, b, ai.next(), wi.next());
         }
         return new HArr(arr, a.shape);
         
@@ -481,8 +477,7 @@ public abstract class Fun extends Scopeable {
         
         return new HArr(vs, a.shape);
       } else { // ⍺ ¨ ⍵
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        Arr.eqShapes(a, w);
         
         if (a.quickDoubleArr() && w.quickDoubleArr()) {
           return n.call(a.asDoubleArr(), w.asDoubleArr(), a.shape);
@@ -550,8 +545,7 @@ public abstract class Fun extends Scopeable {
         return new HArr(vs, a.shape);
         
       } else { // ⍺ ¨ ⍵
-        if (a.rank != w.rank) throw new LengthError("ranks don't equal (shapes: " + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
-        if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes don't match (" + Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", w);
+        Arr.eqShapes(a, w);
         
         if (a instanceof BitArr && w instanceof BitArr) {
           return b.call((BitArr) a, (BitArr) w);

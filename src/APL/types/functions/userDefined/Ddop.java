@@ -59,7 +59,4 @@ public class Ddop extends Dop {
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
-  public String toString() {
-    return code.toRepr();
-  }
 }

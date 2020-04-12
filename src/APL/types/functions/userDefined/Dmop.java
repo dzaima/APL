@@ -57,7 +57,4 @@ public class Dmop extends Mop {
     if (res instanceof Settable) return ((Settable)res).get();
     return res;
   }
-  public String toString() {
-    return code.toRepr();
-  }
 }

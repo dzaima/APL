@@ -263,7 +263,7 @@ public final class BitArr extends Arr {
       i = Epos>>6;
       o = Epos&63;
       
-      // TODO clear out end?
+      // TODO clear out end
       // for (long l : a) {
       //   String b = Long.toBinaryString(l);
       //   while (b.length()<64)b="0"+b;

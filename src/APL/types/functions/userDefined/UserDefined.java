@@ -8,10 +8,12 @@ import APL.types.Obj;
 public class UserDefined {
   public static Obj of(DfnTok ts, Scope sc) {
     Type type = funType(ts, true);
-    if (type == Type.fn) return new Dfn(ts, sc);
-    else if (type == Type.mop) return new Dmop(ts, sc);
-    else if (type == Type.dop) return new Ddop(ts, sc);
-    else throw new IllegalStateException("UserDefined.funType = "+type);
+    switch (type) {
+      case fn : return new Dfn(ts, sc);
+      case mop: return new Dmop(ts, sc);
+      case dop: return new Ddop(ts, sc);
+      default : throw new IllegalStateException();
+    }
   }
   private static Type funType(TokArr<?> i, boolean first) {
     Type type = Type.fn;
