@@ -36,13 +36,13 @@ public class DoubleArr extends Arr {
     this.arr = a;
   }
   
-  public DoubleArr(ArrayList<Double> arr) {
-    super(new int[]{arr.size()});
-    double[] a = new double[ia];
-    for (int i = 0; i < a.length; i++) {
-      a[i] = arr.get(i);
+  public DoubleArr(ArrayList<Double> arrl) {
+    super(new int[]{arrl.size()});
+    arr = new double[ia];
+    int j = 0;
+    for (double d : arrl) {
+      arr[j++] = d;
     }
-    this.arr = a;
   }
   
   public static Value safe(double[] vs, int[] sh) {

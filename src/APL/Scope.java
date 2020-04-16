@@ -58,6 +58,9 @@ public class Scope {
       case "⎕VI":
         Main.vind = Main.bool(val);
       break;
+      case "⎕RL":
+        rnd = new Random(((Value) val).asInt());
+        break;
       case "⎕PP":
         if (val instanceof Primitive) {
           Num.setPrecision(((Value) val).asInt());

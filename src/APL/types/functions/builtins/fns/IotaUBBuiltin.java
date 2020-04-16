@@ -18,8 +18,8 @@ public class IotaUBBuiltin extends Builtin {
   }
   public Value call(Value w) {
     int IO = sc.IO;
+    int sum = (int)w.sum();
     if (w.rank == 1) {
-      int sum = (int)w.sum();
       var sub = new double[sum];
       int p = 0;
       
@@ -40,7 +40,6 @@ public class IotaUBBuiltin extends Builtin {
       }
       return new DoubleArr(sub);
     } else {
-      int sum = (int)w.sum();
       var sub = new Value[sum];
       int ap = 0;
       for (int[] p : new Indexer(w.shape, IO)) {

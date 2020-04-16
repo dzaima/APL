@@ -23,9 +23,17 @@ public class EmptyArr extends Arr {
     throw new DomainError("using empty array as integer");
   }
   
+  public boolean quickDoubleArr() {
+    return true;
+  }
+  
+  public double[] asDoubleArr() {
+    return DoubleArr.EMPTY;
+  }
+  
   @Override
   public Value get(int i) {
-    throw new ImplementationError("internal: using get() on empty array; Report )stack to dzaima");
+    throw new ImplementationError("internal: using get() on empty array; view )stack");
   }
   
   @Override
