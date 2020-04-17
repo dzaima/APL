@@ -35,7 +35,7 @@ public class GTBuiltin extends Builtin {
   
   public Value call(Value a, Value w) {
     return numChrD(DNF, (ca, cw) -> ca>cw? Num.ONE : Num.ZERO,
-      (ca, cw) -> { throw new DomainError("comparing "+ ca.humanType(true)+" and "+cw.humanType(true)); },
+      (ca, cw) -> { throw new DomainError("comparing "+ ca.humanType(true)+" and "+cw.humanType(true), this); },
       a, w);
   }
   

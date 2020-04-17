@@ -34,7 +34,7 @@ public class VarArr extends Settable {
     return Type.array;
   }
   
-  @Override public void set(Obj v) {
+  @Override public void set(Obj v, Callable blame) {
     set(v, false);
   }
   

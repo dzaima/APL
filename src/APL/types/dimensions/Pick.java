@@ -20,8 +20,8 @@ public class Pick extends Settable {
   }
   
   @Override
-  public void set(Obj v) {
-    var.update(AtBuiltin.at(v, idx, val, IO));
+  public void set(Obj v, Callable blame) {
+    var.update(AtBuiltin.at(v, idx, val, IO, blame));
   }
   
   public Obj get() {

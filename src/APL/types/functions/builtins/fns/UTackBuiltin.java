@@ -8,7 +8,6 @@ import APL.types.functions.Builtin;
 import java.math.BigInteger;
 
 public class UTackBuiltin extends Builtin {
-  static final UTackBuiltin copy = new UTackBuiltin();
   @Override public String repr() {
     return "⊥";
   }
@@ -20,18 +19,18 @@ public class UTackBuiltin extends Builtin {
   }
   
   public Value callInv(Value w) {
-    return DTackBuiltin.copy.call(w);
+    return DTackBuiltin.on(Num.NUMS[2], w, this);
   }
   public Value callInvW(Value a, Value w) {
-    return DTackBuiltin.copy.call(a, w);
+    return DTackBuiltin.on(a, w, this);
   }
   
   public Value call(Value a, Value w) {
     return on(a, w, this);
   }
   
-  public static Value on(Value a, Value w, Tokenable t) {
-    if (w.rank == 0) throw new DomainError("A⊥num is pointless", t);
+  public static Value on(Value a, Value w, Callable blame) {
+    if (w.rank == 0) throw new DomainError("A⊥num is pointless", blame);
     if (a instanceof BigValue || a.first() instanceof BigValue || w.first() instanceof BigValue) {
       if (a.rank == 0) {
         BigInteger al = BigValue.bigint(a);
@@ -41,9 +40,9 @@ public class UTackBuiltin extends Builtin {
         }
         return new BigValue(res);
       } else {
-        if (w.rank != 1) throw new NYIError("1<≢⍴⍵ for ⊥");
-        if (a.rank != 1) throw new DomainError("1<≢⍴⍺ for ⊥");
-        if (a.ia != w.shape[0]) throw new DomainError("(≢⍺) ≠ ≢⍵ for ⊥", t);
+        if (w.rank != 1) throw new NYIError(blame+": 1<≢⍴⍵", blame);
+        if (a.rank != 1) throw new DomainError(blame+": 1<≢⍴⍺", blame);
+        if (a.ia != w.shape[0]) throw new DomainError(blame+": (≢⍺) ≠ ≢⍵", blame);
         BigInteger res = BigInteger.ZERO;
         for (int i = 0; i < a.ia; i++) {
           res = res.multiply(BigValue.bigint(a.get(i)));
@@ -77,13 +76,13 @@ public class UTackBuiltin extends Builtin {
         return new DoubleArr(r, sh);
       }
     } else {
-      if (a.ia != w.shape[0]) throw new DomainError("(≢⍺) ≠ ⊃⍴⍵ for ⊥", t);
+      if (a.ia != w.shape[0]) throw new DomainError(blame+": (≢⍺) ≠ ⊃⍴⍵", blame);
       double[] d = w.asDoubleArr();
       double[] bases = a.asDoubleArr();
       int[] sh = new int[w.rank-1];
       System.arraycopy(w.shape, 1, sh, 0, w.rank - 1);
       int layers = w.shape[0];
-      double[] r = new double[w.ia /layers];
+      double[] r = new double[w.ia/layers];
       
       System.arraycopy(d, 0, r, 0, r.length);
       for (int i = 1; i < layers; i++) {

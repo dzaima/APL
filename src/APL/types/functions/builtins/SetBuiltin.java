@@ -20,9 +20,9 @@ public class SetBuiltin extends AbstractSet {
     if (update) {
       if (a instanceof Variable) ((Variable) a).update(w);
       else if (a instanceof VarArr) ((VarArr) a).set(w, true);
-      else as.set(w); // throw new SyntaxError("can't set", a); todo?
+      else as.set(w, this); // throw new SyntaxError("can't set", a); todo?
     } else {
-      as.set(w);
+      as.set(w, this);
     }
     return w;
   }

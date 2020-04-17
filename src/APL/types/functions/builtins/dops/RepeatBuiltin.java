@@ -66,7 +66,7 @@ public class RepeatBuiltin extends Dop {
       }
       return curr;
     } else {
-      if (!(ww instanceof Num)) throw new SyntaxError("⍹ of ⍣ must be either a function or scalar number");
+      if (!(ww instanceof Num)) throw new SyntaxError("⍣: ⍹ must be either a function or scalar number");
       int am = ((Num) ww).asInt();
       if (am < 0) {
         for (int i = 0; i < -am; i++) {
@@ -81,7 +81,7 @@ public class RepeatBuiltin extends Dop {
   
   public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
     Fun aaf = isFn(aa, '⍶');
-    if (!(ww instanceof Value)) throw new DomainError("⍢ expected ⍹ to be a number, got "+ww.humanType(true), this, ww);
+    if (!(ww instanceof Value)) throw new DomainError("⍣: expected ⍹ to be a number, got "+ww.humanType(true), this, ww);
     int am = ((Num) ww).asInt();
     if (am < 0) {
       for (int i = 0; i < -am; i++) {
@@ -94,17 +94,17 @@ public class RepeatBuiltin extends Dop {
   }
   public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
     Fun aaf = isFn(aa, '⍶');
-    if (!(ww instanceof Value)) throw new DomainError("⍢ expected ⍹ to be a number, got "+ww.humanType(true), this, ww);
+    if (!(ww instanceof Value)) throw new DomainError("⍣: expected ⍹ to be a number, got "+ww.humanType(true), this, ww);
     int am = ((Num) ww).asInt();
     if (am== 1) return aaf.callInvA(a, w);
     if (am==-1) return aaf.callInvA(w, a);
     
-    throw new DomainError("inverting ⍺ of f⍣C is only possible when C∊¯1 1");
+    throw new DomainError("f⍣N: ⍺-inverting is only possible when N∊¯1 1", this, ww);
   }
   
   public Value under(Obj aa, Obj ww, Obj o, Value w, DerivedDop derv) {
     Fun aaf = isFn(aa, '⍶');
-    if (!(ww instanceof Value)) throw new DomainError("⍢ expected ⍹ to be a number, got "+ww.humanType(true), derv, ww);
+    if (!(ww instanceof Value)) throw new DomainError("⍣: expected ⍹ to be a number, got "+ww.humanType(true), this, ww);
     int n = ((Value) ww).asInt();
     return repeat(aaf, n, o, w);
   }

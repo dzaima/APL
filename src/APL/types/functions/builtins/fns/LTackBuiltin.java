@@ -18,7 +18,7 @@ public class LTackBuiltin extends Builtin {
     return w;
   }
   public Value callInvW(Value a, Value w) {
-    throw new DomainError("⊣⍣¯1 is impossible");
+    throw new DomainError("⊣⍣¯1 is impossible", this);
   }
   public Value callInvA(Value a, Value w) {
     return a;

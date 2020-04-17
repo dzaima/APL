@@ -15,13 +15,13 @@ public class MergeBuiltin extends Builtin {
   }
   
   @Override public Value call(Value a, Value w) {
-    if (w.rank != 1) throw new DomainError("⍵ of % must be a vector");
+    if (w.rank != 1) throw new DomainError("%: ⍵ must be a vector", this, w);
     int IO = sc.IO;
     int[] sh = a.shape;
     int i1 = 0;
     boolean allds = true;
     for (Value v : w) {
-      if (!Arrays.equals(v.shape, sh)) throw new DomainError("shape of item "+(i1+IO)+" in ⍵ of % didn't match ⍺ ("+Main.formatAPL(sh)+" vs "+Main.formatAPL(v.shape)+")");
+      if (!Arrays.equals(v.shape, sh)) throw new DomainError("%: shape of item "+(i1+IO)+" in ⍵ didn't match ⍺ ("+Main.formatAPL(sh)+" vs "+Main.formatAPL(v.shape)+")", this, w);
       i1++;
       if (!v.quickDoubleArr()) allds = false;
     }

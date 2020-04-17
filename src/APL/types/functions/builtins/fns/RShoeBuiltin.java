@@ -30,10 +30,10 @@ public class RShoeBuiltin extends Fun {
       return map.getRaw(a);
     }
     if (a instanceof Num) {
-      if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", w);
+      if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", this, w);
       if (w.ia == 0) throw new LengthError("⊃ on array with 0 elements", this, w);
       int p = a.asInt() - sc.IO;
-      if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+ Main.formatAPL(w.shape));
+      if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+ Main.formatAPL(w.shape), this);
       return w.get(p);
     }
     for (Value v : a) {

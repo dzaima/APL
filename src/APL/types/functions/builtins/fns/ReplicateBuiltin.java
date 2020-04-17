@@ -17,12 +17,12 @@ public class ReplicateBuiltin extends Builtin {
   
   
   public Value call(Value a, Value w) {
-    return replicate(a, w);
+    return replicate(a, w, this);
   }
   
-  public static Value replicate(Value a, Value w) {
+  public static Value replicate(Value a, Value w, Callable blame) {
     if (a.rank == 0) {
-      RankError.must(w.rank<=1, "rank of ⍵ for ⌿ should be ≤1 if ⍺ is a scalar");
+      if (w.rank > 1) throw new RankError("⌿: rank of ⍵ should be ≤1 if ⍺ is a scalar", blame);
       int sz = a.asInt();
       if (sz < 0) {
         int am = w.ia*-sz;
@@ -68,8 +68,8 @@ public class ReplicateBuiltin extends Builtin {
     }
     
     // ⍺.rank ≠ 0
-    RankError.must(a.rank == w.rank, "shapes of ⍺ & ⍵ of ⌿ must be equal (rank "+a.rank+" vs "+w.rank + ")");
-    LengthError.must(Arrays.equals(a.shape, w.shape), "shapes of ⍺ & ⍵ of ⌿ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")");
+    if (a.rank != w.rank) throw new RankError("⌿: shapes of ⍺ & ⍵ must be equal (ranks "+a.rank+" vs "+w.rank + ")", blame);
+    if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("⌿: shapes of ⍺ & ⍵ must be equal ("+ Main.formatAPL(a.shape) + " vs " + Main.formatAPL(w.shape) + ")", blame);
     
     if (a instanceof BitArr) {
       BitArr ab = (BitArr) a;
@@ -225,6 +225,6 @@ public class ReplicateBuiltin extends Builtin {
     return AtBuiltin.at(v, new Fun() { // lazy version
       public String repr() { return "{⌿.⍺}"; }
       public Value call(Value w) { return a; }
-    }, w, -1234);
+    }, w, -1234, this);
   }
 }

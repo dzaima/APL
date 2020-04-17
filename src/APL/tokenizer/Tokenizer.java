@@ -234,6 +234,7 @@ public class Tokenizer {
         } else if (c == '"') {
           StringBuilder str = new StringBuilder();
           i++;
+          if (i == len) throw new SyntaxError("unfinished string");
           while (raw.charAt(i) != '"') {
             if (raw.charAt(i) == '\\') {
               i++;

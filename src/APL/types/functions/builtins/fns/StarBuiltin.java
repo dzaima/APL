@@ -46,7 +46,7 @@ public class StarBuiltin extends Builtin {
       if (a.i.signum() == 0) return BigValue.ZERO;
       if (a.i.equals(BigInteger.ONE)) return BigValue.ONE;
       if (a.i.equals(BigValue.MINUS_ONE.i)) return w.i.intValue()%2 == 0? BigValue.ONE : BigValue.MINUS_ONE;
-      if (w.i.bitLength() > 30) throw new DomainError("right argument of * too big", w); // otherwise intValue might ignore those!
+      if (w.i.bitLength() > 30) throw new DomainError("*: ⍵ too big to calculate (⍺ ≡ "+a+"; ⍵ ≡ "+w+")", w); // otherwise intValue might ignore those!
       return new BigValue(a.i.pow(w.i.intValue()));
     }
   };

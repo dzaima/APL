@@ -1,6 +1,6 @@
 package APL.types.arrs;
 
-import APL.*;
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 

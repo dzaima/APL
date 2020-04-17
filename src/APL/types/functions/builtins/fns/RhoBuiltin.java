@@ -108,7 +108,7 @@ public class RhoBuiltin extends Builtin {
       Value c = a.get(i);
       if (!(c instanceof Num)) { // a⍬b ⍴ w - must use all items
         if (w.rank == 0 && v.first() instanceof Primitive) return v.first();
-        if (v.ia != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items");
+        if (v.ia != w.ia) throw new DomainError("⍢⍴ expected equal amount of output & output items", this);
         return v.ofShape(w.shape);
       }
     }

@@ -3,7 +3,6 @@ package APL.types.dimensions;
 import APL.*;
 import APL.errors.*;
 import APL.types.*;
-import APL.types.functions.builtins.fns.CatBuiltin;
 
 public class DervDimFn extends Fun {
   private final int IO;
@@ -25,7 +24,7 @@ public class DervDimFn extends Fun {
       dims = new int[raw.length];
       for (int i = 0; i < raw.length; i++) {
         int c = raw[i];
-        if (c==0 && IO==1) throw new DomainError("bracket axis cannot contain 0 with ⎕IO←1");
+        if (c==0 && IO==1) throw new DomainError("bracket axis cannot contain 0 with ⎕IO←1", this);
         dims[i] = c<0? c : c-IO;
       }
     }
@@ -55,7 +54,7 @@ public class DervDimFn extends Fun {
   @Override
   public Value call(Value w) {
     if (!(f instanceof DimMFn)) throw new SyntaxError("Attempt to monadically call "+this+", which doesn't support dimension specification", this);
-    if (dims.length != 1) throw new DomainError(repr()+" expected one dimension specifier");
+    if (dims.length != 1) throw new DomainError(repr()+" expected one dimension specifier", this);
     return ((DimMFn) f).call(w, dims[0]);
   }
   

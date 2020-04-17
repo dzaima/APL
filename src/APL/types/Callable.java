@@ -2,9 +2,9 @@ package APL.types;
 
 import APL.Scope;
 
-public abstract class Scopeable extends Obj {
+public abstract class Callable extends Obj {
   final public Scope sc;
-  protected Scopeable(Scope sc) {
+  protected Callable(Scope sc) {
     this.sc = sc;
   }
 }

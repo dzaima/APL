@@ -310,7 +310,7 @@ public class Scope {
       }
       var map = new StrMap();
       for (Value v : w) {
-        if (v.rank != 1 || v.ia != 2) throw new RankError("pairs for ⎕map should be 2-item arrays", v);
+        if (v.rank != 1 || v.ia != 2) throw new RankError("⎕map: input pairs should be 2-item vectors", this, v);
         map.set(v.get(0), v.get(1));
       }
       return map;
@@ -318,9 +318,9 @@ public class Scope {
     
     @Override
     public Value call(Value a, Value w) {
-      if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", a);
-      if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", w);
-      if (a.ia != w.ia) throw new LengthError("both sides lengths should match", w);
+      if (a.rank != 1) throw new RankError("rank of ⍺ ≠ 1", this, a);
+      if (w.rank != 1) throw new RankError("rank of ⍵ ≠ 1", this, w);
+      if (a.ia != w.ia) throw new LengthError("both sides lengths should match", this, w);
       var map = new StrMap();
       for (int i = 0; i < a.ia; i++) {
         map.set(a.get(i), w.get(i));
@@ -438,11 +438,11 @@ public class Scope {
           }
           return new HArr(vs);
         } catch (MalformedURLException e) {
-          throw new DomainError("bad URL: "+e.getMessage());
+          throw new DomainError("bad URL: "+e.getMessage(), this);
         } catch (ProtocolException e) {
-          throw new DomainError("ProtocolException: "+e.getMessage());
+          throw new DomainError("ProtocolException: "+e.getMessage(), this);
         } catch (IOException e) {
-          throw new DomainError("IOException: "+e.getMessage());
+          throw new DomainError("IOException: "+e.getMessage(), this);
         }
       } else {
         String p = a.asString();
@@ -450,7 +450,7 @@ public class Scope {
         try (PrintWriter pw = new PrintWriter(p)) {
           pw.write(s);
         } catch (FileNotFoundException e) {
-          throw new DomainError("File "+p+" not found: "+e.getMessage());
+          throw new DomainError("File "+p+" not found: "+e.getMessage(), this);
         }
         return w;
       }
@@ -536,7 +536,7 @@ public class Scope {
         }
         return Arrays.copyOf(res, used);
       } catch (IOException e) {
-        throw new DomainError("failed to read I/O");
+        throw new DomainError("failed to read I/O", this);
       }
     }
   }
@@ -583,7 +583,7 @@ public class Scope {
         while (Main.console.hasNext()) res.add(Main.toAPL(Main.console.nextLine()));
         return new HArr(res);
       }
-      throw new DomainError("⎕STDIN needs either ⍬ or a number as ⍵");
+      throw new DomainError("⎕STDIN needs either ⍬ or a number as ⍵", this);
     }
   }
   
@@ -759,7 +759,7 @@ public class Scope {
     }
     public Value call(Value a, Value w) {
       int[] is = a.asIntVec();
-      if (is.length != 2) throw new DomainError("⎕DR expected ⍺ to have 2 items");
+      if (is.length != 2) throw new DomainError("⎕DR expected ⍺ to have 2 items", this);
       int f = is[0];
       int t = is[1];
       if ((f==1 || f==3 || f==5)
@@ -795,7 +795,7 @@ public class Scope {
           }, 0, w);
         }
       }
-      throw new DomainError(a+"⎕DR not implemented");
+      throw new NYIError(a+"⎕DR not implemented", this);
     }
     public Value callInvW(Value a, Value w) {
       return call(ReverseBuiltin.on(a), w);

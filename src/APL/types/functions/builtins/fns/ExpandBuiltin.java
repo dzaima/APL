@@ -10,7 +10,7 @@ public class ExpandBuiltin extends Builtin {
   }
   
   public Value call(Value a, Value w) {
-    RankError.must(a.rank==1, "⍺ of ⍀ bust be rank 1");
+    if (a.rank != 1) throw new RankError("⍀: ⍺ bust be of rank 1", this, a);
     if (w.rank >= 2) throw new NYIError("⍀: rank 2 or more ⍵", this, w);
     Value pr = null;
     int[] is = a.asIntArr(); // vectorness checked before
@@ -20,7 +20,7 @@ public class ExpandBuiltin extends Builtin {
       ram+= Math.max(1, Math.abs(v));
       iam+= v>0? 1 : 0;
     }
-    if (iam != w.ia) throw new DomainError("⍀: required input amount ("+iam+") not equal to given ("+w.ia+")");
+    if (iam != w.ia) throw new DomainError("⍀: required input amount ("+iam+") not equal to given ("+w.ia+")", this);
     Value[] res = new Value[ram];
     int rp = 0;
     int ip = 0;

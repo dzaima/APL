@@ -35,7 +35,7 @@ public abstract class APLMap extends Primitive {
     }
     
     @Override
-    public void set(Obj v) {
+    public void set(Obj v, Callable blame) {
       map.set(k, v);
     }
     

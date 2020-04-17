@@ -17,7 +17,7 @@ public class ArrFun extends Primitive {
   public ArrFun(BacktickTok t, Scope sc) {
     f = Main.oexec(t.value(), sc);
     if (!(f instanceof Fun) && !(f instanceof Mop) && !(f instanceof Dop)) {
-      throw new DomainError("can't arrayify " + f.humanType(true));
+      throw new DomainError("can't arrayify " + f.humanType(true), this);
     }
   }
   

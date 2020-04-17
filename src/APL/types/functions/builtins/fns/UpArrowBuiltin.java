@@ -21,7 +21,7 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
       int[] def = new int[subs[0].rank];
       System.arraycopy(subs[0].shape, 0, def, 0, def.length);
       for (Value v : subs) {
-        if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
+        if (v.rank != def.length) throw new RankError("↑: expected equal ranks of items", this, v);
         for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
       }
       int subIA = Arr.prod(def);
@@ -68,11 +68,11 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
     } else return w;
   }
   
-  public static Value merge(Value[] w) {
+  public static Value merge(Value[] w, Callable blame) {
     int[] def = new int[w[0].rank];
     System.arraycopy(w[0].shape, 0, def, 0, def.length);
     for (Value v : w) {
-      if (v.rank != def.length) throw new RankError("expected equal ranks of items for ↑", v);
+      if (v.rank != def.length) throw new RankError("↑: expected equal ranks of items", blame, v);
       for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
     }
     int subIA = Arr.prod(def);
@@ -124,7 +124,7 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
   public Value call(Value a, Value w) {
     int[] gsh = a.asIntVec();
     if (gsh.length == 0) return w;
-    if (gsh.length > w.rank) throw new DomainError("↑: ≢⍺ should be less than ⍴⍴⍵ ("+gsh.length+" = ≢⍺; "+Main.formatAPL(w.shape)+" ≡ ⍴⍵)");
+    if (gsh.length > w.rank) throw new DomainError("↑: ≢⍺ should be less than ⍴⍴⍵ ("+gsh.length+" = ≢⍺; "+Main.formatAPL(w.shape)+" ≡ ⍴⍵)", this);
     int[] sh = new int[w.rank];
     System.arraycopy(gsh, 0, sh, 0, gsh.length);
     System.arraycopy(w.shape, gsh.length, sh, gsh.length, sh.length - gsh.length);
@@ -142,7 +142,7 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
   public Value call(Value a, Value w, DervDimFn dims) {
     int[] axV = a.asIntVec();
     int[] axK = dims.dims(w.rank);
-    if (axV.length != axK.length) throw new DomainError("↑: expected ⍺ and axis specification to have equal number of items (⍺≡"+Main.formatAPL(axV)+"; axis≡"+dims.format()+")");
+    if (axV.length != axK.length) throw new DomainError("↑: expected ⍺ and axis specification to have equal number of items (⍺≡"+Main.formatAPL(axV)+"; axis≡"+dims.format()+")", this, dims);
     int[] sh = w.shape.clone();
     int[] off = new int[sh.length];
     for (int i = 0; i < axV.length; i++) {
@@ -154,12 +154,12 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
     return on(sh, off, w, this);
   }
   
-  public static Value on(int[] sh, int[] off, Value w, Tokenable blame) {
+  public static Value on(int[] sh, int[] off, Value w, Callable blame) {
     int rank = sh.length;
     assert rank==off.length && rank==w.rank;
     for (int i = 0; i < rank; i++) {
       if (off[i] < 0) throw new DomainError(blame+": requesting item before first"+(rank>1? " at (0-indexed) axis "+i : ""), blame);
-      if (off[i]+sh[i] > w.shape[i]) throw new DomainError(blame+": requesting item after end"+(rank>1? " at (0-indexed) axis "+i : ""));
+      if (off[i]+sh[i] > w.shape[i]) throw new DomainError(blame+": requesting item after end"+(rank>1? " at (0-indexed) axis "+i : ""), blame);
     }
     if (rank == 1) {
       int s = off[0];
@@ -171,7 +171,6 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
           System.arraycopy(wb.arr, 0, ls, 0, ls.length);
           return new BitArr(ls, new int[]{l});
         } else {
-          if (l < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
           BitArr.BA res = new BitArr.BA(l);
           res.add(wb, s, w.ia);
           return res.finish();

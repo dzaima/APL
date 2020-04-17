@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class DTackBuiltin extends Builtin {
-  static final DTackBuiltin copy = new DTackBuiltin();
   @Override public String repr() {
     return "⊤";
   }
@@ -21,13 +20,17 @@ public class DTackBuiltin extends Builtin {
   }
   
   public Value callInv(Value w) {
-    return UTackBuiltin.copy.call(w);
+    return UTackBuiltin.on(Num.NUMS[2], w, this);
   }
   public Value callInvW(Value a, Value w) {
-    return UTackBuiltin.copy.call(a, w);
+    return UTackBuiltin.on(a, w, this);
   }
   
   public Value call(Value a, Value w) {
+    return on(a, w, this);
+  }
+  
+  public static Value on(Value a, Value w, Callable blame) {
     if (!(a instanceof Primitive)) {
       if (w instanceof BigValue) {
         ArrayList<Value> res = new ArrayList<>();
@@ -42,7 +45,7 @@ public class DTackBuiltin extends Builtin {
         return HArr.create(res);
       }
       int[] sh = new int[w.rank+a.rank];
-      if (a.rank != 1) throw new NYIError("⍺ of ⊤ with rank≥2 not yet implemented", this);
+      if (a.rank != 1) throw new NYIError(blame+": ⍺ with rank≥2 not yet implemented", blame);
       
       System.arraycopy(a.shape, 0, sh, 0, a.rank); // ≡ for (int i = 0; i < a.rank; i++) sh[i] = a.shape[i];
       System.arraycopy(w.shape, 0, sh, a.rank, w.rank); // ≡ for (int i = 0; i < w.rank; i++) sh[i+a.rank] = w.shape[i];
@@ -50,7 +53,7 @@ public class DTackBuiltin extends Builtin {
       double[] c = w.asDoubleArrClone();
       double[] b = a.asDoubleArr();
       double[] res = new double[w.ia * a.ia];
-      for (int i = 1; i < b.length; i++) if (b[i] == 0) throw new DomainError("base for ⊤ contained a 0 as not the 1st element", this, a);
+      for (int i = 1; i < b.length; i++) if (b[i] == 0) throw new DomainError(blame+": ⍺ contained a 0 as not the 1st element", blame, a);
       int last = b[0] == 0? 1 : 0;
       for (int i = b.length-1; i >= last; i--) {
         int off = w.ia*i;
@@ -74,8 +77,8 @@ public class DTackBuiltin extends Builtin {
         BigInteger wl = wlr.abs();
         int ibase = BigValue.safeInt(base);
         if (ibase <= 1) {
-          if (ibase==1 && sign!=0) throw new DomainError("⍺=1 and ⍵≠0 isn't possible", this, w);
-          if (ibase < 0) throw new DomainError("⊤: ⍺ < 0", this);
+          if (ibase==1 && sign!=0) throw new DomainError(blame+": ⍺=1 and ⍵≠0 isn't possible", blame, w);
+          if (ibase < 0) throw new DomainError(blame+": ⍺ < 0", blame);
         }
         if (sign==0) return EmptyArr.SHAPE0N;
         if (ibase == 2) {
@@ -118,14 +121,14 @@ public class DTackBuiltin extends Builtin {
         }
         return new HArr(res);
       }
-      throw new NYIError("non-scalar number not implemented", this);
+      throw new NYIError(blame+": scalar ⍺ and non-scalar ⍵ not implemented", blame);
     }
     double base = a.asDouble();
     double num = w.asDouble();
     if (base <= 1) {
       if (base == 0) return Num.of(num);
-      if (base < 0) throw new DomainError("⊤: ⍺ < 0", this, a);
-      throw new DomainError("⊤: ⍺ < 1", this, a);
+      if (base < 0) throw new DomainError(blame+": ⍺ < 0", blame, a);
+      throw new DomainError(blame+": ⍺ < 1", blame, a);
     }
     var res = new ArrayList<Double>();
     if (num < 0) {

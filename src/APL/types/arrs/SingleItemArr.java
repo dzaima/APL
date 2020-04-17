@@ -38,8 +38,8 @@ public class SingleItemArr extends Arr {
   
   @Override
   public String asString() {
-    if (rank >= 2) throw new DomainError("using rank≥2 array as string");
-    if (! (item instanceof Char)) throw new DomainError("using non-char array as string");
+    if (rank >= 2) throw new DomainError("using rank≥2 array as string", this);
+    if (! (item instanceof Char)) throw new DomainError("using non-char array as string", this);
     char c = ((Char) item).chr;
     StringBuilder s = new StringBuilder();
     for (int i = 0; i < ia; i++) s.append(c);

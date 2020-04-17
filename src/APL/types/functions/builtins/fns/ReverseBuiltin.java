@@ -29,11 +29,11 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   public Value call(Value a, Value w) {
     if (a instanceof Primitive) return on(a.asInt(), -1, w);
-    if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵");
+    if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵", this);
     int[] as = a.shape;
     int[] ws = w.shape;
     for (int i = 0; i < as.length; i++) {
-      if (as[i] != ws[i]) throw new LengthError("expected shape prefixes to match");
+      if (as[i] != ws[i]) throw new LengthError("expected shape prefixes to match", this);
     }
     int[] rots = a.ofShape(new int[]{a.ia}).asIntVec();
     int block = w.shape[w.rank-1];
@@ -66,7 +66,7 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   @Override public Value call(Value a, Value w, DervDimFn dims) {
     int dim = dims.singleDim(w.rank);
     if (a instanceof Primitive) return on(a.asInt(), dim, w);
-    throw new DomainError("A⌽[n]B not implemented for non-scalar A");
+    throw new DomainError("A⌽[n]B not implemented for non-scalar A", this);
   }
   
   @Override public Value callInvW(Value a, Value w) {

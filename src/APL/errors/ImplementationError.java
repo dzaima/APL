@@ -1,13 +1,15 @@
 package APL.errors;
 
-import APL.types.Obj;
+import APL.types.*;
 
 public class ImplementationError extends APLError {
-  public ImplementationError(String s){
+  public ImplementationError(String s) {
     super(s);
   }
-  public ImplementationError(String s, Obj causeObj) {
-    super(s);
-    this.cause = causeObj;
+  public ImplementationError(String s, Tokenable fun) {
+    super(s, fun);
+  }
+  public ImplementationError(String s, Callable fun, Tokenable cause) {
+    super(s, fun, cause);
   }
 }

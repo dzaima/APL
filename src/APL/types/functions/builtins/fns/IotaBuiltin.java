@@ -48,12 +48,12 @@ public class IotaBuiltin extends Builtin {
   }
   
   public Value call(Value a, Value w) {
-    return on(a, w, sc.IO);
+    return on(a, w, sc.IO, this);
   }
   
-  public static Value on(Value a, Value w, int IO) {
-    if (w.rank > 1) throw new RankError("⍵ for ⍳ had rank > 1", w);
-    if (a.rank > 1) throw new RankError("⍺ for ⍳ had rank > 1", a);
+  public static Value on(Value a, Value w, int IO, Callable blame) {
+    if (w.rank > 1) throw new RankError("⍳: ⍵ had rank > 1", blame, w);
+    if (a.rank > 1) throw new RankError("⍳: ⍺ had rank > 1", blame, a);
     if (w.ia > 20 && a.ia > 20) {
       HashMap<Value, Integer> map = new HashMap<>();
       int ctr = 0;

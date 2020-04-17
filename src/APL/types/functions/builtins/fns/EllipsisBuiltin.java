@@ -20,7 +20,7 @@ public class EllipsisBuiltin extends Builtin {
       BigInteger wl = BigValue.bigint(w);
       BigInteger size = al.subtract(wl).abs().add(BigInteger.ONE);
       int isize = BigValue.safeInt(size);
-      if (isize==Integer.MAX_VALUE) throw new DomainError("range of … too large", w);
+      if (isize==Integer.MAX_VALUE) throw new DomainError("…: expected range too large ("+a+"…"+w+")", this, w);
       
       Value[] arr = new Value[isize];
       BigInteger c = al;

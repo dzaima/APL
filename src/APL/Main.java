@@ -179,7 +179,10 @@ public class Main {
           //   colorprint(faulty.getToken().raw, 217);
           //   colorprint(s + "^", 217);
           // }
-          new ImplementationError(e.getMessage() + "; )stack for stacktrace").print();
+          String pmsg = e.getMessage();
+          String msg = e.getClass().getSimpleName();
+          if (pmsg != null && pmsg.length()!=0) msg+= ": "+pmsg;
+          new ImplementationError(msg + "; )stack for stacktrace").print();
         }
         if (!silentREPL) print("> ");
       }

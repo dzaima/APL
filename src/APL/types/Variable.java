@@ -15,12 +15,12 @@ public class Variable extends Settable {
   }
   
   public Obj get() {
-    if (v == null) throw new ValueError("trying to get value of non-existing variable "+name);
+    if (v == null) throw new ValueError("trying to get value of non-existing variable "+name, this);
     return v;
   }
   
   @Override
-  public void set(Obj v) {
+  public void set(Obj v, Callable blame) {
     sc.set(name, v);
   }
   public void update(Obj v) {

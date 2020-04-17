@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.*;
 import APL.types.*;
 
-public abstract class Dop extends Scopeable {
+public abstract class Dop extends Callable {
   
   protected Dop(Scope sc) {
     super(sc);

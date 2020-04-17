@@ -36,10 +36,10 @@ public class JotBuiltin extends Dop {
   }
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
     if (!(aa instanceof Fun)) {
-      throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍶ is "+aa.humanType(true), aa, this);
+      throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍶ is "+aa.humanType(true), this, aa);
     }
     if (!(ww instanceof Fun)) {
-      throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍹ is "+ww.humanType(true), ww, this);
+      throw new SyntaxError("operands of dyadically applied ∘ must be functions, but ⍹ is "+ww.humanType(true), this, ww);
     }
     return ((Fun)aa).call(a, ((Fun)ww).call(w));
   }

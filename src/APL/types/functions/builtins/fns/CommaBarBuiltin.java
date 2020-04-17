@@ -19,6 +19,6 @@ public class CommaBarBuiltin extends Builtin {
   }
   
   public Value call(Value a, Value w) {
-    return CatBuiltin.cat(a, w, 0);
+    return CatBuiltin.cat(a, w, 0, this);
   }
 }

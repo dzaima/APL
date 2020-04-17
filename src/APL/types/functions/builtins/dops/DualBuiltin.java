@@ -1,6 +1,5 @@
 package APL.types.functions.builtins.dops;
 
-import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.*;
@@ -39,7 +38,7 @@ public class DualBuiltin extends Dop {
     } catch (DomainError e) { // but add a nice warning about it if a plausible error was received (todo better error management to not require parsing the message?)
       String msg = e.getMessage();
       if (msg.contains("doesn't support") && msg.contains("inverting")) {
-        throw new DomainError(msg + " (possibly caused by using f⍢g⍨⍣¯1, which only allows computational inverses)", Main.faulty, e.cause);
+        throw new DomainError(msg + " (possibly caused by using f⍢g⍨⍣¯1, which only allows computational inverses)", e.cause);
       } throw e;
     }
   }

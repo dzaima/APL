@@ -65,7 +65,7 @@ public class TrigBuiltin extends Builtin {
         case -11: throw new DomainError("no complex numbers :/");
         case -12: throw new DomainError("no complex numbers no idea why this is even special-cased");
       }
-      throw new DomainError("⍺ of ○ out of bounds");
+      throw new DomainError("○: ⍺ is out of bounds");
     }
   };
   public Value call(Value a, Value w) {
@@ -84,7 +84,7 @@ public class TrigBuiltin extends Builtin {
         case -2: return Math.cos(w);
         case -3: return Math.tan(w);
       }
-      throw new DomainError("⍵ of ○⍣¯1 must be in (+,-)1…3");
+      throw new DomainError("○⍣¯1: ⍵ must be in (+,-)1…3");
     }
   };
   public Value callInvW(Value a, Value w) {

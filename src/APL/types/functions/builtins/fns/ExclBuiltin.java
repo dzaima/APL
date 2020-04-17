@@ -32,7 +32,7 @@ public class ExclBuiltin extends Builtin {
       }
     }
     public Value call(BigValue w) {
-      if (w.i.bitLength() > 30) throw new DomainError("argument of ! too big", w); // otherwise intValue might ignore those!
+      if (w.i.bitLength() > 30) throw new DomainError("!: argument too big (⍵ ≡ "+w+")", w); // otherwise intValue might ignore those!
       int am = w.i.intValue();
       BigInteger res = BigInteger.ONE;
       for (int i = 2; i <= am; i++) {
@@ -57,7 +57,7 @@ public class ExclBuiltin extends Builtin {
   
         if (bl.compareTo(al.subtract(bl)) > 0) bl = al.subtract(bl);
         
-        if (bl.bitLength() > 30) throw new DomainError("arguments of ! too big", w);
+        if (bl.bitLength() > 30) throw new DomainError("!: arguments too big (⍺ ≡ "+a+"; ⍵ ≡ "+w+")", w);
         int ri = bl.intValue();
         
         for (int i = 0; i < ri; i++) {

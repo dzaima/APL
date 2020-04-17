@@ -4,9 +4,9 @@ import APL.*;
 import APL.errors.*;
 import APL.types.arrs.*;
 
-import java.util.*;
+import java.util.Iterator;
 
-public abstract class Fun extends Scopeable {
+public abstract class Fun extends Callable {
   
   public Value identity() {
     return null;
@@ -315,7 +315,7 @@ public abstract class Fun extends Scopeable {
             if (an) return f.call(((Num) a).num, (BigValue) w);
             else return f.call((BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
           }
-          throw new DomainError("calling a number-only function with "+w.humanType(true));
+          throw new DomainError("calling a number-only function with "+w.humanType(true), this);
         } else return new Rank0Arr(numD(f, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵
@@ -372,7 +372,7 @@ public abstract class Fun extends Scopeable {
           if (an & wn) return n.call(((Num) a).num, ((Num) w).num);
           if ((a instanceof BigValue|an) & (w instanceof BigValue|wn))
             return n.call(an? new BigValue(((Num) a).num) : (BigValue) a, wn? new BigValue(((Num) w).num) : (BigValue) w);
-          throw new DomainError("calling a number-only function with "+w.humanType(true));
+          throw new DomainError("calling a number-only function with "+w.humanType(true), this);
         } else return new Rank0Arr(bitD(n, b, a.first(), w.first()));
         
       } else { // ⍺¨ ⍵

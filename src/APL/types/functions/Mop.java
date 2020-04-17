@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.*;
 import APL.types.*;
 
-public abstract class Mop extends Scopeable {
+public abstract class Mop extends Callable {
   
   protected Mop(Scope sc) {
     super(sc);

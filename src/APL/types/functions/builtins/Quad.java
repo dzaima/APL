@@ -10,7 +10,7 @@ public class Quad extends Settable {
     this.sc = sc;
   }
   
-  public void set(Obj v) {
+  public void set(Obj v, Callable blame) {
     Main.println((Main.debug? "[log] " : "")+v);
   }
   

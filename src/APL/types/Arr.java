@@ -200,7 +200,7 @@ public abstract class Arr extends Value {
   }
   public Arr reverseOn(int dim) {
     if (rank == 0) {
-      if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis");
+      if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis", this);
       return this;
     }
     if (dim < 0) dim+= rank;

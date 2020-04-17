@@ -41,12 +41,12 @@ public class CatBuiltin extends Builtin implements DimDFn {
       System.arraycopy(w.values(), 0, r, a.ia, w.ia);
       return Arr.create(r);
     }
-    return cat(a, w, dim);
+    return cat(a, w, dim, this);
   }
   public Value call(Value a, Value w, DervDimFn dims) {
     int dim = dims.singleDim();
-    if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
-    return cat(a, w, dim);
+    if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range", this);
+    return cat(a, w, dim, this);
   }
   private static BitArr catBit(Value a, Value w) { // for ranks <= 1
     boolean ab = a instanceof BitArr;
@@ -61,18 +61,18 @@ public class CatBuiltin extends Builtin implements DimDFn {
     
     return res.finish();
   }
-  static Value cat(Value a, Value w, int k) {
+  static Value cat(Value a, Value w, int k, Callable blame) {
     if (a.rank<=1 && w.rank<=1
       && (a instanceof BitArr || Main.isBool(a))
       && (w instanceof BitArr || Main.isBool(w))) {
       return catBit(a, w);
     }
     boolean aScalar = a.scalar(), wScalar = w.scalar();
-    if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0);
+    if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0, blame);
     if (!aScalar && !wScalar) {
-      if (a.rank != w.rank) throw new RankError("ranks not matchable", w);
+      if (a.rank != w.rank) throw new RankError("ranks not matchable", blame, w);
       for (int i = 0; i < a.rank; i++) {
-        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable ("+new DoubleArr(a.shape)+" vs "+new DoubleArr(w.shape)+")", w);
+        if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable ("+new DoubleArr(a.shape)+" vs "+new DoubleArr(w.shape)+")", blame, w);
       }
     }
     int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result

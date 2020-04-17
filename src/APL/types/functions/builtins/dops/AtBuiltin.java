@@ -16,10 +16,10 @@ public class AtBuiltin extends Dop {
   }
   
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    return at(aa, ww, w, sc.IO);
+    return at(aa, ww, w, sc.IO, this);
   }
   
-  public static Value at(Obj aa, Obj ww, Value w, int IO) {
+  public static Value at(Obj aa, Obj ww, Value w, int IO, Callable blame) {
     int ia = w.ia;
     if (ww instanceof Fun) {
       Value vba = ((Fun) ww).call(w);
@@ -63,7 +63,7 @@ public class AtBuiltin extends Dop {
         
         if (wwa instanceof Primitive) wwa = new Shape1Arr(wwa);
         double[][] wwd = Indexer.inds(wwa);
-        RankError.must(wwd.length == w.rank, "≢⍹ of @ must be equal to ≢⍴⍵");
+        if (wwd.length != w.rank) throw new RankError("@: ≢⍹ must be equal to ≢⍴⍵ ("+wwd.length+" = ≢⍹; "+w.rank+" = ≢⍴⍵", blame);
         int matchingCount = wwd[0].length;
         Value[] ra = new Value[ia];
         int[] indexes = new int[matchingCount];

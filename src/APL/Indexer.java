@@ -100,10 +100,10 @@ public class Indexer implements Iterable<int[]>, Iterator<int[]> {
   }
   private static final double[][] EDAA = new double[0][0]; // empty double array array
   public static double[][] inds(Obj ov) { // ⎕VI←1 indexes to double[][]
-    SyntaxError.must(ov instanceof Value, "expected array for index array");
+    if (!(ov instanceof Value)) throw new SyntaxError("expected array for index array");
     Value v = (Value) ov;
     if (v instanceof Primitive) return new double[][]{{v.asDouble()}};
-    DomainError.must(v.rank == 1, "rank of index array must be 1");
+    if (v.rank != 1) throw new DomainError("rank of index array must be 1");
     if (v.ia == 0) return EDAA;
     if (v.get(0) instanceof Primitive) v = new Shape1Arr(v);
     double[][] res = new double[v.ia][];

@@ -1,22 +1,30 @@
 package APL.errors;
 
 import APL.tokenizer.Token;
-import APL.types.Tokenable;
+import APL.types.*;
 
 import java.util.ArrayList;
 
 import static APL.Main.*;
 
-public class APLError extends RuntimeException {
+public abstract class APLError extends RuntimeException {
   public Tokenable cause;
   
-  APLError (String msg) {
+  APLError(String msg) {
     super(msg);
   }
-  APLError (String msg, Tokenable cause) {
+  APLError(String msg, Tokenable blame) {
     super(msg);
+    if (blame instanceof Callable) faulty = blame;
+    else cause = blame;
+  }
+  APLError(String msg, Callable blame, Tokenable cause) {
+    super(msg);
+    faulty = blame;
     this.cause = cause;
   }
+  
+  
   public void print() {
     String type = getClass().getSimpleName();
     if (getMessage().length() == 0) colorprint(type, 246);

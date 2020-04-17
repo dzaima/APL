@@ -724,13 +724,13 @@ public class Exec {
         StrMap res = new StrMap(nsc);
         for (LineTok ct : ts) {
           Token name = ct.tokens.get(0);
-          if (ct.colonPos() ==-1)         SyntaxError.direct("expected a colon in expression", ct.tokens.get(0));
-          if (ct.colonPos() != 1)         SyntaxError.direct("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
+          if (ct.colonPos() ==-1) throw new SyntaxError("expected a colon in expression", ct.tokens.get(0));
+          if (ct.colonPos() != 1) throw new SyntaxError("expected : to be the 2nd token in parenthesis", ct.tokens.get(ct.colonPos()));
           String key;
           if (name instanceof NameTok) key = ((NameTok) name).name;
           else if (name instanceof StrTok) key = ((StrTok) name).parsed;
           else if (name instanceof ChrTok) key = ((ChrTok) name).parsed;
-          else throw SyntaxError.direct("expected a key name, got " + Main.explain(name), name);
+          else throw new SyntaxError("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
           
           Obj val = oexec(LineTok.inherit(tokens), nsc);
@@ -743,7 +743,7 @@ public class Exec {
           Value[] vs = new Value[size];
           for (int i = 0; i < ts.size(); i++) {
             Obj o = Main.oexec(ts.get(i), sc);
-            if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true));
+            if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true), o);
             vs[i] = (Value) o;
           }
           return Arr.create(vs);
@@ -751,11 +751,11 @@ public class Exec {
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {
             Obj o = Main.oexec(ts.get(i), sc);
-            if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true));
+            if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true), o);
             os[i] = o;
           }
           return new FunArr(os);
-        } else throw new DomainError("⋄-array contained " + fo.humanType(true));
+        } else throw new DomainError("⋄-array contained " + fo.humanType(true), fo);
       }
     }
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
