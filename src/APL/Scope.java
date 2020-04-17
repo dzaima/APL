@@ -100,7 +100,8 @@ public class Scope {
         case "⎕IO": return nIO;
         case "⎕CLASS": return new ClassGetter();
         case "⎕PP": return new DoubleArr(new double[] {Num.pp, Num.sEr, Num.eEr});
-        case "⎕PF": return new Profiler(this);
+        case "⎕PFX": return new Profiler(this);
+        case "⎕PFO": return new Profiler.ProfilerOp(this);
         case "⎕PFR": return Profiler.results();
         case "⎕STDIN": return new Stdin();
         case "⎕BIG": return new Big();
@@ -592,27 +593,25 @@ public class Scope {
     }
     
     static final HashMap<String, Pr> pfRes = new HashMap<>();
-    static double cam = 0;
     static Obj results() {
-      Value[] arr = new Value[pfRes.size()*4];
-      final int[] p = {0};
-      cam++;
+      Value[] arr = new Value[pfRes.size()*4+4];
+      arr[0] = new ChrArr("expr");
+      arr[1] = new ChrArr("calls");
+      arr[2] = new ChrArr("total ms");
+      arr[3] = new ChrArr("avg ms");
+      final int[] p = {4};
       pfRes.forEach((s, pr) -> {
         arr[p[0]++] = Main.toAPL(s);
-        arr[p[0]++] = new Num(pr.am/cam);
-        arr[p[0]++] = new Num(pr.ms/cam);
-        arr[p[0]++] = new Num(pr.ms/pr.am);
-        if (cam > 100) {
-          pr.am = 0;
-          pr.ms = 0;
-        }
+        arr[p[0]++] = new Num(pr.am);
+        arr[p[0]++] = new Num(Math.floor(pr.ms*1e6      )/1e6);
+        arr[p[0]++] = new Num(Math.floor(pr.ms*1e6/pr.am)/1e6);
       });
-      if (cam > 100) cam = 0;
-      return new HArr(arr, new int[]{pfRes.size(), 4});
+      pfRes.clear();
+      return new HArr(arr, new int[]{arr.length>>2, 4});
     }
     
     @Override public String repr() {
-      return "⎕PF";
+      return "⎕PFX";
     }
     @Override public Value call(Value w) {
       return call(w, w);
@@ -622,26 +621,74 @@ public class Scope {
       if (o instanceof Value) return (Value) o;
       throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
     }
-    public Obj callObj(Value a, Value w) {
+    
+    private static Pr get(Value a, Value w) {
       String s = w.asString();
       String k = a.asString();
-      if (!pfRes.containsKey(k)) pfRes.put(k, new Pr(Tokenizer.tokenize(s)));
       Pr p = pfRes.get(k);
-      BasicLines t = p.tok;
-      
+      if (p == null) pfRes.put(k, p = new Pr(Tokenizer.tokenize(s)));
       p.am++;
-      long ns = System.nanoTime();
+      return p;
+    }
+    
+    public Obj callObj(Value a, Value w) {
+      Pr p = get(a, w);
+      BasicLines t = p.tok;
+      long sns = System.nanoTime();
       Obj res = Main.execLines(t, sc);
-      long rns = System.nanoTime() - ns;
-      p.ms+= rns/1000000d;
+      long ens = System.nanoTime();
+      p.ms+= (ens-sns)/1000000d;
       return res;
+    }
+    
+    static class ProfilerOp extends Mop {
+  
+      public ProfilerOp(Scope sc) {
+        super(sc);
+      }
+      
+      Pr get(Obj f) {
+        String s = ((Value) f).asString();
+        Pr p = pfRes.get(s);
+        if (p == null) {
+          pfRes.put(s, p = new Pr(Tokenizer.tokenize(s)));
+          p.fn = (Fun) Main.execLines(p.tok, sc);
+        }
+        p.am++;
+        return p;
+      }
+      
+      public Value call(Obj f, Value w, DerivedMop derv) {
+        Pr p = get(f);
+  
+        long sns = System.nanoTime();
+        Value r = p.fn.call(w);
+        long ens = System.nanoTime();
+        p.ms+= (ens-sns)/1000000d;
+        return r;
+      }
+  
+      public Value call(Obj f, Value a, Value w, DerivedMop derv) {
+        Pr p = get(f);
+    
+        long sns = System.nanoTime();
+        Value r = p.fn.call(a, w);
+        long ens = System.nanoTime();
+        p.ms+= (ens-sns)/1000000d;
+        return r;
+      }
+  
+      public String repr() {
+        return "⎕PFO";
+      }
     }
   }
   
   private static class Pr {
     private final BasicLines tok;
-    int am;
-    double ms;
+    private int am;
+    private double ms;
+    private Fun fn;
     
     public Pr(BasicLines tok) {
       this.tok = tok;

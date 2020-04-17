@@ -17,6 +17,13 @@ public class ChrArr extends Arr {
     this.s = s;
   }
   
+  public ChrArr(char[] arr, int[] sh) {
+    this(new String(arr), sh);
+  }
+  public ChrArr(char[] arr) {
+    this(new String(arr));
+  }
+  
   
   @Override
   public int[] asIntArr() {

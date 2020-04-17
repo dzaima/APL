@@ -153,7 +153,6 @@ public class ReduceBuiltin extends Mop implements DimMMop {
   
   private Value ngnReduce(Value x, int axis, Fun f) { // https://chat.stackexchange.com/transcript/message/47158587#47158587
     if (x.rank == 0) return x;
-    if (axis < 0) axis+= x.rank;
     int n0 = 1; // product of all dimensions before "axis"
     for (int i = 0; i < axis; i++) {
       n0*= x.shape[i];

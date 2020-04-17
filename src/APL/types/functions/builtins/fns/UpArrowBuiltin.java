@@ -1,42 +1,17 @@
 package APL.types.functions.builtins.fns;
 
 import APL.*;
-import APL.errors.RankError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
+import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
 
-public class UpArrowBuiltin extends Builtin {
+public class UpArrowBuiltin extends Builtin implements DimDFn {
   @Override public String repr() {
     return "↑";
   }
   
-  public UpArrowBuiltin(Scope sc) {
-    super(sc);
-  }
-  public Value call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
-    int IO = sc.IO;
-    int[] shape = a.asIntVec();
-    if (shape.length == 0) return w;
-    int ia = 1;
-    int[] offsets = new int[shape.length];
-    for (int i = 0; i < shape.length; i++) {
-      int d = shape[i];
-      ia *= d;
-      if (d < 0) {
-        shape[i] = -d;
-        ia = -ia;
-        offsets[i] = w.shape[i]-shape[i]+IO;
-      } else offsets[i] = IO;
-    }
-    Value[] arr = new Value[ia];
-    int i = 0;
-    for (int[] index : new Indexer(shape, offsets)) {
-      arr[i] = w.at(index, sc.IO);
-      i++;
-    }
-    return Arr.create(arr, shape);
-  }
   public Value call(Value w) {
     if (w instanceof Arr) {
       if (w instanceof DoubleArr || w instanceof ChrArr || w instanceof BitArr) return w;
@@ -142,6 +117,115 @@ public class UpArrowBuiltin extends Builtin {
       return Arr.create(allVals, totalShape);
     }
   }
+  
+  
+  
+  
+  public Value call(Value a, Value w) {
+    int[] gsh = a.asIntVec();
+    if (gsh.length == 0) return w;
+    if (gsh.length > w.rank) throw new DomainError("↑: ≢⍺ should be less than ⍴⍴⍵ ("+gsh.length+" = ≢⍺; "+Main.formatAPL(w.shape)+" ≡ ⍴⍵)");
+    int[] sh = new int[w.rank];
+    System.arraycopy(gsh, 0, sh, 0, gsh.length);
+    System.arraycopy(w.shape, gsh.length, sh, gsh.length, sh.length - gsh.length);
+    int[] off = new int[sh.length];
+    for (int i = 0; i < gsh.length; i++) {
+      int d = gsh[i];
+      if (d < 0) {
+        sh[i] = -d;
+        off[i] = w.shape[i]-sh[i];
+      } else off[i] = 0;
+    }
+    return on(sh, off, w, this);
+  }
+  
+  public Value call(Value a, Value w, DervDimFn dims) {
+    int[] axV = a.asIntVec();
+    int[] axK = dims.dims(w.rank);
+    if (axV.length != axK.length) throw new DomainError("↑: expected ⍺ and axis specification to have equal number of items (⍺≡"+Main.formatAPL(axV)+"; axis≡"+dims.format()+")");
+    int[] sh = w.shape.clone();
+    int[] off = new int[sh.length];
+    for (int i = 0; i < axV.length; i++) {
+      int ax = axK[i];
+      int am = axV[i];
+      sh[ax] = Math.abs(am);
+      if (am < 0) off[ax] = w.shape[ax] + am;
+    }
+    return on(sh, off, w, this);
+  }
+  
+  public static Value on(int[] sh, int[] off, Value w, Tokenable blame) {
+    int rank = sh.length;
+    assert rank==off.length && rank==w.rank;
+    for (int i = 0; i < rank; i++) {
+      if (off[i] < 0) throw new DomainError(blame+": requesting item before first"+(rank>1? " at (0-indexed) axis "+i : ""), blame);
+      if (off[i]+sh[i] > w.shape[i]) throw new DomainError(blame+": requesting item after end"+(rank>1? " at (0-indexed) axis "+i : ""));
+    }
+    if (rank == 1) {
+      int s = off[0];
+      int l = sh[0];
+      if (w instanceof BitArr) {
+        BitArr wb = (BitArr) w;
+        if (s == 0) {
+          long[] ls = new long[BitArr.sizeof(l)];
+          System.arraycopy(wb.arr, 0, ls, 0, ls.length);
+          return new BitArr(ls, new int[]{l});
+        } else {
+          if (l < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
+          BitArr.BA res = new BitArr.BA(l);
+          res.add(wb, s, w.ia);
+          return res.finish();
+        }
+      }
+      if (w instanceof ChrArr) {
+        char[] res = new char[l];
+        String ws = ((ChrArr) w).s;
+        ws.getChars(s, s+l, res, 0); // ≡ for (int i = 0; i < l; i++) res[i] = ws.charAt(s+i);
+        return new ChrArr(res);
+      }
+      if (w.quickDoubleArr()) {
+        double[] res = new double[l];
+        double[] wd = w.asDoubleArr();
+        System.arraycopy(wd, s, res, 0, l); // ≡ for (int i = 0; i < l; i++) res[i] = wd[s+i];
+        return new DoubleArr(res);
+      }
+      
+      Value[] res = new Value[l];
+      for (int i = 0; i < l; i++) res[i] = w.get(s+i);
+      return Arr.create(res);
+    }
+    int ia = Arr.prod(sh);
+    if (w instanceof ChrArr) {
+      char[] arr = new char[ia];
+      String s = ((ChrArr) w).s;
+      int i = 0;
+      for (int[] index : new Indexer(sh, off)) {
+        arr[i] = s.charAt(Indexer.fromShape(w.shape, index, 0));
+        i++;
+      }
+      return new ChrArr(arr, sh);
+    }
+    if (w.quickDoubleArr()) {
+      double[] arr = new double[ia];
+      double[] wd = w.asDoubleArr();
+      int i = 0;
+      for (int[] index : new Indexer(sh, off)) {
+        arr[i] = wd[Indexer.fromShape(w.shape, index, 0)];
+        i++;
+      }
+      return new DoubleArr(arr, sh);
+    }
+    Value[] arr = new Value[ia];
+    int i = 0;
+    for (int[] index : new Indexer(sh, off)) {
+      arr[i] = w.at(index, 0);
+      i++;
+    }
+    return Arr.create(arr, sh);
+  }
+  
+  
+  
   
   public Value underW(Obj o, Value a, Value w) {
     Value v = o instanceof Fun? ((Fun) o).call(call(a, w)) : (Value) o;

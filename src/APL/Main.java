@@ -232,7 +232,12 @@ public class Main {
     if (ia.length == 0) return "⍬";
     StringBuilder r = new StringBuilder(Integer.toString(ia[0]));
     for (int i = 1; i < ia.length; i++) {
-      r.append(" ").append(ia[i]);
+      int c = ia[i];
+      r.append(" ");
+      if (c < 0) {
+        r.append('¯');
+        r.append(-c);
+      } else r.append(c);
     }
     return r.toString();
   }

@@ -1,19 +1,17 @@
 package APL.types.functions.builtins.fns;
 
-import APL.*;
+import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.arrs.*;
+import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
 
-public class DownArrowBuiltin extends Builtin {
+public class DownArrowBuiltin extends Builtin implements DimDFn {
   @Override public String repr() {
     return "↓";
   }
   
-  public DownArrowBuiltin(Scope sc) {
-    super(sc);
-  }
   
   public Value call(Value w) {
     if (w instanceof Primitive) return w;
@@ -49,58 +47,35 @@ public class DownArrowBuiltin extends Builtin {
     return new HArr(res, nsh);
   }
   
-  public Value call(Value a, Value w) { // TODO ⍴⍺ < ⍴⍴⍵
-    return on(a, w, sc.IO);
+  public Value call(Value a, Value w) {
+    int[] gsh = a.asIntVec();
+    if (gsh.length == 0) return w;
+    if (gsh.length > w.rank) throw new DomainError("↑: ≢⍺ should be less than ⍴⍴⍵ ("+gsh.length+" = ≢⍺; "+Main.formatAPL(w.shape)+" ≡ ⍴⍵)");
+    int[] sh = new int[w.rank];
+    System.arraycopy(gsh, 0, sh, 0, gsh.length);
+    System.arraycopy(w.shape, gsh.length, sh, gsh.length, sh.length - gsh.length);
+    int[] off = new int[sh.length];
+    for (int i = 0; i < gsh.length; i++) {
+      int am = gsh[i];
+      sh[i] = w.shape[i] - Math.abs(am);
+      if (am > 0) off[i] = am;
+    }
+    return UpArrowBuiltin.on(sh, off, w, this);
   }
-  public static Value on(Value a, Value w, int IO) { // TODO ⍴⍺ < ⍴⍴⍵
-    // TODO redo this, merge with UpArrowBuiltin
-    if (w instanceof BitArr && w.rank == 1) {
-      BitArr wb = (BitArr) w;
-      int n;
-      if (a instanceof Num) n = a.asInt();
-      else {
-        int[] ns = a.asIntVec();
-        if(ns.length != 1) throw new DomainError("↓ expected (≢⍺) ≡ ≢⍴⍵");
-        n = ns[0];
-      }
-      if (n < 0) {
-        int am = w.ia+n;
-        if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
-        long[] ls = new long[BitArr.sizeof(am)];
-        System.arraycopy(wb.arr, 0, ls, 0, ls.length);
-        return new BitArr(ls, new int[]{am});
-      } else {
-        int am = w.ia - n;
-        if (am < 0) throw new DomainError("↓ expected (|⍺) ≤ ⍴⍵");
-        BitArr.BA res = new BitArr.BA(am);
-        res.add(wb, n, w.ia);
-        return res.finish();
-      }
+  
+  public Value call(Value a, Value w, DervDimFn dims) {
+    int[] axV = a.asIntVec();
+    int[] axK = dims.dims(w.rank);
+    if (axV.length != axK.length) throw new DomainError("↑: expected ⍺ and axis specification to have equal number of items (⍺≡"+Main.formatAPL(axV)+"; axis≡"+dims.format()+")");
+    int[] sh = w.shape.clone();
+    int[] off = new int[sh.length];
+    for (int i = 0; i < axV.length; i++) {
+      int ax = axK[i];
+      int am = axV[i];
+      sh[ax] = w.shape[ax] - Math.abs(am);
+      if (am > 0) off[ax] = am;
     }
-    
-    int[] shape = a.asIntVec();
-    if (shape.length == 0) return w;
-    int ia = 1;
-    int[] offsets = new int[shape.length];
-    for (int i = 0; i < shape.length; i++) {
-      int d = shape[i];
-      if (d < 0) {
-        d = -d;
-        offsets[i] = IO;
-      } else {
-        offsets[i] = d + IO;
-      }
-      shape[i] = w.shape[i] - d;
-      ia *= shape[i];
-    }
-    Value[] arr = new Value[ia];
-    Indexer indexer = new Indexer(shape, offsets);
-    int i = 0;
-    for (int[] index : indexer) {
-      arr[i] = w.at(index, IO).squeeze();
-      i++;
-    }
-    return Arr.create(arr, shape);
+    return UpArrowBuiltin.on(sh, off, w, this);
   }
   
   public Value underW(Obj o, Value a, Value w) {

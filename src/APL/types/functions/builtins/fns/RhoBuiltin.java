@@ -17,33 +17,39 @@ public class RhoBuiltin extends Builtin {
   
   
   public Value call(Value w) {
-    
-    int[] sh = w.shape;
-    //ArrayList<ArrVal> res = new ArrayList<ArrVal>();
-    //for (int i = 0; i < sh.length; i++) {
-    //  res.add(new Number(sh[i]));
-    //}
-    return toAPL(sh);
+    return toAPL(w.shape);
   }
   public Value call(Value a, Value w) {
-    if (a.rank > 1) throw new DomainError("multidimensional shape", this, a);
-    int[] sh = new int[a.ia];
-    int ia = 1;
+    if (a.rank > 1) throw new DomainError("⍴: multidimensional shape (⍴⍺ is "+Main.formatAPL(a.shape)+")", this, a);
+    int[] sh;
+    int ia;
     Integer emptyPos = null;
-    for (int i = 0; i < sh.length; i++) {
-      Value v = a.get(i);
-      if (v instanceof Num) {
-        int c = v.asInt();
-        sh[i] = c;
-        ia*= c;
-      } else if (v.ia == 0) {
-        if (emptyPos == null) emptyPos = i;
-        else throw new DomainError("shape contained multiple undefined dimension sizes", this, v);
-      } else throw new DomainError("shape for ⍴ contained " + v.humanType(true), this, v);
+    if (a.quickDoubleArr()) {
+      sh = a.asIntVec();
+      ia = Arr.prod(sh);
+    } else {
+      sh = new int[a.ia];
+      ia = 1;
+      for (int i = 0; i < sh.length; i++) {
+        Value v = a.get(i);
+        if (v instanceof Num) {
+          int c = v.asInt();
+          sh[i] = c;
+          ia *= c;
+        } else if (v.ia == 0) {
+          if (emptyPos == null) emptyPos = i;
+          else throw new DomainError("⍴: shape contained multiple ⍬s", this, v);
+        } else throw new DomainError("⍴: shape contained "+v.humanType(true), this, v);
+      }
     }
     
     if (emptyPos != null) {
-      if (w.ia % ia != 0) throw new LengthError("empty dimension not perfect", this, w);
+      if (w.ia % ia != 0) {
+        StringBuilder b = new StringBuilder();
+        for (Value v : a) b.append(v).append(' ');
+        b.deleteCharAt(b.length()-1);
+        throw new LengthError("⍴: empty dimension not perfect (⍺ ≡ "+b+"; "+(w.ia)+" = ≢⍵)", this, w);
+      }
       sh[emptyPos] = w.ia/ia;
       return w.ofShape(sh);
     } else if (ia == w.ia) return w.ofShape(sh);
@@ -74,6 +80,16 @@ public class RhoBuiltin extends Builtin {
         if (p == w.ia) p = 0;
       }
       return new DoubleArr(res, sh);
+    } else if (w instanceof ChrArr) {
+      if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);
+      String inp = ((ChrArr) w).s;
+      char[] res = new char[ia];
+      int p = 0;
+      for (int i = 0; i < ia; i++) {
+        res[i] = inp.charAt(p++);
+        if (p == w.ia) p = 0;
+      }
+      return new ChrArr(res, sh);
     } else {
       if (sh.length == 0 && w.first() instanceof Primitive && !Main.enclosePrimitives) return w.get(0);
       Value[] arr = new Value[ia];

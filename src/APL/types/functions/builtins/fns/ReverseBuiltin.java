@@ -63,7 +63,8 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
     }
   }
   
-  @Override public Value call(Value a, Value w, int dim) {
+  @Override public Value call(Value a, Value w, DervDimFn dims) {
+    int dim = dims.singleDim(w.rank);
     if (a instanceof Primitive) return on(a.asInt(), dim, w);
     throw new DomainError("A⌽[n]B not implemented for non-scalar A");
   }
@@ -77,7 +78,6 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   public static Value on(int a, int dim, Value w) {
     if (w.ia==0) return w;
     if (a == 0) return w;
-    if (dim < 0) dim += w.rank;
     int rowsz = w.shape[dim];
     a = Math.floorMod(a, rowsz);
     int block = w.ia; // parts to rotate; each takes 2 arraycopy calls

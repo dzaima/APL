@@ -1,6 +1,6 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Scope;
+import APL.*;
 import APL.errors.*;
 import APL.types.*;
 
@@ -33,7 +33,7 @@ public class RShoeBuiltin extends Fun {
       if (w.rank != 1) throw new RankError("array rank was "+w.rank+", tried to get item at rank 0", w);
       if (w.ia == 0) throw new LengthError("⊃ on array with 0 elements", this, w);
       int p = a.asInt() - sc.IO;
-      if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+(w.ia-1));
+      if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+ Main.formatAPL(w.shape));
       return w.get(p);
     }
     for (Value v : a) {

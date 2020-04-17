@@ -176,7 +176,7 @@ public class Exec {
           if (Main.debug) printlvl("F[]");
           var f = (Fun) firstObj();
           var w = (Brackets) popS();
-          addS(new DervDimFn(f, w.toInt(), sc));
+          addS(new DervDimFn(f, w.toInts(), sc));
           continue;
         }
         if (is("M@", end, true)) {
@@ -643,8 +643,8 @@ public class Exec {
         case '≡': return new DepthBuiltin();
         case '⊢': return new RTackBuiltin();
         case '⊣': return new LTackBuiltin();
-        case '↑': return new UpArrowBuiltin(sc);
-        case '↓': return new DownArrowBuiltin(sc);
+        case '↑': return new UpArrowBuiltin();
+        case '↓': return new DownArrowBuiltin();
         case '?': return new RandBuiltin(sc);
         case '⍪': return new CommaBarBuiltin();
         case '⍉': return new TransposeBuiltin();

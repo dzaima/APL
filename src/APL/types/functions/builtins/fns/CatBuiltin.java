@@ -4,7 +4,7 @@ import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
-import APL.types.dimensions.DimDFn;
+import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
 
 import java.util.Arrays;
@@ -43,7 +43,8 @@ public class CatBuiltin extends Builtin implements DimDFn {
     }
     return cat(a, w, dim);
   }
-  public Value call(Value a, Value w, int dim) {
+  public Value call(Value a, Value w, DervDimFn dims) {
+    int dim = dims.singleDim();
     if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range");
     return cat(a, w, dim);
   }
@@ -131,12 +132,12 @@ public class CatBuiltin extends Builtin implements DimDFn {
     if (a.rank>1) throw new NYIError(", inverted on rank "+a.rank+" ⍺", this);
     if (v.rank>1) throw new NYIError(", inverted on rank "+v.rank+" ⍵", this);
     for (int i = 0; i < a.ia; i++) {
-      if (a.get(i) != v.get(i)) throw new DomainError("inverting , received non-equal prefixes");
+      if (a.get(i) != v.get(i)) throw new DomainError("inverting , received non-equal prefixes", this);
     }
     if (w.rank==0) {
       if (a.ia+1 != v.ia) throw new DomainError("original ⍵ was of rank ⍬, which is not satisfiable", this);
       return v.get(v.ia-1);
     }
-    return DownArrowBuiltin.on(Num.of(a.ia), v, 0);
+    return UpArrowBuiltin.on(new int[]{v.ia-a.ia}, new int[]{a.ia}, v, this);
   }
 }

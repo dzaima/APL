@@ -152,7 +152,7 @@ public class ReplicateBuiltin extends Builtin {
             chars[pos++] = ws.charAt(i);
           }
         }
-        return new ChrArr(new String(chars));
+        return new ChrArr(chars);
       }
       Value[] res = new Value[sum];
       BitArr.BR r = ab.read();

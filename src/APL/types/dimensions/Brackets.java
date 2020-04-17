@@ -22,7 +22,10 @@ public class Brackets extends Obj {
   }
   
   public Integer toInt() {
-    return val == null ? null : val.asInt();
+    return val==null? null : val.asInt();
+  }
+  public int[] toInts() {
+    return val==null? null : val.asIntVec();
   }
   
   @Override
