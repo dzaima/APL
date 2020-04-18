@@ -186,7 +186,7 @@ public final class BitArr extends Arr {
         i++;
       }
     }
-  
+    
     public void add(long l) { // expects a 0 or 1
       a[i] |= l<<o;
       o++;
@@ -286,7 +286,7 @@ public final class BitArr extends Arr {
         }
         i+= off>>6;
         o = off&63;
-  
+        
         if (o != 0) {
           a[i] = (1L<<o)-1;
         }

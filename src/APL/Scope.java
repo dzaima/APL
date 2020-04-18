@@ -642,7 +642,7 @@ public class Scope {
     }
     
     static class ProfilerOp extends Mop {
-  
+      
       public ProfilerOp(Scope sc) {
         super(sc);
       }
@@ -660,24 +660,24 @@ public class Scope {
       
       public Value call(Obj f, Value w, DerivedMop derv) {
         Pr p = get(f);
-  
+        
         long sns = System.nanoTime();
         Value r = p.fn.call(w);
         long ens = System.nanoTime();
         p.ms+= (ens-sns)/1000000d;
         return r;
       }
-  
+      
       public Value call(Obj f, Value a, Value w, DerivedMop derv) {
         Pr p = get(f);
-    
+        
         long sns = System.nanoTime();
         Value r = p.fn.call(a, w);
         long ens = System.nanoTime();
         p.ms+= (ens-sns)/1000000d;
         return r;
       }
-  
+      
       public String repr() {
         return "⎕PFO";
       }

@@ -33,7 +33,7 @@ public class ReplicateBuiltin extends Builtin {
         Arrays.fill(res, n);
         return Arr.create(res);
       }
-  
+      
       int am = w.ia*sz;
       if (w instanceof BitArr) {
         BitArr.BA res = new BitArr.BA(am);

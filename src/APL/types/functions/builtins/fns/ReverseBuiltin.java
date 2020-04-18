@@ -28,7 +28,7 @@ public class ReverseBuiltin extends Builtin implements DimMFn, DimDFn {
   
   
   public Value call(Value a, Value w) {
-    if (a instanceof Primitive) return on(a.asInt(), -1, w);
+    if (a instanceof Primitive) return on(a.asInt(), w.rank-1, w);
     if (a.rank+1 != w.rank) throw new RankError("(1 + ⍴⍴⍺) ≠ ⍴⍴⍵", this);
     int[] as = a.shape;
     int[] ws = w.shape;

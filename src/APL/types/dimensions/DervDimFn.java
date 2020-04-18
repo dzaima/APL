@@ -34,7 +34,7 @@ public class DervDimFn extends Fun {
   public int[] dims(int rank) {
     int[] res = new int[dims.length];
     boolean[] used = new boolean[rank];
-  
+    
     for (int i = 0; i < dims.length; i++) {
       int c = dims[i];
       int ax = c < 0? c + rank : c;

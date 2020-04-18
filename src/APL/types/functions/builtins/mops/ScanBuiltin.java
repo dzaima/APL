@@ -30,7 +30,7 @@ public class ScanBuiltin extends Mop {
     int len = w.ia;
     if (n < 0) throw new DomainError("\\: ⍺ should be non-negative (was "+n+")", this);
     if (w.rank > 1) throw new RankError("\\: rank of ⍵ should be less than 2 (was "+w.rank+")", this);
-  
+    
     if (w.quickDoubleArr()) {
       Value[] res = new Value[len-n+1];
       double[] wa = w.asDoubleArr();

@@ -25,7 +25,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     if (!(f instanceof Fun)) throw new SyntaxError("/ is only reduce. To use as replicate, use ⌿", f);
     Fun ff = (Fun) f;
     if (w.rank >= 2) {
-      return ngnReduce(w, -1, ff);
+      return ngnReduce(w, w.rank-1, ff);
     }
     if (w.quickDoubleArr()) {
       if (f instanceof PlusBuiltin) return new Num(w.sum());
