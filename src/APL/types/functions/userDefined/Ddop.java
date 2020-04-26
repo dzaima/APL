@@ -41,7 +41,7 @@ public class Ddop extends Dop {
   }
   
   public Value call(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    Obj o = callObj(aa, ww, w, derv);
+    Obj o = callObj(aa, ww, a, w, derv);
     if (o instanceof Value) return (Value) o;
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }

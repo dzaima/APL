@@ -18,53 +18,79 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
       Value[] subs = w.values();
       if (subs.length == 0) return w;
       
-      int[] def = new int[subs[0].rank];
-      System.arraycopy(subs[0].shape, 0, def, 0, def.length);
+      Value first = subs[0];
+      int[] def = new int[first.rank];
+      System.arraycopy(first.shape, 0, def, 0, def.length);
+      boolean allNums = true;
+      boolean eqShapes = true;
       for (Value v : subs) {
         if (v.rank != def.length) throw new RankError("↑: expected equal ranks of items", this, v);
-        for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
+        for (int i = 0; i < def.length; i++) {
+          if (v.shape[i] > def[i]) {
+            def[i] = v.shape[i];
+            eqShapes = false;
+          }
+        }
+        if (!v.quickDoubleArr()) {
+          allNums = false;
+        }
       }
       int subIA = Arr.prod(def);
       int totalIA = subIA * Arr.prod(w.shape);
-      int[] totalShape = new int[def.length + w.rank];
-      System.arraycopy(w.shape, 0, totalShape, 0, w.rank);
-      System.arraycopy(def, 0, totalShape, w.rank, def.length);
+      int[] resShape = new int[def.length + w.rank];
+      System.arraycopy(w.shape, 0, resShape, 0, w.rank);
+      System.arraycopy(def, 0, resShape, w.rank, def.length);
       
-      boolean allNums = true;
-      for (Value v : subs) {
-        if (!v.quickDoubleArr()) {
-          allNums = false;
-          break;
+      if (eqShapes) {
+        if (allNums) {
+          double[] res = new double[totalIA];
+          
+          int i = 0;
+          for (Value v : subs) {
+            double[] da = v.asDoubleArr();
+            System.arraycopy(da, 0, res, i, da.length);
+            i+= subIA;
+          }
+          return new DoubleArr(res, resShape);
         }
+        Value[] res = new Value[totalIA];
+        
+        int i = 0;
+        for (Value v : subs) {
+          Value[] va = v.values();
+          System.arraycopy(va, 0, res, i, va.length);
+          i+= subIA;
+        }
+        return Arr.create(res, resShape);
       }
+      
       if (allNums) {
-        double[] allVals = new double[totalIA];
+        double[] res = new double[totalIA];
         
         int i = 0;
         for (Value v : subs) {
           double[] c = v.asDoubleArr();
           int k = 0;
           for (int j : new SimpleIndexer(def, v.shape)) {
-            allVals[i+j] = c[k++];
+            res[i+j] = c[k++];
           }
           // automatic zero padding
           i+= subIA;
         }
         
-        return new DoubleArr(allVals, totalShape);
+        return new DoubleArr(res, resShape);
       }
-      Value[] allVals = new Value[totalIA];
       
+      
+      Value[] res = new Value[totalIA];
       int i = 0;
       for (Value v : subs) {
         Value proto = v.prototype();
         for (int[] sh : new Indexer(def, 0)) {
-          // System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
-          allVals[i++] = v.at(sh, proto);
+          res[i++] = v.at(sh, proto);
         }
       }
-      
-      return Arr.create(allVals, totalShape);
+      return Arr.create(res, resShape);
     } else return w;
   }
   

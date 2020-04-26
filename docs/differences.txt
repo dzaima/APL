@@ -2,6 +2,9 @@
 ⌿ - only replicate
 \ - only scan; executes left-to-right - aka isn't O(n^2)
 ⍀ - only expand
+⍺⍺ & ⍵⍵ → ⍶ & ⍹
+right operand of ⍣ takes arguments swapped (so most recent is ⍵)
+dyadic f⌸ has ⍺ & ⍵ swapped (so A f⌸ B in Dyalog → B f⌸ A in dzaima/APL)
 
 
 dfns:
@@ -9,8 +12,6 @@ dfns:
   ↑ makes more sense with conditionals - {A:B ⋄ C} will execute B if A, but return result of C always
   {A:←B ⋄ C} returns B if A, leaving C unevaluated in that case.
   
-
-
 ⍺ of ⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
 ᐵ and ᑈ - each-left and each-right
 
@@ -19,7 +20,6 @@ dfns:
 
 monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
 
-arguments of dyadic ⌸ are swapped
 
 A¨ ←→ {A}¨ (though A is evaluated only once)
 
