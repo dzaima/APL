@@ -4,6 +4,8 @@ import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
 
+import java.math.BigInteger;
+
 public class StileBuiltin extends Builtin {
   @Override public String repr() {
     return "|";
@@ -81,7 +83,9 @@ public class StileBuiltin extends Builtin {
       }
     }
     public Value call(BigValue a, BigValue w) {
-      return new BigValue(w.i.remainder(a.i));
+      BigInteger r = w.i.remainder(a.i);
+      if (r.signum()<0) r = r.add(a.i);
+      return new BigValue(r);
     }
   };
   public Value call(Value a0, Value w0) {

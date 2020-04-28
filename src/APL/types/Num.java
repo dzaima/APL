@@ -206,32 +206,30 @@ public class Num extends Primitive {
   }
   
   public static double lcm2(double num0, double num1) {
-    double res = num0;
     double a = num1;
-    double b = res;
+    double b = num0;
+    if (a==0) return 0;
     while (b != 0) {
       double t = b;
-      b = a % b;
+      b = a%b;
       a = t;
     }
-    if (a == 0) res = 0;
-    else res = (num1 * res) / a;
-    return res;
+    return num0*num1 / a;
   }
   public static double lcm(double... nums) {
     if (nums.length == 0) return 1;
     double res = nums[0];
     for (int i = 1; i < nums.length; i++) {
-      double a = nums[i];
+      double n = nums[i];
+      double a = n;
+      if (a==0) return 0;
       double b = res;
       while (b != 0) {
         double t = b;
-        b = a % b;
+        b = a%b;
         a = t;
       }
-      if (a == 0) res = 0;
-      else res = (a * res) / a;
-      if (res == 0) return 0;
+      res = n*res / a;
     }
     return res;
   }
