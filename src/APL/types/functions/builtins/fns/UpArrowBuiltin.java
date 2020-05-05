@@ -16,132 +16,86 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
     if (w instanceof Arr) {
       if (w instanceof DoubleArr || w instanceof ChrArr || w instanceof BitArr) return w;
       Value[] subs = w.values();
-      if (subs.length == 0) return w;
-      
-      Value first = subs[0];
-      int[] def = new int[first.rank];
-      System.arraycopy(first.shape, 0, def, 0, def.length);
-      boolean allNums = true;
-      boolean eqShapes = true;
-      for (Value v : subs) {
-        if (v.rank != def.length) throw new RankError("↑: expected equal ranks of items", this, v);
-        for (int i = 0; i < def.length; i++) {
-          if (v.shape[i] > def[i]) {
-            def[i] = v.shape[i];
-            eqShapes = false;
-          }
-        }
-        if (!v.quickDoubleArr()) {
-          allNums = false;
-        }
-      }
-      int subIA = Arr.prod(def);
-      int totalIA = subIA * Arr.prod(w.shape);
-      int[] resShape = new int[def.length + w.rank];
-      System.arraycopy(w.shape, 0, resShape, 0, w.rank);
-      System.arraycopy(def, 0, resShape, w.rank, def.length);
-      
-      if (eqShapes) {
-        if (allNums) {
-          double[] res = new double[totalIA];
-          
-          int i = 0;
-          for (Value v : subs) {
-            double[] da = v.asDoubleArr();
-            System.arraycopy(da, 0, res, i, da.length);
-            i+= subIA;
-          }
-          return new DoubleArr(res, resShape);
-        }
-        Value[] res = new Value[totalIA];
-        
-        int i = 0;
-        for (Value v : subs) {
-          Value[] va = v.values();
-          System.arraycopy(va, 0, res, i, va.length);
-          i+= subIA;
-        }
-        return Arr.create(res, resShape);
-      }
-      
-      if (allNums) {
-        double[] res = new double[totalIA];
-        
-        int i = 0;
-        for (Value v : subs) {
-          double[] c = v.asDoubleArr();
-          int k = 0;
-          for (int j : new SimpleIndexer(def, v.shape)) {
-            res[i+j] = c[k++];
-          }
-          // automatic zero padding
-          i+= subIA;
-        }
-        
-        return new DoubleArr(res, resShape);
-      }
-      
-      
-      Value[] res = new Value[totalIA];
-      int i = 0;
-      for (Value v : subs) {
-        Value proto = v.prototype();
-        for (int[] sh : new Indexer(def, 0)) {
-          res[i++] = v.at(sh, proto);
-        }
-      }
-      return Arr.create(res, resShape);
+      return merge(subs, w.shape, this);
     } else return w;
   }
   
-  public static Value merge(Value[] w, Callable blame) {
-    int[] def = new int[w[0].rank];
-    System.arraycopy(w[0].shape, 0, def, 0, def.length);
-    for (Value v : w) {
-      if (v.rank != def.length) throw new RankError("↑: expected equal ranks of items", blame, v);
-      for (int i = 0; i < def.length; i++) def[i] = Math.max(v.shape[i], def[i]);
-    }
-    int subIA = Arr.prod(def);
-    int totalIA = subIA * w.length;
-    int[] totalShape = new int[def.length + 1];
-    totalShape[0] = w.length;
-    System.arraycopy(def, 0, totalShape, 1, def.length);
-    
+  public static Value merge(Value[] vals, int[] sh, Callable blame) {
+    if (vals.length == 0) return EmptyArr.SHAPE0N;
+  
+    Value first = vals[0];
+    int[] def = new int[first.rank];
+    System.arraycopy(first.shape, 0, def, 0, def.length);
     boolean allNums = true;
-    for (Value v : w) {
+    boolean eqShapes = true;
+    for (Value v : vals) {
+      if (v.rank != def.length) throw new RankError(blame+": expected equal ranks of items (shapes "+Main.toAPL(first.shape)+" vs "+Main.toAPL(v.shape)+")", blame, v);
+      for (int i = 0; i < def.length; i++) {
+        if (v.shape[i] > def[i]) {
+          def[i] = v.shape[i];
+          eqShapes = false;
+        }
+      }
       if (!v.quickDoubleArr()) {
         allNums = false;
-        break;
       }
     }
-    if (allNums) {
-      double[] allVals = new double[totalIA];
+    int subIA = Arr.prod(def);
+    int totalIA = subIA * Arr.prod(sh);
+    int[] resShape = new int[def.length + sh.length];
+    System.arraycopy(sh, 0, resShape, 0, sh.length);
+    System.arraycopy(def, 0, resShape, sh.length, def.length);
+  
+    if (eqShapes) {
+      if (allNums) {
+        double[] res = new double[totalIA];
       
+        int i = 0;
+        for (Value v : vals) {
+          double[] da = v.asDoubleArr();
+          System.arraycopy(da, 0, res, i, da.length);
+          i+= subIA;
+        }
+        return new DoubleArr(res, resShape);
+      }
+      Value[] res = new Value[totalIA];
+    
       int i = 0;
-      for (Value v : w) {
+      for (Value v : vals) {
+        Value[] va = v.values();
+        System.arraycopy(va, 0, res, i, va.length);
+        i+= subIA;
+      }
+      return Arr.create(res, resShape);
+    }
+  
+    if (allNums) {
+      double[] res = new double[totalIA];
+    
+      int i = 0;
+      for (Value v : vals) {
         double[] c = v.asDoubleArr();
         int k = 0;
         for (int j : new SimpleIndexer(def, v.shape)) {
-          allVals[i+j] = c[k++];
+          res[i+j] = c[k++];
         }
         // automatic zero padding
         i+= subIA;
       }
-      
-      return new DoubleArr(allVals, totalShape);
-    } else {
-      Value[] allVals = new Value[totalIA];
-      
-      int i = 0;
-      for (Value v : w) {
-        Value proto = v.prototype();
-        for (int[] sh : new Indexer(def, 0)) {
-          // System.out.println(v +" "+ Arrays.toString(sh) +" "+ v.at(sh, v.prototype) +" "+ Arrays.toString(v.shape));
-          allVals[i++] = v.at(sh, proto);
-        }
-      }
-      return Arr.create(allVals, totalShape);
+    
+      return new DoubleArr(res, resShape);
     }
+  
+  
+    Value[] res = new Value[totalIA];
+    int i = 0;
+    for (Value v : vals) {
+      Value proto = v.prototype();
+      for (int[] c : new Indexer(def, 0)) {
+        res[i++] = v.at(c, proto);
+      }
+    }
+    return Arr.create(res, resShape);
   }
   
   

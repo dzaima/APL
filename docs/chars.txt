@@ -14,8 +14,8 @@ fns:
 ∨   gcd; gcd (aka some; contains truthy)
 ⍲  nand; not all / contains falsy
 ⍱   nor; none / all falsy
-⊥  from; 2⊥⍵
-⊤    to; 2⊤⍵
+⊥  from; 2⊥⍵; aka decode, pack
+⊤    to; 2⊤⍵; aka encode, unpack
 ○  trig; pi×⍵
 !   nCk; factorial
 

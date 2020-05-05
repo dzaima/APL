@@ -301,11 +301,11 @@ public class Main {
     return val;
   }
   
-  public static Obj vexec(LineTok s, Scope sc) {
+  public static Value vexec(LineTok s, Scope sc) {
     Obj val = Main.exec(s, sc);
     if (val instanceof VarArr) val = ((VarArr) val).get();
     if (val instanceof Settable) val = ((Settable) val).get();
-    if (val instanceof Value) return val;
+    if (val instanceof Value) return (Value) val;
     throw new SyntaxError("expected array, got " + val.humanType(true), s);
   }
   

@@ -85,6 +85,7 @@ public class Scope {
         case "⎕SH": return new Shell();
         case "⎕NC": return new NC();
         case "⎕A": return Main.alphabet;
+        case "⎕AV": return Main.toAPL(Main.CODEPAGE);
         case "⎕D": return Main.digits;
         case "⎕L":
         case "⎕LA": return Main.lowercaseAlphabet;

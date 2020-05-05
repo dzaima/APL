@@ -72,6 +72,6 @@ public class ObliqueBuiltin extends Mop {
       }
     }
     
-    return UpArrowBuiltin.merge(res, this);
+    return UpArrowBuiltin.merge(res, new int[]{res.length}, this);
   }
 }

@@ -20,14 +20,14 @@ public abstract class Obj implements Tokenable {
   
   public String humanType(boolean article) {
     
-    if (this instanceof Arr)     return article? "an array"     : "array";
-    if (this instanceof Char)    return article? "a character"  : "character";
-    if (this instanceof Num)     return article? "a number"     : "number";
-    if (this instanceof APLMap)  return article? "a map"        : "map";
-    if (this instanceof Fun)     return article? "a function"   : "function";
-    if (this instanceof Null)    return article? "javanull"     : "javanull";
+    if (this instanceof Arr     )return article? "an array"     : "array";
+    if (this instanceof Char    )return article? "a character"  : "character";
+    if (this instanceof Num     )return article? "a number"     : "number";
+    if (this instanceof APLMap  )return article? "a map"        : "map";
+    if (this instanceof Fun     )return article? "a function"   : "function";
+    if (this instanceof Null    )return article? "javanull"     : "javanull";
     if (this instanceof Brackets)return article? "brackets"     : "brackets";
-    if (this instanceof VarArr)  return article? "a vararr"     : "vararr";
+    if (this instanceof VarArr  )return article? "a vararr"     : "vararr";
     if (this instanceof Variable)return article? "a variable"   : "variable";
     if (this instanceof Pick    )return article? "an array item": "array item";
     if (this instanceof Mop     )return article? "monadic operator" : "a monadic operator";

@@ -759,7 +759,7 @@ public class Exec {
       }
     }
     if (t instanceof DfnTok) return UserDefined.of((DfnTok) t, sc);
-    if (t instanceof BracketTok) return new Brackets((BracketTok) t, sc);
+    if (t instanceof BracketTok) return Brackets.of((BracketTok) t, sc);
     if (t instanceof BacktickTok) return new ArrFun((BacktickTok) t, sc);
     if (t instanceof BigTok) return ((BigTok) t).val;
     if (t instanceof ScopeTok) return new StrMap(sc);
