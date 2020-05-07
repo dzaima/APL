@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.fns;
 
+import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 import APL.types.functions.Builtin;
@@ -90,5 +91,47 @@ public class StileBuiltin extends Builtin {
   };
   public Value call(Value a0, Value w0) {
     return numD(DNF, a0, w0);
+  }
+  
+  
+  
+  private static final D_NNeN CPY_SGN = new D_NNeN() {
+    public double on(double o, double n) {
+      if (o==0 && n!=0) throw new DomainError("⍢|: cannot add sign to "+n+" as original was 0");
+      return o<0? -n : n;
+    }
+    public void on(double[] res, double o, double[] n) {
+      for (int i = 0; i < res.length; i++) {
+        double nc = n[i];
+        if (o==0 && nc!=0) throw new DomainError("⍢|: cannot add sign to "+nc+" as original was 0");
+        res[i] = o<0? -nc : nc;
+      }
+    }
+    public void on(double[] res, double[] o, double n) {
+      for (int i = 0; i < res.length; i++) {
+        double oc = o[i];
+        if (oc==0 && n!=0) throw new DomainError("⍢|: cannot add sign to "+n+" as original was 0");
+        res[i] = oc<0? -n : n;
+      }
+    }
+    public void on(double[] res, double[] o, double[] n) {
+      for (int i = 0; i < res.length; i++) {
+        double oc = o[i];
+        double nc = n[i];
+        if (oc==0 && nc!=0) throw new DomainError("⍢|: cannot add sign to "+nc+" as original was 0");
+        res[i] = oc<0? -nc : nc;
+      }
+    }
+    public Value call(BigValue o, BigValue n) {
+      BigInteger oi = o.i;
+      BigInteger ni = n.i;
+      if (oi.signum()==0 && ni.signum()!=0) throw new DomainError("⍢|: cannot add sign to "+ni+" as original was 0");
+      return oi.signum()<0? new BigValue(ni.negate()) : n;
+    }
+  };
+  public Value under(Obj o, Value w) {
+    Main.faulty = this;
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    return numD(CPY_SGN, w, v);
   }
 }
