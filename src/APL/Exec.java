@@ -223,7 +223,7 @@ public class Exec {
         var w = firstVar();
         addFirst(w.get());
       }
-      if (is("D!|V←[#NFMD],#←[#NFMDV],D!|D←D,D!|M←M,D!|F←F,D!|N←N", end, false)) { // "D!|.←." to allow changing type
+      if (is(new String[]{"D!|V←[#NFMD]","#←[#NFMDV]","D!|D←D","D!|M←M","D!|F←F","D!|N←N"}, end, false)) { // "D!|.←." to allow changing type
         if (Main.debug) printlvl("N←.");
         var w = lastObj();
         var s = (AbstractSet) popE(); // ←
@@ -459,36 +459,7 @@ public class Exec {
       this.l = l;
       this.r = r;
       this.val = val;
-      
-      switch (val.type()) {
-        case array:
-          type = 'N';
-          break;
-        case fn:
-          type = 'F';
-          break;
-        case set:
-          type = '←';
-          break;
-        case mop:
-          type = 'M';
-          break;
-        case dop:
-          type = 'D';
-          break;
-        case var:
-        case nul:
-          type = 'V';
-          break;
-        case dim:
-          type = '@';
-          break;
-        case gettable:
-          type = '#';
-          break;
-        default:
-          throw new IllegalStateException();
-      }
+      type = val.type().chr;
     }
     Obj remove() {
       l.r = r;
@@ -516,18 +487,13 @@ public class Exec {
   
   
   
-  
+  private boolean is(String[] pts, boolean everythingDone, boolean fromStart) {
+    for (String pt : pts) if (is(pt, everythingDone, fromStart)) return true;
+    return false;
+  }
   private Node barNode;
   private boolean is(String pt, boolean everythingDone, boolean fromStart) {
     if(!fromStart && llSize > 4) return false;
-    int pi = 0;
-    for (int i = 0; i < pt.length(); i++) {
-      if (pt.charAt(i) == ',') {
-        if (is(pt.substring(pi, i), everythingDone, fromStart)) return true;
-        pi = i+1;
-      }
-    }
-    if (pi != 0) pt = pt.substring(pi);
     if (everythingDone && is(pt, false, fromStart)) return true;
     if (fromStart && everythingDone) {
       for (int i = 0; i < pt.length(); i++) {
