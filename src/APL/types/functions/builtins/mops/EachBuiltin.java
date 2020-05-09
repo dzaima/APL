@@ -85,13 +85,16 @@ public class EachBuiltin extends Mop {
   
   
   public Value underW(Obj aa, Obj o, Value a, Value w, DerivedMop derv) {
-    Fun aaf = isFn(aa);
-    if (a.rank!=0 && w.rank!=0 && !Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")", derv, w);
+    return underW(isFn(aa), o, a, w, this);
+  }
+  
+  public static Value underW(Fun aa, Obj o, Value a, Value w, Callable blame) {
+    if (a.rank!=0 && w.rank!=0 && !Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")", blame, w);
     int ia = Math.max(a.ia, w.ia);
     Value[] res2 = new Value[ia];
     if (a.rank==0 && !(a instanceof Primitive)) a = new Rank0Arr(a.first()); // abuse that get doesn't check indexes for simple scalar extension
     if (w.rank==0 && !(w instanceof Primitive)) w = new Rank0Arr(a.first());
-    rec(aaf, o, a, w, 0, new Value[ia], new Value[1], res2);
+    rec(aa, o, a, w, 0, new Value[ia], new Value[1], res2);
     return Arr.create(res2, w.shape);
   }
   
