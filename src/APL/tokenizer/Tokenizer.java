@@ -55,6 +55,7 @@ public class Tokenizer {
   static class Block { // temp storage of multiple lines
     final ArrayList<Line> a;
     final char b;
+    boolean hasDmd = false;
     private final int pos;
     
     Block(ArrayList<Line> a, char b, int pos) {
@@ -71,7 +72,7 @@ public class Tokenizer {
     return tokenize(raw, false);
   }
   
-  public static BasicLines tokenize(String raw, boolean pointless) { // pointless means unevaled things get tokens
+  public static BasicLines tokenize(String raw, boolean pointless) { // pointless means unevaled things get tokens; mainly for syntax highlighting
     int li = 0;
     int len = raw.length();
     
@@ -124,13 +125,13 @@ public class Tokenizer {
           Token r;
           switch (c) {
             case ')':
-              r = new ParenTok(raw, closed.pos, i + 1, lineTokens);
+              r = new ParenTok(raw, closed.pos, i + 1, lineTokens, closed.hasDmd);
               break;
             case '}':
               r = new DfnTok(raw, closed.pos, i + 1, lineTokens);
               break;
             case ']':
-              r = new BracketTok(raw, closed.pos, i + 1, lineTokens);
+              r = new BracketTok(raw, closed.pos, i + 1, lineTokens, closed.hasDmd);
               break;
             default:
               throw new Error("this should really not happen "+c);
@@ -272,8 +273,8 @@ public class Tokenizer {
           i++;
           tokens.add(new StrTok(raw, li, i, str.toString()));
         } else if (c == '\n' || c == '⋄' || c == '\r' || c == ';') {
-          if (c == '⋄' && pointless) tokens.add(new DiamondTok(raw, i));
-          
+          if (c=='⋄' && pointless) tokens.add(new DiamondTok(raw, i));
+          if (c=='⋄' || c=='\n') expr.hasDmd = true;
           if (c == ';') tokens.add(new SemiTok(raw, i, i + 1));
           
           if (tokens.size() > 0) {
@@ -323,13 +324,13 @@ public class Tokenizer {
         Token r;
         switch (closed.b) {
           case ')':
-            r = new ParenTok(raw, closed.pos, len, lineTokens);
+            r = new ParenTok(raw, closed.pos, len, lineTokens, closed.hasDmd);
             break;
           case '}':
             r = new DfnTok(raw, closed.pos, len, lineTokens);
             break;
           case ']':
-            r = new BracketTok(raw, closed.pos, len, lineTokens);
+            r = new BracketTok(raw, closed.pos, len, lineTokens, closed.hasDmd);
             break;
           default:
             throw new Error("this should really not happen "+closed.b);

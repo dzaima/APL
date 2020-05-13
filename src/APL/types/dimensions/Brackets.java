@@ -32,17 +32,19 @@ public class Brackets extends Obj {
   }
   
   public static Obj of(BracketTok t, Scope sc) {
-    if (t.tokens.size() == 0) return new Brackets(null);
-    if (t.tokens.size() == 1) {
+    if (t.array) {
+      Value[] lns = new Value[t.tokens.size()];
+      for (int i = 0; i < t.tokens.size(); i++) {
+        LineTok tk = t.tokens.get(i);
+        lns[i] = Main.vexec(tk, sc);
+      }
+      return UpArrowBuiltin.merge(lns, new int[]{lns.length}, new BracketFn(t));
+    } else {
+      if (t.tokens.size() == 0) return new Brackets(null);
+      assert t.tokens.size() == 1; // t.array is true if size>1
       Value res = Main.vexec(t.tokens.get(0), sc);
       return new Brackets(res);
     }
-    Value[] lns = new Value[t.tokens.size()];
-    for (int i = 0; i < t.tokens.size(); i++) {
-      LineTok tk = t.tokens.get(i);
-      lns[i] = Main.vexec(tk, sc);
-    }
-    return UpArrowBuiltin.merge(lns, new int[]{lns.length}, new BracketFn(t));
   }
   
   private static class BracketFn extends Callable {

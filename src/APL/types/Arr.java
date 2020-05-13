@@ -48,14 +48,22 @@ public abstract class Arr extends Value {
       if (rank == 0) return "⊂" + oneliner();
       return oneliner();
     } else {
-      if (rank == 0) return "⊂"+first().toString();
+      if (rank == 0) return "⊂"+first().toString().replace("\n", "\n ");
+      if (ia==1) {
+        Value c = get(0);
+        if (c instanceof Primitive || rank > 2) {
+          if (rank==1) return "⍮"+c;
+          String pre = Main.formatAPL(shape);
+          return pre + "⍴⊂" + c.toString().replace("\n", "\n" + Main.repeat(" ", pre.length()+2));
+        }
+      }
       if (rank == 1) { // simple vectors
         StringBuilder res = new StringBuilder();
         var simple = true;
         for (Value v : this) {
           if (res.length() > 0) res.append(" ");
           if (v == null) {
-            res.append("JAVANULL");
+            res.append("NULLPTR");
           } else {
             simple &= v instanceof Primitive;
             res.append(v.toString());
@@ -96,7 +104,7 @@ public abstract class Arr extends Value {
         var simple = true;
         int x=0, y=0;
         for (Value v : this) {
-          if (v == null) v = Main.toAPL("JAVANULL");
+          if (v == null) v = Main.toAPL("NULLPTR");
           simple &= v instanceof Primitive;
           var c = v.toString().split("\n");
           var cw = 0;

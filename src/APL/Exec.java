@@ -4,7 +4,7 @@ import APL.errors.*;
 import APL.tokenizer.Token;
 import APL.tokenizer.types.*;
 import APL.types.*;
-import APL.types.arrs.DoubleArr;
+import APL.types.arrs.*;
 import APL.types.dimensions.*;
 import APL.types.functions.*;
 import APL.types.functions.builtins.AbstractSet;
@@ -684,8 +684,11 @@ public class Exec {
       int size = ts.size();
       if (size == 0) return new StrMap();
       LineTok fst = ts.get(0);
-      if (size == 1 && fst.colonPos() == -1) return Main.exec(ts.get(0), sc);
-      if (fst.tokens != null && fst.colonPos() != -1) {
+      if (size==1 && fst.colonPos()==-1) {
+        if (((ParenTok) t).hasDmd) return new Shape1Arr(Main.vexec(ts.get(0), sc));
+        return Main.exec(ts.get(0), sc);
+      }
+      if (fst.tokens != null && fst.colonPos() != -1) { // map constants
         Scope nsc = new Scope(sc);
         StrMap res = new StrMap(nsc);
         for (LineTok ct : ts) {
@@ -703,9 +706,9 @@ public class Exec {
           res.setStr(key, val);
         }
         return res;
-      } else {
+      } else { // array
         Obj fo = Main.oexec(fst, sc);
-        if (fo instanceof Value) {
+        if (fo instanceof Value) { // value array
           Value[] vs = new Value[size];
           for (int i = 0; i < ts.size(); i++) {
             Obj o = Main.oexec(ts.get(i), sc);
@@ -713,7 +716,7 @@ public class Exec {
             vs[i] = (Value) o;
           }
           return Arr.create(vs);
-        } else if (fo instanceof Fun) {
+        } else if (fo instanceof Fun) { // function array
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {
             Obj o = Main.oexec(ts.get(i), sc);

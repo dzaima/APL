@@ -3,8 +3,11 @@ package APL.tokenizer.types;
 import java.util.List;
 
 public class ParenTok extends TokArr<LineTok> {
-  public ParenTok(String line, int spos, int epos, List<LineTok> tokens) {
+  public final boolean hasDmd;
+  
+  public ParenTok(String line, int spos, int epos, List<LineTok> tokens, boolean hasDmd) {
     super(line, spos, tokens);
+    this.hasDmd = hasDmd;
     end(epos);
   }
   

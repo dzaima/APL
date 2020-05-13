@@ -405,10 +405,9 @@ public class Main {
   }
   
   
-  static String repeat(String s, int l) {
+  public static String repeat(String s, int l) {
     StringBuilder r = new StringBuilder();
     for (int i = 0; i < l; i++) r.append(s);
     return r.toString();
   }
-  
 }
