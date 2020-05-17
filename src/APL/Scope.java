@@ -48,7 +48,7 @@ public class Scope {
     switch (name) {
       case "⎕IO":
         int tIO = ((Value) val).asInt();
-        if (tIO != 0 && tIO != 1) throw new DomainError("⎕IO should be 0 or 1");
+        if (tIO != 0 && tIO != 1) throw new DomainError("⎕IO should be 0 or 1", val);
         IO = tIO;
         nIO = IO==0? Num.ZERO : Num.ONE;
       break;
@@ -67,7 +67,7 @@ public class Scope {
         } else {
           int[] args = ((Value) val).asIntVec();
           if (args.length == 3) Num.setPrecision(args[0], args[1], args[2]);
-          else throw new DomainError("⎕PP expected either a scalar number or array of 3 integers as ⍵");
+          else throw new DomainError("⎕PP expected either a scalar number or array of 3 integers as ⍵", val);
         }
         break;
       default:
@@ -139,10 +139,10 @@ public class Scope {
     return res.toString();
   }
   
-  public double rand(double d) { // TODO seeds
+  public double rand(double d) {
     return rnd.nextDouble()*d;
   } // with ⎕IO←0
-  public long randLong() { // TODO seeds
+  public long randLong() {
     return rnd.nextLong();
   } // with ⎕IO←0
   public int rand(int n) {

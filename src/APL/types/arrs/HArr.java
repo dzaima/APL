@@ -38,7 +38,7 @@ public class HArr extends Arr {
   @Override
   public int asInt() {
     if (rank == 0) return arr[0].asInt();
-    throw new DomainError("Using array as integer");
+    throw new DomainError("Using array as integer", this);
   }
   
   @Override
@@ -61,7 +61,7 @@ public class HArr extends Arr {
   public String asString() {
     StringBuilder r = new StringBuilder(ia);
     for (Value v : arr) {
-      if (!(v instanceof Char)) throw new DomainError("Converting non-char array to string");
+      if (!(v instanceof Char)) throw new DomainError("Using array containing "+v.humanType(true)+" as string", this);
       r.append(((Char) v).chr);
     }
     return r.toString();

@@ -105,7 +105,7 @@ public final class BitArr extends Arr {
   }
   
   @Override public int asInt() {
-    throw new RankError("using bit arr as int", this);
+    throw new DomainError("Using bit array as integer", this);
   }
   
   @Override public Value get(int i) {
@@ -113,7 +113,7 @@ public final class BitArr extends Arr {
   }
   
   @Override public String asString() {
-    throw new DomainError("using bit arr as string");
+    throw new DomainError("Using bit array as string", this);
   }
   
   public Value prototype() {

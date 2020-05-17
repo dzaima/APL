@@ -339,7 +339,7 @@ public class Main {
           Value r = norm(exec(guard, sc));
           EType t;
           if (r.equals(Num.ZERO)) t = EType.all;
-          else throw new DomainError("guard "+r+" not supported");
+          else throw new DomainError("guard "+r+" not supported", guard);
           var expr = LineTok.inherit(tokens.subList(eguardPos+(endAfter? 2 : 1), tokens.size()));
           eGuards.put(t, expr);
         } else {
@@ -369,7 +369,7 @@ public class Main {
       if (num == 1) return true;
       if (num == 0) return false;
     }
-    throw new DomainError("Expected boolean, got "+v);
+    throw new DomainError("Expected boolean, got "+v, v);
   }
   
   public static void colorprint(String s, int col) {
@@ -396,7 +396,7 @@ public class Main {
   private static Value norm(Obj o) {
     if (o instanceof VarArr) return ((VarArr) o).get();
     if (o instanceof Settable) return (Value) ((Settable) o).get();
-    if (!(o instanceof Value)) throw new DomainError("Trying to use "+o.humanType(true)+" as array");
+    if (!(o instanceof Value)) throw new DomainError("Trying to use "+o.humanType(true)+" as array", o);
     return (Value) o;
   }
   

@@ -20,7 +20,7 @@ public class EmptyArr extends Arr {
   
   @Override
   public int asInt() {
-    throw new DomainError("using empty array as integer");
+    throw new DomainError("Using empty array as integer", this);
   }
   
   public boolean quickDoubleArr() {
@@ -38,7 +38,7 @@ public class EmptyArr extends Arr {
   
   @Override
   public String asString() {
-    if (rank >= 2) throw new DomainError("using rank≥2 array as char vector");
+    if (rank >= 2) throw new DomainError("Using rank≥2 array as char vector", this);
     return "";
   }
   

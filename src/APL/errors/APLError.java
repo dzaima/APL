@@ -30,8 +30,12 @@ public abstract class APLError extends RuntimeException {
     if (getMessage().length() == 0) colorprint(type, 246);
     else colorprint(type + ": " + getMessage(), 246);
     ArrayList<Mg> l = new ArrayList<>();
-    if (cause !=null && faulty!=cause) l.add(new Mg(cause, '¯'));
-    if (faulty!=null                 ) l.add(new Mg(faulty, '^'));
+    if (faulty!=null) {
+      l.add(new Mg(faulty, '^'));
+    }
+    if (cause!=null && (faulty==null || faulty.getToken()!=cause.getToken())) {
+      l.add(new Mg(cause, '¯'));
+    }
     for (Mg g : l) {
       Token t = g.t.getToken();
       if (t == null) continue;

@@ -16,7 +16,6 @@ public class DownArrowBuiltin extends Builtin implements DimDFn {
   public Value call(Value w) {
     if (w instanceof Primitive) return w;
     if (w.rank <= 1) return new Rank0Arr(w);
-    // TODO stupid dimensions
     if (w.quickDoubleArr()) {
       double[] dw = w.asDoubleArr();
       int csz = w.shape[w.rank-1]; // chunk size

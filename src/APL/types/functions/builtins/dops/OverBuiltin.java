@@ -19,12 +19,12 @@ public class OverBuiltin extends Dop {
     int ld = DepthBuiltin.lazy(w);
     if (ld==d || ld <= -d) {
       int fd = DepthBuiltin.full(w);
-      if (d>0 && d!=fd) throw new DomainError(caller+" can't match a depth " + fd + " array", caller, w);
+      if (d>0 && d!=fd) throw new DomainError(caller+": can't match a depth " + fd + " array", caller, w);
       if (d <= fd) {
         return f.call(w);
       }
     }
-    if (d>0 && ld < d) throw new DomainError(caller+" can't match a depth "+DepthBuiltin.full(w)+" array", caller, w);
+    if (d>0 && ld < d) throw new DomainError(caller+": can't match a depth "+DepthBuiltin.full(w)+" array", caller, w);
     Value[] res = new Value[w.ia];
     for (int i = 0; i < res.length; i++) {
       res[i] = on(caller, f, d, w.get(i));

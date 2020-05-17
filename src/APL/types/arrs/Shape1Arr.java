@@ -30,7 +30,7 @@ public class Shape1Arr extends Arr {
   @Override
   public String asString() {
     if (item instanceof Char) return String.valueOf(((Char)item).chr);
-    throw new DomainError("array with non-char element used as string");
+    throw new DomainError("Using array containing "+item.humanType(true)+" as string", this);
   }
   
   public Value prototype() {

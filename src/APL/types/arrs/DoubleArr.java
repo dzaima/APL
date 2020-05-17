@@ -55,7 +55,7 @@ public class DoubleArr extends Arr {
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
       int conv = (int) arr[i];
-      if (arr[i] != conv) throw new DomainError("using a fractional number as integer", this);
+      if (arr[i] != conv) throw new DomainError("Using a fractional number as integer", this);
       r[i] = conv;
     }
     return r;
@@ -63,7 +63,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public int asInt() {
-    throw new RankError("Using a number array as integer", this);
+    throw new DomainError("Using a number array as integer", this);
   }
   
   @Override
@@ -78,7 +78,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public String asString() {
-    throw new DomainError("using double array as string", this);
+    throw new DomainError("Using number array as string", this);
   }
   
   public Value prototype() {
@@ -130,7 +130,7 @@ public class DoubleArr extends Arr {
   
   public Arr reverseOn(int dim) {
     if (rank == 0) {
-      if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis");
+      if (dim != 0) throw new DomainError("rotating a scalar with a non-⎕IO axis", this);
       return this;
     }
     if (dim < 0) dim+= rank;

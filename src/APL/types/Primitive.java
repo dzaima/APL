@@ -20,26 +20,26 @@ public abstract class Primitive extends Value {
   
   @Override
   public int[] asIntArr() {
-    throw new DomainError("using " + this.oneliner() + " as integer array", this);
+    throw new DomainError("Using " + this.oneliner() + " as integer array", this);
   }
   @Override
   public int[] asIntVec() {
-    throw new DomainError("using " + this.oneliner() + " as integer vector", this);
+    throw new DomainError("Using " + this.oneliner() + " as integer vector", this);
   }
   
   @Override
   public int asInt() {
-    throw new DomainError("using " + this.oneliner() + " as integer", this);
+    throw new DomainError("Using " + this.oneliner() + " as integer", this);
   }
   
   @Override
   public String asString() {
-    throw new DomainError("using " + this.oneliner() + " as string", this);
+    throw new DomainError("Using " + this.oneliner() + " as string", this);
   }
   
   public final Value prototype() {
     Value v = safePrototype();
-    if (v==null) throw new DomainError("getting prototype of "+this, this);
+    if (v==null) throw new DomainError("Getting prototype of "+this, this);
     return v;
   }
   public Value safePrototype() {

@@ -27,12 +27,12 @@ public class ChrArr extends Arr {
   
   @Override
   public int[] asIntArr() {
-    throw new DomainError("using character array as integer array", this);
+    throw new DomainError("Using character array as integer array", this);
   }
   
   @Override
   public int asInt() {
-    throw new DomainError("Using character array as integer");
+    throw new DomainError("Using character array as integer", this);
   }
   
   @Override
@@ -46,7 +46,7 @@ public class ChrArr extends Arr {
   }
   @Override
   public String asString() {
-    if (rank > 1) throw new DomainError("Using rank "+rank+" character array as string");
+    if (rank > 1) throw new DomainError("Using rank "+rank+" character array as string", this);
     return s;
   }
   
