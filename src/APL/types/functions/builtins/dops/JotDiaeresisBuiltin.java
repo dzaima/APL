@@ -25,4 +25,14 @@ public class JotDiaeresisBuiltin extends Dop {
     Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
     return aaf.call(wwf.call(w));
   }
+  
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.callInvW(a, aaf.callInv(w));
+  }
+  
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
+    Fun aaf = isFn(aa, '⍶'); Fun wwf = isFn(ww, '⍹');
+    return wwf.callInvA(aaf.callInv(a), w);
+  }
 }

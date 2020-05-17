@@ -10,7 +10,13 @@ public class TildeBuiltin extends Builtin {
   @Override public String repr() {
     return "~";
   }
-  public Value call(Value w) { return rec(w); }
+  public Value call(Value w) {
+    return rec(w);
+  }
+  
+  public Value callInv(Value w) {
+    return rec(w);
+  }
   
   private Value rec(Value w) {
     if (w instanceof Arr) {

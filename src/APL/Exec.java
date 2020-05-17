@@ -659,7 +659,7 @@ public class Exec {
         case '⍥': return new OverBuiltin();
         case '⍢': return new DualBuiltin();
         case '@': return new AtBuiltin(sc);
-        case '⍫': return new ObserveBuiltin();
+        case '⍫': return new ObverseBuiltin();
         
         
         case '⍬': return new DoubleArr(DoubleArr.EMPTY);

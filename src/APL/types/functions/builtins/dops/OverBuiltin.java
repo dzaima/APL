@@ -12,9 +12,25 @@ public class OverBuiltin extends Dop {
   
   public Value call(Obj aa, Obj ww, Value w, DerivedDop derv) {
     Fun aaf = isFn(aa, '⍶');
-    int d = ((Value) ww).asInt();
-    return on(derv, aaf, d, w);
+    if (ww instanceof Value) {
+      int d = ((Value) ww).asInt();
+      return on(derv, aaf, d, w);
+    } else {
+      Fun wwf = isFn(ww, '⍹');
+      return aaf.call(wwf.call(w));
+    }
   }
+  public Value callInvW(Obj aa, Obj ww, Value a, Value w) {
+    Fun f = isFn(aa, '⍶');
+    Fun g = isFn(ww, '⍹');
+    return g.callInv(f.callInvW(g.call(a), w));
+  }
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) {
+    Fun f = isFn(aa, '⍶');
+    Fun g = isFn(ww, '⍹');
+    return g.callInv(f.callInvA(a, g.call(w)));
+  }
+  
   public static Value on(Fun caller, Fun f, int d, Value w) {
     int ld = DepthBuiltin.lazy(w);
     if (ld==d || ld <= -d) {

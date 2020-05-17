@@ -3,7 +3,7 @@ package APL.types.functions.builtins.dops;
 import APL.types.*;
 import APL.types.functions.*;
 
-public class ObserveBuiltin extends Dop {
+public class ObverseBuiltin extends Dop {
   @Override public String repr() {
     return "⍫";
   }
@@ -27,5 +27,8 @@ public class ObserveBuiltin extends Dop {
     return wwf.call(a, w);
   }
   
-  
+  public Value callInvA(Obj aa, Obj ww, Value a, Value w) { // fall-back to ⍶
+    Fun aaf = isFn(aa, '⍶');
+    return aaf.callInvA(a, w);
+  }
 }
