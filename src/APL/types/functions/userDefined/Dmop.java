@@ -6,8 +6,6 @@ import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.*;
 
-import static APL.Main.printdbg;
-
 
 public class Dmop extends Mop {
   public final DfnTok code;
@@ -27,7 +25,7 @@ public class Dmop extends Mop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Value w, DerivedMop derv) {
-    printdbg("dmop call", w);
+    Main.printdbg("dmop call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍺", new Variable(nsc, "⍺"));
@@ -45,7 +43,7 @@ public class Dmop extends Mop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Value a, Value w, DerivedMop derv) {
-    printdbg("dmop call", a, w);
+    Main.printdbg("dmop call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍺", a);

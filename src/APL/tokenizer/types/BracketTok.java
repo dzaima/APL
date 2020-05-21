@@ -25,4 +25,8 @@ public class BracketTok extends TokArr<LineTok> {
     s.append("]");
     return s.toString();
   }
+  
+  public String toString() {
+    return "[...]";
+  }
 }

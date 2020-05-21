@@ -1,7 +1,7 @@
 package APL.types.arrs;
 
 import APL.Main;
-import APL.errors.*;
+import APL.errors.DomainError;
 import APL.types.*;
 
 import java.util.Arrays;

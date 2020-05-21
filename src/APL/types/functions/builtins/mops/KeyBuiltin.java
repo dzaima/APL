@@ -67,7 +67,7 @@ public class KeyBuiltin extends Mop {
       Fun aaf = (Fun) aa;
       if (!Arrays.equals(a.shape, w.shape)) {
         if (a.rank != w.rank) throw new RankError("dyadic ⌸ expected ⍺ & ⍵ to have equal ranks ("+a.rank+" vs "+w.rank+")", derv, w);
-        throw new LengthError("dyadic ⌸ expected ⍺ & ⍵ to have equal shapes ("+Main.toAPL(a.shape)+" vs "+ Main.toAPL(w.shape)+")", derv, w);
+        throw new LengthError("dyadic ⌸ expected ⍺ & ⍵ to have equal shapes ("+Main.formatAPL(a.shape)+" vs "+ Main.formatAPL(w.shape)+")", derv, w);
       }
       HashMap<Value, ArrayList<Value>> vals = new HashMap<>();
       ArrayList<Value> order = new ArrayList<>();

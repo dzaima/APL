@@ -17,7 +17,6 @@ import APL.types.functions.userDefined.UserDefined;
 
 import java.util.*;
 
-import static APL.Main.*;
 
 public class Exec {
   private final Scope sc;
@@ -34,7 +33,7 @@ public class Exec {
   
   private void printlvl(Object... args) {
     if (!Main.debug) return;
-    for (int i = 0; i < Main.printlvl; i++) print("  ");
+    for (int i = 0; i < Main.printlvl; i++) Main.print("  ");
     Main.printdbg(args);
   }
   private Stack<Token> left;
@@ -665,11 +664,11 @@ public class Exec {
         case '⍬': return new DoubleArr(DoubleArr.EMPTY);
         case '⎕': return new Quad(sc);
         case '⍞': return new QuoteQuad();
-        case '⍺': Obj o = sc.get("⍺"); if(o == null) throw new SyntaxError("No ⍺ found"); return o;
-        case '⍵':     o = sc.get("⍵"); if(o == null) throw new SyntaxError("No ⍵ found"); return o;
-        case '∇':     o = sc.get("∇"); if(o == null) throw new SyntaxError("No ∇ found"); return o;
-        case '⍶':     o = sc.get("⍶"); if(o == null) throw new SyntaxError("No ⍶ found"); return o;
-        case '⍹':     o = sc.get("⍹"); if(o == null) throw new SyntaxError("No ⍹ found"); return o;
+        case '⍺': Obj o = sc.get("⍺"); if(o == null) throw new SyntaxError("No ⍺ found", t); return o;
+        case '⍵':     o = sc.get("⍵"); if(o == null) throw new SyntaxError("No ⍵ found", t); return o;
+        case '∇':     o = sc.get("∇"); if(o == null) throw new SyntaxError("No ∇ found", t); return o;
+        case '⍶':     o = sc.get("⍶"); if(o == null) throw new SyntaxError("No ⍶ found", t); return o;
+        case '⍹':     o = sc.get("⍹"); if(o == null) throw new SyntaxError("No ⍹ found", t); return o;
         default: throw new NYIError("no built-in " + ((OpTok) t).op + " defined in exec", t);
       }
     }
@@ -702,7 +701,7 @@ public class Exec {
           else throw new SyntaxError("expected a key name, got " + Main.explain(name), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
           
-          Obj val = oexec(LineTok.inherit(tokens), nsc);
+          Obj val = Main.oexec(LineTok.inherit(tokens), nsc);
           res.setStr(key, val);
         }
         return res;

@@ -3,7 +3,6 @@ package APL.types;
 import APL.Main;
 import APL.types.arrs.ChrArr;
 
-import static APL.Main.quotestrings;
 
 public class Char extends Primitive {
   public char chr;
@@ -45,7 +44,7 @@ public class Char extends Primitive {
   }
   
   public String toString() {
-    if (quotestrings) return "'"+chr+"'";
+    if (Main.quotestrings) return "'"+chr+"'";
     else return String.valueOf(chr);
   }
   public String oneliner(int[] ignored) {

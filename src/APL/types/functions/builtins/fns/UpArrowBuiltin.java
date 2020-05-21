@@ -20,7 +20,7 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
     } else return w;
   }
   
-  public static Value merge(Value[] vals, int[] sh, Callable blame) {
+  public static Value merge(Value[] vals, int[] sh, Tokenable blame) {
     if (vals.length == 0) return EmptyArr.SHAPE0N;
   
     Value first = vals[0];
@@ -29,7 +29,11 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
     boolean allNums = true;
     boolean eqShapes = true;
     for (Value v : vals) {
-      if (v.rank != def.length) throw new RankError(blame+": expected equal ranks of items (shapes "+Main.toAPL(first.shape)+" vs "+Main.toAPL(v.shape)+")", blame, v);
+      if (v.rank != def.length) {
+        String msg = blame + ": expected equal ranks of items (shapes " + Main.formatAPL(first.shape) + " vs " + Main.formatAPL(v.shape) + ")";
+        if (blame instanceof Callable) throw new RankError(msg, (Callable) blame, v);
+        else throw new RankError(msg, v);
+      }
       for (int i = 0; i < def.length; i++) {
         if (v.shape[i] > def[i]) {
           def[i] = v.shape[i];

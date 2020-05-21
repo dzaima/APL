@@ -1,7 +1,6 @@
 package APL.types.dimensions;
 
 import APL.*;
-import APL.tokenizer.Token;
 import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.functions.builtins.fns.UpArrowBuiltin;
@@ -38,7 +37,7 @@ public class Brackets extends Obj {
         LineTok tk = t.tokens.get(i);
         lns[i] = Main.vexec(tk, sc);
       }
-      return UpArrowBuiltin.merge(lns, new int[]{lns.length}, new BracketFn(t));
+      return UpArrowBuiltin.merge(lns, new int[]{lns.length}, t);
     } else {
       if (t.tokens.size() == 0) return new Brackets(null);
       assert t.tokens.size() == 1; // t.array is true if size>1
@@ -47,18 +46,4 @@ public class Brackets extends Obj {
     }
   }
   
-  private static class BracketFn extends Callable {
-    protected BracketFn(Token t) {
-      super(null);
-      token = t;
-    }
-  
-    public String toString() {
-      return "[⋄]";
-    }
-  
-    public Type type() {
-      return Type.var;
-    }
-  }
 }

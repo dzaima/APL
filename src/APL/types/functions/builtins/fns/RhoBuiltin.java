@@ -8,7 +8,6 @@ import APL.types.functions.Builtin;
 
 import java.util.Arrays;
 
-import static APL.Main.toAPL;
 
 public class RhoBuiltin extends Builtin {
   @Override public String repr() {
@@ -17,7 +16,7 @@ public class RhoBuiltin extends Builtin {
   
   
   public Value call(Value w) {
-    return toAPL(w.shape);
+    return Main.toAPL(w.shape);
   }
   public Value call(Value a, Value w) {
     if (a.rank > 1) throw new DomainError("⍴: multidimensional shape (⍴⍺ is "+Main.formatAPL(a.shape)+")", this, a);

@@ -6,7 +6,6 @@ import APL.tokenizer.types.DfnTok;
 import APL.types.*;
 import APL.types.functions.*;
 
-import static APL.Main.printdbg;
 
 
 public class Ddop extends Dop {
@@ -27,7 +26,7 @@ public class Ddop extends Dop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Obj ww, Value w, DerivedDop derv) {
-    printdbg("ddop call", w);
+    Main.printdbg("ddop call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍹", ww);
@@ -46,7 +45,7 @@ public class Ddop extends Dop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Obj ww, Value a, Value w, DerivedDop derv) {
-    printdbg("ddop call", a, w);
+    Main.printdbg("ddop call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍹", ww);
