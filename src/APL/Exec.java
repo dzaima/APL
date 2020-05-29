@@ -203,7 +203,7 @@ public class Exec {
           if (Main.debug) printlvl("n[]");
           var a = firstVal();
           var w = (Brackets) popS();
-          addS(RShoeUBBuiltin.on(w.val, a, sc.IO));
+          addS(RShoeUBBuiltin.on(w.val, a, sc.IO, w));
           continue;
         }
       }

@@ -27,7 +27,7 @@ public class HArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     int[] res = new int[ia];
     for (int i = 0; i < arr.length; i++) {
       res[i] = arr[i].asInt();

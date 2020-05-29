@@ -15,7 +15,7 @@ public class SingleItemArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     int vi = item.asInt();
     int[] a = new int[ia];
     for (int i = 0; i < ia; i++) a[i] = vi;

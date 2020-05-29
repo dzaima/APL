@@ -19,7 +19,7 @@ public abstract class Primitive extends Value {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     throw new DomainError("Using " + this.oneliner() + " as integer array", this);
   }
   @Override

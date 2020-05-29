@@ -20,8 +20,7 @@ public class DepthBuiltin extends Builtin {
   }
   public static int full(Value w) {
     if (w instanceof Primitive) return 0;
-    if (w instanceof DoubleArr) return 1;
-    if (w instanceof ChrArr) return 1;
+    if (w instanceof DoubleArr || w instanceof ChrArr || w instanceof BitArr) return 1;
     boolean first = true;
     boolean uneven = false;
     int sub = 0;

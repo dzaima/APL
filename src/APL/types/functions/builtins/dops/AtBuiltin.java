@@ -3,8 +3,11 @@ package APL.types.functions.builtins.dops;
 import APL.*;
 import APL.errors.RankError;
 import APL.types.*;
-import APL.types.arrs.Shape1Arr;
+import APL.types.arrs.*;
 import APL.types.functions.*;
+import APL.types.functions.builtins.fns.RShoeUBBuiltin;
+
+import java.util.Arrays;
 
 public class AtBuiltin extends Dop {
   @Override public String repr() {
@@ -54,85 +57,46 @@ public class AtBuiltin extends Dop {
       }
       return Arr.createL(ra, w.shape);
     } else {
-      
       Value wwa = (Value) ww;
-      
-      if (wwa.ia == 0) return w;
-      
-      if (Main.vind) { // ⎕VI←1
-        
-        if (wwa instanceof Primitive) wwa = new Shape1Arr(wwa);
-        double[][] wwd = Indexer.inds(wwa);
-        if (wwd.length != w.rank) throw new RankError("@: ≢⍹ must be equal to ≢⍴⍵ ("+wwd.length+" = ≢⍹; "+w.rank+" = ≢⍴⍵", blame);
-        int matchingCount = wwd[0].length;
-        Value[] ra = new Value[ia];
-        int[] indexes = new int[matchingCount];
-        if (aa instanceof Fun) {
-          Value[] matching = new Value[matchingCount];
-          for (int i = 0; i < matchingCount; i++) {
-            indexes[i] = Indexer.ind(w.shape, wwd, i, IO);
-            matching[i] = w.get(indexes[i]);
-          }
-          Value[] replacement = ((Fun) aa).call(Arr.create(matching)).values();
-          System.arraycopy(w.values(), 0, ra, 0, ia);
-          for (int i = 0; i < matchingCount; i++) {
-            ra[indexes[i]] = replacement[i];
-          }
-        } else {
-          for (int i = 0; i < matchingCount; i++) {
-            indexes[i] = Indexer.ind(w.shape, wwd, i, IO);
-          }
-          Value aaa = (Value) aa;
-          System.arraycopy(w.values(), 0, ra, 0, ia);
-          if (aaa.rank == 0) {
-            Value inner = aaa.get(0);
-            for (int i = 0; i < matchingCount; i++) {
-              ra[indexes[i]] = inner;
-            }
-          } else {
-            for (int i = 0; i < matchingCount; i++) {
-              ra[indexes[i]] = aaa.get(i);
-            }
-          }
-        }
-        return Arr.createL(ra, w.shape);
-        
-        
-      } else { // ⎕VI←0
-        
-        int matchingCount = wwa.ia;
-        Value[] ra = new Value[ia];
-        int[] indexes = new int[wwa.ia];
-        if (aa instanceof Fun) {
-          Value[] matching = new Value[matchingCount];
-          for (int i = 0; i < matchingCount; i++) {
-            indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
-            matching[i] = w.get(indexes[i]);
-          }
-          Value[] replacement = ((Fun) aa).call(Arr.create(matching)).values();
-          System.arraycopy(w.values(), 0, ra, 0, ia);
-          for (int i = 0; i < matchingCount; i++) {
-            ra[indexes[i]] = replacement[i];
-          }
-        } else {
-          for (int i = 0; i < matchingCount; i++) {
-            indexes[i] = Indexer.fromShape(w.shape, wwa.get(i).asIntVec(), IO);
-          }
-          Value aaa = (Value) aa;
-          System.arraycopy(w.values(), 0, ra, 0, ia);
-          if (aaa.rank == 0) {
-            Value inner = aaa.get(0);
-            for (int i = 0; i < matchingCount; i++) {
-              ra[indexes[i]] = inner;
-            }
-          } else {
-            for (int i = 0; i < matchingCount; i++) {
-              ra[indexes[i]] = aaa.get(i);
-            }
-          }
-        }
-        return Arr.createL(ra, w.shape);
+  
+      Indexer.PosSh poss = Indexer.poss(wwa, w.shape, IO, blame);
+      Value repl;
+      if (aa instanceof Fun) {
+        Fun aaf = ((Fun) aa);
+        Value arg = RShoeUBBuiltin.on(poss, w);
+        repl = aaf.call(arg);
+      } else {
+        repl = (Value) aa;
       }
+      return with(w, poss, repl, blame);
     }
+  }
+  
+  public static Value with(Value o, Indexer.PosSh poss, Value n, Callable blame) {
+    if (o.quickDoubleArr() && n.quickDoubleArr()) {
+      double[] res = o.asDoubleArrClone();
+      int[] is = poss.vals;
+      if (n.rank == 0) {
+        double aafst = n.first().asDouble();
+        // noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < is.length; i++) res[is[i]] = aafst;
+      } else {
+        double[] nd = n.asDoubleArr();
+        Arr.eqShapes(n.shape, poss.sh, blame);
+        for (int i = 0; i < is.length; i++) res[is[i]] = nd[i];
+      }
+      return o.rank==0? Num.of(res[0]) : new DoubleArr(res, o.shape);
+    }
+    Value[] res = o.valuesCopy();
+    int[] is = poss.vals;
+    if (n.rank == 0) {
+      Value aafst = n.first();
+      // noinspection ForLoopReplaceableByForEach
+      for (int i = 0; i < is.length; i++) res[is[i]] = aafst;
+    } else {
+      Arr.eqShapes(n.shape, poss.sh, blame);
+      for (int i = 0; i < is.length; i++) res[is[i]] = n.get(i);
+    }
+    return Arr.createL(res, o.shape);
   }
 }

@@ -5,11 +5,12 @@ import APL.tokenizer.types.*;
 import APL.types.*;
 import APL.types.functions.builtins.fns.UpArrowBuiltin;
 
-public class Brackets extends Obj {
+public class Brackets extends Callable {
   
   public final Value val;
   
   public Brackets(Value val) {
+    super(null);
     this.val = val;
   }
   

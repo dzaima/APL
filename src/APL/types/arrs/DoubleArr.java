@@ -51,7 +51,7 @@ public class DoubleArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     int[] r = new int[ia];
     for (int i = 0; i < ia; i++) {
       int conv = (int) arr[i];

@@ -7,6 +7,7 @@ public class EmptyArr extends Arr {
   public static final EmptyArr SHAPE0Q = new EmptyArr(new int[]{0}, null);
   public static final EmptyArr SHAPE0N = new EmptyArr(new int[]{0}, Num.ZERO);
   public static final int[] SHAPE0 = new int[]{0};
+  public static final int[] NOINTS = new int[0];
   private final Value proto;
   public EmptyArr(int[] sh, Value proto) {
     super(sh, 0, sh.length);
@@ -14,8 +15,8 @@ public class EmptyArr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
-    return new int[0];
+  public int[] asIntArrClone() {
+    return NOINTS;
   }
   
   @Override

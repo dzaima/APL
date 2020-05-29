@@ -13,7 +13,7 @@ public class Shape1Arr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     return new int[]{item.asInt()};
   }
   

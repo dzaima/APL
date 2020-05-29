@@ -26,7 +26,7 @@ public class ChrArr extends Arr {
   
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     throw new DomainError("Using character array as integer array", this);
   }
   

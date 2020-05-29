@@ -288,14 +288,17 @@ public class Num extends Primitive {
   
   @Override
   public int asInt() { // warning: rounds
-    return (int) num;
-  } // TODO not round
+    return toInt(num);
+  } 
+  public static int toInt(double d) {
+    return (int) d; // TODO not round
+  }
   public double asDouble() {
     return num;
   }
   
   @Override
-  public int[] asIntArr() { // TODO not round
+  public int[] asIntArrClone() { // TODO not round
     return new int[]{(int)num};
   }
   @Override

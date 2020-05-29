@@ -27,7 +27,10 @@ public abstract class Value extends Obj implements Iterable<Value> {
     if (rank > 1) throw new DomainError("Using rank "+rank+" array as an integer vector", this);
     return asIntArr();
   }
-  public abstract int[] asIntArr();
+  public abstract int[] asIntArrClone();
+  public int[] asIntArr() {
+    return asIntArrClone();
+  }
   public abstract int asInt();
   public boolean scalar() {
     return rank == 0;
@@ -111,9 +114,8 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return toString();
   }
   
-  private final static int[] int0 = new int[0];
   public String oneliner() {
-    return oneliner(int0);
+    return oneliner(EmptyArr.NOINTS);
   }
   
   

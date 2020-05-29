@@ -10,12 +10,14 @@ public class Pick extends Settable {
   private final Value val;
   private final Value idx;
   private final int IO;
+  private final Brackets obj;
   
   public Pick(Variable var, Brackets where, Scope sc) {
     super(null);
     this.var = var;
     this.val = (Value) var.get();
     this.idx = where.val;
+    this.obj = where;
     this.IO = sc.IO;
   }
   
@@ -25,7 +27,7 @@ public class Pick extends Settable {
   }
   
   public Obj get() {
-    return RShoeUBBuiltin.on(idx, val, IO);
+    return RShoeUBBuiltin.on(idx, val, IO, obj);
   }
   
   public Obj getOrThis() {

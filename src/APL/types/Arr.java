@@ -350,4 +350,10 @@ public abstract class Arr extends Value {
       if (as[i] != ws[i]) throw new LengthError("shapes don't match (" + Main.formatAPL(as) + " vs " + Main.formatAPL(ws) + ")", w);
     }
   }
+  public static void eqShapes(int[] a, int[] w, Callable blame) {
+    if (a.length != w.length) throw new RankError("ranks don't equal (shapes: " + Main.formatAPL(a) + " vs " + Main.formatAPL(w) + ")", blame);
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != w[i]) throw new LengthError("shapes don't match (" + Main.formatAPL(a) + " vs " + Main.formatAPL(w) + ")", blame);
+    }
+  }
 }

@@ -70,7 +70,7 @@ public final class BitArr extends Arr {
     return new BitArr(arr, v.shape, v.ia);
   }
   
-  @Override public int[] asIntArr() {
+  @Override public int[] asIntArrClone() {
     int[] res = new int[ia];
     int ctr = 0;
     for (int i = 0; i < arr.length-1; i++) {

@@ -4,7 +4,7 @@ import APL.errors.DomainError;
 import APL.types.*;
 
 public class Rank0Arr extends Arr {
-  private final static int[] SHAPE = new int[0];
+  public final static int[] SHAPE = new int[0];
   public final Value item;
   
   public Rank0Arr(Value item) {
@@ -13,7 +13,7 @@ public class Rank0Arr extends Arr {
   }
   
   @Override
-  public int[] asIntArr() {
+  public int[] asIntArrClone() {
     return new int[]{item.asInt()};
   }
   
