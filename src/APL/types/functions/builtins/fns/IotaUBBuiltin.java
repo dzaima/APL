@@ -43,16 +43,39 @@ public class IotaUBBuiltin extends Builtin {
       }
       return new DoubleArr(sub);
     } else {
-      var sub = new Value[sum];
-      int ap = 0;
-      for (int[] p : new Indexer(w.shape, IO)) {
-        Num n = (Num) w.at(p, IO);
-        if (n.compareTo(Num.ZERO) < 0) throw new DomainError("⍸: ⍵ contained "+n, this, w);
-        for (int i = 0, nint = n.asInt(); i < nint; i++) {
-          sub[ap++] = Main.toAPL(p);
+      double[] wd = w.asDoubleArr();
+      if (Main.vind) { // ⎕VI←1
+        double[][] res = new double[w.rank][sum];
+        int ri = 0;
+        Indexer idx = new Indexer(w.shape, IO);
+        int rank = res.length;
+        for (int i = 0; i < w.ia; i++) {
+          int[] p = idx.next();
+          int n = Num.toInt(wd[idx.pos()]);
+          if (n > 0) {
+            for (int k = 0; k < rank; k++) {
+              for (int j = 0; j < n; j++) res[k][ri+j] = p[k];
+            }
+            ri+= n;
+          } else if (n != 0) throw new DomainError("⍸: ⍵ contained "+n, this, w);
         }
+        Value[] resv = new Value[rank];
+        for (int i = 0; i < rank; i++) resv[i] = new DoubleArr(res[i]);
+        return new HArr(resv);
+      } else { // ⎕VI←0
+        Value[] res = new Value[sum];
+        int ri = 0;
+        Indexer idx = new Indexer(w.shape, IO);
+        for (int i = 0; i < w.ia; i++) {
+          int[] p = idx.next();
+          int n = Num.toInt(wd[idx.pos()]);
+          if (n > 0) {
+            DoubleArr pos = Main.toAPL(p);
+            for (int j = 0; j < n; j++) res[ri++] = pos;
+          } else if (n != 0) throw new DomainError("⍸: ⍵ contained "+n, this, w);
+        }
+        return new HArr(res);
       }
-      return new HArr(sub);
     }
   }
   public Value callInv(Value w) {
