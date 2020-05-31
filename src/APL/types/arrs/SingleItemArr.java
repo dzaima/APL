@@ -67,6 +67,11 @@ public class SingleItemArr extends Arr {
     for (int i = 0; i < ia; i++) vs[i] = item;
     return vs;
   }
+  
+  public double sum() {
+    return item.asDouble() * ia;
+  }
+  
   @Override
   public double[] asDoubleArr() {
     double[] res = new double[ia];
@@ -95,11 +100,6 @@ public class SingleItemArr extends Arr {
     }
     return super.oneliner(where);
   }
-  // @Override
-  // public String toString() {
-  //   String r = Main.formatAPL(shape);
-  //   return r + "⍴" + item.oneliner(new int[0]);
-  // }
   
   @Override public Iterator<Value> iterator() {
     //noinspection Convert2Diamond java 8

@@ -3,10 +3,12 @@ package APL.types.arrs;
 import APL.errors.*;
 import APL.types.*;
 
+import java.util.Iterator;
+
 public class EmptyArr extends Arr {
-  public static final EmptyArr SHAPE0Q = new EmptyArr(new int[]{0}, null);
-  public static final EmptyArr SHAPE0N = new EmptyArr(new int[]{0}, Num.ZERO);
   public static final int[] SHAPE0 = new int[]{0};
+  public static final EmptyArr SHAPE0Q = new EmptyArr(SHAPE0, null);
+  public static final EmptyArr SHAPE0N = new EmptyArr(SHAPE0, Num.ZERO);
   public static final int[] NOINTS = new int[0];
   private final Value proto;
   public EmptyArr(int[] sh, Value proto) {
@@ -66,5 +68,15 @@ public class EmptyArr extends Arr {
   @Override
   public Value squeeze() {
     return this;
+  }
+  
+  
+  
+  private static final Iterator<Value> EIT = new Iterator<Value>() {
+    public boolean hasNext() { return false; }
+    public Value next() { throw new IllegalStateException("iterating empty array"); }
+  };
+  public Iterator<Value> iterator() {
+    return EIT;
   }
 }
