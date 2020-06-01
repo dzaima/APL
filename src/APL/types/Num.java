@@ -110,6 +110,9 @@ public class Num extends Primitive {
     // System.out.println(f+": sig="+ls+"; exp="+exp+"; len="+len);
     return new String(buf, 0, len);
   }
+  public static String formatInt(int i) {
+    return i<0? "¯"+(-i) : Integer.toString(i);
+  }
   public static void setPrecision(int p) {
     pp = Math.min(p, 20); // without min it'll actually create a ±length-p string of zeroes
   }

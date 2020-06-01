@@ -25,22 +25,6 @@ public class CatBuiltin extends Builtin implements DimDFn {
   }
   public Value call(Value a, Value w) {
     int dim = Math.max(a.rank, w.rank) - 1;
-    if (a.rank <= 1 && w.rank <= 1) {
-      if ((a instanceof BitArr || Main.isBool(a))
-       && (w instanceof BitArr || Main.isBool(w))) {
-        return catBit(a, w);
-      }
-      if (a instanceof DoubleArr && w instanceof DoubleArr) {
-        double[] r = new double[a.ia + w.ia];
-        System.arraycopy(a.asDoubleArr(), 0, r, 0, a.ia);
-        System.arraycopy(w.asDoubleArr(), 0, r, a.ia, w.ia);
-        return new DoubleArr(r);
-      }
-      Value[] r = new Value[a.ia + w.ia];
-      System.arraycopy(a.values(), 0, r, 0, a.ia);
-      System.arraycopy(w.values(), 0, r, a.ia, w.ia);
-      return Arr.create(r);
-    }
     return cat(a, w, dim, this);
   }
   public Value call(Value a, Value w, DervDimFn dims) {
@@ -61,14 +45,25 @@ public class CatBuiltin extends Builtin implements DimDFn {
     
     return res.finish();
   }
-  static Value cat(Value a, Value w, int k, Callable blame) {
-    if (a.rank<=1 && w.rank<=1
-      && (a instanceof BitArr || Main.isBool(a))
-      && (w instanceof BitArr || Main.isBool(w))) {
-      return catBit(a, w);
+  public static Value cat(Value a, Value w, int k, Callable blame) {
+    if (k<=0) {
+      if ((a instanceof BitArr || Main.isBool(a))
+        && (w instanceof BitArr || Main.isBool(w))) {
+        return catBit(a, w);
+      }
+      if (a instanceof DoubleArr && w instanceof DoubleArr) {
+        double[] r = new double[a.ia + w.ia];
+        System.arraycopy(a.asDoubleArr(), 0, r, 0, a.ia);
+        System.arraycopy(w.asDoubleArr(), 0, r, a.ia, w.ia);
+        return new DoubleArr(r);
+      }
+      Value[] r = new Value[a.ia + w.ia];
+      System.arraycopy(a.values(), 0, r, 0, a.ia);
+      System.arraycopy(w.values(), 0, r, a.ia, w.ia);
+      return Arr.create(r);
     }
     boolean aScalar = a.scalar(), wScalar = w.scalar();
-    if (aScalar && wScalar) return cat(new Shape1Arr(a.first()  ), w, 0, blame);
+    if (aScalar && wScalar) return cat(new Shape1Arr(a.first()), w, 0, blame);
     if (!aScalar && !wScalar) {
       if (a.rank != w.rank) throw new RankError("ranks not matchable", blame, w);
       for (int i = 0; i < a.rank; i++) {

@@ -1,11 +1,13 @@
 package APL.types.functions.builtins.fns;
 
 import APL.Main;
-import APL.errors.DomainError;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.dimensions.*;
 import APL.types.functions.Builtin;
+
+import java.util.Arrays;
 
 public class DownArrowBuiltin extends Builtin implements DimDFn {
   @Override public String repr() {
@@ -84,6 +86,18 @@ public class DownArrowBuiltin extends Builtin implements DimDFn {
     for (int i = 0; i < ls.length; i++) {
       ls[i] = ls[i]>0? ls[i]-sh[i] : ls[i]+sh[i];
     }
-    return UpArrowBuiltin.undo(ls, v, w);
+    return UpArrowBuiltin.undo(ls, v, w, this);
+  }
+  
+  public Value under(Obj o, Value w) {
+    Value v = o instanceof Fun? ((Fun) o).call(call(w)) : (Value) o;
+    Value[] vs = v.values();
+    if (vs.length > 0) {
+      int[] sh = vs[0].shape;
+      for (int i = 1; i < vs.length; i++) {
+        if (!Arrays.equals(vs[i].shape, sh)) throw new LengthError("⍢↓: undoing expected arrays of equal shapes ("+Main.formatAPL(sh)+" ≢ "+Main.formatAPL(vs[i].shape)+")", this, o);
+      }
+    }
+    return UpArrowBuiltin.merge(vs, v.shape, this);
   }
 }
