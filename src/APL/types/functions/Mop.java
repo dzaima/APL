@@ -61,7 +61,7 @@ public abstract class Mop extends Callable {
   public abstract String repr();
   
   protected Fun isFn(Obj o) {
-    if (!(o instanceof Fun)) throw new SyntaxError("⍶ of "+repr()+" must be a function", this);
+    if (!(o instanceof Fun)) throw new SyntaxError(repr()+": ⍶ must be a function", this);
     return (Fun) o;
   }
   

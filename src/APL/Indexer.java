@@ -174,7 +174,7 @@ public final class Indexer implements Iterable<int[]>, Iterator<int[]> {
       if (v.quickDoubleArr()) {
         if (v.rank != 1) throw new RankError(blame+": indexing at rank 1, while shape was "+Main.formatAPL(v.shape), blame);
         int[] res = intsNoIO(v, IO);
-        for (int c : res) if (c<0 || c>=rsh[0]) throw new LengthError(blame+": indexing out-of bounds (shape ≡ "+rsh[0]+"; pos ≡ " + (c+IO) + ")", blame);
+        for (int c : res) if (c<0 || c>=ish[0]) throw new LengthError(blame+": indexing out-of bounds (shape ≡ "+rsh[0]+"; pos ≡ " + (c+IO) + ")", blame);
         return new PosSh(res, rsh);
       }
       
