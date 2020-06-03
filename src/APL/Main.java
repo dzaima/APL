@@ -14,7 +14,7 @@ import java.util.*;
 
 @SuppressWarnings("WeakerAccess") // for use as a library
 public class Main {
-  public static final String CODEPAGE = "\0\0\0\0\0\0\0\0\0\t\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~÷×↑↓⌈⌊≠∊⍺⍴⍵⍳∍⋾⎕⍞⌸⌺⍇⍁⍂⌻⌼⍃⍄⍈⍌⍍⍐⍓⍔⍗⍯⍰⍠⌹⊆⊇⍶⍸⍹⍘⍚⍛⍜⍊≤≥⍮ϼ⍷⍉⌽⊖⊙⌾○∘⍟⊗¨⍨⍡⍥⍩⍣⍢⍤⊂⊃∩∪⊥⊤∆∇⍒⍋⍫⍱⍲∨∧⍬⊣⊢⌷⍕⍎←→⍅⍆⍏⍖⌿⍀⍪≡≢⍦⍧⍭‽⍑∞…√ᑈᐵ";
+  public static final String CODEPAGE = "\0\0\0\0\0\0\0\0\0\t\n\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~÷×↑↓⌈⌊≠∊⍺⍴⍵⍳∍⋾⎕⍞⌸⌺⍇⍁⍂⌻⌼⍃⍄⍈⍌⍍⍐⍓⍔⍗⍯⍰⍠⌹⊆⊇⍶⍸⍹⍘⍚⍛⍜⍊≤≥⍮ϼ⍷⍉⌽⊖⊙⌾○∘⍟⊗¨⍨⍡⍥⍩⍣⍢⍤⊂⊃∩∪⊥⊤∆∇⍒⍋⍫⍱⍲∨∧⍬⊣⊢⌷⍕⍎←→⍅⍆⍏⍖⌿⍀⍪≡≢⍦⍧⍭‽⍑∞…√ᑈᐵ¯⍝⋄⌶⍙";
   public static boolean debug = false;
   public static boolean vind = false; // vector indexing
   public static boolean noBoxing = false;
@@ -52,10 +52,11 @@ public class Main {
                   println("-r     : start the REPL after everything else");
                   println("-s     : start the REPL without \">\" after everything else");
                   println("-d     : enable debug mode");
-                  println("-q     : enable quoting of strings");
+                  println("-q     : quote strings in output");
                   println("-b     : disable boxing");
                   println("-c     : disable colorful printing");
-                  println("-q     : define quads in the next argument");
+                  println("-q     : enable quoting strings");
+                  println("⎕A←B   : set quad A to B");
                   println("-D file: run the file as SBCS");
                   println("-E a b : encode the file A in the SBCS, save as B");
                   println("If given no arguments, an implicit -r will be added");
@@ -71,6 +72,8 @@ public class Main {
                     String name = args[++i];
                     exec(readFile(name), global);
                     break;
+                  case '⎕':
+                    throw new DomainError("⎕ settings must be a separate argument");
                   case 'e':
                     String code = args[++i];
                     exec(code, global);
@@ -141,6 +144,12 @@ public class Main {
                 }
               }
             }
+          } else if (p.charAt(0)=='⎕') {
+            int si = p.indexOf('←');
+            if (si == -1) throw new DomainError("argument `"+p+"` didn't contain a `←`");
+            String qk = p.substring(0, si);
+            String qv = p.substring(si+1);
+            global.set(qk, exec(qv, global));
           } else {
             throw new DomainError("Unknown command-line argument " + p);
           }
