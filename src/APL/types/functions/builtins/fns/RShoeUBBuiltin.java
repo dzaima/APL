@@ -14,17 +14,11 @@ public class RShoeUBBuiltin extends Builtin {
     super(sc);
   }
   
-  public Value call(Value w) {
-    if (w.rank == 0) return w.get(0);
-    return w;
-  }
-  
   public Value call(Value a, Value w) {
     return on(a, w, sc.IO, this);
   }
   
   public static Value on(Value a, Value w, int IO, Callable blame) {
-    if (a.ia == 0) return EmptyArr.SHAPE0Q;
     if (w instanceof APLMap) {
       Value[] res = new Value[a.ia];
       APLMap map = (APLMap) w;
@@ -34,7 +28,7 @@ public class RShoeUBBuiltin extends Builtin {
       }
       return Arr.create(res, a.shape);
     }
-    if (a instanceof Primitive) {
+    if (a instanceof Primitive && w.rank==1) {
       Value r = w.get((int) a.asDouble() - IO);
       if (r instanceof Primitive) return r;
       else return new Rank0Arr(r);
@@ -51,7 +45,7 @@ public class RShoeUBBuiltin extends Builtin {
       for (int i = 0; i < idxs.length; i++) {
         res[i] = wd[idxs[i]];
       }
-      return new DoubleArr(res, poss.sh);
+      return DoubleArr.safe(res, poss.sh);
     }
     Value[] res = new Value[Arr.prod(poss.sh)];
     int[] idxs = poss.vals;

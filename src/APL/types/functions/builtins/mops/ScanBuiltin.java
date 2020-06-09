@@ -1,5 +1,6 @@
 package APL.types.functions.builtins.mops;
 
+import APL.Main;
 import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.DoubleArr;
@@ -13,6 +14,7 @@ public class ScanBuiltin extends Mop {
   public Value call(Obj aa, Value w, DerivedMop derv) {
     Fun aaf = isFn(aa);
     // TODO ranks
+    if (w.rank != 1) throw new NYIError("\\: unimplemented for rank≠1 ("+Main.formatAPL(w.shape)+" ≡ ⍴⍵)");
     if (w.ia == 0) return w;
     Value c = w.get(0);
     Value[] res = new Value[w.ia];
