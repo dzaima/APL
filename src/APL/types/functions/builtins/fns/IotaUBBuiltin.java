@@ -32,7 +32,7 @@ public class IotaUBBuiltin extends Builtin {
           if (r.read()) sub[p++] = i + IO;
         }
       } else {
-        var da = w.asDoubleArr();
+        double[] da = w.asDoubleArr();
         for (int i = 0; i < w.ia; i++) {
           int v = (int) da[i];
           if (v < 0) throw new DomainError("⍸: ⍵ contained "+v, this, w);

@@ -35,9 +35,11 @@ public class UpArrowBuiltin extends Builtin implements DimDFn {
         else throw new RankError(msg, v);
       }
       for (int i = 0; i < def.length; i++) {
-        if (v.shape[i] > def[i]) {
-          def[i] = v.shape[i];
+        if (v.shape[i] != def[i]) {
           eqShapes = false;
+          if (v.shape[i] > def[i]) {
+            def[i] = v.shape[i];
+          }
         }
       }
       if (!v.quickDoubleArr()) {

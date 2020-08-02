@@ -32,46 +32,44 @@ public class CatBuiltin extends Builtin implements DimDFn {
     if (dim < 0 || dim >= Math.max(a.rank, w.rank)) throw new DomainError("dimension "+dim+" is out of range", this);
     return cat(a, w, dim, this);
   }
-  private static BitArr catBit(Value a, Value w) { // for ranks <= 1
-    boolean ab = a instanceof BitArr;
-    boolean wb = w instanceof BitArr;
-    int sz = a.ia + w.ia;
-    
-    BitArr.BA res = new BitArr.BA(sz);
-    if (ab) res.add((BitArr) a);
-    else    res.add(Main.bool(a));
-    if (wb) res.add((BitArr) w);
-    else    res.add(Main.bool(w));
-    
-    return res.finish();
-  }
+  
   public static Value cat(Value a, Value w, int k, Callable blame) {
-    if (k<=0) {
-      if ((a instanceof BitArr || Main.isBool(a))
-        && (w instanceof BitArr || Main.isBool(w))) {
-        return catBit(a, w);
-      }
-      if (a instanceof DoubleArr && w instanceof DoubleArr) {
-        double[] r = new double[a.ia + w.ia];
-        System.arraycopy(a.asDoubleArr(), 0, r, 0, a.ia);
-        System.arraycopy(w.asDoubleArr(), 0, r, a.ia, w.ia);
-        return new DoubleArr(r);
-      }
-      Value[] r = new Value[a.ia + w.ia];
-      System.arraycopy(a.values(), 0, r, 0, a.ia);
-      System.arraycopy(w.values(), 0, r, a.ia, w.ia);
-      return Arr.create(r);
-    }
-    boolean aScalar = a.scalar(), wScalar = w.scalar();
+    boolean aScalar = a.rank==0, wScalar = w.rank==0;
     if (aScalar && wScalar) return cat(new Shape1Arr(a.first()), w, 0, blame);
+    
+    int[] rs = aScalar? w.shape.clone() : a.shape.clone(); // shape of the result
     if (!aScalar && !wScalar) {
       if (a.rank != w.rank) throw new RankError("ranks not matchable", blame, w);
       for (int i = 0; i < a.rank; i++) {
         if (i != k && a.shape[i] != w.shape[i]) throw new LengthError("lengths not matchable ("+new DoubleArr(a.shape)+" vs "+new DoubleArr(w.shape)+")", blame, w);
       }
     }
-    int[] rs = !aScalar ? a.shape.clone() : w.shape.clone(); // shape of the result
-    rs[k] += aScalar || wScalar ? 1 : w.shape[k];
+    rs[k]+= aScalar || wScalar ? 1 : w.shape[k];
+    if (k<=0 && a.rank==w.rank) {
+      if ((a instanceof BitArr || Main.isBool(a))
+        && (w instanceof BitArr || Main.isBool(w))) {
+        boolean ab = a instanceof BitArr;
+        boolean wb = w instanceof BitArr;
+  
+        BitArr.BA res = new BitArr.BA(rs);
+        if (ab) res.add((BitArr) a);
+        else    res.add(Main.bool(a));
+        if (wb) res.add((BitArr) w);
+        else    res.add(Main.bool(w));
+  
+        return res.finish();
+      }
+      if (a instanceof DoubleArr && w instanceof DoubleArr) {
+        double[] r = new double[a.ia + w.ia];
+        System.arraycopy(a.asDoubleArr(), 0, r, 0, a.ia);
+        System.arraycopy(w.asDoubleArr(), 0, r, a.ia, w.ia);
+        return new DoubleArr(r, rs);
+      }
+      Value[] r = new Value[a.ia + w.ia];
+      System.arraycopy(a.values(), 0, r, 0, a.ia);
+      System.arraycopy(w.values(), 0, r, a.ia, w.ia);
+      return Arr.create(r,rs);
+    }
     int n0 = 1; for (int i = 0; i < k; i++) n0 *= rs[i];             // product of major dimensions
     int n1 = rs[k];                                                  // dimension to catenate on
     int n2 = 1; for (int i = k + 1; i < rs.length; i++) n2 *= rs[i]; // product of minor dimensions

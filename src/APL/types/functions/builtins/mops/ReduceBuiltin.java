@@ -148,6 +148,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         ra[i] = r;
       }
     }
+    if (ra.length == 0) return new EmptyArr(EmptyArr.SHAPE0, w.safePrototype());
     return Arr.create(ra);
   }
   
@@ -171,6 +172,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         r[i*n2 + k] = c.squeeze();
       }
     }
+    if (r.length == 0) return new EmptyArr(ns, x.safePrototype());
     return Arr.create(r, ns);
   }
 }
