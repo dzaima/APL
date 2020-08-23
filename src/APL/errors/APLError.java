@@ -34,7 +34,11 @@ public abstract class APLError extends RuntimeException {
     if (faulty!=null) Mg.add(l, faulty, '^');
     if (cause !=null) Mg.add(l, cause , '¯');
     if (l.size() == 2 && l.get(0).eqSrc(l.get(1))) println(l);
-    else for (Mg g : l) println(List.of(g));
+    else for (Mg g : l) {
+      ArrayList<Mg> c = new ArrayList<>();
+      c.add(g);
+      println(c);
+    }
   }
   
   public void println(List<Mg> gs) {

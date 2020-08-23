@@ -6,7 +6,7 @@ class XY {
   }
   XY(Obj a) {
     int[] d = ((Value) a).asIntVec();
-    if (d.length != 2) throw new LengthError("argument for P5.size must be length 2");
+    if (d.length != 2) throw new LengthError("argument for P5.size must be length 2", a);
     x = d[0];
     y = d[1];
   }

@@ -29,6 +29,15 @@ class APLImg extends SimpleMap {
           vals[i] = img.pixels[i];
         }
         return new DoubleArr(vals, new int[]{img.width, img.height});
+      case "save": return new Fun() {
+        public Value call(Value w) {
+          img.save(w.asString());
+          return Num.ONE;
+        }
+        public String repr() {
+          return "APLImg.save";
+        }
+      };
       default: return NULL;
     }
   }
