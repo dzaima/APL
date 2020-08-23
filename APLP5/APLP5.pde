@@ -46,7 +46,7 @@ void exec(String s) {
 void call(Fun f, Value a, Value w) {
   if (f == null) return;
   try {
-    f.call(a, w);
+    f.callObj(a, w);
   } catch (APLError e) {
     e.print();
     e.printStackTrace();
