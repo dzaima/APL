@@ -139,7 +139,7 @@ class P5 extends SimpleMap {
           public String repr(){return "";}
         }
         DNf DNF = new DNf();
-        class DNf extends D_NNeN {
+        class DNf extends Fun.D_NNeN {
           public double on(double a, double w) {
             int ai = (int) (long) a;
             int wi = (int) (long) w;

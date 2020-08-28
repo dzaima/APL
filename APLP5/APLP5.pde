@@ -1,5 +1,4 @@
 import java.util.HashSet;
-import APL.types.Fun.D_NNeN;
 import java.io.UnsupportedEncodingException;
 static final Null NULL = Null.NULL;
 Scope global;
