@@ -156,7 +156,7 @@ public class Exec {
   }
   private void update(boolean end) {
     if (llSize == 1 && pollS() == null) return;
-    while (true) {
+    while (llSize != 1) {
       if (Main.debug) printlvl(llToString());
       if (is("D!|NFN", end, false)) {
         if (Main.debug) printlvl("NFN");
@@ -222,16 +222,33 @@ public class Exec {
         var w = firstVar();
         addFirst(w.get());
       }
-      if (is(new String[]{"D!|V←[#NFMD]","#←[#NFMDV]","D!|D←D","D!|M←M","D!|F←F","D!|N←N"}, end, false)) { // "D!|.←." to allow changing type
-        if (Main.debug) printlvl("N←.");
-        var w = lastObj();
-        var s = (AbstractSet) popE(); // ←
-        var a = popE(); // variable
-        Main.faulty = s;
-        var res = s.callObj(a, w, false);
-        addE(res);
-        continue;
+      
+      if (llSize>2 && LN.l.l.type=='←') {
+        if (is(new String[]{"D!|V←[#NFMD]","#←[#NFMDV]","D!|D←D","D!|M←M","D!|F←F","D!|N←N"}, end, false)) { // "D!|.←." to allow changing type
+          if (Main.debug) printlvl("N←.");
+          var w = lastObj();
+          var s = (AbstractSet) popE(); // ←
+          var a = popE(); // variable
+          Main.faulty = s;
+          var res = s.callObj(a, w, false);
+          addE(res);
+          continue;
+        }
+        if (is("D!|NF←N", end, false, 5)) {
+          if (Main.debug) printlvl("NF←.");
+          var w = lastVal();
+          var s0 = popE(); // ←
+          if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
+          var s = (SetBuiltin) s0;
+          var f = lastFun();
+          Obj a = popE(); // variable
+          Main.faulty = f;
+          Obj res = s.callObj(f, a, w);
+          if (res != null) addE(res);
+          continue;
+        }
       }
+  
       if (llSize == 2 && is("F←", false, false)) {
         if (Main.debug) printlvl("F←");
         var s0 = popE(); // ←
@@ -241,19 +258,7 @@ public class Exec {
         addE(new DerivedSet(s, f));
         continue;
       }
-      if (is("D!|NF←N", end, false)) {
-        if (Main.debug) printlvl("NF←.");
-        var w = lastVal();
-        var s0 = popE(); // ←
-        if (s0 instanceof DerivedSet) throw new SyntaxError("cannot derive an already derived ←");
-        var s = (SetBuiltin) s0;
-        var f = lastFun();
-        Obj a = popE(); // variable
-        Main.faulty = f;
-        Obj res = s.callObj(f, a, w);
-        if (res != null) addE(res);
-        continue;
-      }
+      
       if (is("!D|[FN]M", end, true)) {
         if (Main.debug) printlvl("FM");
         var f = firstObj();
@@ -492,7 +497,10 @@ public class Exec {
   }
   private Node barNode;
   private boolean is(String pt, boolean everythingDone, boolean fromStart) {
-    if(!fromStart && llSize > 4) return false;
+    return is(pt, everythingDone, fromStart, 4);
+  }
+  private boolean is(String pt, boolean everythingDone, boolean fromStart, int am) {
+    if(!fromStart && llSize > am) return false;
     if (everythingDone && is(pt, false, fromStart)) return true;
     if (fromStart && everythingDone) {
       for (int i = 0; i < pt.length(); i++) {
@@ -697,7 +705,7 @@ public class Exec {
           if (name instanceof NameTok) key = ((NameTok) name).name;
           else if (name instanceof StrTok) key = ((StrTok) name).parsed;
           else if (name instanceof ChrTok) key = ((ChrTok) name).parsed;
-          else throw new SyntaxError("expected a key name, got " + Main.explain(name), name);
+          else throw new SyntaxError("expected a key name, got " + name.toRepr(), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
           
           Obj val = Main.oexec(LineTok.inherit(tokens), nsc);
@@ -709,7 +717,7 @@ public class Exec {
         if (fo instanceof Value) { // value array
           Value[] vs = new Value[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = Main.oexec(ts.get(i), sc);
+            Obj o = i==0? fo : Main.oexec(ts.get(i), sc);
             if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true), o);
             vs[i] = (Value) o;
           }
@@ -717,7 +725,7 @@ public class Exec {
         } else if (fo instanceof Fun) { // function array
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = Main.oexec(ts.get(i), sc);
+            Obj o = i==0? fo : Main.oexec(ts.get(i), sc);
             if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true), o);
             os[i] = o;
           }
@@ -730,6 +738,6 @@ public class Exec {
     if (t instanceof BacktickTok) return new ArrFun((BacktickTok) t, sc);
     if (t instanceof BigTok) return ((BigTok) t).val;
     if (t instanceof ScopeTok) return new StrMap(sc);
-    throw new NYIError("Unknown type: " + Main.explain(t), t);
+    throw new NYIError("Unknown type: " + t.toRepr(), t);
   }
 }

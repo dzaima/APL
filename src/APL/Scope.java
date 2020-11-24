@@ -92,7 +92,7 @@ public class Scope {
         case "⎕L":
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser(this);
-        case "⎕GC": System.gc(); return Num.ONE;
+        case "⎕GC": System.gc(); return new Num(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
         case "⎕GCLOG": return new GCLog();
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
@@ -179,9 +179,7 @@ public class Scope {
       
       @Override
       public Value ofShape(int[] sh) {
-        if (sh.length == 0 && !Main.enclosePrimitives) return this;
-        assert Arr.prod(sh) == 1;
-        return new SingleItemArr(this, sh);
+        return SingleItemArr.maybe(this, sh);
       }
     }
   }
@@ -712,7 +710,7 @@ public class Scope {
       for (int i = 0; i < pa.length; i++) {
         va[i] = rec(pa[i]);
       }
-      return HArr.create(va, w.shape);
+      return new HArr(va, w.shape);
     }
     
     @Override public Value callInv(Value w) {
@@ -727,7 +725,7 @@ public class Scope {
       for (int i = 0; i < pa.length; i++) {
         va[i] = recN(pa[i]);
       }
-      return HArr.create(va, w.shape);
+      return Arr.create(va, w.shape);
     }
     @Override public String repr() {
       return "⎕BIG";

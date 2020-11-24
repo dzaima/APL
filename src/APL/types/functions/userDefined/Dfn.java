@@ -49,10 +49,5 @@ public class Dfn extends Fun {
     return code.toRepr();
   }
   
-  @Override
-  public Type type() {
-    return Type.fn;
-  }
-  
   public String name() { return "dfn"; }
 }

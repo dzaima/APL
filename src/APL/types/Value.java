@@ -1,6 +1,6 @@
 package APL.types;
 
-import APL.Type;
+import APL.*;
 import APL.errors.*;
 import APL.types.arrs.*;
 
@@ -188,7 +188,7 @@ public abstract class Value extends Obj implements Iterable<Value> {
     return get(x);
   }
   
-  public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape! ()
+  public abstract Value ofShape(int[] sh); // don't call with ×/sh ≠ ×/shape!
   
   public double sum() {
     double res = 0;
@@ -250,5 +250,22 @@ public abstract class Value extends Obj implements Iterable<Value> {
     }
     if (anyBetter) return new HArr(optimized, shape);
     return this;
+  }
+  
+  public Value cut(int s, int len, int[] sh) {
+    if (len==1) {
+      Value v = get(s);
+      return !Main.enclosePrimitives && v instanceof Primitive? v : new Rank0Arr(v);
+    }
+    if (quickDoubleArr()) {
+      double[] w = asDoubleArr();
+      double[] r = new double[len];
+      System.arraycopy(w, s, r, 0, len);
+      return new DoubleArr(r, sh);
+    }
+    Value[] w = values();
+    Value[] r = new Value[len];
+    System.arraycopy(w, s, r, 0, len);
+    return new HArr(r, sh);
   }
 }

@@ -184,7 +184,7 @@ class Action {
   final int rep;
   final Keyboard b;
   final Key k;
-  Action (JSONObject o, Keyboard b, Key k) {
+  Action(JSONObject o, Keyboard b, Key k) {
     chr = o.getString("chr");
     String type = o.getString("type");
     if (type == null) this.type = chr;

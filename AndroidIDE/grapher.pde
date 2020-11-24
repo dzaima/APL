@@ -282,7 +282,7 @@ static class Graph extends Plane {
     LLNode<T> next;
     LL<T> ll;
     T v;
-    LLNode (LL<T> ll, LLNode<T> p, LLNode<T> n, T v) {
+    LLNode(LL<T> ll, LLNode<T> p, LLNode<T> n, T v) {
       prev = p;
       next = n;
       this.ll = ll;
@@ -316,7 +316,7 @@ static class Graph extends Plane {
     double[] y;
     LLNode<Point> pnode;
     PQNode pqr;
-    Point (double x, double[] y) {
+    Point(double x, double[] y) {
       this.x = x;
       this.y = y;
     }

@@ -44,7 +44,7 @@ public class VarArr extends Settable {
     return get().toString();
   }
   
-  public static Obj of (ArrayList<Obj> vs) {
+  public static Obj of(ArrayList<Obj> vs) {
     int sz = vs.size();
     if (sz == 0) return EmptyArr.SHAPE0Q;
     Obj fst = vs.get(0);
@@ -96,17 +96,14 @@ public class VarArr extends Settable {
   }
   
   public void set(Obj w, boolean update) {
-    if (w instanceof Arr) {
-      Arr ow = (Arr) w;
-      if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
-      if (ow.ia != this.ia) throw new LengthError("← scatter argument lengths not equal", ow);
-      for (int i = 0; i < this.ia; i++) {
-        SetBuiltin.inst.callObj(this.arr.get(i), ow.get(i), update);
-      }
+    Value ow = (Value) w;
+    if (ow.rank == 0) {
+      ow = ow.first();
+      for (int i = 0; i < ia; i++) SetBuiltin.inst.callObj(arr.get(i), ow, update);
     } else {
-      for (int i = 0; i < this.ia; i++) {
-        SetBuiltin.inst.callObj(this.arr.get(i), w, update);
-      }
+      if (ow.rank != 1) throw new LengthError("← scatter rank ≠1", ow);
+      if (ow.ia != ia) throw new LengthError("← scatter argument lengths not equal", ow);
+      for (int i = 0; i < ia; i++) SetBuiltin.inst.callObj(arr.get(i), ow.get(i), update);
     }
   }
 }

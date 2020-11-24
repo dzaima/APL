@@ -30,7 +30,7 @@ static class PQ<M extends Comparable<? super M>, V> {
   PQNode<M, V>[][] S = new PQNode[lc][];
   int size = 0;
   byte l = 0; // layer count
-  PQNode<M, V> add (M m, V v) {
+  PQNode<M, V> add(M m, V v) {
     PQNode<M, V> n = new PQNode(this, m, v);
     //println("add "+n+"\n",this);
     
@@ -70,7 +70,7 @@ static class PQ<M extends Comparable<? super M>, V> {
     }
     return s;
   }
-  void remove (PQNode<M, V> o) {
+  void remove(PQNode<M, V> o) {
     //println("rm "+o+"\nbefore:", this);
     int p = size - (1 << l-1);
     byte cl = (byte)(l-1);

@@ -48,8 +48,9 @@ public class Tokenizer {
     
     LineTok tok() {
       if (annoyingBacktickPos != null) throw new SyntaxError("Nothing after backtick");
-      int epos = size() == 0? pos : ts.get(size()-1).epos;
-      return new LineTok(line, pos, epos, ts);
+      int spos = size()==0? pos : ts.get(0).spos;
+      int epos = size()==0? pos : ts.get(size()-1).epos;
+      return new LineTok(line, spos, epos, ts);
     }
   }
   static class Block { // temp storage of multiple lines

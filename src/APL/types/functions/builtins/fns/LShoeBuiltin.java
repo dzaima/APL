@@ -19,6 +19,9 @@ public class LShoeBuiltin extends Builtin {
     if (!Main.enclosePrimitives && w instanceof Primitive) return w;
     return new Rank0Arr(w);
   }
+  public static Value on(Value w) {
+    return !Main.enclosePrimitives && w instanceof Primitive? w : new Rank0Arr(w);
+  }
   
   @Override public Value call(Value a, Value w) {
     if (w.rank != 1) throw new DomainError("⊂: ⍵ should be of rank 1 ("+Main.formatAPL(w.shape)+" ≡ ⍴⍵)", this);

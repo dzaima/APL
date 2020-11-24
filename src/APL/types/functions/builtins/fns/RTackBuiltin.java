@@ -21,6 +21,6 @@ public class RTackBuiltin extends Builtin {
     return w;
   }
   public Value callInvA(Value a, Value w) {
-    throw new DomainError("⊣⍣¯1 is impossible", this);
+    throw new DomainError("⊢⍨⍣¯1 is impossible", this);
   }
 }

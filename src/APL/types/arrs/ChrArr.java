@@ -59,7 +59,7 @@ public class ChrArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    if (sh.length == 0 && !Main.enclosePrimitives) return Char.of(s.charAt(0));
+    if (sh.length==0 && !Main.enclosePrimitives) return get(0);
     return new ChrArr(s, sh);
   }
   

@@ -19,8 +19,7 @@ public class Null extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arr.prod(sh);
-    return new SingleItemArr(this, sh);
+    return SingleItemArr.maybe(this, sh);
   }
   
   @Override public int hashCode() {

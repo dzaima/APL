@@ -91,7 +91,7 @@ class APLGraphics extends SimpleMap {
       case "circle": return new ForFA() {
         public void setup(Value a) {
           if (a == null) {  g.ellipseMode(RADIUS ); return; }
-          switch(a.asString().toLowerCase()) { default: throw new DomainError("⍺ for G.ellipse can't be "+a);
+          switch(a.asString().toLowerCase()) { default: throw new DomainError("⍺ for G.circle can't be "+a);
             case  "radius": g.ellipseMode(RADIUS ); break;
             case  "center": g.ellipseMode(CENTER ); break;
           }}
@@ -101,10 +101,10 @@ class APLGraphics extends SimpleMap {
       };
       case "point": case "pt": return new ForFA() {
         public void draw(double[] fa) {
-          if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
+          if ((fa.length&2) == 1) throw new DomainError("G.point recieved odd length array", w);
           if (fa.length >= 2) {
             g.beginShape(POINTS);
-            for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);
+            for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i]+.5, (float)fa[i+1]+.5);
             g.endShape();
           }
         }
@@ -128,7 +128,7 @@ class APLGraphics extends SimpleMap {
           g.strokeWeight(a == null? 1 : a.asInt());
         }
         public void draw(double[] fa) {
-          if ((fa.length&2) == 1) throw new DomainError("G.line recieved odd length array", w);
+          if ((fa.length&2) == 1) throw new DomainError("G.loop recieved odd length array", w);
           if (fa.length > 2) {
             g.beginShape();
             for (int i = 0; i < fa.length; i+= 2) g.vertex((float)fa[i], (float)fa[i+1]);

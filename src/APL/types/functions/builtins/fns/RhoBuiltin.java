@@ -54,10 +54,10 @@ public class RhoBuiltin extends Builtin {
     } else if (ia == w.ia) return w.ofShape(sh);
     
     if (w.ia == 0) {
-      return new SingleItemArr(w.prototype(), sh);
+      return SingleItemArr.maybe(w.prototype(), sh);
       
     } else if (w.scalar()) {
-      return new SingleItemArr(w.first(), sh);
+      return SingleItemArr.maybe(w.first(), sh);
       
     } else if (w instanceof BitArr) {
       if (sh.length == 0 && !Main.enclosePrimitives) return w.get(0);

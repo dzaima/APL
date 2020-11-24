@@ -280,10 +280,6 @@ public class Main {
     print("\n");
   }
   
-  public static String explain(Token tok) {
-    return tok.toRepr();
-  }
-  
   public static boolean isBool(Value a) {
     if (!(a instanceof Num)) return false;
     Num n = (Num) a;

@@ -1,5 +1,6 @@
 package APL.types.arrs;
 
+import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 
@@ -43,8 +44,7 @@ public class Rank0Arr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arr.prod(sh);
-    return new SingleItemArr(item, sh);
+    return SingleItemArr.maybe(item, sh);
   }
   
   @Override

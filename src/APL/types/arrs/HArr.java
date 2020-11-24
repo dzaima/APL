@@ -1,5 +1,6 @@
 package APL.types.arrs;
 
+import APL.Main;
 import APL.errors.DomainError;
 import APL.types.*;
 
@@ -82,7 +83,7 @@ public class HArr extends Arr {
     return arr.clone();
   }
   public Value ofShape(int[] sh) {
-    assert ia == Arr.prod(sh);
+    if (sh.length==0 && Main.enclosePrimitives && arr[0] instanceof Primitive) return arr[0];
     return new HArr(arr, sh);
   }
   

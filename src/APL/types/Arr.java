@@ -237,7 +237,7 @@ public abstract class Arr extends Value {
   
   
   public static Value createL(Value[] v, int[] sh) { // accepts ⊂Primitive; doesn't attempt individual item squeezing; TODO check more places where this should be used
-    if (sh.length == 0 && v[0] instanceof Primitive) return v[0];
+    if (sh.length==0 && v[0] instanceof Primitive && !Main.enclosePrimitives) return v[0];
     return create(v, sh);
   }
   
@@ -319,11 +319,10 @@ public abstract class Arr extends Value {
   @Override
   public int hashCode() {
     if (hash == 0) {
-      for (Value v : this) {
-        hash = hash*31 + v.hashCode();
-      }
+      for (Value v : this) hash = hash*31 + v.hashCode();
+      hash = shapeHash(hash);
     }
-    return shapeHash(hash);
+    return hash;
   }
   
   protected int shapeHash(int hash) {

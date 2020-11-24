@@ -44,5 +44,5 @@ for i in range(3):
             myfile.write(data)
       # if (('error: incompatible types: cannot infer type arguments for') in line): TODO
         
-  print("error count:", count)
+  print("left:", count)
 os.system('./build8');

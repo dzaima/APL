@@ -65,7 +65,7 @@ public abstract class Dop extends Callable {
     return (Fun) o;
   }
   
-  // functions are equal per-object basis
+  // operators are equal per-object basis
   @Override public int hashCode() {
     return actualHashCode();
   }

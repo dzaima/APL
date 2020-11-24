@@ -36,10 +36,7 @@ public class RShoeBuiltin extends Fun {
       if (p >= w.ia) throw new DomainError("Tried to access item at position "+a+" while shape was "+ Main.formatAPL(w.shape), this);
       return w.get(p);
     }
-    for (Value v : a) {
-      w = w.at(v.asIntVec(), sc.IO);
-    }
-    return w;
+    return w.at(a.asIntVec(), sc.IO);
   }
   
   public Value under(Obj o, Value w) {

@@ -85,8 +85,9 @@ public class ReduceBuiltin extends Mop implements DimMMop {
               int ri = 0;
               for (int i = 0; i < w.ia; i++) {
                 Value v = w.get(i);
-                if (v instanceof Num) ds[ri++] = ((Num) v).num;
-                else if (v.quickDoubleArr()) {
+                if (v instanceof Num) {
+                  ds[ri++] = ((Num) v).num;
+                } else {
                   System.arraycopy(v.asDoubleArr(), 0, ds, ri, v.ia);
                   ri+= v.ia;
                 }
@@ -107,7 +108,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
             System.arraycopy(v.values(), 0, vs, ri, v.ia);
             ri+= v.ia;
           }
-          return HArr.create(vs);
+          return Arr.create(vs);
         }
       }
     }
@@ -121,7 +122,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
     for (int i = a.length-2; i >= 0; i--) {
       last = ff.call(a[i], last);
     }
-    return last.squeeze();
+    return last;
   }
   
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
@@ -169,7 +170,7 @@ public class ReduceBuiltin extends Mop implements DimMMop {
         for (int j = n1 - 2; j >= 0; j--) {
           c = f.call(x.get(i*n1*n2 + j*n2 + k), c);
         }
-        r[i*n2 + k] = c.squeeze();
+        r[i*n2 + k] = c;
       }
     }
     if (r.length == 0) return new EmptyArr(ns, x.safePrototype());

@@ -46,7 +46,7 @@ public class DoubleArr extends Arr {
   }
   
   public static Value safe(double[] vs, int[] sh) {
-    if (sh.length == 0) return new Num(vs[0]);
+    if (sh.length==0 && !Main.enclosePrimitives) return new Num(vs[0]);
     return new DoubleArr(vs, sh);
   }
   
@@ -90,8 +90,7 @@ public class DoubleArr extends Arr {
   
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arr.prod(sh);
-    if (sh.length == 0 && !Main.enclosePrimitives) return new Num(arr[0]);
+    if (sh.length==0 && !Main.enclosePrimitives) return get(0);
     return new DoubleArr(arr, sh);
   }
   
@@ -172,7 +171,7 @@ public class DoubleArr extends Arr {
   @Override public int hashCode() {
     if (hash == 0) {
       for (double d : arr) {
-        hash = hash*31;
+        hash*= 31;
         if (d != 0d) hash += Double.hashCode(d); // ¯0 == 0
       }
       hash = shapeHash(hash);

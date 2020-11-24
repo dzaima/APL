@@ -14,6 +14,11 @@ public class SingleItemArr extends Arr {
     this.item = item;
   }
   
+  public static Value maybe(Value item, int[] sh) {
+    if (!Main.enclosePrimitives && sh.length==0 && item instanceof Primitive) return item;
+    return new SingleItemArr(item, sh);
+  }
+  
   @Override
   public int[] asIntArrClone() {
     int vi = item.asInt();
@@ -54,8 +59,7 @@ public class SingleItemArr extends Arr {
   }
   @Override
   public Value ofShape(int[] sh) {
-    assert ia == Arr.prod(sh);
-    return new SingleItemArr(item, sh);
+    return SingleItemArr.maybe(item, sh);
   }
   
   @Override

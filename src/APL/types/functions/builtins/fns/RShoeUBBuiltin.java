@@ -22,11 +22,9 @@ public class RShoeUBBuiltin extends Builtin {
     if (w instanceof APLMap) {
       Value[] res = new Value[a.ia];
       APLMap map = (APLMap) w;
-      Value[] vs = a.values();
-      for (int i = 0; i < a.ia; i++) {
-        res[i] = (Value) map.getRaw(vs[i].asString());
-      }
-      return Arr.create(res, a.shape);
+      Value[] ks = a.values();
+      for (int i = 0; i < a.ia; i++) res[i] = (Value) map.getRaw(ks[i]);
+      return Arr.createL(res, a.shape);
     }
     if (a instanceof Primitive && w.rank==1) {
       Value r = w.get((int) a.asDouble() - IO);
@@ -52,7 +50,7 @@ public class RShoeUBBuiltin extends Builtin {
     for (int i = 0; i < idxs.length; i++) {
       res[i] = w.get(idxs[i]);
     }
-    return Arr.create(res, poss.sh);
+    return Arr.createL(res, poss.sh);
   }
   
   public Value underW(Obj o, Value a, Value w) {

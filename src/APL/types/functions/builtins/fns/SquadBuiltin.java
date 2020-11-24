@@ -1,9 +1,11 @@
 package APL.types.functions.builtins.fns;
 
-import APL.Scope;
-import APL.errors.DomainError;
+import APL.*;
+import APL.errors.*;
 import APL.types.*;
 import APL.types.functions.Builtin;
+
+import java.util.Arrays;
 
 public class SquadBuiltin extends Builtin {
   @Override public String repr() {
@@ -21,6 +23,19 @@ public class SquadBuiltin extends Builtin {
   }
   
   public Value call(Value a, Value w) {
-    return w.at(a.asIntVec(), sc.IO);
+    int[] p = a.asIntVec();
+    int al = p.length;
+    int wl = w.shape.length;
+    if (al > wl) throw new RankError("⌷: expected (≢⍺) ≤ ≢⍴⍵ ("+al+" = ≢⍺; "+ Main.formatAPL(w.shape)+" ≡ ⍴⍵)", this, a);
+    int sz = 1;
+    for (int i = al; i < wl; i++) sz*= w.shape[i];
+    int off = 0;
+    for (int i = 0; i < al; i++) {
+      int d = p[i]-sc.IO;
+      off+= d;
+      if (d<0 || d>=w.shape[i]) throw new LengthError("⌷: index out-of-bounds", this, a);
+      off*= i>=al-1? sz : w.shape[i+1];
+    }
+    return w.cut(off, sz, Arrays.copyOfRange(w.shape, al, wl));
   }
 }

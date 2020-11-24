@@ -14,7 +14,7 @@ public class Num extends Primitive {
   
   
   public static int pp;
-  public static int sEr, eEr; // ↑ but raw
+  public static int sEr, eEr;
   static {
     setPrecision(14, -10, 10);
   }
@@ -251,10 +251,10 @@ public class Num extends Primitive {
   public Num floor() {
     return new Num(Math.floor(num));
   }
-  public Num root (Num root) {
+  public Num root(Num root) {
     return new Num(Math.pow(num, 1/root.num));
   }
-  public Num log (Num root) {
+  public Num log(Num root) {
     return new Num(Math.log(num) / Math.log(root.num));
   }
   
@@ -318,15 +318,13 @@ public class Num extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    if (sh.length == 0 && !Main.enclosePrimitives) return this;
-    assert Arr.prod(sh) == 1;
-    return new SingleItemArr(this, sh);
+    return SingleItemArr.maybe(this, sh);
   }
   
-  public static Num max (Num a, Num b) {
+  public static Num max(Num a, Num b) {
     return a.num > b.num? a : b;
   }
-  public static Num min (Num a, Num b) {
+  public static Num min(Num a, Num b) {
     return a.num < b.num? a : b;
   }
   

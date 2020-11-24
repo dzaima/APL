@@ -83,7 +83,7 @@ public class IotaUBBuiltin extends Builtin {
     int[] sh = fn.call(w).asIntVec();
     int ia = 1;
     for (int i = 0; i < sh.length; i++) {
-      sh[i]+=1-IO;
+      sh[i] = Math.max(0, sh[i] + 1-IO);
       ia *= sh[i];
     }
     double[] arr = new double[ia];

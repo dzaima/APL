@@ -123,7 +123,8 @@ public final class BitArr extends Arr {
     return Num.ZERO;
   }
   
-  @Override public Value ofShape(int[] sh) {
+  public Value ofShape(int[] sh) {
+    if(sh.length==0 && !Main.enclosePrimitives) return get(0);
     return new BitArr(arr, sh);
   }
   

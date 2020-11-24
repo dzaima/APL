@@ -53,11 +53,9 @@ public class Char extends Primitive {
   
   @Override
   public Value ofShape(int[] sh) {
-    if (sh.length == 0 && !Main.enclosePrimitives) return this;
+    if (sh.length==0 && !Main.enclosePrimitives) return this;
     assert ia == Arr.prod(sh);
-    StringBuilder s = new StringBuilder();
-    for (int i = 0; i < ia; i++) s.append(chr);
-    return new ChrArr(s.toString(), sh);
+    return new ChrArr(Character.toString(chr), sh); // special because there's no quickCharArr
   }
   
   public int compareTo(Char v) {

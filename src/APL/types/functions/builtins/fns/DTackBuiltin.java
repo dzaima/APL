@@ -42,7 +42,7 @@ public class DTackBuiltin extends Builtin {
           c = dr[0];
         }
         Collections.reverse(res);
-        return HArr.create(res);
+        return Arr.create(res);
       }
       int[] sh = new int[w.rank+a.rank];
       if (a.rank != 1) throw new NYIError(blame+": ⍺ with rank≥2 not yet implemented", blame);

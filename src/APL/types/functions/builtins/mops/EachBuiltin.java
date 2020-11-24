@@ -5,6 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.*;
+import APL.types.functions.builtins.fns.*;
 
 import java.util.Arrays;
 
@@ -16,11 +17,11 @@ public class EachBuiltin extends Mop {
   
   
   public Value call(Obj f, Value w, DerivedMop derv) {
-    if (w.scalar()) return f instanceof Fun? ((Fun)f).call(w.first()) : (Value) f;
+    if (w.scalar()) return LShoeBuiltin.on(f instanceof Fun? ((Fun)f).call(w.first()) : (Value) f);
     if (f instanceof Fun) {
       Value[] n = new Value[w.ia];
       for (int i = 0; i < n.length; i++) {
-        n[i] = ((Fun) f).call(w.get(i)).squeeze();
+        n[i] = ((Fun) f).call(w.get(i));
       }
       return Arr.create(n, w.shape);
     } else {
@@ -28,25 +29,24 @@ public class EachBuiltin extends Mop {
     }
   }
   public Value call(Obj f, Value a, Value w, DerivedMop derv) {
+    Fun ff = (Fun) f;
     if (w.scalar()) {
-      if (a.scalar()) return ((Fun)f).call(a, w);
+      Value w0 = w.first();
+      if (a.scalar()) return LShoeBuiltin.on(ff.call(a.first(), w0));
       Value[] n = new Value[a.ia];
-      for (int i = 0; i < n.length; i++) {
-        n[i] = ((Fun)f).call(a.get(i), w.first()).squeeze();
-      }
+      for (int i = 0; i < n.length; i++) n[i] = ff.call(a.get(i), w0);
       return Arr.create(n, a.shape);
     }
     if (a.scalar()) {
       Value[] n = new Value[w.ia];
-      for (int i = 0; i < n.length; i++) {
-        n[i] = ((Fun)f).call(a.first(), w.get(i)).squeeze();
-      }
+      Value a0 = a.first();
+      for (int i = 0; i < n.length; i++) n[i] = ff.call(a0, w.get(i));
       return Arr.create(n, w.shape);
     }
     if (!Arrays.equals(a.shape, w.shape)) throw new LengthError("shapes not equal ("+ Main.formatAPL(a.shape)+" vs "+Main.formatAPL(w.shape)+")", derv, w);
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = ((Fun)f).call(a.get(i), w.get(i)).squeeze();
+      n[i] = ff.call(a.get(i), w.get(i));
     }
     return Arr.create(n, w.shape);
   }
@@ -55,7 +55,7 @@ public class EachBuiltin extends Mop {
     if (!(f instanceof Fun)) throw new DomainError("can't invert A¨", this);
     Value[] n = new Value[w.ia];
     for (int i = 0; i < n.length; i++) {
-      n[i] = ((Fun) f).callInv(w.get(i)).squeeze();
+      n[i] = ((Fun) f).callInv(w.get(i));
     }
     if (w.rank == 0 && n[0] instanceof Primitive) return n[0];
     return Arr.create(n, w.shape);

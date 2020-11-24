@@ -21,6 +21,6 @@ public class QuoteQuad extends Settable {
   }
   
   public String toString() {
-    return "⎕";
+    return "⍞";
   }
 }

@@ -77,9 +77,7 @@ public class StrMap extends APLMap {
         vs.add((Value) v);
       }
     });
-    return new HArr(new Value[]{
-      HArr.create(ks),
-       Arr.create(vs)});
+    return new HArr(new Value[]{new HArr(ks), Arr.create(vs)});
   }
   
   @Override

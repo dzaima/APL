@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.DomainError;
 import APL.tokenizer.types.BacktickTok;
 import APL.types.*;
-import APL.types.arrs.HArr;
+import APL.types.arrs.*;
 
 public class ArrFun extends Primitive {
   
@@ -26,8 +26,7 @@ public class ArrFun extends Primitive {
   }
   
   @Override public Value ofShape(int[] sh) {
-    if (sh.length == 0) return this;
-    return new HArr(new Value[]{this}, sh);
+    return SingleItemArr.maybe(this, sh);
   }
   
   @Override public String toString() {

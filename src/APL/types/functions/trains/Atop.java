@@ -55,8 +55,4 @@ public class Atop extends Fun {
   @Override public String repr() {
     return "("+g+" "+h+")";
   }
-  
-  @Override public Type type() {
-    return Type.fn;
-  }
 }
