@@ -1,6 +1,5 @@
 package APL.types.functions.trains;
 
-import APL.Type;
 import APL.errors.SyntaxError;
 import APL.types.*;
 

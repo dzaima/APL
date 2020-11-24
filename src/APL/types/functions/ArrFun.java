@@ -4,7 +4,7 @@ import APL.*;
 import APL.errors.DomainError;
 import APL.tokenizer.types.BacktickTok;
 import APL.types.*;
-import APL.types.arrs.*;
+import APL.types.arrs.SingleItemArr;
 
 public class ArrFun extends Primitive {
   

@@ -5,7 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 
-import java.util.*;
+import java.util.Iterator;
 
 public final class Indexer implements Iterable<int[]>, Iterator<int[]> {
   private final int[] shape;

@@ -1,6 +1,5 @@
 package APL.types;
 
-import APL.Main;
 import APL.errors.DomainError;
 import APL.types.arrs.SingleItemArr;
 

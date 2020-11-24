@@ -5,7 +5,7 @@ import APL.errors.*;
 import APL.types.*;
 import APL.types.arrs.*;
 import APL.types.functions.*;
-import APL.types.functions.builtins.fns.*;
+import APL.types.functions.builtins.fns.LShoeBuiltin;
 
 import java.util.Arrays;
 
