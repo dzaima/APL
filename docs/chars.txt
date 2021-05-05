@@ -10,10 +10,10 @@ fns:
 ⌈   max; ceil / uppercase
 ⌊   min; floor / lowercase
 |   mod; abs / map size
-∧   lcm; lcm (aka every; all truthy)
-∨   gcd; gcd (aka some; contains truthy)
-⍲  nand; not all / contains falsy
-⍱   nor; none / all falsy
+∧   lcm; lcm (aka every; all 1)
+∨   gcd; gcd (aka some; contains 1)
+⍲  nand; not all / contains 0
+⍱   nor; none / all 0
 ⊥  from; 2⊥⍵; aka decode, pack
 ⊤    to; 2⊤⍵; aka encode, unpack
 ○  trig; pi×⍵
@@ -22,37 +22,38 @@ fns:
   monadic  dyadic
 ∊      in; enlist
 ⍷     NYI; find
-⌷       ⊢; index; also values of map
+⌷ map k&v; select cell
 ⍳ indexes; where
 ~ without; negate
-⍸   where; NYI; where > 0 (positions replicated n times)
+⍸   where; NYI; where can contain >1; also ⍸⍣¯1 is useful
 ⍴   shape; reshape
 ,   ravel; concat
 ⍮      ,⊂; {⍺⍵}
-≢  not eq; tally (⊃1,⍨⍴⍵)
-≡   depth; equal; depth is amount of ⊃s needed to get to a primitive (to be changed)
+≢   tally; not equal
+≡   depth; equal
 ⊢       ⍵; ⍵
-⊣       ⍵; ⍺ (monadic to be changed)
+⊣       ⍵; ⍺
 ↑   merge; take; merge as in merge dimensions
 ↓   split; drop; split off last dimension as arrays
-?    rand; NYI
-⍪   table; vertical concat;
+?    rand; deal
+⍪   table; vertical concat
 ⊖    flip; vertical rotate
 ⌽ reverse; horizontal rotate
 …     NYI; range
 ⍕  format; NYI
-⍎    eval; NYI
-⌿  expand; replicate
+⍎    eval; eval arrayified (`-⍎4)
+⌿     NYI; replicate
+⍀     NYI; expand
 ∪  unique; union
 ∩     NYI; intersection
 ⊂ enclose; split
-⊃   first; pick
+⊃   first; get single item ('ab'≡1 1⊃2 2⍴⊂'ab')
+⊇     NYI; multi-select (subject to ⎕VI)
 %     NYI; merge - 1 2 2 3%4↑¨⎕a⎕l⎕d → 'Abc3'
-⍋ grade up  ; NYI
-⍒ grade down; NYI
-⊇ first if enclosed; select
-⍉ transpose; NYI
-⍧ is first; count
+⍋    grade up; NYI
+⍒  grade down; NYI
+⍉   transpose; NYI
+⍧ unique mask; count
           
 
 < lt; sort asc
@@ -60,16 +61,16 @@ fns:
 = eq; NYI
 ≥ ge; NYI
 > gt; sort desc
-≠ ne; NYI
+≠ ne; NYI (⍧ is unique mask)
   
 monadic ops:
 
 /  reduce
-\  scan
+\  left scan
 ¨  for each
 ⍨  selfie; commute
-⌾  table (aka ∘.⍺⍺; _might_ get removed at some point?)
-⌸  key; group ⍺ by ⍵; get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
+⌾  table (aka ∘.⍺⍺)
+⌸  key; also get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
 ᐵ  each-left (A fᐵ B ≡ A f¨ ⊂B)
 ᑈ  each-right (A fᑈ B ≡ (⊂A) f¨ B)
 
@@ -82,7 +83,7 @@ dyadic ops
 ⍡  cumulative repeat
 ⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
 ⍤  atop (←→ {⍺⍺ ⍺ ⍵⍵ ⍵} )
-⍢  under (←→ {⍺←{_←⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵}; also structural inverse )
+⍢  under (←→ {⍺←{⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵}; also is structural under; ⍺⍺ can be an array)
 ⍫  obverse - define inverse: ⍶ - regular function, ⍹ - inverse
 @  at; right op = indices or function giving boolean array, left op = replacement array or function
 ⍁  for each diagonal

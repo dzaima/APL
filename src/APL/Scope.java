@@ -513,10 +513,11 @@ public class Scope {
           }
           p = Runtime.getRuntime().exec(parts, new String[0], f);
         }
-        Num ret = Num.of(p.waitFor());
         if (inp != null) p.getOutputStream().write(inp);
+        p.getOutputStream().close();
         byte[] out = readAllBytes(p.getInputStream());
         byte[] err = readAllBytes(p.getErrorStream());
+        Num ret = Num.of(p.waitFor());
         if (raw) return new HArr(new Value[]{ret, new DoubleArr(out), new DoubleArr(err)});
         else return new HArr(new Value[]{ret, Main.toAPL(new String(out, StandardCharsets.UTF_8)),
                                               Main.toAPL(new String(err, StandardCharsets.UTF_8))});

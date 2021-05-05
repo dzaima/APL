@@ -3,26 +3,27 @@
 \ - only scan; executes left-to-right - aka isn't O(n^2)
 ⍀ - only expand
 ⍺⍺ & ⍵⍵ → ⍶ & ⍹
+↑ - errors when ⍺>⍴⍵
+↓ - errors when ⍺>⍴⍵
 right operand of ⍣ takes arguments swapped (so most recent is ⍵)
 dyadic f⌸ has ⍺ & ⍵ swapped (so A f⌸ B in Dyalog → B f⌸ A in dzaima/APL)
 
-
 dfns:
   start line with ← to force returning (e.g. {1 ⋄ 2} returns 2, {←1 ⋄ 2} returns 1)
-  ↑ makes more sense with conditionals - {A:B ⋄ C} will execute B if A, but return result of C always
-  {A:←B ⋄ C} returns B if A, leaving C unevaluated in that case.
+  this is useful with conditionals - {A:B ⋄ C} will execute B if A, but still execute and return C
+  whereas {A:←B ⋄ C} returns B if A, leaving C then unevaluated.
   
 ⍺ of ⍴ can have a single ⍬ specifying that the number there should be fit to use all given items
-ᐵ and ᑈ - each-left and each-right
-
 "c" ←→ ,'c'
 'abc' ←→ "abc"
+"ab\ncd" ←→ 'ab',(⎕ucs 10),'cd'
 
 monadic (A f) ←→ (A∘f); Can be continued into a longer train, i.e. (1+2×) ←→ {1+2×⍵}
 
 
 A¨ ←→ {A}¨ (though A is evaluated only once)
 
+ᐵ/ᑈ - each-left and each-right
 ⊥ & ⊤ default left arg = 2
 ⊤ with a scalar left arg is like Dyalogs ⊥⍣¯1
 
@@ -41,18 +42,21 @@ bigints:
 
 ⎕-s:
   ⎕IO      : index origin; 0 or 1
-  ⎕VI      : vector indexing. changes behavior if ⍳vec, ⊇, etc.
+  ⎕VI      : vector indexing. changes behavior if ⍳vec, ⊇, @, ⍸, etc.
   ⎕MILLIS  : time since starting
+  ⎕STDIN N : read N lines of stdin (⍬ for until EOF)
+  ⎕LNS 'f' : read lines of file f
   ⎕TIME    : time `⍎⍵` repeated ⍺ times (def = 1) in nanoseconds
   ⎕HTIME   : as above but convert to a human-readable format
   ⎕EX'path': execute the APL program in the file
   ⎕L/⎕LA   : lowercase alphabet
-  ⎕ERASE'v': 'varname': erase the variable
-  ⎕GC      : force Java garbage collection
+  ⎕ERASE'v': erase the variable v
+  ⎕GC      : force Java garbage collection, return used memory in bytes
   ⎕NULL    : null object (value of undefined keys in maps)
   ⎕HASH arr: get hash of the array
   ⎕BIG arr : convert array to bigintegers (⍣¯1 to invert)
   ⎕NC 'v'  : array→2; function→3; dop→4; mop→5
+  ⎕DR x    : https://github.com/dzaima/APL/blob/7fe18c1aa9b3bc36ffeff24e6cf7fd5a2745c2e5/src/APL/Scope.java#L736-L748
   ⎕GCLOG'v': log message upon getting garbage collected; Meant for testing for memory leaks (make sure to call ⎕GC before concluding anything!)
   ⎕MAP/⎕NS: hashmap with keys being strings (in the future there'll probably be another type with arbitrary keys)
     monadic: create from key-value pairs
@@ -76,7 +80,6 @@ REPL:
   
   )stack: stacktrace of last error
   )debug: debug info (useful for "couldn't join everything up into a single expression")
-  )class: get object class
-  )atype: array type (whatever that is; pretty much )class )
-  )tokenize expr; )tokenizerepr: tokenize the following code
-  )off←→)exit←→)stop←→exit (yep, without a starting ")")
+  )class: get java class of object
+  )tokenize & )tokenizerepr: tokenize following text
+  )off←→)exit←→)stop←→exit (yep, without a starting ")") all exit
