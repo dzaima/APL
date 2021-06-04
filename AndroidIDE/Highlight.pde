@@ -192,5 +192,7 @@ static class Theme {
   
   int caret = def;
   int[] dfn = {#AA77BB, #EEBB44, #CC7799, #CCDD00, #B63CDA};
-  
+}
+static class NoErrTheme extends Theme {
+  { err = #AA77BB; }
 }

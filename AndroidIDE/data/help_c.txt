@@ -1,0 +1,105 @@
+fns:
+ dyadic  monadic
++   add; identity (no complex numbers)
+-   sub; negate / swap case
+×   mul; sign / case (i.e. ×'Hi ' → 1 ¯1 0) / ×|map
+÷   div; 1÷⍵
+*   pow; e*⍵
+⍟   log; e⍟⍵
+√  root; 2√⍵
+⌈   max; ceil / uppercase
+⌊   min; floor / lowercase
+|   mod; abs / map size
+∧   lcm; lcm (aka every; all 1)
+∨   gcd; gcd (aka some; contains 1)
+⍲  nand; not all / contains 0
+⍱   nor; none / all 0
+⊥  from; 2⊥⍵; aka decode, pack
+⊤    to; 2⊤⍵; aka encode, unpack
+○  trig; pi×⍵
+!   nCk; factorial
+
+  monadic  dyadic
+∊      in; enlist
+⍷     NYI; find
+⌷ map k&v; select cell
+⍳ indexes; where
+~ without; negate
+⍸   where; NYI; where can contain >1; also ⍸⍣¯1 is useful
+⍴   shape; reshape
+,   ravel; concat
+⍮      ,⊂; {⍺⍵}
+≢   tally; not equal
+≡   depth; equal
+⊢       ⍵; ⍵
+⊣       ⍵; ⍺
+↑   merge; take; merge as in merge dimensions
+↓   split; drop; split off last dimension as arrays
+?    rand; deal
+⍪   table; vertical concat
+⊖    flip; vertical rotate
+⌽ reverse; horizontal rotate
+…     NYI; range
+⍕  format; NYI
+⍎    eval; eval arrayified (`-⍎4)
+⌿     NYI; replicate
+⍀     NYI; expand
+∪  unique; union
+∩     NYI; intersection
+⊂ enclose; split
+⊃   first; get single item ('ab'≡1 1⊃2 2⍴⊂'ab')
+⊇     NYI; multi-select (subject to ⎕VI)
+%     NYI; merge - 1 2 2 3%4↑¨⎕a⎕l⎕d → 'Abc3'
+⍋    grade up; NYI
+⍒  grade down; NYI
+⍉   transpose; NYI
+⍧ unique mask; count
+          
+
+< lt; sort asc
+≤ le; NYI
+= eq; NYI
+≥ ge; NYI
+> gt; sort desc
+≠ ne; NYI (⍧ is unique mask)
+  
+monadic ops:
+
+/  reduce
+\  left scan
+¨  for each
+⍨  selfie; commute
+⌾  table (aka ∘.⍺⍺)
+⌸  key; also get/set map keys (e.g. 'x'(map⌸)5; map⌸'x')
+ᐵ  each-left (A fᐵ B ≡ A f¨ ⊂B)
+ᑈ  each-right (A fᑈ B ≡ (⊂A) f¨ B)
+
+dyadic ops
+
+∘  compose (←→ {⍶ ⍹ ⍵} or {⍺ ⍶ ⍹ ⍵})
+⍛  left-compose (←→ {(⍶ ⍺) ⍹ ⍵})
+.  NYI (well, ←→ {⍶/ ⍺ ⍹ ⍵})
+⍣  repeat
+⍡  cumulative repeat
+⍥  over (←→ {(⍹⍺) ⍶ ⍹⍵} )
+⍤  atop (←→ {⍺⍺ ⍺ ⍵⍵ ⍵} )
+⍢  under (←→ {⍺←{⍺⍺⋄⍵}⋄(⍹⍣¯1) (⍹⍺) ⍶ ⍹⍵}; also is structural under; ⍺⍺ can be an array)
+⍫  obverse - define inverse: ⍶ - regular function, ⍹ - inverse
+@  at; right op = indices or function giving boolean array, left op = replacement array or function
+⍁  for each diagonal
+
+nilads:
+
+⍬  0⍴0
+⎕  console (println; exec input line)
+⍞  console (print  ; input as string)
+⍺  left arg
+⍵  right arg
+⍶  left operand
+⍹  right operand
+∇  this function
+
+dfns:
+{A ⋄ B} → B (also executing A)
+{C:A ⋄ B} → B (also executing A if C was true)
+{C:←A ⋄ B} → A if C, else B

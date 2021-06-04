@@ -45,7 +45,7 @@ static class REPL extends Tab {
         inputs.add(line);
         iptr = inputs.size();
         textln("  "+line+"\n");
-        if (line.startsWith(":")) {
+        if (line.startsWith(":") || line.equals(")help")) {
           String cmd = line.substring(1);
           int i = cmd.indexOf(" "); 
           String nm = i==-1? cmd : cmd.substring(0, i);
@@ -101,6 +101,28 @@ static class REPL extends Tab {
             }
             if (o instanceof Ddop) {
               topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
+            }
+          } else if (nm.equals("h") || nm.equals("help")) {
+            if (arg.length()==0) {
+              textln("commands:");
+              textln(":h/:help  view this help page");
+              textln(":h kb     view help for keyboard layout");
+              textln(":h c      view character docs");
+              textln(":isz sz   change input box font size");
+              textln(":hsz sz   change REPL history font size");
+              textln(":tsz sz   change top bar size");
+              textln(":g expr   graph the expression (editable in the window)");
+              textln(":clear    clear REPL history");
+              textln(":f  path  edit file at the path");
+              textln(":fx path  edit file at the path, executing on save");
+              textln(":ex path  execute file at the path");
+              textln(":ed fn    edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)");
+            } else {
+              if (arg.equals("kb")) {
+                topbar.toNew(new HelpEd(":help kb", join(a.loadStrings("help_kb.txt"), '\n')));
+              } else if (arg.equals("c")) {
+                topbar.toNew(new HelpEd(":help c", join(a.loadStrings("help_c.txt"), '\n')));
+              } else textln("unknown help page \""+arg+"\"");
             }
           } else textln("Command "+nm+" not found");
           //else if (nm.equals(""))
@@ -222,6 +244,14 @@ abstract static class Editor extends Tab {
   }
 }
 
+static class HelpEd extends Editor {
+  HelpEd(String name, String val) {
+    super(name, val);
+    ta.th = new NoErrTheme();
+  }
+  void save(String val) {
+  }
+}
 
 static class Grapher extends Tab {
   Graph g;
