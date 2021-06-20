@@ -1,2 +1,2 @@
 #!/bin/bash
-rlwrap java -ea -jar APL.jar "$@" -r
+rlwrap -s99999 -H.history java -ea -jar APL.jar "$@" -r

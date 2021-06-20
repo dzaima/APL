@@ -222,7 +222,7 @@ class StrOS extends OutputStream {
     synchronized(bs) {
       String res = new String(Arrays.copyOf(bs.arr, bs.used));
       bs.clear();
-      return res;
+      return res.replace("(HTTPLog)-Static: isSBSettingEnabled false\n", "");
     }
   }
   void close() {

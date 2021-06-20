@@ -5,17 +5,16 @@
 By default, this interprets dzaima/APL, but to connect to Dyalog APL (through JSONServer), in Dyalog do:
 
 ```apl
-)LOAD path/to/JSONServer/Distribution/JSONServer.dws
-S←⊃JSONServer.Run ⍬
-eval←{⎕←'  ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵}
+)LOAD path/to/Jarvis/Distribution/Jarvis.dws ⍝ https://github.com/Dyalog/Jarvis/blob/master/Distribution/Jarvis.dws
+eval←{⎕←' ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵}
+S←⊃Jarvis.Run 1234 # ⍝ replace 1234 with whatever port you want
 ```
 
 and to connect to it in the app:
 
 ```apl
 :i dyalog
-⍝ and, optionally, if JSONServer wasn't started on localhost with port 8080,
-)ip:port
+)ip:1234 ⍝ or whatever port you set
 ```
 
 
