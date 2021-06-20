@@ -2,7 +2,7 @@
 
 [Download APK](https://github.com/dzaima/APL/releases)
 
-By default, this interprets dzaima/APL, but to connect to Dyalog APL (through JSONServer), in Dyalog do:
+By default, this executes code as dzaima/APL, but it can also connect to Dyalog APL launched with:
 
 ```apl
 )LOAD path/to/Jarvis/Distribution/Jarvis.dws ⍝ https://github.com/Dyalog/Jarvis/blob/master/Distribution/Jarvis.dws
@@ -10,7 +10,7 @@ eval←{⎕←' ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵
 S←⊃Jarvis.Run 1234 # ⍝ replace 1234 with whatever port you want
 ```
 
-and to connect to it in the app:
+To connect to that it in the app:
 
 ```apl
 :i dyalog
