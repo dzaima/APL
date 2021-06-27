@@ -33,8 +33,7 @@ public class Exec {
   
   private void printlvl(Object... args) {
     if (!Main.debug) return;
-    for (int i = 0; i < Main.printlvl; i++) Main.print("  ");
-    Main.printdbg(args);
+    Main.printdbg(sc, Main.repeat("  ", Main.printlvl), args);
   }
   private Stack<Token> left;
   public Obj exec() {
@@ -150,7 +149,7 @@ public class Exec {
       }
       
       // oh well that failed
-      throw new SyntaxError("couldn't join everything up into a single expression", pollL());
+      throw new SyntaxError("Failed to parse expression", pollL());
     }
     return pollS();
   }
@@ -670,7 +669,7 @@ public class Exec {
         
         case '⍬': return new DoubleArr(DoubleArr.EMPTY);
         case '⎕': return new Quad(sc);
-        case '⍞': return new QuoteQuad();
+        case '⍞': return new QuoteQuad(sc);
         case '⍺': Obj o = sc.get("⍺"); if(o == null) throw new SyntaxError("No ⍺ found", t); return o;
         case '⍵':     o = sc.get("⍵"); if(o == null) throw new SyntaxError("No ⍵ found", t); return o;
         case '∇':     o = sc.get("∇"); if(o == null) throw new SyntaxError("No ∇ found", t); return o;
@@ -684,7 +683,7 @@ public class Exec {
     if (t instanceof StrTok) return ((StrTok) t).val;
     if (t instanceof SetTok) return SetBuiltin.inst;
     if (t instanceof NameTok) return sc.getVar(((NameTok) t).name);
-    if (t instanceof LineTok) return Main.exec((LineTok) t, sc);
+    if (t instanceof LineTok) return Main.rexec((LineTok) t, sc);
     if (t instanceof ParenTok) {
       List<LineTok> ts = ((ParenTok) t).tokens;
       int size = ts.size();
@@ -692,7 +691,7 @@ public class Exec {
       LineTok fst = ts.get(0);
       if (size==1 && fst.colonPos()==-1) {
         if (((ParenTok) t).hasDmd) return new Shape1Arr(Main.vexec(ts.get(0), sc));
-        return Main.exec(ts.get(0), sc);
+        return Main.rexec(ts.get(0), sc);
       }
       if (fst.tokens != null && fst.colonPos() != -1) { // map constants
         Scope nsc = new Scope(sc);
@@ -708,16 +707,16 @@ public class Exec {
           else throw new SyntaxError("expected a key name, got " + name.toRepr(), name);
           List<Token> tokens = ct.tokens.subList(2, ct.tokens.size());
           
-          Obj val = Main.oexec(LineTok.inherit(tokens), nsc);
+          Obj val = Main.exec(LineTok.inherit(tokens), nsc);
           res.setStr(key, val);
         }
         return res;
       } else { // array
-        Obj fo = Main.oexec(fst, sc);
+        Obj fo = Main.exec(fst, sc);
         if (fo instanceof Value) { // value array
           Value[] vs = new Value[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = i==0? fo : Main.oexec(ts.get(i), sc);
+            Obj o = i==0? fo : Main.exec(ts.get(i), sc);
             if (!(o instanceof Value)) throw new DomainError("⋄-array contained " + o.humanType(true), o);
             vs[i] = (Value) o;
           }
@@ -725,7 +724,7 @@ public class Exec {
         } else if (fo instanceof Fun) { // function array
           Obj[] os = new Obj[size];
           for (int i = 0; i < ts.size(); i++) {
-            Obj o = i==0? fo : Main.oexec(ts.get(i), sc);
+            Obj o = i==0? fo : Main.exec(ts.get(i), sc);
             if (!(o instanceof Fun)) throw new DomainError("function array contained " + o.humanType(true), o);
             os[i] = o;
           }

@@ -17,17 +17,20 @@ import java.util.*;
 
 public class Scope {
   public final HashMap<String, Obj> vars = new HashMap<>();
+  public final Sys sys;
   private Scope parent = null;
   public boolean alphaDefined;
   public int IO;
   private Num nIO;
   public Random rnd;
-  public Scope() {
+  public Scope(Sys sys) {
+    this.sys = sys;
     IO = 1;
     nIO = Num.ONE;
     rnd = new Random();
   }
   public Scope(Scope p) {
+    this.sys = p.sys;
     parent = p;
     IO = p.IO;
     nIO = p.nIO;
@@ -93,7 +96,7 @@ public class Scope {
         case "⎕LA": return Main.lowercaseAlphabet;
         case "⎕ERASE": return new Eraser(this);
         case "⎕GC": System.gc(); return new Num(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
-        case "⎕GCLOG": return new GCLog();
+        case "⎕GCLOG": return new GCLog(this);
         case "⎕NULL": return Null.NULL;
         case "⎕MAP": case "⎕NS": return new MapGen();
         case "⎕DL": return new Delay(this);
@@ -114,7 +117,7 @@ public class Scope {
           @Override public String repr() { return "⎕U"; }
   
           @Override public Value call(Value w) {
-            Main.ucmd(Scope.this, w.asString());
+            sys.ucmd(w.asString());
             return null;
           }
         };
@@ -154,24 +157,27 @@ public class Scope {
   } // with ⎕IO←0
   
   static class GCLog extends Builtin {
-    @Override public String repr() {
+    public String repr() {
       return "⎕GCLOG";
     }
     
-    @Override
+    GCLog(Scope sc) { super(sc); }
+    
     public Value call(Value w) {
-      return new Logger(w.toString());
+      return new Logger(sc, w.toString());
     }
     static class Logger extends Primitive {
       final String msg;
-      Logger(String s) {
+      final Scope sc;
+      Logger(Scope sc, String s) {
+        this.sc = sc;
         this.msg = s;
       }
       
       @SuppressWarnings("deprecation") // this is this things purpose
       @Override
       protected void finalize() {
-        Main.println(msg+" was GCed");
+        sc.sys.println(msg+" was GCed");
       }
       public String toString() {
         return "⎕GCLOG["+msg+"]";

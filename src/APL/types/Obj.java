@@ -14,7 +14,6 @@ public abstract class Obj implements Tokenable {
   }
   abstract public Type type();
   public boolean equals(Obj o) {
-    if (Main.debug) Main.printdbg("non-overridden equals called");
     return false;
   }
   

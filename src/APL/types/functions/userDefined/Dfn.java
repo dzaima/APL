@@ -18,7 +18,7 @@ public class Dfn extends Fun {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Value w) {
-    Main.printdbg("dfn call", w);
+    Main.printdbg(sc, "dfn call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍺", new Variable(nsc, "⍺"));
     nsc.set("⍵", w);
@@ -34,7 +34,7 @@ public class Dfn extends Fun {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Value a, Value w) {
-    Main.printdbg("dfn call", a, w);
+    Main.printdbg(sc, "dfn call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍺", a);
     nsc.set("⍵", w);

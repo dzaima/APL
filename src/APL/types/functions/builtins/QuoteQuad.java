@@ -4,17 +4,19 @@ import APL.*;
 import APL.types.*;
 
 public class QuoteQuad extends Settable {
-  public QuoteQuad() {
+  private final Scope sc;
+  public QuoteQuad(Scope sc) {
     super(null);
+    this.sc = sc;
   }
   
   public void set(Obj v, Callable blame) {
-    Main.print(v.toString());
+    sc.sys.print(v.toString());
   }
   
   @Override
   public Obj get() {
-    return Main.toAPL(Main.console.nextLine());
+    return Main.toAPL(sc.sys.input());
   }
   public Type type() {
     return Type.gettable;

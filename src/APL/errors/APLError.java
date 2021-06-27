@@ -1,12 +1,10 @@
 package APL.errors;
 
-import APL.Main;
+import APL.*;
 import APL.tokenizer.Token;
 import APL.types.*;
 
 import java.util.*;
-
-import static APL.Main.*;
 
 public abstract class APLError extends RuntimeException {
   public Tokenable cause;
@@ -16,32 +14,35 @@ public abstract class APLError extends RuntimeException {
   }
   protected APLError(String msg, Tokenable blame) {
     super(msg);
-    if (blame instanceof Callable) faulty = blame;
+    if (blame instanceof Callable) Main.faulty = blame;
     else cause = blame;
   }
   protected APLError(String msg, Callable blame, Tokenable cause) {
     super(msg);
-    faulty = blame;
+    Main.faulty = blame;
     this.cause = cause;
   }
   
   
-  public void print() {
+  public void print(Sys s) {
     String type = getClass().getSimpleName();
-    if (getMessage().length() == 0) colorprint(type, 246);
-    else colorprint(type + ": " + getMessage(), 246);
+    String msg = getMessage();
+    if (msg == null) msg = "";
+    if (msg.length() == 0) s.colorprint(type, 246);
+    else s.colorprint(type + ": " + msg, 246);
     ArrayList<Mg> l = new ArrayList<>();
+    Tokenable faulty = Main.faulty;
     if (faulty!=null) Mg.add(l, faulty, '^');
     if (cause !=null) Mg.add(l, cause , '¯');
-    if (l.size() == 2 && l.get(0).eqSrc(l.get(1))) println(l);
+    if (l.size() == 2 && l.get(0).eqSrc(l.get(1))) println(s, l);
     else for (Mg g : l) {
       ArrayList<Mg> c = new ArrayList<>();
       c.add(g);
-      println(c);
+      println(s, c);
     }
   }
   
-  public void println(List<Mg> gs) {
+  public void println(Sys s, List<Mg> gs) {
     if (gs.size() == 0) return;
     
     String raw = gs.get(0).raw;
@@ -51,14 +52,14 @@ public abstract class APLError extends RuntimeException {
     if (lne == -1) lne = raw.length();
     
     String ln = gs.get(0).raw.substring(lns, lne);
-    Main.println(ln);
+    s.println(ln);
     char[] str = new char[ln.length()];
     for (int i = 0; i < str.length; i++) {
       char c = ' ';
       for (Mg g : gs) if (i>=g.spos && i<g.epos) c = g.c;
       str[i] = c;
     }
-    Main.println(new String(str));
+    s.println(new String(str));
   }
   
   static class Mg {

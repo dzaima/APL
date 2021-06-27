@@ -25,7 +25,7 @@ public class Dmop extends Mop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Value w, DerivedMop derv) {
-    Main.printdbg("dmop call", w);
+    Main.printdbg(sc, "dmop call", w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍺", new Variable(nsc, "⍺"));
@@ -43,7 +43,7 @@ public class Dmop extends Mop {
     throw new DomainError("Was expected to give array, got "+o.humanType(true), this);
   }
   public Obj callObj(Obj aa, Value a, Value w, DerivedMop derv) {
-    Main.printdbg("dmop call", a, w);
+    Main.printdbg(sc, "dmop call", a, w);
     Scope nsc = new Scope(sc);
     nsc.set("⍶", aa);
     nsc.set("⍺", a);
