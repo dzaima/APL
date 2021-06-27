@@ -30,6 +30,7 @@ abstract static class Tab extends SimpleMap {
 
 
 static class REPL extends Tab {
+  final String name;
   final ROText historyView;
   final APLField input;
   ArrayList<String> inputs = new ArrayList();
@@ -45,8 +46,9 @@ static class REPL extends Tab {
     historyView.appendLns(s);
   }
   
-  REPL(Interpreter it) {
+  REPL(String name, Interpreter it) {
     this.it = it;
+    this.name = name;
     it.l = new ItListener() {
       public void println(String ln) {
         add(ln+"\n");
@@ -89,18 +91,20 @@ static class REPL extends Tab {
           int i = cmd.indexOf(" "); 
           String nm = i==-1? cmd : cmd.substring(0, i);
           final String arg = i==-1? "" : cmd.substring(i+1);
-          String argl = arg.toLowerCase();
           if (nm.equals("hsz")) historyView.setSize(int(arg));
           else if (nm.equals("isz")) {
             isz = int(arg);
             redrawAll();
           } else if (nm.equals("i")) {
-            String[] parts = split(argl, ' ');
-            if (parts[0].equals("ride")) {
-              topbar.toNew(new REPL(new RIDE(parts.length==1? "127.0.0.1:8000" : parts[1])));
-            } else if (parts[0].equals("dzaima")) {
-              topbar.toNew(new REPL(new DzaimaAPL()));
-            } else addln("unknown interpreter: \""+argl+"\"");
+            String[] parts = split(arg, ' ');
+            String type = parts[0].toLowerCase();
+            if (type.equals("ride")) {
+              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? "127.0.0.1:8000" : parts[1])));
+            } else if (type.equals("dzaima")) {
+              topbar.toNew(new REPL("dzaima/APL", new DzaimaAPL()));
+            } else if (type.equals("tryapl")) {
+              topbar.toNew(new REPL("TryAPL", new TryAPL()));
+            } else addln("unknown interpreter: \""+type+"\"");
           } else if (nm.equals("clear")) {
             historyView.set(new ArrayList());
           } else if (nm.equals("g")) {
@@ -204,9 +208,7 @@ static class REPL extends Tab {
     historyView.hide();
     if (textInput == input) textInput = null;
   }
-  String name() {
-    return "REPL";
-  }
+  String name() { return name; }
   Obj getv(String k) {
     if (k.equals("eq")) return Main.toAPL(input.line);
     return super.getv(k);

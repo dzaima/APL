@@ -7,7 +7,7 @@ static REPL mainInit() {
   Main.colorful = false;
   
   mainIt = new DzaimaAPL(); // current interpreter
-  mainREPL = new REPL(mainIt);
+  mainREPL = new REPL("REPL", mainIt);
   mainSys = mainIt.sys;
   
   appobj = new AppMap();
@@ -217,6 +217,103 @@ static class EdRIDE extends Editor {
   }
 }
 
+public static byte[] readAll(InputStream s) throws IOException {
+  byte[] b = new byte[1024];
+  int i = 0, am;
+  while ((am = s.read(b, i, b.length-i))!=-1) {
+    i+= am;
+    if (i==b.length) b = Arrays.copyOf(b, b.length*2);
+  }
+  return Arrays.copyOf(b, i);
+}
+static class TryAPL extends Interpreter {
+  static class SentThing { String line; String print; SentThing(String line, String print) { this.line=line; this.print=print; } }
+  ConcurrentLinkedQueue<String[]> recv = new ConcurrentLinkedQueue();
+  ConcurrentLinkedQueue<SentThing> send = new ConcurrentLinkedQueue();
+  boolean closed;
+  AtomicBoolean running = new AtomicBoolean(false);
+  TryAPL() {
+    (new Thread() {
+      String state0 = "";
+      int    state1 = 0;
+      String state2 = "";
+      void run() {
+        while(true) {
+          running.set(!send.isEmpty());
+          SentThing expr;
+          do {
+            a.delay(100);
+            if (closed) { println("[TryAPL] Closing thread"); return; }
+            expr = send.poll();
+          } while (expr==null);
+          running.set(true);
+          println("[TryAPL] Sending "+expr.line);
+          String s = ja(state0,state1,state2,expr.line).format(-1);
+          byte[] data = s.getBytes(StandardCharsets.UTF_8);
+          try {
+            URL u = new URL("https://tryapl.org/Exec");
+            HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod("POST");
+            c.setUseCaches(false);
+            c.setRequestProperty("Content-Type", "application/json"); //"application/x-www-form-urlencoded");
+            c.setRequestProperty("Content-Length", Integer.toString(data.length));
+            c.setRequestProperty("Content-Language", "en-US");
+            
+            c.setDoOutput(true);
+            OutputStream os = c.getOutputStream();
+            os.write(data);
+            os.close();
+            InputStream is = c.getInputStream();
+            JSONArray arr = a.parseJSONArray(new String(readAll(is), StandardCharsets.UTF_8));
+            is.close();
+            println("[TryAPL] Received answer");
+            state0 = arr.getString(0);
+            state1 = arr.getInt(1);
+            state2 = arr.getString(2);
+            JSONArray lns = arr.getJSONArray(3);
+            if (lns.size()==1 && lns.getString(0).startsWith("\b")) {
+              String[] parts = split(lns.getString(0),'\b');
+              if (toURL(parts[2])) lns = new JSONArray();
+              else lns.setString(0, parts[parts.length-1]);
+            }
+            int off = expr.print!=null?1:0;
+            String[] lnsArr = new String[lns.size()+off];
+            if (expr.print!=null) lnsArr[0] = expr.print;
+            for (int i = 0; i < lns.size(); i++) lnsArr[i+off] = lns.getString(i);
+            recv.add(lnsArr);
+          } catch (Exception e) {
+            recv.add(new String[]{e.getMessage()==null? e.getClass().getName() : e.getMessage()});
+          }
+        }
+      }
+    }).start();
+  }
+  void sendLn(String ln) {
+    String print = "   "+ln;
+    if (running.getAndSet(true)) {
+      send.add(new SentThing(ln, print));
+    } else {
+      l.println(print);
+      send.add(new SentThing(ln, null));
+    }
+  }
+  boolean prevRunning;
+  void tick() {
+    while (!recv.isEmpty()) {
+      String[] lns = recv.poll();
+      for (String s : lns) l.println(s);
+    }
+    boolean currRunning = running.get();
+    if (currRunning!=prevRunning) {
+      l.inputMode(!currRunning, true);
+      prevRunning = currRunning;
+    }
+  }
+  Theme theme() { return aplTheme; }
+  void intJSON(JSONArray o) { }
+  Fun getFn(String ln) { return null; }
+  void close() { closed = true; }
+}
 
 
 static class DzaimaAPL extends Interpreter {
@@ -278,21 +375,13 @@ static class DzaimaAPL extends Interpreter {
     sys.lineCatch(s);
   }
   
-  void tick() {
-    
-  }
-  
-  void intJSON(JSONArray o) {
-    
-  }
   
   Fun getFn(String ln) {
     return (Fun) Main.exec(ln, sys.csc);
   }
-  Theme theme() {
-    return aplTheme;
-  }
-  
+  Theme theme() { return aplTheme; }
+  void tick() { }
+  void intJSON(JSONArray o) { }
   void close() { }
 }
 static class Ed extends Editor {

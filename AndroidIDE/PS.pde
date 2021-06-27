@@ -1,5 +1,6 @@
 //* PC
 import java.awt.Toolkit;
+import java.awt.Desktop;
 static boolean MOBILE = false;
 class FakeTouch { // for interoperability with android mode
   int x, y;
@@ -47,6 +48,16 @@ void handleCoded(int keyCode) {
 }
 KeyEvent fixKE(KeyEvent e) {
   return e;
+}
+
+static boolean toURL(String url) {
+  try {
+    Desktop.getDesktop().browse(new URI(url));
+    return true;
+  } catch (Exception e) {
+    e.printStackTrace();
+    return false;
+  }
 }
 
 static void beginClip(PGraphics g, float x, float y, float x2, float y2) {
@@ -137,6 +148,12 @@ KeyEvent fixKE(KeyEvent e) {
     (n. isMetaPressed() ? Event.META  : 0) +
     (n.  isAltPressed() ? Event.ALT   : 0)
   , e.getKey(), e.getKeyCode());
+}
+
+static boolean toURL(String url) {
+  Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+  startActivity(i);
+  return true;
 }
 
 import processing.a2d.*;

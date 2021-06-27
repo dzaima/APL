@@ -227,6 +227,7 @@ static JSONArray ja(Object... args) {
   for (Object o : args) {
     if (o instanceof Number) a.append(((Number)o).doubleValue());
     else if (o instanceof String) a.append((String)o);
+    else if (o instanceof Integer) a.append((int)(Integer)o);
     else if (o instanceof JSONArray) a.append((JSONArray)o);
     else if (o instanceof JSONObject) a.append((JSONObject)o);
     else assert false;
