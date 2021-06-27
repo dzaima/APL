@@ -37,7 +37,7 @@ static class REPL extends Tab {
   String tmpSaved;
   int iptr = 0; // can be ==input.size()
   boolean main;
-  Interpreter it;
+  final Interpreter it;
   
   void addln(String s) {
     add(s+"\n");
@@ -46,7 +46,7 @@ static class REPL extends Tab {
     historyView.appendLns(s);
   }
   
-  REPL(String name, Interpreter it) {
+  REPL(String name, final Interpreter it) {
     this.it = it;
     this.name = name;
     it.l = new ItListener() {
@@ -99,7 +99,7 @@ static class REPL extends Tab {
             String[] parts = split(arg, ' ');
             String type = parts[0].toLowerCase();
             if (type.equals("ride")) {
-              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? "127.0.0.1:8000" : parts[1])));
+              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? RIDE_IP : parts[1])));
             } else if (type.equals("dzaima")) {
               topbar.toNew(new REPL("dzaima/APL", new DzaimaAPL()));
             } else if (type.equals("tryapl")) {
@@ -137,7 +137,7 @@ static class REPL extends Tab {
               textln(":hsz sz   change REPL history font size");
               textln(":tsz sz   change top bar size");
               textln(":clear    clear REPL history");
-              textln(":i type   start another REPL. type can be 'dzaima' or 'ride ip:port'");
+              textln(":i type   start another REPL. type can be 'dzaima' or 'ride ip:port (defaults: ip "+RIDE_IP+", port "+RIDE_PORT+")'");
             } else {
               if (arg.equals("kb")) {
                 topbar.toNew(new HelpEd(":help kb", join(a.loadStrings("help_kb.txt"), '\n')));
@@ -272,7 +272,7 @@ static class HelpEd extends Editor {
 static class Grapher extends Tab {
   Graph g;
   final APLField input;
-  Grapher(Interpreter it, String def) {
+  Grapher(final Interpreter it, String def) {
     g = new Graph(0, top, d.width, freey()-top-isz);
     input = new APLField(0, 350, d.width, 40, def) {
       void eval() {

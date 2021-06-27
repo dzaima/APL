@@ -27,7 +27,8 @@ static int isz = 30;
 static int freey() { // y position of keyboard start
   return a.height-kb.h;
 }
-
+static String RIDE_IP = "127.0.0.1";
+static String RIDE_PORT = "4502";
 
 
 void setup() {

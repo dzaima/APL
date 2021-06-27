@@ -19,13 +19,13 @@ void settings() {
 
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
-static void copy(String s) {
+void copy(String s) {
   StringSelection stringSelection = new StringSelection(s);
   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   clipboard.setContents(stringSelection, null);
 }
 
-static void paste(Drawable d) {
+void paste(Drawable d) {
   try {
     d.pasted((String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor));
   } catch (Throwable e) {
@@ -72,6 +72,7 @@ static void endClip(PGraphics g) {
 import android.content.ClipboardManager;
 import android.content.*;
 import android.app.*;
+import android.net.Uri;
 
 static boolean MOBILE = true;
 
@@ -152,7 +153,7 @@ KeyEvent fixKE(KeyEvent e) {
 
 static boolean toURL(String url) {
   Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-  startActivity(i);
+  a.getActivity().startActivity(i);
   return true;
 }
 

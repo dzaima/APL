@@ -120,6 +120,7 @@ static class RIDE extends Interpreter {
   boolean closed;
   int promptType;
   RIDE(String ip) {
+    if (ip.indexOf(':')==-1) ip+= ":"+RIDE_PORT;
     this.ip = ip;
     latestRIDE = this;
     a.thread("startRIDE");
@@ -331,7 +332,7 @@ static class DzaimaAPL extends Interpreter {
     if (s.startsWith(")")) {
       String[] parts = split(s,' ');
       String type = parts[0].substring(1);
-      String arg = parts.length==1? "" : s.substring(type.length()+2);
+      final String arg = parts.length==1? "" : s.substring(type.length()+2);
       if (type.equals("ed")) {
         if (parts.length!=2) { l.println(")ed: Expected an argument object name"); return; }
         Obj o = sys.csc.get(parts[1]);
@@ -343,11 +344,11 @@ static class DzaimaAPL extends Interpreter {
         return;
       }
       if (type.equals("ef") || type.equals("efx")) {
-        boolean ex = type.equals("efx");
+        final boolean ex = type.equals("efx");
         if (parts.length==1) { l.println(")"+type+": Expected an argument"); return; }
         String[] ps = arg.split("/");
         String[] lns = a.loadStrings(arg);
-        Scope sc = sys.csc;
+        final Scope sc = sys.csc;
         topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
           public void save(String t) {
             try {
@@ -460,11 +461,11 @@ static class AppMap extends SimpleMap {
           if (w.rank == 1) {
             w = w.squeeze();
             if (w instanceof ChrArr) {
-              copy(w.asString());
+              a.copy(w.asString());
               return Num.ONE;
             }
           }
-          copy(w.toString());
+          a.copy(w.toString());
           return Num.ONE;
         }
       };
