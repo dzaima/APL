@@ -6,7 +6,7 @@ static class APLTextarea extends Drawable implements TextReciever {
     chw = d.textWidth('H');
   }
   SyntaxHighlight hl;
-  Theme th = new Theme();
+  Theme th = aplTheme;
 
   APLTextarea(int x, int y, int w, int h) {
     super(x, y, w, h);

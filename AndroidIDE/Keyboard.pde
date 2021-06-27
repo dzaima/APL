@@ -179,7 +179,7 @@ class Key extends Drawable {
 }
 
 
-class Action {
+static class Action {
   final String chr, spec, type, gotof;
   final int rep;
   final Keyboard b;
@@ -220,7 +220,7 @@ class Action {
       case "rdel": textInput.rdelete(); return;
       case "clear": textInput.clear(); return;
       case "enter": textInput.append("\n"); return;
-      case "vkb": openKeyboard(); return;
+      case "vkb": a.openKeyboard(); return;
       case "shift": 
         b.shiftMode++;
         if (b.shiftMode > 2) b.shiftMode = 0;

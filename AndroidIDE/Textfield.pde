@@ -1,7 +1,7 @@
 static class APLField extends Drawable implements TextReciever {
   float tsz, chw;
   SyntaxHighlight hl;
-  Theme th = new Theme();
+  Theme th = aplTheme;
   
   float extraH = 1.2;
   float xoff = 0;
@@ -152,16 +152,16 @@ static class APLField extends Drawable implements TextReciever {
     if (s.equals("eval")) {
       eval();
     } else if (s.equals("left")) {
-      if (sx!=ex && !a.cshift()) {
+      if (sx!=ex && !cshift()) {
         sx = ex = Math.min(sx, ex);
       } else {
         ex = Math.max(0, ex-1);
-        if (a.ctrl) {
+        if (ctrl) {
           while (ex>0 && !Character.isAlphabetic(line.charAt(ex))) ex--;
           while (ex>0 &&  Character.isAlphabetic(line.charAt(ex))) ex--;
           if (ex<line.length() && !Character.isAlphabetic(line.charAt(ex))) ex++;
         }
-        if (!a.cshift()) sx = ex;
+        if (!cshift()) sx = ex;
       }
     }//asdas    asdas asd asd a   sdasda
     else if (s.equals("right")) {

@@ -202,35 +202,6 @@ static class PQNode<M extends Comparable<? super M>, V> {
 
 
 
-class StrOS extends OutputStream {
-  PrintStream oOut;
-  PrintStream oErr;
-  StrOS() {
-    oOut = System.out;
-    oErr = System.err;
-    System.setOut(new PrintStream(this));
-    System.setErr(new PrintStream(this));
-  }
-  ByteArr bs = new ByteArr();
-  void write(int i) {
-    synchronized(bs) {
-      oOut.write(i);
-      bs.add((byte)(i&0xff));
-    }
-  }
-  String get() {
-    synchronized(bs) {
-      String res = new String(Arrays.copyOf(bs.arr, bs.used));
-      bs.clear();
-      return res.replace("(HTTPLog)-Static: isSBSettingEnabled false\n", "");
-    }
-  }
-  void close() {
-    System.out.flush();
-    System.setOut(oOut);
-    System.setOut(oErr);
-  }
-}
 
 
 
@@ -249,4 +220,36 @@ class ByteArr {
     used = 0;
     if (arr.length > 100000) arr = new byte[128];
   }
+}
+
+static JSONArray ja(Object... args) {
+  JSONArray a = new JSONArray();
+  for (Object o : args) {
+    if (o instanceof Number) a.append(((Number)o).doubleValue());
+    else if (o instanceof String) a.append((String)o);
+    else if (o instanceof JSONArray) a.append((JSONArray)o);
+    else if (o instanceof JSONObject) a.append((JSONObject)o);
+    else assert false;
+  }
+  return a;
+}
+static JSONObject jo(Object... args) {
+  JSONObject o = new JSONObject();
+  assert args.length%2==0;
+  for (int i = 0; i < args.length; i+= 2) {
+    String k = (String)args[i];
+    Object v = args[i+1];
+    if (v instanceof Integer) o.setInt(k, ((Number)v).intValue());
+    else if (v instanceof Number) o.setDouble(k, ((Number)v).doubleValue());
+    else if (v instanceof String) o.setString(k, (String)v);
+    else if (v instanceof JSONArray) o.setJSONArray(k, (JSONArray)v);
+    else if (v instanceof JSONObject) o.setJSONObject(k, (JSONObject)v);
+    else if (v instanceof String[]) {
+      JSONArray a = new JSONArray();
+      for (String s : (String[]) v) a.append(s);
+      o.setJSONArray(k, a);
+    }
+    else assert false;
+  }
+  return o;
 }

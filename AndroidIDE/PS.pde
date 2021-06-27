@@ -18,13 +18,13 @@ void settings() {
 
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
-void copy(String s) {
+static void copy(String s) {
   StringSelection stringSelection = new StringSelection(s);
   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
   clipboard.setContents(stringSelection, null);
 }
 
-void paste(Drawable d) {
+static void paste(Drawable d) {
   try {
     d.pasted((String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor));
   } catch (Throwable e) {

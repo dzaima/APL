@@ -100,7 +100,6 @@ static class SyntaxHighlight {
   void err(int i) {
     mark[i] = th.err;
   }
-  Scope sc = new Scope();
   void walk(Token t, int dlvl) {
     int dfncol = dlvl < 0? th.err : dlvl >= th.dfn.length? th.dfn[0] : th.dfn[dlvl];
     if (t instanceof NumTok) set(t, th.num);
@@ -128,7 +127,7 @@ static class SyntaxHighlight {
         default: {
           int col;
           try {
-            Obj o = new Exec(LineTok.inherit(t), sc).exec();
+            Obj o = new Exec(LineTok.inherit(t), mainSys.gsc).exec();
             col = o instanceof Fun? th.fn
                 : o instanceof Mop? th.mop
                 : o instanceof Dop? th.dop
@@ -195,4 +194,14 @@ static class Theme {
 }
 static class NoErrTheme extends Theme {
   { err = #AA77BB; }
+}
+static Theme aplTheme = new Theme();
+static Theme noErrTheme = new NoErrTheme();
+static Theme errTheme = new AllEqualTheme(#FF0000);
+static Theme whiteTheme = new AllEqualTheme(#D2D2D2);
+static class AllEqualTheme extends Theme {
+  AllEqualTheme(int col) {
+    com=num=set=quad=str=zil=dmd=fn=mop=dop=pair=caret=def=err=col;
+    dfn = new int[]{col,col,col,col,col};
+  }
 }

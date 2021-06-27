@@ -1,3 +1,4 @@
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.text.DecimalFormat;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -25,8 +26,6 @@ static int isz = 30;
 static int freey() { // y position of keyboard start
   return a.height-kb.h;
 }
-static StrOS os;
-static REPL mainREPL;
 
 
 
@@ -41,9 +40,9 @@ void setup() {
   
   newKb();
   if (topbar==null) { // don't reset variables if orientation has changed
-    os = new StrOS();
     topbar = new TopBar(0, 0, width, top);
-    topbar.toNew(mainREPL = new REPL());
+    topbar.toNew(mainInit());
+    
     topbar.show();
   }
   textFont(createFont("APL385+.ttf", 48));
@@ -80,10 +79,6 @@ void draw() {
       d.redraw();
     }
     redraw = false;
-  }
-  String s = os.get();
-  if (s.length() != 0) {
-    if (mainREPL != null) mainREPL.historyView.appendLns(s);
   }
   pmousePressed = mousePressed;
 }
@@ -127,6 +122,7 @@ void keyPressed(KeyEvent e) {
       else if (key == 127 && keyCode == 127) textInput.rdelete();
       else if (key ==  19 && keyCode ==  83) textInput.special("eval");
       else if (key ==   1 && keyCode ==  65) textInput.special("sall");
+      else if (key ==  23 && keyCode ==  87) textInput.special("close");
       else textInput.append(Character.toString(key));
     }
   }

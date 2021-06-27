@@ -53,7 +53,8 @@ static class ROText extends Drawable {
   ArrayList<String> s;
   boolean newline;
   void appendLns(String a) {
-    String[] lns = split(a, "\n");
+    redraw = true;
+    String[] lns = split(a, '\n');
     if (newline) {
       for (String s : lns) append(s);
     } else {

@@ -3,6 +3,7 @@ abstract static class Tab extends SimpleMap {
   abstract void hide();
   abstract String name();
   void mouseWheel(int dir) { }
+  void closed() { }
   Obj getv(String k) {
     switch (k) {
       case "name": return Main.toAPL(name());
@@ -34,18 +35,56 @@ static class REPL extends Tab {
   ArrayList<String> inputs = new ArrayList();
   String tmpSaved;
   int iptr = 0; // can be ==input.size()
-  REPL() {
-    historyView = new ROText(0, top, a.width, 340-top);
+  boolean main;
+  Interpreter it;
+  
+  void addln(String s) {
+    add(s+"\n");
+  }
+  void add(String s) {
+    historyView.appendLns(s);
+  }
+  
+  REPL(Interpreter it) {
+    this.it = it;
+    it.l = new ItListener() {
+      public void println(String ln) {
+        add(ln+"\n");
+      }
+      public void print(String ln) {
+        add(ln);
+      }
+      public void off(int code) {
+        topbar.close(REPL.this);
+      }
+      public String input() {
+        return "";
+      }
+      public void guiJSON(JSONArray o) {
+        
+      }
+      public void inputMode(boolean enabled, boolean highlight) {
+        if (!enabled) input.th = errTheme;
+        else if (highlight) input.th = it.theme();
+        else input.th = whiteTheme;
+      }
+    };
+    historyView = new ROText(0, top, a.width, 340-top) {
+      void tick() {
+        it.tick();
+        super.tick();
+      }
+    };
     input = new APLField(0, 350, a.width, 40) {
       boolean apl() {
-        return !(line.startsWith(":") || line.startsWith(")"));
+        return !(line.startsWith(":") || line.startsWith(")") || line.startsWith("]"));
       }
       void eval() {
         tmpSaved = null;
         inputs.add(line);
         iptr = inputs.size();
-        textln("  "+line+"\n");
-        if (line.startsWith(":") || line.equals(")help")) {
+        if (line.startsWith(":") || line.equals(")help") && it instanceof DzaimaAPL) {
+          addln("  "+line);
           String cmd = line.substring(1);
           int i = cmd.indexOf(" "); 
           String nm = i==-1? cmd : cmd.substring(0, i);
@@ -56,67 +95,45 @@ static class REPL extends Tab {
             isz = int(arg);
             redrawAll();
           } else if (nm.equals("i")) {
-            if (argl.equals("dyalog")) {
-              it = new Dyalog();
-            }
-            if (argl.equals("dzaima")) {
-              it = new DzaimaAPL();
-            }
+            String[] parts = split(argl, ' ');
+            if (parts[0].equals("ride")) {
+              topbar.toNew(new REPL(new RIDE(parts.length==1? "127.0.0.1:8000" : parts[1])));
+            } else if (parts[0].equals("dzaima")) {
+              topbar.toNew(new REPL(new DzaimaAPL()));
+            } else addln("unknown interpreter: \""+argl+"\"");
           } else if (nm.equals("clear")) {
             historyView.set(new ArrayList());
           } else if (nm.equals("g")) {
-            topbar.toNew(new Grapher(arg));
+            if (it instanceof DzaimaAPL) topbar.toNew(new Grapher(it, arg));
+            else addln(":g only supported in dzaima/APL");
           } else if (nm.equals("tsz")) {
             top = int(arg);
             redrawAll();
-          } else if (nm.equals("f") || nm.equals("fx")) {
-            final boolean ex = nm.equals("fx");
-            String[] ps = arg.split("/");
-            String[] lns = a.loadStrings(arg);
-            topbar.toNew(new Editor(ps[ps.length-1], lns==null? "" : join(lns, "\n")) {
-              public void save(String t) {
-                try {
-                  a.saveStrings(arg, new String[]{t});
-                  if (ex) Main.exec(ta.allText(), dzaimaSC);
-                } catch (Throwable e) {
-                  println(e.getMessage());
-                  Main.lastError = e;
-                }
-              }
-            });
-          } else if (nm.equals("ex")) {
-            String[] lns = a.loadStrings(arg);
-            if (lns != null) {
-              StringBuilder s = new StringBuilder();
-              for (String c : lns) s.append(c).append("\n");
-              for (String c : it.get(s.toString())) textln(c);
-            } else textln("file "+arg+" not found");
-          } else if (nm.equals("ed")) {
-            Obj o = dzaimaSC.get(arg);
-            if (o instanceof Dfn) {
-              topbar.toNew(new Ed(nm, ((Dfn ) o).code.source()));
-            }
-            if (o instanceof Dmop) {
-              topbar.toNew(new Ed(nm, ((Dmop) o).code.source()));
-            }
-            if (o instanceof Ddop) {
-              topbar.toNew(new Ed(nm, ((Ddop) o).code.source()));
-            }
+          //} else if (nm.equals("ex")) {
+          //  String[] lns = a.loadStrings(arg);
+          //  if (lns != null) {
+          //    StringBuilder s = new StringBuilder();
+          //    for (String c : lns) s.append(c).append("\n");
+          //    for (String c : it.get(s.toString())) textln(c);
+          //  } else textln("file "+arg+" not found");
           } else if (nm.equals("h") || nm.equals("help")) {
             if (arg.length()==0) {
               textln("commands:");
               textln(":h/:help  view this help page");
               textln(":h kb     view help for keyboard layout");
-              textln(":h c      view character docs");
+              if (it instanceof DzaimaAPL) {
+                textln(":h c      view character docs");
+                textln(":g expr   graph the expression (editable in the window)");
+                textln(")ed fn    edit the function in another window (= - save, ⏎ - newline, X - save (!) & close)");
+                textln(")ef path  edit file at path");
+                textln(")efx path edit file at path, executing on save");
+                textln(")fx path  execute file at path");
+              }
               textln(":isz sz   change input box font size");
               textln(":hsz sz   change REPL history font size");
               textln(":tsz sz   change top bar size");
-              textln(":g expr   graph the expression (editable in the window)");
               textln(":clear    clear REPL history");
-              textln(":f  path  edit file at the path");
-              textln(":fx path  edit file at the path, executing on save");
-              textln(":ex path  execute file at the path");
-              textln(":ed fn    edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)");
+              textln(":i type   start another REPL. type can be 'dzaima' or 'ride ip:port'");
             } else {
               if (arg.equals("kb")) {
                 topbar.toNew(new HelpEd(":help kb", join(a.loadStrings("help_kb.txt"), '\n')));
@@ -129,14 +146,7 @@ static class REPL extends Tab {
           return;
         }
         
-        if (line.startsWith(")")) {
-          for (String s : it.special(line.substring(1))) textln(s);
-          return;
-        }
-        String[] res = it.get(line);
-        for (String ln : res) {
-          textln(ln);
-        }
+        it.sendLn(line);
       }
       void extraSpecial(String s) {
         if (s.equals("up")) {
@@ -162,21 +172,19 @@ static class REPL extends Tab {
           sx = ex = line.length();
         } else if (s.equals("copy")) {
           append("app.cpy");
+        } else if (s.equals("close")) {
+          topbar.close();
         }
       }
       void textln(String ln) {
         historyView.append(ln);
       }
       void newline() {
-        try {
-          eval();
-        } catch (Throwable t) {
-          Main.lastError = t;
-          println(t.getMessage());
-        }
+        eval();
         clear();
       }
     };
+    input.th = it.theme();
   }
   void show() {
     int ih = int(isz*input.extraH);
@@ -207,6 +215,9 @@ static class REPL extends Tab {
     if (k.equals("eq")) { input.clear(); input.append(((Value) v).asString()); }
     else super.setv(k, v);
   }
+  void closed() {
+    it.close();
+  }
 }
 
 
@@ -222,8 +233,7 @@ abstract static class Editor extends Tab {
       }
       void extraSpecial(String s) {
         if (s.equals("close")) {
-          eval();
-          topbar.close();
+          close();
         } else println("unknown special " + s);
       }
     };
@@ -242,12 +252,16 @@ abstract static class Editor extends Tab {
   String name() {
     return name;
   }
+  void close() {
+    ta.eval();
+    topbar.close();
+  }
 }
 
 static class HelpEd extends Editor {
   HelpEd(String name, String val) {
     super(name, val);
-    ta.th = new NoErrTheme();
+    ta.th = noErrTheme;
   }
   void save(String val) {
   }
@@ -256,18 +270,16 @@ static class HelpEd extends Editor {
 static class Grapher extends Tab {
   Graph g;
   final APLField input;
-  Obj last;
-  Grapher(String def) {
+  Grapher(Interpreter it, String def) {
     g = new Graph(0, top, d.width, freey()-top-isz);
     input = new APLField(0, 350, d.width, 40, def) {
       void eval() {
         modified();
       }
       void modified() {
-        if (it instanceof DzaimaAPL) {
-          last = ((DzaimaAPL) it).eval(line);
-          if (last instanceof Fun) g.newFun((Fun) last);
-        }
+        try {
+          g.newFun(it.getFn(line));
+        } catch (Throwable t) { /* too bad */ }
       }
       void extraSpecial(String s) {
         if (s.equals("close")) {
