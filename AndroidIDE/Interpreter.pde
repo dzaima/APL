@@ -24,6 +24,7 @@ abstract static class Interpreter {
   abstract void sendLn(String ln);
   abstract void tick();
   abstract void intJSON(JSONArray a);
+  void lSet() { }
   
   abstract Fun getFn(String ln);
   abstract void close();
@@ -34,54 +35,59 @@ abstract static class ItListener {
   abstract void off(int code);
   abstract String input();
   abstract void inputMode(boolean enabled, boolean highlight);
-  abstract void guiJSON(JSONArray a);
-  
 }
 
-static RIDE latestRIDE;
 import java.net.*;
 import java.io.*;
-void startRIDE() {
-  RIDE r = latestRIDE;
-  try {
-    //Process dyp = Runtime.getRuntime().exec(new String[]{"dyalog", "+s", "-q", "-nokbd"}, new String[]{"RIDE_INIT=CONNECT:"+r.ip, "RIDE_SPAWNED=1"});
-    ServerSocket ss = new ServerSocket(Integer.parseInt(split(r.ip,':')[1]));
-    while(true) {
-      Socket s = ss.accept();
-      //Socket s = new Socket("127.0.0.1",8000);
-      DataInputStream i = new DataInputStream(s.getInputStream());
-      TW o = new TW(s.getOutputStream());
-      o.send("SupportedProtocols=2");
-      o.send("UsingProtocol=2");
-      o.send("[\"Identify\",{\"identity\":1}]");
-      o.send("[\"Connect\",{\"remoteId\":2}]");
-      o.send("[\"GetWindowLayout\",{}]");
-      r.o = o;
-      int num = 0;
-      while(true) {
-        while(i.available()==0) {
-          delay(500);
-          if (r.closed) {
-            i.close();
-            s.close();
-            ss.close();
-            return;
-          }
-        }
-        int len = 0;
-        for (int j = 0; j < 4; j++) len = len*256 + (i.read()&0xff);
-        len-= 8;
-        for (int j = 0; j < 4; j++) i.read();
-        byte[] bs = new byte[len];
-        int p=0;while(p!=bs.length) p+= i.read(bs, p, bs.length-p);
-        String msg = new String(bs);
-        if (msg.length()>400) println("received "+len+" "+msg.substring(0,400)+"…");
-        else println("received "+msg);
-        if (num>=2) r.recv.add(parseJSONArray(msg));
-        num++;
+static void rideSocket(RIDE r, Socket s) throws IOException {
+  //Socket s = new Socket("127.0.0.1",8000);
+  DataInputStream i = new DataInputStream(s.getInputStream());
+  TW o = new TW(s.getOutputStream());
+  o.send("SupportedProtocols=2");
+  o.send("UsingProtocol=2");
+  o.send("[\"Identify\",{\"identity\":1}]");
+  o.send("[\"Connect\",{\"remoteId\":2}]");
+  o.send("[\"GetWindowLayout\",{}]");
+  r.o = o;
+  int num = 0;
+  while(true) {
+    while(i.available()==0) {
+      a.delay(50);
+      if (r.closed) {
+        i.close();
+        o.o.close();
+        s.close();
+        return;
       }
     }
+    int len = 0;
+    for (int j = 0; j < 4; j++) len = len*256 + (i.read()&0xff);
+    len-= 8;
+    for (int j = 0; j < 4; j++) i.read();
+    byte[] bs = new byte[len];
+    int p=0;while(p!=bs.length) p+= i.read(bs, p, bs.length-p);
+    String msg = new String(bs);
+    if (msg.length()>400) println("received "+len+" "+msg.substring(0,400)+"…");
+    else println("received "+msg);
+    if (num>=2) r.recv.add(a.parseJSONArray(msg));
+    num++;
+  }
+}
+static void rideThread(RIDE r) {
+  String[] ipP = split(r.ip,':');
+  String ip = ipP[0];
+  int port = Integer.parseInt(ipP[1]);
+  try {
+    if (r.create) {
+      //Process dyp = Runtime.getRuntime().exec(new String[]{"dyalog", "+s", "-q", "-nokbd"}, new String[]{"RIDE_INIT=CONNECT:"+r.ip, "RIDE_SPAWNED=1"});
+      ServerSocket ss = new ServerSocket(port);
+      while(!r.closed) rideSocket(r, ss.accept());
+      ss.close();
+    } else {
+      rideSocket(r, new Socket(ip, port));
+    }
   } catch(IOException e) {
+    if (r.l!=null) r.simulateOutput(errToString(e));
     e.printStackTrace();
   }
 }
@@ -119,21 +125,19 @@ static class RIDE extends Interpreter {
   String ip;
   boolean closed;
   int promptType;
-  RIDE(String ip) {
+  boolean create;
+  RIDE(String ip, boolean create) {
     if (ip.indexOf(':')==-1) ip+= ":"+RIDE_PORT;
     this.ip = ip;
-    latestRIDE = this;
-    a.thread("startRIDE");
-    simulateOutput("Connecting to "+ip+"...\n\n");
+    this.create = create;
+    simulateOutput(create? "Waiting for a connection to "+ip+"…" : "Connecting to "+ip+"…\n\n");
+    (new Thread() {
+      void run() { rideThread(RIDE.this); }
+    }).start();
   }
   
   void simulateOutput(String text) {
-      //JSONArray r = new JSONArray();
-      //r.setString(0, "AppendSessionOutput");
-      //JSONObject o = new JSONObject();
-      //o.setString("result", text);
-      //r.setJSONObject(1, o);
-      recv.add(ja("AppendSessionOutput",jo("result",text)));
+    recv.add(ja("AppendSessionOutput",jo("result",text)));
   }
   
   void sendLn(String ln) {
@@ -141,8 +145,7 @@ static class RIDE extends Interpreter {
     try {
       intJSON(ja("Execute",jo("text", (promptType==1?"   ":"")+ln+"\n", "trace", 0)));
     } catch (Exception e) {
-      String msg = e.getMessage();
-      simulateOutput("Connection error: "+(msg==null? e.getClass().getName() : msg));
+      simulateOutput("Connection error: "+errToString(e));
     }
   }
   
@@ -179,20 +182,11 @@ static class RIDE extends Interpreter {
     }
   }
   
-  Fun getFn(String ln) {
-    return null;
-  }
-  
-  Theme theme() {
-    return noErrTheme;
-  }
-  
-  void intJSON(JSONArray a) {
-    o.send(a);
-  }
-  void close() {
-    closed = true;
-  }
+  void lSet() { l.inputMode(false,false); }
+  Fun getFn(String ln) { return null; }
+  Theme theme() { return noErrTheme; }
+  void intJSON(JSONArray a) { o.send(a); }
+  void close() { closed = true; }
 }
 static String lnStr(JSONArray a) {
   StringBuilder b = new StringBuilder();
@@ -283,7 +277,7 @@ static class TryAPL extends Interpreter {
             for (int i = 0; i < lns.size(); i++) lnsArr[i+off] = lns.getString(i);
             recv.add(lnsArr);
           } catch (Exception e) {
-            recv.add(new String[]{e.getMessage()==null? e.getClass().getName() : e.getMessage()});
+            recv.add(new String[]{errToString(e)});
           }
         }
       }

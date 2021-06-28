@@ -62,9 +62,6 @@ static class REPL extends Tab {
       public String input() {
         return "";
       }
-      public void guiJSON(JSONArray o) {
-        
-      }
       public void inputMode(boolean enabled, boolean highlight) {
         if (!enabled) input.th = errTheme;
         else if (highlight) input.th = it.theme();
@@ -99,12 +96,14 @@ static class REPL extends Tab {
             String[] parts = split(arg, ' ');
             String type = parts[0].toLowerCase();
             if (type.equals("ride")) {
-              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? RIDE_IP : parts[1])));
+              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? RIDE_IP : parts[1], false)));
+            } else if (type.equals("ridew")) {
+              topbar.toNew(new REPL("RIDE", new RIDE(parts.length==1? RIDE_IP : parts[1], true)));
             } else if (type.equals("dzaima")) {
               topbar.toNew(new REPL("dzaima/APL", new DzaimaAPL()));
             } else if (type.equals("tryapl")) {
               topbar.toNew(new REPL("TryAPL", new TryAPL()));
-            } else addln("unknown interpreter: \""+type+"\"");
+            } else addln("unknown interpreter: \""+type+"\". See :h for options");
           } else if (nm.equals("clear")) {
             historyView.set(new ArrayList());
           } else if (nm.equals("g")) {
@@ -137,7 +136,11 @@ static class REPL extends Tab {
               textln(":hsz sz   change REPL history font size");
               textln(":tsz sz   change top bar size");
               textln(":clear    clear REPL history");
-              textln(":i type   start another REPL. type can be 'dzaima' or 'ride ip:port (defaults: ip "+RIDE_IP+", port "+RIDE_PORT+")'");
+              textln(":i type   start another REPL. Types:");
+              textln("    'dzaima' for another dzaima/APL REPL");
+              textln("    'tryapl' for a TryAPL interface (requires internet)");
+              textln("    'ride ip:port' (defaults: ip "+RIDE_IP+", port "+RIDE_PORT+")");
+              textln("    'ridew ip:port' for RIDE started with RIDE_INIT=CONNECT:…");
             } else {
               if (arg.equals("kb")) {
                 topbar.toNew(new HelpEd(":help kb", join(a.loadStrings("help_kb.txt"), '\n')));
@@ -189,6 +192,7 @@ static class REPL extends Tab {
       }
     };
     input.th = it.theme();
+    it.lSet();
   }
   void show() {
     int ih = int(isz*input.extraH);

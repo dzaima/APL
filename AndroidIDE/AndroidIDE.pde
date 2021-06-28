@@ -153,3 +153,8 @@ static void textS(PGraphics g, String s, float x, float y) {
 static void textS(PGraphics g, char s, float x, float y) {
   g.text(s, x, y + (MOBILE? g.textSize*.333 : 0));
 }
+static String errToString(Throwable t) {
+  String msg = t.getMessage();
+  if (msg==null) return t.getClass().getName();
+  else           return t.getClass().getName()+": "+msg;
+}
