@@ -1,14 +1,15 @@
-swipe on characters to enter ones around it
-M - go to matching bracket
-F - switch layout to one with extra functions
-N - switch layout to numbers at top-level
-A - switch to text layout
-# - switch to default layout
+= - evaluate/save
 ⇧ - shift (caps letters, select with «»)
-X - close tab (where applicable - grapher & editor)
+C - clear input field
+M - go to matching bracket
+
 K - open virtual keyboard
-= - evaluate
+# - default layout
+A - layout with a-z
+N - layout with numbers at top-level
+F - extra function layout
+  X - close tab (saves where applicable)
 
 ↶↷ - undo/redo
-▲▼ - move trough REPL history
+▲▼ - move up/down or trough REPL history
 ^C/^V - copy/paste

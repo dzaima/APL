@@ -2,19 +2,18 @@
 
 [Download APK](https://github.com/dzaima/APL/releases)
 
-By default, this executes code as dzaima/APL, but it can also connect to Dyalog APL launched with:
+Execute `:h` in the app for a list of commands.
+
+By default, this executes code as dzaima/APL. Other options of interpretation:
 
 ```apl
-)LOAD path/to/Jarvis/Distribution/Jarvis.dws ⍝ https://github.com/Dyalog/Jarvis/blob/master/Distribution/Jarvis.dws
-eval←{⎕←' ',⍵ ⋄ 0::{⎕←↑⎕DM⋄⎕DM}⍬ ⋄ ,↓⎕←⍕⍎⍵}
-S←⊃Jarvis.Run 1234 # ⍝ replace 1234 with whatever port you want
-```
-
-To connect to that it in the app:
-
-```apl
-:i dyalog
-)ip:1234 ⍝ or whatever port you set
+⍝ TryAPL:
+:i TryAPL ⍝ requires an internet connection
+⍝ Dyalog through RIDE:
+$ RIDE_INIT=SERVE:desktopIp:4502 dyalog -nokbd ⍝ on a desktop
+:i ride desktopIp ⍝ in the app, after starting the server; another port can be chosen if needed
+⍝ for completeness sake, another separate dzaima/APL interpreter can be opened with:
+:i dzaima
 ```
 
 
@@ -34,28 +33,21 @@ Alternatively, Processing runs the project in Java mode just fine (keyboard inpu
 
 ```
 swipe on characters to enter ones around it
-M - go to matching bracket
-F - switch layout to one with extra functions
-N - switch layout to numbers at top-level
-A - switch to text layout
-# - switch to default layout
+= - evaluate/save
 ⇧ - shift (caps letters, select with «»)
-X - close tab (where applicable - grapher & editor)
+C - clear input field
+M - go to matching bracket
+
 K - open virtual keyboard
-= - evaluate
+# - default layout
+A - layout with a-z
+N - layout with numbers at top-level
+F - extra function layout
+  X - close tab (saves where applicable)
 
 ↶↷ - undo/redo
-▲▼ - move trough REPL history
+▲▼ - move up/down or trough REPL history
 ^C/^V - copy/paste
 
-
-:isz sz     change input box font size
-:hsz sz     change REPL history font size
-:tsz sz     change top bar size
-:g expr     graph the expression (editable in the window)
-:clear      clear REPL history
-:f  path    edit file at the path
-:fx path    edit file at the path, executing on save
-:ex path    execute file at the path
-:ed fn      edit the function by name in another window (= - save, ⏎ - newline, X - save (!) & close)
+:h - list commands (do ":h kb" to view the above text)
 ```
