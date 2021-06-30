@@ -66,7 +66,7 @@ static void rideSocket(RIDE r, Socket s) throws IOException {
     for (int j = 0; j < 4; j++) i.read();
     byte[] bs = new byte[len];
     int p=0;while(p!=bs.length) p+= i.read(bs, p, bs.length-p);
-    String msg = new String(bs);
+    String msg = new String(bs, StandardCharsets.UTF_8);
     if (msg.length()>400) println("received "+len+" "+msg.substring(0,400)+"…");
     else println("received "+msg);
     if (num>=2) r.recv.add(a.parseJSONArray(msg));
